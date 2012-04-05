@@ -15,13 +15,13 @@ abstract class Theme_Object extends Gear {
 
     protected $name = 'Theme';
     protected $description = 'Theme for cogear.';
-    protected $type = Gear::THEME;
     protected $order = 100;
     protected $package = 'Themes';
     protected $screenshot = '/img/screenshot.png';
     private static $is_rendered = FALSE;
-    public $layout = 'index';
+    protected $layout = 'index';
     public $theme;
+    protected $template;
 
     /**
      * Constructor
@@ -76,26 +76,38 @@ abstract class Theme_Object extends Gear {
      * Activate
      */
     public function activate() {
-        $cogear = getInstance();
+        $cogear = cogear();
         Template::bindGlobal('theme', $this);
-        hook('done', array($this, 'render'));
     }
+
     /**
      * Get theme screenshot
      * 
      * @return type 
      */
-    public function getScreenshot(){
-        return file_exists($this->dir.$this->screenshot) ? $this->folder.$this->screenshot : '/'.THEMES_FOLDER.'/Default/images/screenshot.png';
+    public function getScreenshot() {
+        return file_exists($this->dir . $this->screenshot) ? $this->folder . $this->screenshot : '/' . THEMES_FOLDER . '/Default/images/screenshot.png';
     }
+
+    /**
+     * Set or get current layout
+     * 
+     * @param string $template
+     * @return string 
+     */
+    public function layout($template = NULL) {
+        return $template ? $this->layout = $template : $this->layout;
+    }
+
     /**
      * Render theme
      */
-    public function render() {
-        if ($this->is_rendered)
+    public function render($layout = NULL) {
+        if ($this->is_rendered) {
             return;
-        $cogear = getInstance();
-        $this->template = new Template($this->theme . '.' . $this->layout);
+        }
+        $cogear = cogear();
+        $this->template = new Template($this->theme . '.' . (defined('LAYOUT') ? LAYOUT : ($layout ? $layout : $this->layout)));
         $cogear->response->append($this->template->render());
         $this->is_rendered = TRUE;
     }
