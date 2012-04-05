@@ -17,16 +17,14 @@ class Secure_Gear extends Gear {
     protected $name = 'Secure';
     protected $description = 'Helps to keep things secure.';
     protected $order = 0;
-    private $mcrypt_cipher;
-    private $mcrypt_mode;
+    protected $hooks = array(
+        'gear.request' => 'checkRequest',
+    );
     /**
      * Constructor
      */
     public function __contsruct(){
         parent::__construct();
-        $cogear = getInstance();
-        $this->mcrypt_cipher = $cogear->get('secure.mcrypt_cipher', MCRYPT_BLOWFISH);
-        $this->mcrypt_mode = $cogear->get('secure.mcrypt_mode', MCRYPT_MODE_ECB);
     }
     /**
      * Encrypt data
@@ -35,7 +33,6 @@ class Secure_Gear extends Gear {
      */
     public function encrypt($data){
         return base64_encode(serialize($data));
-        ////mcrypt_encrypt($this->mcrypt_cipher, cogear()->key(), serialize($data), $this->mcrypt_mode);
     }
     /**
      * Decrypt data
@@ -44,7 +41,37 @@ class Secure_Gear extends Gear {
      */
     public function decrypt($data){
         return unserialize(base64_decode($data));
-        //unserialize(mcrypt_decrypt($this->mcrypt_cipher, cogear()->key(), $data, $this->mcrypt_mode));
+    }
+    
+    /**
+     * Gen or check secure key
+     * 
+     * @param   string  $key
+     */
+    public function key($key = NULL){
+        if($key){
+            return $key == $this->key();
+        }
+        else {
+            // Get the key
+            $key = config('secure.key',md5(date('H d.m.Y')));
+            // Glue key with current ip
+            $key = md5($key.$this->request->get('ip'));
+            $key = substr($key, 0,5);
+            return $key;
+        }
+    }
+    
+    /**
+     * Check request for security hash
+     */
+    public function checkRequest(){
+        if($s = $this->input->get(Url::SECURE)){
+            if(!$this->key($s)){
+                flash_error(t('You secret key doesn\'t match the original. Please, try once again,'),t('Warning'));
+                back();
+            }
+        }
     }
 }
 /**
