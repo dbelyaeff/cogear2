@@ -16,12 +16,20 @@ class Admin_Gear extends Gear {
     protected $name = 'Admin gear';
     protected $description = 'Site control panel';
     protected $required = array('Access');
+    protected $order = -100;
 
     /**
      * Initializer
      */
     public function init() {
         parent::init();
+        if ($this->router->check('admin', Router::STARTS)) {
+            $menu = new Menu_Auto(array(
+                        'name' => 'admin.menu',
+                        'template' => 'Admin.menu',
+                        'render' => 'sidebar',
+                    ));
+        }
     }
 
     /**
@@ -30,13 +38,20 @@ class Admin_Gear extends Gear {
     public function menu($name, &$menu) {
         switch ($name) {
             case 'user':
-                if ($this->user->id && access('admin')) {
-                    $menu->{Url::gear('admin')} = t('Control Panel');
-                    $menu->{Url::gear('admin')}->order = 99;
+                if (access('admin')) {
+                    $menu->register(array(
+                        'link' => Url::link('/admin'),
+                        'label' => t('Control Panel', 'Admin'),
+                        'place' => 'right',
+                    ));
                 }
                 break;
-            case 'admin':
-                $menu->{'dashboard'} = t('Dashboard');
+            case 'admin.menu':
+                $menu->register(array(
+                    'link' => Url::link('/admin/dashboard'),
+                    'label' => icon('home') . t('Dashboard', 'Admin'),
+                    'active' => $this->router->check('admin', Router_Object::ENDS) OR $this->router->check('admin/dashboard', Router_Object::ENDS),
+                ));
                 break;
         }
     }
@@ -45,22 +60,15 @@ class Admin_Gear extends Gear {
      * Dispatch request
      */
     public function index() {
-        if(!access('admin')) return _403();
-        new Admin_Menu();
-        $args = $this->router->getArgs();
-        $rev_args = array_reverse($args);
-        $class = array();
-        while ($piece = array_pop($rev_args)) {
-            $class[] = $piece;
-            $gear = implode('_', $class);
-            if ($this->gears->$gear) {
-                $callback = array($this->gears->$gear, 'admin');
-                if (is_callable($callback)) {
-                    event('admin.gear.request', $this->gears->$gear);
-                    Template::setGlobal('title', $gear);
-                    $this->router->exec($callback, $rev_args);
-                    break;
-                }
+        if (!access('admin'))
+            return _403();
+        if ($args = $this->router->getArgs()) {
+            $gear = $args[0];
+            $args = array_slice($args, 1);
+            $callback = array(cogear()->gear($gear), 'admin');
+            if (is_callable($callback)) {
+                event('admin.gear.request', $this->gear($gear));
+                $this->router->exec($callback, $args);
             }
         }
     }
