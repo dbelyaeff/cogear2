@@ -1,0 +1,23 @@
+.comment{
+    padding: 10px;
+    margin: 2px 0 5px;
+}
+.comment-body{
+    padding: 5px;
+    border: 1px solid #CCC;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+.comments-control{
+    text-align: right;
+}
+#form-comment{
+    margin: 10px 0;
+    clear: both;
+}
+#form-comment-body textarea{
+    height: 100px;
+}
+#comment-post-info {
+    font-size: 1.4em;
+}

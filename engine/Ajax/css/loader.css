@@ -1,0 +1,10 @@
+.ajax-indicator{
+    margin: 0 5px;
+    display: none;
+}
+#ajax-indicator{
+    float: left;
+    width: 16px;
+    height: 11px;
+    background: url('../img/ajax-loader.gif') no-repeat 0 0;
+}

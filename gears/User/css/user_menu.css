@@ -1,0 +1,24 @@
+#user_menu a{
+    text-decoration: none;
+    display: block;
+    padding: 2px 10px;
+}
+#user_menu a.active{
+    background: #eff3f6;
+}
+#user_menu a:hover{
+    background: #E1E7ED;
+}
+#user_menu ul {
+    margin: 0;
+    padding: 0;
+}
+#user_menu li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#user_menu li.subitem a{
+    font-size: 0.9em;
+    padding: 2px 10px 2px 20px;
+}

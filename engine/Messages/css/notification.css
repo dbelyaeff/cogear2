@@ -1,0 +1,52 @@
+div.jGrowl div.error {
+	background-color: #cc0000 !important;
+	color: #FFF;
+}
+
+div.jGrowl div.success {
+	background-color: #009900 !important;
+	color: #FFF;
+}
+
+div.jGrowl div.info {
+	background-color: #444 !important;
+	color: #FFF;
+}
+
+div.jGrowl div.jGrowl-closer {
+	background-color: #FFF !important;
+	color: #222;
+}
+
+
+div.cogear_message_error, div.cogear_message_success, div.cogear_message_info {
+	font-family: Verdana, Arial;
+	font-size: 13px;
+	padding: 10px 10px 10px 44px;
+	margin: 0pt auto 1em;
+	width: 100%;
+	border: 1px solid #DDD;
+	border-radius: 3px 3px 3px 3px;
+	-moz-border-radius: 3px 3px 3px 3px;
+	-webkit-border-radius: 3px 3px 3px 3px;
+	text-shadow: 1px 1px 0px #fff;
+}
+div.cogear_message_error {
+	background: url('img/exclamation.png') no-repeat scroll 0.8em center #FBE3E4;
+	color: #8A1F11;
+	border-color: #FBC2C4;
+}
+div.cogear_message_success {
+	background: url('img/tick.png') no-repeat scroll 0.8em center #E6EFC2;
+	color: #264409;
+	border-color: #C6D880;
+}
+div.cogear_message_info {
+	background: url('img/light-bulb.png') no-repeat scroll 0.8em center #FFF6BF;
+	color: #514721;
+	border-color: #FFD324;
+}
+.cogear_message_title{
+	font-weight: bold;
+	font-size: 1.1em;
+}

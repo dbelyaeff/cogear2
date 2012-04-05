@@ -1,0 +1,26 @@
+.page {
+    margin-bottom: 30px;
+}
+.page .page-title h1{
+    font-size: 1.9em;
+    /*font-family: "Palatino Linotype","Book Antiqua",Palatino,"Times New Roman",Times,serif;*/
+    font-family: Helvetica, Arial;
+    display: inline;
+}
+.page .page-title a{
+    color: #333;
+}
+.page .page-title a:hover{
+    text-decoration: none;
+}
+.page .page-content{
+    padding: 5px;
+}
+.page .page-info{
+    border-top: 1px dotted #CCC;
+    padding: 3px;
+}
+.page .page-info img{
+    margin: 0 2px 0;
+    vertical-align: middle;
+}
