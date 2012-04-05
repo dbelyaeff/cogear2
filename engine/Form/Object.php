@@ -17,6 +17,7 @@ class Form_Object extends Object {
     protected $prefix = 'form';
     protected $method = 'POST';
     protected $action;
+    protected $class;
     protected $ajax;
     protected $enctype = self::ENCTYPE_MULTIPART;
     protected $template = 'Form.form';
@@ -25,6 +26,8 @@ class Form_Object extends Object {
     protected $initialized;
     public $tab_opened;
     public $code;
+    protected $errors = 0;
+
     /**
      * Elements config
      * @var array
@@ -35,18 +38,21 @@ class Form_Object extends Object {
         'text' => 'Form_Element_Input',
         'password' => 'Form_Element_Password',
         'textarea' => 'Form_Element_Textarea',
+        'editor' => 'Form_Element_Textarea',
         'hidden' => 'Form_Element_Hidden',
         'radio' => 'Form_Element_Radio',
         'checkbox' => 'Form_Element_Checkbox',
         'select' => 'Form_Element_Select',
         'hidden' => 'Form_Element_Hidden',
         'submit' => 'Form_Element_Submit',
+        'delete' => 'Form_Element_Delete',
         'button' => 'Form_Element_Button',
         'file' => 'Form_Element_File',
         'image' => 'Form_Element_Image',
         'span' => 'Form_Element_Span',
         'div' => 'Form_Element_Div',
         'tab' => 'Form_Element_Tab',
+        'group' => 'Form_Element_Group',
     );
     protected $callback;
     /**
@@ -75,20 +81,21 @@ class Form_Object extends Object {
             } else {
                 $options = $config;
             }
-        }
-        else {
+        } else {
             $options = Core_ArrayObject::transform($options);
         }
-        parent::__construct($options,Options::SELF);
+        parent::__construct($options, Options::SELF);
     }
+
     /**
      * Magic method to get form element
      * 
      * @param string $name 
      */
-    public function __get($name){
+    public function __get($name) {
         return $this->elements->$name;
     }
+
     /**
      * Add element
      * 
@@ -100,13 +107,12 @@ class Form_Object extends Object {
         $config->type OR $config->type = 'input';
         $config->name = $name;
         $config->form = $this;
-        if ($config->access === FALSE) {
-            return;
-        }
-        if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
-            $this->elements->$name = new self::$types[$config->type]($config);
-        } else {
-            $this->elements->offsetUnset($name);
+        if ($config->access !== FALSE) {
+            if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
+                $this->elements->$name = new self::$types[$config->type]($config);
+            } else {
+                $this->elements->offsetUnset($name);
+            }
         }
     }
 
@@ -117,7 +123,7 @@ class Form_Object extends Object {
         if ($this->initialized)
             return;
         event('form.init', $this);
-        event('form.' . $this->name.'.init', $this);
+        event('form.' . $this->name . '.init', $this);
         $this->is_ajaxed = isset($_REQUEST['form']) && $_REQUEST['form'] == $this->name;
         $elements = array();
         foreach ($this->elements as $name => $config) {
@@ -142,8 +148,8 @@ class Form_Object extends Object {
      */
     public function attach($data) {
         parent::attach($data);
-        event('form.'.$this->name.'.attach',$this);
-        event('form.attach',$this);
+        event('form.' . $this->name . '.attach', $this);
+        event('form.attach', $this);
         $this->init();
         $this->setValues($data);
     }
@@ -154,6 +160,10 @@ class Form_Object extends Object {
      * @param array $data 
      */
     public function setValues($data) {
+        $this->initialized OR $this->init();
+        if ($data instanceof Object) {
+            $data = $data->object;
+        }
         foreach ($data as $key => $value) {
             $this->elements->$key && $this->elements->$key->setValue($value);
         }
@@ -181,19 +191,19 @@ class Form_Object extends Object {
                 }
             }
         }
-        if ($this->is_ajaxed) {
-            $response = array();
-            foreach ($this->elements as $name => $element) {
-                if ($name == Ajax::get('element')) {
-                    if ($result = $element->ajax()) {
-                        $response[$name] = $result;
-                    }
-                }
-            }
-            event('form.ajax.before', $this, $response);
-            event('form.' . $this->name . '.ajax.before', $this, $response);
-            $response && Ajax::json($response);
-        }
+//        if ($this->is_ajaxed) {
+//            $response = array();
+//            foreach ($this->elements as $name => $element) {
+//                if ($name == Ajax::get('element')) {
+//                    if ($result = $element->ajax()) {
+//                        $response[$name] = $result;
+//                    }
+//                }
+//            }
+//            event('form.ajax.before', $this, $response);
+//            event('form.' . $this->name . '.ajax.before', $this, $response);
+//            $response && Ajax::json($response);
+//        }
         event('form.result.after', $this, $is_valid, $result);
         event('form.' . $this->name . '.result.after', $this, $is_valid, $result);
         return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
@@ -223,12 +233,28 @@ class Form_Object extends Object {
             'method' => $this->method,
             'action' => $this->action,
             'enctype' => $this->enctype,
-            'class' => 'form' . ($this->ajax ? ' ajaxed' : ''),
+            'class' => 'form' . ($this->ajax ? ' ajaxed' : '') . ($this->class ? ' ' . $this->class : ''),
         );
         $tpl->elements = $this->elements;
         $this->code = $tpl->render();
         event('form.render.after', $this);
         event('form.' . $this->name . '.render.after', $this);
         return $this->code;
+    }
+
+    /**
+     *  Add error 
+     */
+    public function error($error) {
+        $this->errors++;
+    }
+
+    /**
+     * Get number of errors
+     * 
+     * @return int
+     */
+    public function errors() {
+        return $this->errors;
     }
 }
