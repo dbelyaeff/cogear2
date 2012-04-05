@@ -38,6 +38,10 @@ class User_Object extends Db_Item {
             event('user.autologin', $this);
             $this->dir = $this->dir();
             $this->avatar = $this->getAvatar();
+            if($this->last_visit < time() - config('User.last_visit.peroiod',86400)){
+                $this->last_visit = time();
+                $this->update();
+            }
         }
         // Set data for guest
         else {
@@ -50,7 +54,7 @@ class User_Object extends Db_Item {
      * Autologin
      */
     public function autologin() {
-        $cogear = getInstance();
+        $cogear = cogear();
         if ($cogear->session->user) {
             $this->attach($cogear->session->user);
             return TRUE;
@@ -97,7 +101,7 @@ class User_Object extends Db_Item {
     public function logout() {
         if (!$this->object)
             return;
-        $cogear = getInstance();
+        $cogear = cogear();
         $cogear->session->remove('user');
         $this->forget();
     }
@@ -169,7 +173,9 @@ class User_Object extends Db_Item {
      */
     public function getProfileLink() {
         if ($this->id) {
-            return Url::gear('user') . $this->login;
+            $this->link = $this->id;
+            event('User.link',$this);
+            return Url::gear('user') . $this->link;
         }
         return NULL;
     }
@@ -178,7 +184,7 @@ class User_Object extends Db_Item {
      * Get HTML link to user profile
      */
     public function getLink() {
-        return HTML::a($this->getProfileLink(), $this->login);
+        return HTML::a($this->getProfileLink(), $this->getName());
     }
 
     /**
@@ -199,6 +205,15 @@ class User_Object extends Db_Item {
     public function getAvatarLinked() {
         return HTML::a($this->getProfileLink(), $this->getAvatarImage());
     }
+    
+    /**
+     * Get view snippet
+     * 
+     * @return string
+     */
+    public function getListView(){
+        return $this->getAvatarImage().' '.$this->getLink();
+    }
 
     /**
      * Get user avatar
@@ -211,22 +226,6 @@ class User_Object extends Db_Item {
         }
         $this->avatar->attach($this);
         return $this->avatar;
-    }
-
-    /**
-     * Get user panel — for profile and other pages
-     * 
-     * @return string
-     */
-    public function getPanel() {
-        $cogear = getInstance();
-        $panel = new Stack('user.panel');
-        $panel->avatar = $this->getAvatar();
-        $panel->login = HTML::a($this->getProfileLink(), $this->login, array('class' => 'implicit login'));
-        if (access('user edit_all') OR $this->id == $cogear->user->id) {
-            $panel->edit = HTML::a(Url::gear('user') . 'edit/' . $this->id, t('[edit]'), array('class' => 'edit'));
-        }
-        return $panel->render();
     }
 
     /**
