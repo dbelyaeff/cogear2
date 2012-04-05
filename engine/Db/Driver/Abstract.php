@@ -724,15 +724,6 @@ abstract class Db_Driver_Abstract extends Cogearable {
     }
 
     public function createTable($table, $fields) {
-//CREATE TABLE IF NOT EXISTS `cron` (
-//  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
-//  `name` varchar(255) NOT NULL,
-//  `callback` mediumblob NOT NULL,
-//  `args` mediumblob NOT NULL,
-//  `period` int(11) unsigned NOT NULL,
-//  `last_exec` int(11) unsigned NOT NULL,
-//  PRIMARY KEY (`id`)
-//) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
     }
 
     public function dropTable($table, $if_exists) {
