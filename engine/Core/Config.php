@@ -66,8 +66,6 @@ class Config extends Core_ArrayObject {
     public function store($file = NULL, $data = NULL) {
         $file OR $file = $this->file;
         $data OR $data = $this->toArray();
-//        debug($data);
-//        die();
         if(self::write($file,$data)){
             return TRUE;
         }
