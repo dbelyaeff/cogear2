@@ -11,120 +11,94 @@
  * @subpackage          
  * @version		$Id$
  */
-class Menu_Object extends Stack {
-
-    protected $template = 'Menu.menu';
-    protected $base_uri;
-    public $position = 0;
+class Menu_Object extends Object {
+    protected $pointer = 0;
+    protected $options = array(
+        'name' => 'primary',
+        'template' => 'Menu.menu',
+        'show_empty' => TRUE,
+        'render' => 'content',
+    );
 
     /**
      * Constructor
      *  
-     * @param string $template 
+     * @param array $options
      */
-    public function __construct($name, $template = NULL, $base_uri = NULL) {
-        parent::__construct($name);
-        cogear()->menu->register($name, $this);
-        $template && $this->template = $template;
-        $this->base_uri = rtrim(parse_url($base_uri ? $base_uri : Url::link(), PHP_URL_PATH), '/') . '/';
-    }
-
-    /**
-     * Get base url
-     * 
-     * @return string 
-     */
-    public function getBaseUri() {
-        return $this->base_uri;
-    }
-
-    /**
-     * Set active element
-     * 
-     * @param string $uri
-     */
-    public function setActive($uri = NULL) {
-        if (!$this->count()) {
-            return;
-        }
-        $cogear = getInstance();
-        $uri OR $uri = $cogear->router->getUri();
-        $root = trim($this->base_uri, '/');
-        $uri = trim(str_replace($root, '', $uri), '/');
-        $pieces = explode('/', trim($uri, '/'));
-        while ($pieces) {
-            $uri = implode('/', $pieces);
-            foreach (array($uri, '/' . $uri . '/') as $path) {
-                if ($this->{$path}) {
-                    $this->{$path}->active(TRUE);
-                }
-            }
-            array_pop($pieces);
-        }
-    }
-
-    /**
-     * Magic __set method
-     *
-     * @param	string
-     * @param	mixed
-     */
-    public function __set($path, $value) {
-        $element = new Menu_Item($path, $value, $this->position++, $this->base_uri);
-        $this->add($path, $element);
-    }
-
-    /**
-     * Magic __get method
-     * 
-     * @param type $name 
-     */
-    public function __get($name) {
-        $name = trim($name, '/');
-        $vars = new Core_ArrayObject(array($name, '/' . $name, $name . '/', '/' . $name . '/'));
-        foreach ($vars as $name) {
-            if ($this->offsetExists($name)) {
-                return $this->offsetGet($name);
+    public function __construct($options) {
+        parent::__construct($options);
+        cogear()->menu->register($this->options->name, $this);
+        $this->options->base_uri = rtrim(parse_url($this->options->base_uri ? $this->options->base_uri : Url::link(), PHP_URL_PATH), '/') . '/';
+        $this->options->render && hook($this->options->render, array($this, 'output'));
+        // Register elements from config
+        if($this->options->elements){
+            foreach($this->options->elements as $item){
+                $this->register($item->toArray());
             }
         }
-        return NULL;
     }
 
     /**
-     * Add item to menu
+     * Register menu item to menu
      * 
      * @param string $path
      * @param Menu_Item $item 
      */
-    public function add($path, Menu_Item $item) {
-        $this->offsetSet($path, $item);
+    public function register($item) {
+        if (is_array($item)) {
+            isset($item['order']) OR $item['order'] = $this->pointer++;
+            $item = new Menu_Item($item);
+        }
+        if ($item->condition !== FALSE) {
+            $this->append($item);
+        }
+        return $this;
     }
 
     /**
-     * Get menu name
+     * Set menu items active
+     */
+    public function setActive() {
+        $uri = cogear()->router->getUri();
+        $no_active = TRUE;
+        foreach ($this as $item) {
+            if ($item->link) {
+                $link = trim(str_replace(Url::link(), '', $item->link), '/ ');
+                if (strpos($uri, $link) === 0) {
+                    $item->active !== NULL OR $item->active = TRUE;
+                    $no_active && $no_active = FALSE;
+                }
+            }
+        }
+        if ($no_active) {
+            foreach ($this as $item) {
+                if ($item->default_active) {
+                    $item->active = TRUE;
+                }
+            }
+        }
+    }
+
+    /**
+     * Filter menu elements with conditions
      * 
-     * @return string 
+     * @param   array   $conditions
+     * @return Menu_Object
      */
-    public function getName() {
-        return preg_replace('#([^a-z-]+)#imsU', '-', $this->name);
-    }
-
-    /**
-     * Mix current menu into another
-     *  
-     * @param string $name
-     * @param string $place 
-     */
-    public function mixWith($menu, $name, $place = NULL) {
-        $this->uasort('Core_ArrayObject::sortByOrder');
-        $i = 1;
-        if ($place && $menu->{$place}) {
-            $position = $menu->{$place}->order;
+    public function filter(array $condtitions) {
+        $result = new Core_ArrayObject();
+        foreach ($this as $item) {
+            $stop = FALSE;
+            foreach ($condtitions as $key => $value) {
+                if ($item->$key !== $value) {
+                    $stop = TRUE;
+                }
+            }
+            if (!$stop) {
+                $result->append($item);
+            }
         }
-        else $position = $menu->position;
-        foreach ($this as $path => $item) {
-            $menu->add($path, new Menu_Item($path, $item->value, (float) ($position . '.' . $i++), $item->getBaseUri()));
-        }
+        return $result->count() ? $result : NULL;
     }
 
     /**
@@ -133,15 +107,16 @@ class Menu_Object extends Stack {
      * @param string $glue
      * @return string
      */
-    public function render($template = '') {
-        $template OR $template = $this->template;
-        event('menu.' . $this->name, $this);
+    public function render($to = NULL) {
+        event('menu.' . $this->options->name, $this);
         if ($this->count()) {
             $this->uasort('Core_ArrayObject::sortByOrder');
             $this->setActive();
-            $tpl = new Template($template);
+        }
+        if ($this->count() OR $this->options->show_empty) {
+            $tpl = new Template($this->options->template);
             $tpl->menu = $this;
-            return $tpl->render();
+            return $tpl->render($to);
         }
         return NULL;
     }
