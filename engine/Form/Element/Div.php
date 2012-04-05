@@ -20,7 +20,7 @@ class Form_Element_Div extends Form_Element_Abstract {
      * @return
      */
     public function result() {
-        $cogear = getInstance();
+        $cogear = cogear();
         return NULL;
     }
 
@@ -28,7 +28,7 @@ class Form_Element_Div extends Form_Element_Abstract {
      * Render
      */
     public function render() {
-        $this->getAttributes();
+        $this->prepareOptions();
         $this->code = HTML::paired_tag('div',$this->value);
         return parent::render();
     }

@@ -26,8 +26,8 @@ class Form_Element_File extends Form_Element_Abstract {
      * @return
      */
     public function result() {
-        $cogear = getInstance();
-        $file = new Upload_File($this->name, $this->getAttributes(), $this->validators->findByValue('Required'));
+        $cogear = cogear();
+        $file = new Upload_File($this->name, $this->prepareOptions(), $this->validators->findByValue('Required'));
         if ($value = $file->upload()) {
             $this->is_fetched = TRUE;
             $this->value = $value;
@@ -41,7 +41,7 @@ class Form_Element_File extends Form_Element_Abstract {
      * Render
      */
     public function render() {
-        $this->getAttributes();
+        $this->prepareOptions();
         if ($this->value && $this->value = Url::link(Url::toUri(UPLOADS . $this->value, ROOT, FALSE))) {
             $tpl = new Template('Form.file');
             $tpl->assign($this->attributes);

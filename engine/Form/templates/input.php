@@ -1,0 +1,1 @@
+<?php echo HTML::input($element->prepareOptions())?>

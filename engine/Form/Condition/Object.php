@@ -10,7 +10,7 @@
  * @subpackage	Form
  * @version		$Id$
  */
-class Form_Condition_Config extends Form_Condition_Abstract {
+class Form_Condition_Object extends Form_Condition_Abstract {
 	/**
 	 * Check
 	 *

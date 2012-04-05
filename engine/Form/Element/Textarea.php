@@ -18,10 +18,10 @@ class Form_Element_Textarea extends Form_Element_Abstract{
      * @return string
      */
     public function  render() {
-        $code = HTML::paired_tag('textarea', $this->value, $this->getAttributes());
+        $code = HTML::paired_tag('textarea', $this->value, $this->prepareOptions());
         if ($this->wrapper) {
             $tpl = new Template($this->wrapper);
-            $tpl->assign($this->attributes);
+            $tpl->assign($this->options);
             $tpl->code = $code;
             $code = $tpl->render();
         }
