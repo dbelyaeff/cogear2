@@ -1,4 +1,4 @@
-<div class="db-debug">
+<div>
 <?= t('<b>Database queries:</b>','Database Debug')?><br/>
 <? $summary = 0;
 foreach($queries as $query=>$time) { ?>
