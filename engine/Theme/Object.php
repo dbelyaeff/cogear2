@@ -32,36 +32,9 @@ abstract class Theme_Object extends Gear {
     }
 
     /**
-     * Theme admin page
-     * 
-     * @param type $action
-     * @param type $subaction 
-     */
-    public function admin($action = NULL, $subaction = NULL) {
-        $form = new Form('Admin.theme');
-
-        if ($form->is_ajaxed) {
-            if ($form->elements->logo->is_ajaxed) {
-                $cogear->set('theme.logo', '');
-            }
-            if ($form->elements->favicon->is_ajaxed) {
-                $cogear->set('theme.favicon', '');
-            }
-        } else {
-            $form->setValues(array(
-                'logo' => config('theme.logo'),
-                'favicon' => config('theme.favicon'),
-            ));
-        }
-        if ($result = $form->result()) {
-            $result->logo && $cogear->set('theme.logo', $result->logo);
-            $result->favicon && $cogear->set('theme.favicon', $result->favicon);
-        }
-        append('content', $form->render());
-    }
-
-    /**
      * Init
+     * 
+     * With inheritance
      */
     public function init() {
         $parent = $this->reflection->getParentClass();
@@ -77,7 +50,6 @@ abstract class Theme_Object extends Gear {
      */
     public function activate() {
         $cogear = cogear();
-        Template::bindGlobal('theme', $this);
     }
 
     /**
@@ -95,21 +67,17 @@ abstract class Theme_Object extends Gear {
      * @param string $template
      * @return string 
      */
-    public function layout($template = NULL) {
-        return $template ? $this->layout = $template : $this->layout;
+    public function layout($template) {
+        $this->layout = $template;
+        return $this;
     }
 
     /**
      * Render theme
      */
-    public function render($layout = NULL) {
-        if ($this->is_rendered) {
-            return;
-        }
-        $cogear = cogear();
-        $this->template = new Template($this->theme . '.' . (defined('LAYOUT') ? LAYOUT : ($layout ? $layout : $this->layout)));
-        $cogear->response->append($this->template->render());
-        $this->is_rendered = TRUE;
+    public function render() {
+        $this->template = new Template($this->theme . '.' . $this->layout);
+        cogear()->response->adapter->append($this->template->render());
     }
 
     /**

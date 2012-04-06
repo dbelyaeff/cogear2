@@ -15,7 +15,6 @@ class Gears_Gear extends Gear {
 
     protected $name = 'Gears manager';
     protected $description = 'Manage and download gears.';
-    protected $type = Gear::CORE;
     protected $package = 'Gears';
     protected $order = 0;
 

@@ -11,18 +11,20 @@
  * @subpackage
  * @version		$Id$
  */
-abstract class Gear extends Cogearable{
+abstract class Gear extends Adapter {
 
     /**
      * Gear name
      * @var string
      */
     protected $name;
+
     /**
      * Gear description
      * @var string
      */
     protected $description;
+
     /**
      * Gear version
      *
@@ -31,6 +33,7 @@ abstract class Gear extends Cogearable{
      * @var string
      */
     protected $version = COGEAR;
+
     /**
      * Core version
      *
@@ -39,24 +42,21 @@ abstract class Gear extends Cogearable{
      * * @var string
      */
     protected $core = COGEAR;
-    /**
-     * Gear type
-     *
-     * @var int
-     */
-    protected $type = Gear::CORE;
+
     /**
      * Package
      * 
      * @var string 
      */
     protected $package = 'Core';
+
     /**
      * Gear authors name
      *
      * @var string
      */
     protected $author = 'Dmitriy Belyaev';
+
     /**
      * Gear email
      *
@@ -64,29 +64,34 @@ abstract class Gear extends Cogearable{
      * @var string
      */
     protected $email = 'admin@cogear.ru';
+
     /**
      * Gear website
      *  
      * @var string
      */
     protected $site = 'http://cogear.ru';
+
     /**
      * Path to class file
      *
      * @var string
      */
     protected $path;
+
     /**
      * Directory where gear is located
      * @var string
      */
     protected $dir;
+
     /**
      * Relative path to folder with class
      *
      * @var string
      */
     protected $folder;
+
     /**
      * Order in gear stack
      *
@@ -95,6 +100,7 @@ abstract class Gear extends Cogearable{
      * @var int
      */
     protected $order = 0;
+
     /**
      * Class reflection
      *
@@ -103,7 +109,7 @@ abstract class Gear extends Cogearable{
      * @var ReflectionClass
      */
     protected $reflection;
-    
+
     /**
      * Gear name
      *
@@ -112,12 +118,14 @@ abstract class Gear extends Cogearable{
      * @param   string
      */
     protected $gear;
+
     /**
      * Info about gear file
      * 
      * @var SplFileInfo 
      */
     protected $file;
+
     /**
      * Simple uri name
      * It can be set in configuration, but if empty — will be default gear_name
@@ -125,23 +133,13 @@ abstract class Gear extends Cogearable{
      * @var string 
      */
     protected $base;
-    /**
-     * Gear settings
-     * 
-     * @var Core_ArrayObject
-     */
-    protected $settings = array();
+
     /**
      * If gear is requested by router
      * @var boolean 
      */
     protected $is_requested;
-    /**
-     * Flag indicates if gear is active
-     * 
-     * @var boolean
-     */
-    public $active;
+
     /**
      * Required gears [version is optoinal]
      *
@@ -155,9 +153,20 @@ abstract class Gear extends Cogearable{
      * @var array
      */
     protected $required = array();
-    const CORE = 0;
-    const MODULE = 1;
-    const THEME = 2;
+
+    /**
+     * Hooks
+     * 
+     * @var array 
+     */
+    protected $hooks = array();
+
+    /**
+     * Routes
+     * 
+     * @var routes
+     */
+    protected $routes = array();
 
     /**
      * Constructor
@@ -169,45 +178,82 @@ abstract class Gear extends Cogearable{
         $this->getFolder();
         $this->getGear();
         $this->getBase();
-        $this->getSettings();
         $this->file = new SplFileInfo($this->path);
     }
+
     /**
      * Initialize
      */
     public function init() {
+        $this->hooks();
+        $this->routes();
+        $this->loadAssets();
+        $this->routes[$this->base . ':maybe'] = 'index';
+        event('gear.init', $this);
+    }
+
+    /**
+     * Load assets
+     */
+    public function loadAssets() {
         $scripts = $this->dir . DS . 'js';
         $styles = $this->dir . DS . 'css';
         is_dir($scripts) && $this->assets->addScriptsFolder($scripts);
         is_dir($styles) && $this->assets->addStylesFolder($styles);
-        $this->router->addRoute($this->base . ':maybe', array($this, 'index'));
-        event('gear.init', $this);
     }
+
+    /**
+     * Set hooks
+     */
+    public function hooks() {
+        foreach ($this->hooks as $event => $callback) {
+            if (!is_array($callback)) {
+                $callback = array($this, $callback);
+            }
+            hook($event, $callback);
+        }
+    }
+
+    /**
+     * Set routes
+     * 
+     */
+    public function routes() {
+        foreach ($this->routes as $route => $callback) {
+            if (!is_array($callback)) {
+                $callback = array($this, $callback);
+            }
+            cogear()->router->addRoute($route, $callback);
+        }
+    }
+
     /**
      * Check gear to be ready for charge in chain
      * 
      * @return  boolean
      */
-    public function checkGear(){
+    public function checkGear() {
         $result = TRUE;
-        if(!$this->checkRequiredGears()){
+        if (!$this->checkRequiredGears()) {
             $result = FALSE;
         }
         return $result;
     }
+
     /**
      * Check required gears
      * 
      * @return boolean
      */
-    private function checkRequiredGears(){
-        if($this->required){
-            foreach($this->required as $required_gear){
-                preg_match('#([\w_-]+)\s?([<>=]{1}?)\s([\f]+)?#', $required_gear,$matches);
+    private function checkRequiredGears() {
+        if ($this->required) {
+            foreach ($this->required as $required_gear) {
+                preg_match('#([\w_-]+)\s?([<>=]{1}?)\s([\f]+)?#', $required_gear, $matches);
             }
         }
         return TRUE;
     }
+
     /**
      * Magic __get method
      *
@@ -216,35 +262,6 @@ abstract class Gear extends Cogearable{
      */
     public function __get($name) {
         return isset($this->$name) ? $this->$name : parent::__get($name);
-    }
-    /**
-     * Gear info
-     *
-     * @param   string  $var
-     * @return  array
-     */
-    public function info($var = NULL) {
-        if ($var) {
-            return isset($this->$var) ? $this->$var : NULL;
-        }
-        else
-            return array(
-                'name' => t($this->name,'Gears'),
-                'gear' => strtolower($this->gear),
-                'base' => $this->base,
-                'description' => t($this->description,'Gears'),
-                'version' => $this->version,
-                'package' => $this->package,
-                'type' => $this->type,
-                'author' => $this->author,
-                'email' => $this->email,
-                'site' => $this->site,
-                'has_admin' => method_exists ($this, 'admin'),
-                'path' => $this->path,
-                'dir' => $this->dir,
-                'folder' => $this->folder,
-                'active' => $this->active,
-            );
     }
 
     /**
@@ -333,32 +350,6 @@ abstract class Gear extends Cogearable{
     }
 
     /**
-     * Get gear options
-     */
-    protected function getSettings() {
-        $this->settings = new Core_ArrayObject($this->settings);
-        if ($config = Config::read(find(basename($this->dir) . DS . 'settings' . EXT))) {
-            return $this->settings ? $this->settings->mix($config) : $this->settings = $config;
-        }
-        return NULL;
-    }
-
-    /**
-     * Set theme
-     * 
-     * Only for this gear
-     * 
-     * @param   string  $theme 
-     */
-    public function setTheme($theme = '') {
-        $theme OR $theme = $this->settings->theme->current;
-        if (!$theme)
-            return NULL;
-        $cogear = getInstance();
-        $cogear->setTheme($theme) && $cogear->theme->current->init();
-    }
-
-    /**
      * Normalize relative path
      *
      * For example, under windows it look like \cogear\Theme\Default\, but wee need good uri to load css, js or anything else.
@@ -378,7 +369,7 @@ abstract class Gear extends Cogearable{
      * @return  string|boolean  Gear name or FALSE if path is not correct.
      */
     public static function getNameFromPath($path) {
-        foreach (array(SITE . DS . GEARS_FOLDER, GEARS, ENGINE) as $dir) {
+        foreach (array(GEARS, ENGINE) as $dir) {
             if (strpos($path, $dir) !== FALSE) {
                 is_file($path) && $path = dirname($path);
                 $path = str_replace($dir, '', $path);
@@ -413,14 +404,10 @@ abstract class Gear extends Cogearable{
             if (sizeof($pieces) == 1) {
                 array_push($pieces, $default);
             }
-            $gear = strtolower(array_shift($pieces));
+            $gear = array_shift($pieces);
             $cogear = getInstance();
-            if (isset($cogear->gears->$gear)) {
+            if ($cogear->gears->$gear) {
                 $gear_dir = $cogear->gears->$gear->dir;
-                $file_name = implode(DS, $pieces);
-                return $path = $gear_dir . DS . $dir . DS . $file_name;
-            } elseif ($found = find(ucfirst(str_replace('_', DS, $gear)) . DS . 'Gear' . EXT)) {
-                $gear_dir = dirname($found);
                 $file_name = implode(DS, $pieces);
                 return $path = $gear_dir . DS . $dir . DS . $file_name;
             }
@@ -433,10 +420,10 @@ abstract class Gear extends Cogearable{
      */
     public function request() {
         $this->is_requested = TRUE;
-        if(!event('gear.request',$this)){
+        if (!event('gear.request', $this)) {
             return;
         }
-        event('gear.request.' . strtolower($this->gear));
+        event('gear.request.' . $this->gear);
     }
 
     /**
@@ -444,10 +431,10 @@ abstract class Gear extends Cogearable{
      * @param string $action
      */
     public function index() {
-        if(!$args = func_get_args()){
+        if (!$args = func_get_args()) {
             $args[] = 'index';
         }
-        method_exists($this, $args[0].'_action') && call_user_func_array(array($this,$args[0].'_action'),array_slice($args,1));
+        method_exists($this, $args[0] . '_action') && call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));
     }
 
 }

@@ -10,7 +10,7 @@
  * @subpackage
  * @version		$Id$
  */
-abstract class Object extends Options {
+abstract class Object extends Adapter {
     public $object;
     /**
      * Constructor

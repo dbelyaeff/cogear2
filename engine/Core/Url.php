@@ -14,7 +14,7 @@
  * @version		$Id$
  */
 class Url {
-
+    const SECURE = '?s=';
     /**
      * Build link
      *
@@ -27,14 +27,13 @@ class Url {
         $link = '';
         $cogear = getInstance();
         if (!$url)
-            return $protocol . '://' . SITE_URL . '/';
+            return $protocol . '://' . config('site.url') . '/';
         $url = parse_url($url);
         if ($absolute_flag) {
             $link .= $protocol . '://';
             $link .= $cogear->host;
         }
         isset($url['host']) && $link = $protocol . '://' . $url['host'];
-        defined('SUBDIR') && $link .= '/' . SUBDIR;
         isset($url['path']) && $link .= '/' . ltrim($url['path'], '/');
         isset($url['query']) && $link .= '?' . $url['query'];
         isset($url['fragment']) && $link .= '#' . $url['fragment'];

@@ -11,10 +11,11 @@
  * @subpackage
  * @version		$Id$
  */
-class Callback extends Cogearable{
+class Callback extends Cogearable {
 
     protected $callback;
     protected $args = array();
+
     /**
      * Default action for callback
      * 
@@ -35,26 +36,42 @@ class Callback extends Cogearable{
     public function __construct($callback) {
         $this->callback = self::prepare($callback);
     }
+    
     /**
-     * Call
+     * Invoke method
+     */
+    public function __invoke(){
+       return $this->callback; 
+    }
+    
+    /**
+     * Check callback to be callable
+     * 
+     * @return string
+     */
+    public function check(){
+        return Callback::prepare($this->callback);
+    }
+    /**
+     * Run
      * 
      * Execute callback
      * 
      * @param   array   $args
      * @return  boolean
      */
-    public function call(&$args = array()){
-        if(!is_callable($this->callback)) return NULL;
-        $args = array_merge_recursive($args,$this->args);
-        return call_user_func_array($this->callback,$args);
+    public function run($args = array()) {
+        $args = array_merge($args, $this->args);
+        return $args ? call_user_func_array($this->callback, $args) : call_user_func($this->callback);
     }
+
     /**
      * Set args
      * 
      * @param array $args 
      */
-    public function setArgs(&$args) {
-        $this->args =& $args;
+    public function setArgs($args) {
+        $this->args = $args;
     }
 
     /**
@@ -89,13 +106,11 @@ class Callback extends Cogearable{
         if (!is_callable($callback)) {
             if (is_string($callback)) {
                 $callback = self::stringToAction($callback);
-                $callback[0] = self::fetchObject($callback[0]);
-                return is_callable($callback) ? $callback : NULL;
-            } else {
-                return NULL;
             }
+            $callback[0] = self::fetchObject($callback[0]);
+            return is_callable($callback) ? $callback : NULL;
         }
-        return is_callable($callback) ? $callback : NULL;
+        return $callback;
     }
 
     /**
@@ -105,33 +120,26 @@ class Callback extends Cogearable{
      * @return  object
      */
     public static function fetchObject($class) {
-        $element = ucfirst($class);
         $cogear = getInstance();
         if (strpos($class, '_Gear')) {
             $gear_name = strtolower(str_replace('_Gear', '', $class));
             if ($cogear->$gear_name) {
                 return $cogear->$gear_name;
             }
-            return new $class;
-        } elseif (isset($cogear->$element)) {
-            return $cogear->$element;
-        } elseif (class_exists($class)) {
-            $Reflection = new ReflectionClass($class);
-            if ($Reflection->implementsInterface('Singleton')) {
-                return call_user_func($class, 'getInstance');
-            } else {
-                return new $class;
-            }
+            return NULL;
+        } elseif (isset($cogear->$class)) {
+            return $cogear->$class;
         }
         return NULL;
     }
-    
+
     /**
      * Magic __toString method
      * 
      * @return string
      */
-    public function __toString(){
+    public function __toString() {
         return serialize($this);
     }
+
 }

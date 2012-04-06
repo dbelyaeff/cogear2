@@ -15,17 +15,9 @@ class Default_Gear extends Gear {
 
     protected $name = 'Default Gear';
     protected $description = 'Simple example of Gear';
-    protected $type = Gear::MODULE;
-    protected $package = 'Core';
-    protected $order = 0;
-
-    /**
-     * Init
-     */
-    public function init() {
-        $this->router->addRoute(':index', array($this, 'index'), TRUE);
-        parent::init();
-    }
+    protected $routes = array(
+        ':index' => 'index',
+    );
 
     /**
      * Default dispatcher

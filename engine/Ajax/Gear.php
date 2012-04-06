@@ -15,7 +15,6 @@ class Ajax_Gear extends Gear {
 
     protected $name = 'Ajax';
     protected $description = 'Handle ajax requests.';
-    protected $type = Gear::CORE;
     protected $order = 0;
 
     const PARAMS = '?';

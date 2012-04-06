@@ -16,7 +16,6 @@
 class I18n_Gear extends Gear {
     protected $name = 'Internacionalization';
     protected $description = 'Translate site interface to different languages.';
-    protected $type = Gear::CORE;
     protected $author = 'Dmitriy Belyaev';
     protected $order = -1000;
     protected $domains = array();
@@ -39,7 +38,7 @@ class I18n_Gear extends Gear {
         $adapter = config('i18n.adapter','I18n_Adapter_File');
         $this->adapter = new $adapter(config('i18n',array(
             'lang' => 'en',
-            'path' => SITE.DS.'lang',
+            'path' => ROOT.DS.'lang',
         )));
         $this->adapter->load();
         hook('done',array($this->adapter,'save'));

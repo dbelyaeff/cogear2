@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin menu
+ * Menu Tabs
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
@@ -14,9 +14,9 @@ class Menu_Tabs extends Menu_Auto{
     /**
      * Constructor
      */
-    public function __construct($name,$base = NULL) {
-        parent::__construct('tabs_'.$name, 'Menu.tabs',$base);
-        hook('content',array($this,'output'));
+    public function __construct($options) {
+        isset($options['template']) OR $options['template'] = 'Twitter_Bootstrap.basic.tabs';
+        parent::__construct($options);
     }
     
 }

@@ -11,65 +11,132 @@
  * @subpackage
  * @version		$Id$
  */
-class Template_Object extends Adapter {
+class Template_Object {
 
-    /**
-     * Default handler
-     *
-     * @var string
-     */
-    public static $handler;
-
-    /**
-     * Name
-     * 
-     * @var string
-     */
-    public $name;
+    protected $name = '';
+    protected $path = '';
+    protected $code = '';
+    protected $vars = array();
 
     /**
      * Constructor
-     *
-     * @param   string  $name
+     * 
+     * @param string $name
      */
     public function __construct($name) {
         $this->name = $name;
-        $this->adapter = new Template_File($this->name);
+        $path = Gear::preparePath($this->name, 'templates') . EXT;
+        if (file_exists($path)) {
+            $this->path = $path;
+        } else {
+            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', 'Errors', $this->name, $this->path);
+            exit($message);
+        }
     }
 
-    /*
-     * We avoid usage of __callStatic method to have better compatibilty with PHP versions under 5.3.
-     * That's because we need to make a couple of aliases ↓
+    /**
+     * Magic __set method to assign vars
+     *
+     * @param string $name
+     * @param mixed $value
      */
+    public function __set($name, $value) {
+        $this->set($name, $value);
+    }
 
     /**
-     * Set global variable
+     * Set variable
+     *
+     * @param string $name
+     * @param mixed $value
      */
-    public static function setGlobal() {
+    public function set($name, $value = NULL) {
+        if (is_array($name) OR $name instanceof ArrayObject) {
+            foreach ($name as $key => $value) {
+                $this->set($key, $value);
+            }
+            return;
+        }
+        else
+            $this->vars[$name] = $value;
+    }
+
+    /**
+     * Reset vaiables
+     */
+    public function reset() {
+        $this->vars = array();
+    }
+
+    /**
+     * Set variable
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function assign() {
         $args = func_get_args();
-        return call_user_func_array(array('Template_Abstract', 'setGlobal'), $args);
+        call_user_func_array(array($this, 'set'), $args);
     }
 
     /**
-     * Bind global variable
+     * Get variable
+     *
+     * @param   string  $name
+     * @return mixed
      */
-    public static function bindGlobal($name, &$value) {
-        return Template_Abstract::bindGlobal($name, $value);
+    public function __get($name) {
+        return $name ? (isset($this->vars[$name]) ? $this->vars[$name] : NULL) : $this->vars;
     }
 
     /**
-     * Clear template variables
+     * Magic isset method
+     *
+     * @param string $name
+     * @return boolean
      */
-    public static function clear() {
-        return Template_Abstract::clear();
+    public function __isset($name) {
+        return isset($this->vars[$name]);
     }
 
     /**
-     * Get global
+     * Get variable
+     *
+     * @param   string  $name
+     * @return mixed
      */
-    public static function getGlobal() {
-        $args = func_get_args();
-        return call_user_func_array(array('Template_Abstract', 'getGlobal'), $args);
+    public function get($name = '') {
+        return $name ? (isset($this->vars[$name]) ? $this->vars[$name] : NULL) : $this->vars;
+    }
+
+    /**
+     * Bind variable
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function bind($name, &$value = NULL) {
+        if (is_array($name)) {
+            foreach ($name as $key => $value) {
+                $this->bind($key, $value);
+            }
+            return;
+        } else {
+            $this->vars[$name] = & $value;
+        }
+    }
+    
+        /**
+     *
+     * @return type 
+     */
+    public function render(){
+        event('template.render.before', $this);
+        ob_start();
+        extract($this->vars);
+        include $this->path;
+        event('template.render.after', $this);
+        return ob_get_clean();;
     }
 
 }

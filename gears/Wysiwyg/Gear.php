@@ -19,7 +19,6 @@ class Wysiwyg_Gear extends Gear {
         'redactor' => 'Redactor_Editor',
         'editor' => 'Wysiwyg_Editor',
     );
-    protected $type = Gear::MODULE;
     protected $order = -10;
 
     /**

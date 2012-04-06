@@ -11,7 +11,7 @@
  * @subpackage          Db
  * @version		$Id$
  */
-abstract class Db_Driver_Abstract extends Cogearable {
+abstract class Db_Driver_Abstract {
 
     /**
      * Query builder
@@ -543,13 +543,13 @@ abstract class Db_Driver_Abstract extends Cogearable {
      */
     public function getFields($table = '') {
         $table OR $table = reset($this->_query['from']);
-        if (!$this->fields[$table] = $this->system_cache->read('database/' . $table, TRUE)) {
+        if (!$this->fields[$table] = cogear()->system_cache->read('database/' . $table, TRUE)) {
             if ($fields = $this->getFieldsQuery($table)) {
                 $this->fields[$table] = array();
                 foreach ($fields as $field) {
                     $this->fields[$table][$field->Field] = $field->Type;
                 }
-                $this->system_cache->write('database/' . $table, $this->fields[$table], array('db_fields'));
+                cogear()->system_cache->write('database/' . $table, $this->fields[$table], array('db_fields'));
             }
         }
         return $this->fields[$table];

@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-abstract class Cogearable {
+abstract class Cogearable extends Options{
     /**
      * Magic __get method
      * 

@@ -45,20 +45,12 @@ class Icons_Gear extends Gear {
      *
      * @param   $name
      */
-    public function show($name, $set = '') {
-        $set OR $set = self::DEFAULT_SET;
-        $this->sets->$set OR $this->addSet($set, $this->dir . DS . 'sets' . DS . $set);
-        if ($src = $this->sets->$set->get($name)) {
-            $size = explode('x', $this->sets->$set->size);
-            return HTML::img($src, t($name, 'Icons'), array(
-                        'width' => $size[0],
-                        'height' => $size[1],
-                    ));
-        }
+    public function renderIcon($name, $set = '') {
+        return '<i class="icon-' . $name . '"></i>';
     }
 
 }
 
 function icon($name, $set = '') {
-    return cogear()->icons->show($name, $set);
+    return cogear()->icons->renderIcon($name, $set);
 }

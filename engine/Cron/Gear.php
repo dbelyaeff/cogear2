@@ -17,7 +17,6 @@ class Cron_Gear extends Gear {
 
     protected $name = 'Cron';
     protected $description = 'Perform periodial tasks.';
-    protected $type = Gear::MODULE;
     protected $order = 0;
     protected $version = '0.1';
     // Cron won't be start up for often than STEP value in seconds
@@ -37,7 +36,7 @@ class Cron_Gear extends Gear {
      * Generate key
      */
     private function keyGen() {
-        return md5(date('Y-m-d H') . cogear()->key());
+        return md5(date('Y-m-d H') . cogear()->secure->key());
     }
 
     /**

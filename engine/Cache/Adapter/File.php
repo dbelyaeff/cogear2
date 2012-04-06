@@ -26,7 +26,6 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract{
      * @param array $options 
      */
     public function __construct($options = array()) {
-        isset($options['path']) OR $options['path'] = SITE . DS . 'cache';
         parent::__construct($options);
         Filesystem::makeDir($this->options->path);
     }

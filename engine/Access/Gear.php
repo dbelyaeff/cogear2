@@ -34,14 +34,14 @@ class Access_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        if ($rules = $this->system_cache->read('access/rules', TRUE)) {
-            $this->rules->adopt($rules);
-        }
-        if ($roles = $this->system_cache->read('access/roles', TRUE)) {
-            $this->roles->adopt($roles);
-        }
-        $this->getRights();
-        hook('exit', array($this, 'save'));
+//        if ($rules = $this->system_cache->read('access/rules', TRUE)) {
+//            $this->rules->adopt($rules);
+//        }
+//        if ($roles = $this->system_cache->read('access/roles', TRUE)) {
+//            $this->roles->adopt($roles);
+//        }
+//        $this->getRights();
+//        hook('exit', array($this, 'save'));
     }
 
     /**

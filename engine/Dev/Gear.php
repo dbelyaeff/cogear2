@@ -17,7 +17,6 @@ class Dev_Gear extends Gear {
 
     protected $name = 'Developer';
     protected $description = 'Calculate cogear performance at current system configuration.';
-    protected $type = Gear::MODULE;
     protected $order = 0;
 
     /**

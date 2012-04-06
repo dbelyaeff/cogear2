@@ -13,29 +13,15 @@
  */
 class Form_Element_Abstract extends Options {
 
-    protected $name;
-    public $description;
-    public $label;
-    protected $value;
-    protected $disabled;
-    protected $checked;
-    protected $type;
-    protected $class;
-    protected $access;
     /**
      * Link to form instance
      *
      * @var object
      */
     protected $form;
-    protected $filters = array();
-    protected $validators = array();
-    protected $attributes = array();
     protected $errors = array();
-    protected $is_fetched;
     protected $wrapper = 'Form.element';
     public $code = '';
-    protected $is_ajaxed;
 
     /**
      * Constructor
@@ -45,12 +31,8 @@ class Form_Element_Abstract extends Options {
     public function __construct($options) {
         $this->filters = new Core_ArrayObject();
         $this->validators = new Core_ArrayObject();
-        parent::__construct($options,Options::SELF);
-        $this->attributes = new Core_ArrayObject();
+        parent::__construct($options);
         $this->errors = new Core_ArrayObject();
-        if ($this->form->is_ajaxed && Ajax::get('element') == $this->name) {
-            $this->is_ajaxed = TRUE;
-        }
     }
 
     /**
@@ -167,32 +149,25 @@ class Form_Element_Abstract extends Options {
     }
 
     /**
-     * Form and return HTML object attributes from object data
+     * Form and return HTML object options from object data
      * 
      * @return array
      */
-    public function getAttributes() {
-        $reflection = new ReflectionObject($this);
-        if ($props = $reflection->getProperties()) {
-            foreach ($props as $prop) {
-                $this->attributes->{$prop->name} OR $this->attributes->{$prop->name} = $this->{$prop->name};
-            }
-        }
-        $this->attributes->class = $this->attributes->type . ' ' . $this->attributes->class;
-        $this->attributes->required = $this->validators && $this->validators->findByValue('Required');
-        $this->attributes->disabled OR $this->attributes->offsetUnset('disabled');
-        $this->attributes->form = $this->form;
-        $this->attributes->element = $this;
-        return $this->attributes;
+    public function prepareOptions() {
+        $this->options->required = $this->validators && $this->validators->findByValue('Required');
+        $this->options->disabled OR $this->options->offsetUnset('disabled');
+        $this->options->form = $this->form;
+        $this->options->element = $this;
+        return $this->options;
     }
 
     /**
      * Render element
      */
     public function render() {
-        $this->code OR $this->code = HTML::input($this->getAttributes());
+        $this->prepareOptions();
         $this->decorate();
-        event('Form.element.'.$this->type.'.render',$this);
+        event('Form.element.' . $this->type . '.render', $this);
         return $this->code;
     }
 
@@ -202,35 +177,9 @@ class Form_Element_Abstract extends Options {
     protected function decorate() {
         if ($this->wrapper) {
             $tpl = new Template($this->wrapper);
-            $tpl->assign($this->attributes);
-            $tpl->element = $this;
-            $tpl->form = $this->form;
             $tpl->code = $this->code;
             $this->code = $tpl->render();
-            event('Form.element.'.$this->type.'.decorate',$this->code);
         }
-    }
-
-    /**
-     * Process ajax request
-     * 
-     * @return array
-     */
-    public function ajax() {
-        if (!$this->is_ajaxed)
-            return NULL;
-        $result = array();
-        $action = Ajax::get('action', 'replace');
-        $result['action'] = $action;
-        $result['id'] = $this->getId();
-        switch ($action) {
-            case 'replace':
-                $this->setValue(NULL);
-                $result['code'] = $this->render();
-                break;
-        }
-        event('form.element.ajax', $this, $result);
-        return $result;
     }
 
 }

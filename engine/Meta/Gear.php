@@ -16,7 +16,6 @@ class Meta_Gear extends Gear {
     protected $name = 'Meta';
     protected $description = 'Meta information handler.';
     protected $order = -10;
-    protected $type = Gear::CORE;
    
     public $info = array(
         'title' => array(),
@@ -36,8 +35,7 @@ class Meta_Gear extends Gear {
      */
     public function init(){
         parent::init();
-        Template::bindGlobal('meta', $this->info);
-        title(t(config('site.name',SITE_URL)));
+        title(t(config('site.name',config('site.url'))));
         hook('head',array($this,'head'),0);
         hook('menu.setActive',array($this,'menuTitleHook'));
         hook('Pages.showPage.before',array($this,'showObjectTitle'));

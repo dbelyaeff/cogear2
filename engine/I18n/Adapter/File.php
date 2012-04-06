@@ -11,10 +11,6 @@
  * @version		$Id$
  */
 class I18n_Adapter_File extends I18n_Adapter_Abstract {
-    public function __construct($options = array(), $place = NULL) {
-        parent::__construct($options, $place);
-        $this->options->path = SITE.DS.'lang';
-    }
     /**
      * Load data
      */

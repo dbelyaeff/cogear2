@@ -16,6 +16,9 @@ class Theme_Gear extends Gear {
     protected $name = 'Theme';
     protected $description = 'Manage themes';
     protected $order = -100;
+    protected $hooks = array(
+        'exit' => 'output',
+    );
     public $current;
     public $regions;
     const SUFFIX = '_Theme';
@@ -60,23 +63,6 @@ class Theme_Gear extends Gear {
     }
     
     /**
-     * Scan folders for themes
-     * 
-     * return array;
-     */
-    public function searchThemes(){
-        $themes = array();
-        $root_themes = glob(THEMES.DS.'*'.DS.'Theme'.EXT);
-        $site_themes = glob(SITE.DS.THEMES_FOLDER.'*'.DS.'Theme'.EXT);
-        foreach(array_merge($root_themes,$site_themes) as $theme){
-            $theme = basename(dirname($theme));
-            $class = $theme.'_Theme';
-            $themes[$theme] = new $class;
-        }
-        return $themes;
-    }
-
-    /**
      * Handle gear request
      * 
      * Set theme, initialize it.
@@ -84,7 +70,7 @@ class Theme_Gear extends Gear {
      * @param   object  $Gear
      */
     public function handleGearRequest($Gear) {
-        $this->choose($Gear->settings->theme);
+        $this->choose();
     }
 
     /**
@@ -104,7 +90,6 @@ class Theme_Gear extends Gear {
         $this->current = new $class();
         $this->current->init();
         $this->current->activate();
-        $theme = strtolower($theme);
         cogear()->gears->$theme = $this->current;
     }
 
@@ -165,7 +150,13 @@ class Theme_Gear extends Gear {
         $this->regions->$name === NULL && $this->regions->$name = new Theme_Region();
         echo $this->regions->$name->render();
     }
-
+    
+    /**
+     * Output
+     */
+    public function output(){
+        $this->current->render();
+    }
 }
 
 function append($name, $value) {

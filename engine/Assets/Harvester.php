@@ -46,8 +46,6 @@ class Assets_Harvester {
      */
     public function __construct() {
         $this->clear();
-        Template::bindGlobal('scripts', $this->scripts);
-        Template::bindGlobal('styles', $this->styles);
         hook('head', array($this, 'output'), NULL, 'css');
         hook('after', array($this, 'output'), NULL, 'js');
     }
@@ -69,34 +67,40 @@ class Assets_Harvester {
      * @param string $type 
      */
     private function add($path, $type) {
-        $ext = Filesystem::getExtension($path);
-        switch ($ext) {
-            case 'js':
-                $method = 'attachScript';
-                break;
-            case 'css':
-                $method = 'attachStyle';
-                break;
-        }
-        $special_types = self::checkConditions($path);
-        if (FALSE === $special_types) {
-            if ($new_type = self::defineGroupFromFilename($path)) {
-                if (is_array($new_type)) {
-                    foreach ($new_type as $type) {
-                        $this->$method($path, $type);
-                    }
-                }
-            } else {
-                $this->$method($path, $type);
+        if (is_array($path)) {
+            foreach ($path as $item) {
+                $this->add($item, $type);
             }
         } else {
-            foreach ($special_types as $type) {
-                if ($ext == 'js') {
-                    self::$scriptsRenderGroups[] = $type;
-                } elseif ($ext == 'css') {
-                    self::$stylesRenderGroups[] = $type;
+            $ext = Filesystem::getExtension($path);
+            switch ($ext) {
+                case 'js':
+                    $method = 'attachScript';
+                    break;
+                case 'css':
+                    $method = 'attachStyle';
+                    break;
+            }
+            $special_types = self::checkConditions($path);
+            if (FALSE === $special_types) {
+                if ($new_type = self::defineGroupFromFilename($path)) {
+                    if (is_array($new_type)) {
+                        foreach ($new_type as $type) {
+                            $this->$method($path, $type);
+                        }
+                    }
+                } else {
+                    $this->$method($path, $type);
                 }
-                $this->$method($path, $type);
+            } else {
+                foreach ($special_types as $type) {
+                    if ($ext == 'js') {
+                        self::$scriptsRenderGroups[] = $type;
+                    } elseif ($ext == 'css') {
+                        self::$stylesRenderGroups[] = $type;
+                    }
+                    $this->$method($path, $type);
+                }
             }
         }
     }
@@ -158,7 +162,7 @@ class Assets_Harvester {
                         $result[] = FALSE;
                     }
                 }
-                if (!in_array(FALSE,$result)) {
+                if (!in_array(FALSE, $result)) {
                     $types[] = $condition;
                 }
             }

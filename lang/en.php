@@ -1,22 +1,28 @@
 <?php 
 return array (
-  'cogear' => '',
-  '#User_CP' => 
+  '#Admin Gears' => 
   array (
-    'My Profile' => '',
-    'Find users' => '',
-    'Logout' => '',
-    'Users' => '',
+    'Author: ' => '',
+    'Site: ' => '',
+    'Control panel' => '',
+    'deactivate' => '',
   ),
-  '#Pages' => 
+  '#Authors' => 
   array (
-    'My Pages' => '',
+    'Dmitriy Belyaev' => '',
   ),
-  'My Files' => '',
-  'Robo' => '',
-  'Control Panel' => '',
-  'Editor' => '',
-  'Dashboard' => '',
+  '#Default' => 
+  array (
+    'Simple default gear' => '',
+  ),
+  '#Errors' => 
+  array (
+    'Error in file <b>%s</b> was found at line <b>%d</b>: <blockquote>%s</blockquote>' => '',
+  ),
+  '#Forms' => 
+  array (
+    'Internacionalization settings' => '',
+  ),
   '#Gears' => 
   array (
     'Access' => '',
@@ -97,13 +103,10 @@ return array (
     'Robotic Control' => '',
     'Make world a bit more better with the help of robots.' => '',
   ),
-  'Gears manager' => '',
-  'Active' => '',
-  'All' => '',
-  'Inactive' => '',
-  'New' => '',
-  'Updates' => '',
-  'Add' => '',
+  '#I18n' => 
+  array (
+    'Please, choose site interface language:' => '',
+  ),
   '#Packages' => 
   array (
     'Core' => '',
@@ -117,40 +120,46 @@ return array (
     'Social' => '',
     'Robo' => '',
   ),
-  '#Admin Gears' => 
-  array (
-    'Author: ' => '',
-    'Site: ' => '',
-    'Control panel' => '',
-    'deactivate' => '',
-  ),
-  '#Authors' => 
-  array (
-    'Dmitriy Belyaev' => '',
-  ),
-  'Add new' => '',
-  '[edit]' => '',
-  'Icons' => 
-  array (
-    'comments' => '',
-  ),
   '#Pager' => 
   array (
     'next' => '',
     '→' => '',
   ),
-  'Pages' => '',
-  'Gears' => '',
-  'Language' => '',
-  'Internacionalization' => '',
-  '#Forms' => 
+  '#Pages' => 
   array (
-    'Internacionalization settings' => '',
+    'My Pages' => '',
   ),
-  'Save' => '',
+  '#User_CP' => 
+  array (
+    'My Profile' => '',
+    'Find users' => '',
+    'Logout' => '',
+    'Users' => '',
+  ),
+  'Active' => '',
+  'Add' => '',
+  'Add new' => '',
+  'All' => '',
+  'Control Panel' => '',
+  'Dashboard' => '',
   'Data is saved successfully!' => '',
-  '#I18n' => 
+  'Editor' => '',
+  'Error' => '',
+  'Gears' => '',
+  'Gears manager' => '',
+  'Icons' => 
   array (
-    'Please, choose site interface language:' => '',
+    'comments' => '',
   ),
+  'Inactive' => '',
+  'Internacionalization' => '',
+  'Language' => '',
+  'My Files' => '',
+  'New' => '',
+  'Pages' => '',
+  'Robo' => '',
+  'Save' => '',
+  'Updates' => '',
+  '[edit]' => '',
+  'cogear' => '',
 );

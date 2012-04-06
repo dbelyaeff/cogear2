@@ -198,7 +198,6 @@ class Router_Object extends Options {
                             $this->rules['from'],
                             $this->rules['to'],
                             $route);
-            $clean_route = $route;
             if (strpos($route, '^') === FALSE) {
                 $route = '^' . $route;
             }
@@ -208,28 +207,22 @@ class Router_Object extends Options {
             $regexp = '#' . $route . '#isU';
             if (preg_match($regexp, $this->uri,$this->matches)) {
                 $args = array();
-                if(is_array($callback) && sizeof($callback) > 2){
-                    $args = array_slice($callback, 2);
-                    $callback = array($callback[0],$callback[1]);
-                }
-                $root = trim(substr($clean_route,0,strpos($clean_route,'(')),self::DELIM);
+                $root = trim(substr($route,0,strpos($route,'(')),self::DELIM);
                 $exclude = strpos($root,self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
                 $this->args = array_merge($args,array_diff_assoc($this->segments,$exclude));
                 // We have a nice method in hooks to prepare callback
                 if($callback = Callback::prepare($callback)){
-                    $this->callback = $callback;
+                    $this->callback = new Callback($callback);
                     event('callback.before',$this);
-                    event('callback.'.get_class($callback[0]).'.before',$this);
-                    method_exists($callback[0],'request') && call_user_func_array(array($callback[0],'request'),$this->args);
-                    call_user_func_array($callback,$this->args);
-                    $this->has_run = TRUE;
-                    event('callback.'.get_class($callback[0]).'.after',$this);
+                    method_exists($callback[0],'request') && $callback[0]->request();
+                    $this->callback->setArgs($this->args);
+                    $this->callback->run();
                     event('callback.after',$this);
                     return;
                 }
             }
         }
-        $this->exec(array($cogear->errors,'_404'));
+        event('404');
         return;
     }
     /**
@@ -237,10 +230,22 @@ class Router_Object extends Options {
      * 
      */
     public function exec($callback,$args = array()){
-        if(is_callable($callback) && $result = call_user_func_array($callback,$args)){
-            return $result;
+        if($callback = Callback::prepare($callback)){
+            $callback = new Callback($callback);
+            $args && $callback->setArgs($args);
+            return $callback->run();
         }
         return NULL;
     }
 
+}
+
+/**
+ * Routes
+ * 
+ * @param type $route
+ * @param type $callback
+ */
+function route($route,$callback){
+    cogear()->router->addRoute($route,$callback);
 }
