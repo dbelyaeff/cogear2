@@ -23,13 +23,6 @@ class _Gear extends Gear {
     public function init() {
         parent::init();
     }
-    
-    /**
-     * Gear hooks
-     */
-    public function hook(){
-        return array();
-    }
 
     /**
      * Default dispatcher
