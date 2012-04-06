@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Router extends Options {
+class Router_Object extends Options {
 
     /**
      * Routes
@@ -51,12 +51,6 @@ class Router extends Options {
      */
     protected $callback = array();
     /**
-     * Flag indicates if router has run
-     * 
-     * @var boolean 
-     */
-    private $has_run;
-    /**
      * Route expression transformation variables
      *
      * @array
@@ -85,16 +79,18 @@ class Router extends Options {
      * @const
      */
     const DELIM = '/';
+    const STARTS = 0;
+    const ENDS = 1;
+    const BOTH = 2;
 
     /**
      * Constructor
      */
     public function __construct() {
-        $cogear = getInstance();
-        $this->uri = $this->sanitizePath($cogear->request->get('PATH_INFO'));
+        $this->uri = $this->sanitizePath(cogear()->request->get('PATH_INFO'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
-        $cogear->hook('ignite',array($this,'run'));
+        hook('ignite',array($this,'run'));
     }
 
     /**
@@ -166,10 +162,36 @@ class Router extends Options {
         return $num ? (isset($this->segments[$num]) ? $this->segments[$num] : NULL) : $this->segments;
     }
     /**
+     * Check uri match
+     * 
+     * @param string $uri
+     * @param int $type 
+     * @return  boolean
+     */
+    public function check($uri,$type = self::STARTS){
+        switch($type){
+            case self::STARTS:
+                if(strpos($this->uri,$uri) === 0){
+                    return TRUE;
+                }
+                break;
+            case self::ENDS:
+                if(strpos($this->uri,$uri) == (strlen($this->uri)-strlen($uri))){
+                    return TRUE;
+                }
+                break;
+            case self::BOTH:
+                if(strpos($this->uri,$uri) !== FALSE){
+                    return TRUE;
+                }
+                break;
+        }
+        return FALSE;
+    }
+    /**
      * Run dispatched request
      */
     public function run() {
-        if($this->has_run) return;
         $cogear = getInstance();
         foreach ($this->routes as $route => $callback) {
             $route = str_replace(
@@ -216,7 +238,6 @@ class Router extends Options {
      */
     public function exec($callback,$args = array()){
         if(is_callable($callback) && $result = call_user_func_array($callback,$args)){
-            $this->has_run = TRUE;
             return $result;
         }
         return NULL;
