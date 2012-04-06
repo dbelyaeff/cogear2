@@ -15,15 +15,6 @@
  */
 class Session_Object extends Cache_Object {
 
-    protected $name;
-
-    /**
-     * Time to life
-     *
-     * @int
-     */
-    private $session_id_ttl = 3600;
-
     /**
      * Setting that can redifine php.ini optionsuration
      *
@@ -56,7 +47,6 @@ class Session_Object extends Cache_Object {
         'hash_function' => NULL,
         'hash_bits_per_character' => NULL
     );
-	private $options;
     const HISTORY_STEPS = 10;
 
     /**
@@ -64,51 +54,45 @@ class Session_Object extends Cache_Object {
      *
      * @param	array	$options
      */
-    public function __construct($name) {
+    public function __construct($options) {
         hook('exit', array($this, 'close'));
-        $this->name = $name;
-        $this->options = clone config('session');
-        $this->options->name = $this->name;
-        $this->options->save_path = $this->options->path;
-        $this->options->cookie_domain = '.' . SITE_URL;
+        $defaults = array(
+            'adapter' => 'Session_Adapter_File',
+            'save_path' => CACHE . DS . 'sessions',
+            'path' => CACHE . DS . 'sessions',
+            'cookie_domain' => '.' . config('site.url', cogear()->request->get('HTTP_HOST')),
+            'session_expire' => 3600,
+        );
+        $options = array_merge($defaults, $options);
+        parent::__construct($options);
         foreach (self::$iniOptions as $key => $option) {
             if ($this->options->$key) {
                 if ($value = $this->options[$key] ? $this->options[$key] : $option) {
                     ini_set('session.' . $key, $value);
-			    }
+                }
                 $option && ini_set('session.' . $key, $option);
-            } else {
             }
         }
-		parent::__construct($this->options);
-        $this->setHandler();
-        $this->run();
-    }
-    /**
-     * Set handler
-     */
-    private function setHandler() {
         session_set_save_handler(
                 array($this->adapter, 'open'), array($this->adapter, 'close'), array($this->adapter, 'read'), array($this->adapter, 'write'), array($this->adapter, 'destroy'), array($this->adapter, 'gc')
         );
+        $this->run();
     }
 
     /**
      * Starts up the session system for current request
      */
     private function run() {
-        session_name($this->name);
-		if(empty($_SESSION)){
-			session_start();
-		}
-        $session_id_ttl = $this->options['session_expire'];
+        if (!session_id()) {
+            session_start();
+        }
         $this->init();
 
         // check if session id needs regeneration
         if ($this->sessionIdExpired()) {
             // regenerate session id (session data stays the
             // same, but old session storage is destroyed)
-            $this->regenerateId();
+            session_regenerate_id();
         }
     }
 
@@ -146,35 +130,35 @@ class Session_Object extends Cache_Object {
         return isset($_SESSION['history'][$needle]) ? $_SESSION['history'][$needle] : ($default ? $default : NULL);
     }
 
-    /**
-     * Regenerates session id
-     */
-    private function regenerateId() {
-        // copy old session data, including its id
-        $old_session_id = session_id();
-        $old_session_data = $_SESSION;
-        // regenerate session id and store it
-        session_regenerate_id();
-        $new_session_id = session_id();
-
-        // switch to the old session and destroy its storage
-        session_id($old_session_id);
-        session_destroy();
-
-        $this->setHandler();
-        session_name($this->name);
-        // switch back to the new session id and send the cookie
-        session_id($new_session_id);
-        session_start();
-
-        // restore the old session data into the new session
-        $_SESSION = $old_session_data;
-
-        // update the session creation time
-        $_SESSION['regenerated'] = time();
-
-        session_write_close();
-    }
+//    /**
+//     * Regenerates session id
+//     */
+//    private function regenerateId() {
+//        // copy old session data, including its id
+//        $old_session_id = session_id();
+//        $old_session_data = $_SESSION;
+//        // regenerate session id and store it
+//        session_regenerate_id();
+//        $new_session_id = session_id();
+//
+//        // switch to the old session and destroy its storage
+//        session_id($old_session_id);
+//        session_destroy();
+//
+//        $this->setHandler();
+//        session_name($this->name);
+//        // switch back to the new session id and send the cookie
+//        session_id($new_session_id);
+//        session_start();
+//
+//        // restore the old session data into the new session
+//        $_SESSION = $old_session_data;
+//
+//        // update the session creation time
+//        $_SESSION['regenerated'] = time();
+//
+//        session_write_close();
+//    }
 
     /**
      * Magic __get method
@@ -293,8 +277,7 @@ class Session_Object extends Cache_Object {
             $_SESSION['regenerated'] = time();
             return FALSE;
         }
-
-        $expiry_time = time() - $this->session_id_ttl;
+        $expiry_time = time() - $this->options->session_expire;
 
         if ($_SESSION['regenerated'] <= $expiry_time) {
             return TRUE;

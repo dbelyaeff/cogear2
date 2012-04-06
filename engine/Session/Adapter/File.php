@@ -44,7 +44,7 @@ class Session_Adapter_File extends Cache_Adapter_File {
      * @param int $ttl
      */
     public function gc($ttl) {
-        $dit = new DirectoryIterator($this->path);
+        $dir = new DirectoryIterator($this->path);
         foreach ($dir as $file) {
             if ($file->getMTime() + $ttl < time()) {
                 @unlink($file->getPath());
