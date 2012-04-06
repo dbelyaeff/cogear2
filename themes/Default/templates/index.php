@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="ru">
   <head>
-	<?=theme('head')?>
+	<?php theme('head')?>
     </head>
     <body>
-        <?=theme('before')?>
+        <?php theme('before')?>
         <div class="container">
 	        <div class="row">
 				<div class="span16" id="header">
-					<?=theme('header')?>
+					<?php theme('header')?>
 				</div>
 		    </div>
             <div class="row">
 				<div class="span3 columns" id="sidebar">
-					<?=theme('sidebar')?>
+					<?php theme('sidebar')?>
 				</div>
 				<div class="span13 columns" id="content">
-					<?=theme('content')?>
+					<?php theme('content')?>
 				</div>
 	        </div>
             <div class="row">
 	            <div class="span16" id="footer">
-		            <?=theme('footer')?>
+		            <?php theme('footer')?>
 	            </div>
 	        </div>
         </div>
-        <?=theme('after')?>
+        <?php theme('after')?>
     </body>
 </html>
