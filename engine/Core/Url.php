@@ -31,7 +31,7 @@ class Url {
         $url = parse_url($url);
         if ($absolute_flag) {
             $link .= $protocol . '://';
-            $link .= $cogear->host;
+            $link .= config('site.url');
         }
         isset($url['host']) && $link = $protocol . '://' . $url['host'];
         isset($url['path']) && $link .= '/' . ltrim($url['path'], '/');
