@@ -18,7 +18,6 @@ class Cron_Gear extends Gear {
     protected $name = 'Cron';
     protected $description = 'Perform periodial tasks.';
     protected $order = 0;
-    protected $version = '0.1';
     // Cron won't be start up for often than STEP value in seconds
     const STEP = 60;
     protected $key;
@@ -36,7 +35,7 @@ class Cron_Gear extends Gear {
      * Generate key
      */
     private function keyGen() {
-        return md5(date('Y-m-d H') . cogear()->secure->key());
+        return substr(md5(date('Y-m-d H') . cogear()->secure->key()),0,10);
     }
 
     /**
@@ -57,16 +56,15 @@ class Cron_Gear extends Gear {
      * Call cron process via image tag
      */
     public function poorMansCron() {
-        echo '<img src="' . Url::gear('cron') . 'run/' . encrypt($this->key) . '">';
+        echo '<img src="' . Url::gear('cron') . 'run/' . $this->key . '">';
     }
-
     /**
      * Run cron via special url
      *  
      * @param type $key 
      */
     public function run_action($key = NULL) {
-        $this->key == decrypt($key) && $this->run();
+        $this->key == $key && $this->run();
     }
 
     /**
@@ -90,9 +88,9 @@ class Cron_Gear extends Gear {
                 }
             }
         }
-        $px = new Image(ENGINE . DS . 'Core' . DS . 'img' . DS . '1x1.gif');
-        $px->render();
-        cogear()->save();
+        $px = new Image(ENGINE . DS . 'Core' . DS . 'images' . DS . 'pixel.gif');
+        $px->adapter->render();
+        event('exit');
         exit();
     }
 

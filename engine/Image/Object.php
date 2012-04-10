@@ -20,7 +20,7 @@ class Image_Object extends Adapter {
     public function __construct($file) {
         $this->file = file_exists($file) ? $file : NULL;
         $driver = config('image.driver', 'Image_Adapter_GD');
-        $this->adapter = file_exists($this->file) ? new $driver($this->file) : new Core_ArrayObject();
+        $this->adapter = new $driver($this->file);
     }
     /**
      * Get image file

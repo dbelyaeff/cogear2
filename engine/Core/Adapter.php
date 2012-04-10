@@ -55,7 +55,6 @@ class Adapter extends Cogearable {
     public function __call($name, $args) {
         if(!$this->adapter) return NULL;
         $callback = new Callback(array($this->adapter, $name));
-        
         return $callback->check() ? $callback->run($args) : parent::__call($name, $args);
     }
 

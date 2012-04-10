@@ -185,10 +185,10 @@ abstract class Gear extends Adapter {
      * Initialize
      */
     public function init() {
+        $this->routes[$this->base . ':maybe'] = 'index';
         $this->hooks();
         $this->routes();
         $this->loadAssets();
-        $this->routes[$this->base . ':maybe'] = 'index';
         event('gear.init', $this);
     }
 
