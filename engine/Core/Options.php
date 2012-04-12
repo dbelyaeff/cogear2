@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-abstract class Options extends Core_ArrayObject {
+class Options extends Core_ArrayObject {
 
     /**
      * Options
@@ -27,33 +27,17 @@ abstract class Options extends Core_ArrayObject {
      * @param array|ArrayObject $options
      * @param string $storage
      */
-    public function __construct($options = array(), $place = NULL) {
-        $this->options = new Core_ArrayObject($this->options);
-        if ($place == self::SELF) {
-            $options instanceof Core_ArrayObject OR $options = new Core_ArrayObject($options);
-            foreach($options as $key=>$value){
-                $this->$key = $value;
-            }
+    public function __construct($options = array(), $place = 0) {
+        if ($place) {
+            parent::__construct($options);
         } else {
-            $this->setOption($options);
-        }
-    }
-
-    /**
-     * Set options
-     * 
-     * @param array|ArrayObject $name
-     * @param string $value
-     */
-    public function setOption($name, $value = NULL) {
-        if (is_array($name) OR $name instanceof ArrayObject) {
-            is_array($name) && $name = new Core_ArrayObject($name);
-            foreach ($name as $key => $value) {
-                $this->options->$key = $value;
+            if ($this->options) {
+                is_array($this->options) && $this->options = new Core_ArrayObject($this->options);
+                $this->options->mix($options);    
+            } else {
+                $this->options = Core_ArrayObject::transform($options);
             }
-            return;
         }
-        $this->options->$name = $value;
     }
 
     /**
@@ -63,7 +47,30 @@ abstract class Options extends Core_ArrayObject {
      * @return mixed
      */
     public function __get($name) {
+        if ($this->options->$name) {
+            return $this->options->$name;
+        }
         return isset($this->$name) ? $this->$name : parent::__get($name);
+    }
+
+    /**
+     * Isset
+     *
+     * @param type $name
+     * @return type 
+     */
+    public function __isset($name) {
+        return isset($this->options->$name) ? $this->options->$name : parent::__isset($name);
+    }
+
+    /**
+     * Magic set method
+     * 
+     * @param type $name
+     * @param type $value 
+     */
+    public function __set($name, $value) {
+        $this->options->$name = $value;
     }
 
 }
