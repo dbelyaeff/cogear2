@@ -28,11 +28,11 @@ class Options extends Core_ArrayObject {
      * @param string $storage
      */
     public function __construct($options = array(), $place = 0) {
+        $this->options = new Core_ArrayObject($this->options);
         if ($place) {
             parent::__construct($options);
         } else {
-            if ($this->options) {
-                is_array($this->options) && $this->options = new Core_ArrayObject($this->options);
+            if ($this->options->count()) {
                 $this->options->mix($options);    
             } else {
                 $this->options = Core_ArrayObject::transform($options);
@@ -47,7 +47,7 @@ class Options extends Core_ArrayObject {
      * @return mixed
      */
     public function __get($name) {
-        if ($this->options->$name) {
+        if (isset($this->options->$name)) {
             return $this->options->$name;
         }
         return isset($this->$name) ? $this->$name : parent::__get($name);
