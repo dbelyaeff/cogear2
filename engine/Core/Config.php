@@ -59,7 +59,7 @@ class Config extends Core_ArrayObject {
         $current = $this;
         $depth = 1;
         foreach ($pieces as $piece) {
-            if ($current->$piece) {
+            if ($current->$piece !== NULL) {
                 if ($depth < $size && $current->$piece instanceof Core_ArrayObject) {
                     $current = $current->$piece;
                     $depth++;
