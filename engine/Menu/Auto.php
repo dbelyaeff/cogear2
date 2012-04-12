@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Menu 
  *
@@ -11,30 +12,28 @@
  * @version		$Id$
  */
 class Menu_Auto extends Menu_Object {
+
     /**
      * Constructor
      * 
-     * @param string $name
-     * @param string $base_url 
+     * @param   array   options
      */
-    public function __construct($name,$template = NULL,$base_url = NULL){
-        parent::__construct($name,$template,$base_url);
+    public function __construct($options) {
+        parent::__construct($options);
         $this->init();
     }
+
     /**
      * Init
      */
-    public function init(){
+    public function init() {
         $cogear = getInstance();
-        if(!$menu = $cogear->system_cache->get('menu/'.$this->name)){
-            foreach($cogear->gears as $gear){
-                if(method_exists($gear, 'menu')){
-                    call_user_func_array(array($gear,'menu'), array($this->name,&$this));
-                }
+        foreach ($cogear->gears as $gear) {
+            if (method_exists($gear, 'menu')) {
+                call_user_func_array(array($gear, 'menu'), array($this->options->name, &$this));
             }
-            $cogear->system_cache->set('menu/'.$this->name,$this->toArray());
-        }
-        else $this->exchangeArray((array)$menu);
+        } 
     }
+
 }
 

@@ -97,7 +97,7 @@ class Db_ORM extends Object {
          * After all it's possible to left just "return $this->object->$name;" over there.
          *
          */
-       return is_null($this->object) ? NULL : $this->object->$name;
+       return $this->object ? $this->object->$name : NULL;
     }
     /**
      * Check object variable for existance

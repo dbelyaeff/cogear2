@@ -39,7 +39,7 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
                 imagesavealpha($this->source, TRUE);
                 break;
             case IMAGETYPE_ICO:
-                $this->source = imagecreatefromstring(Filesystem::read($path));
+                $this->source = imagecreatefromstring(File::read($path));
                 break;
         }
     }
@@ -196,7 +196,7 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
     public function save($file = NULL) {
         $this->prepare();
         $path = $file ? $file : $this->path;
-        Filesystem::makeDir(dirname($path));
+        File::mkdir(dirname($path));
         switch ($this->info->type) {
             case IMAGETYPE_JPEG:
                 imagejpeg($this->source, $path, config('image.jpeg.quality', 75));

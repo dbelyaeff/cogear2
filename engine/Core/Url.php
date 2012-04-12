@@ -40,6 +40,20 @@ class Url {
         event('link',$link);
         return $link;
     }
+    
+    /**
+     * Secure linke
+     * 
+     * @param string $url
+     * @param boolean $absolute_flag
+     * @param string $protocol
+     * @return string 
+     */
+    public static function slink($url='', $absolute_flag = FALSE, $protocol = 'http'){
+        $link = self::link($url,$absolute_flag,$protocol);
+        $link .= self::SECURE.cogear()->secure->salt();
+        return $link;
+    }
 
     /**
      * Standartize
@@ -108,5 +122,8 @@ class Url {
 
 function l($url='', $absolute_flag = FALSE, $protocol = 'http'){
     return Url::link($url, $absolute_flag, $protocol);
+}
+function s($url='', $absolute_flag = FALSE, $protocol = 'http'){
+    return Url::slink($url, $absolute_flag, $protocol);
 }
 

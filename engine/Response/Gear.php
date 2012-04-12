@@ -16,7 +16,8 @@ class Response_Gear extends Gear {
     protected $name = 'Response';
     protected $description = 'Send output to browser';
     protected $hooks = array(
-        'exit' => 'send'
+        'exit' => 'send',
+        '404' => 'notFound',
     );
 
     /**
@@ -34,4 +35,12 @@ class Response_Gear extends Gear {
         $this->adapter->send();
     }
     
+    /**
+     * Not found
+     */
+    public function notFound(){
+        $this->request();
+        $tpl = new Template('Response.404');
+        $tpl->show();
+    }
 }

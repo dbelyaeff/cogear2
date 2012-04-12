@@ -12,15 +12,27 @@
  * @version		$Id$
  */
 class Form_Element_Abstract extends Options {
-
+    public $options = array(
+        'name' => '',
+        'label' => '',
+        'description' => '',
+        'value' => NULL,
+        'type' => 'input',
+        'template' => 'Form.input',
+        'wrapper' => 'Form.element',
+        'render' => TRUE,
+        'disabled' => FALSE,
+        'filters' => array(),
+        'validators' => array(),
+        'class' => '',
+    );
     /**
      * Link to form instance
      *
      * @var object
      */
-    protected $form;
     protected $errors = array();
-    protected $wrapper = 'Form.element';
+    protected $value;
     public $code = '';
 
     /**
@@ -29,28 +41,8 @@ class Form_Element_Abstract extends Options {
      * @param array $options
      */
     public function __construct($options) {
-        $this->filters = new Core_ArrayObject();
-        $this->validators = new Core_ArrayObject();
         parent::__construct($options);
         $this->errors = new Core_ArrayObject();
-    }
-
-    /**
-     * addFilter
-     *
-     * @param string $filter
-     */
-    public function addFilter($filter) {
-        in_array($filter, $this->filters) OR $this->filters[] = $filter;
-    }
-
-    /**
-     * addFilter
-     *
-     * @param string $validator
-     */
-    public function addValidator($validator) {
-        in_array($validator, $this->validators) OR $this->validators[] = $validator;
     }
 
     /**
@@ -69,7 +61,7 @@ class Form_Element_Abstract extends Options {
      * @param mixed $value
      */
     public function setValue($value) {
-        $this->value = $value;
+        $this->options->value = $value;
     }
 
     /**
@@ -132,7 +124,8 @@ class Form_Element_Abstract extends Options {
      * @return
      */
     public function result() {
-        $this->value = isset($this->form->request[$this->name]) ? $this->form->request[$this->name] : $this->value;
+        $method = strtolower($this->form->method);
+        $this->value = cogear()->input->$method($this->name,$this->options->value);
         $this->is_fetched = TRUE;
         $this->filter();
         $result = $this->validate() ? $this->value : FALSE;
@@ -145,7 +138,7 @@ class Form_Element_Abstract extends Options {
      * @return string
      */
     public function getId() {
-        return $this->form->getId() . Form_Object::SEPARATOR . $this->name;
+        return $this->options->form->getId() . Form_Object::SEPARATOR . $this->options->name;
     }
 
     /**
@@ -155,8 +148,8 @@ class Form_Element_Abstract extends Options {
      */
     public function prepareOptions() {
         $this->options->required = $this->validators && $this->validators->findByValue('Required');
-        $this->options->disabled OR $this->options->offsetUnset('disabled');
-        $this->options->form = $this->form;
+        $this->options->errors = $this->errors;
+        $this->options->errors->count() && $this->options->class .= ' error';
         $this->options->element = $this;
         return $this->options;
     }
@@ -166,8 +159,10 @@ class Form_Element_Abstract extends Options {
      */
     public function render() {
         $this->prepareOptions();
+        $tpl = new Template($this->options->template);
+        $tpl->assign($this->options);
+        $this->code = $tpl->render();
         $this->decorate();
-        event('Form.element.' . $this->type . '.render', $this);
         return $this->code;
     }
 
@@ -175,8 +170,9 @@ class Form_Element_Abstract extends Options {
      * Decorate elements
      */
     protected function decorate() {
-        if ($this->wrapper) {
-            $tpl = new Template($this->wrapper);
+        if ($this->options->wrapper) {
+            $tpl = new Template($this->options->wrapper);
+            $tpl->assign($this->options);
             $tpl->code = $this->code;
             $this->code = $tpl->render();
         }

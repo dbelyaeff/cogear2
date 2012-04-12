@@ -72,7 +72,7 @@ class Assets_Harvester {
                 $this->add($item, $type);
             }
         } else {
-            $ext = Filesystem::getExtension($path);
+            $ext = File::getExtension($path);
             switch ($ext) {
                 case 'js':
                     $method = 'attachScript';

@@ -22,7 +22,7 @@ class Session_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        $this->adapter = new Session_Object(array('name'=>'session'));
+        $this->adapter = new Session_Object(array('name' => 'session'));
     }
 
 }

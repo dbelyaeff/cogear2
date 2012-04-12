@@ -3,6 +3,7 @@ return array (
   'i18n' => 
   array (
     'lang' => 'ru',
+    'locale' => 'ru_RU.UTF8',
   ),
   'theme' => 
   array (
@@ -10,23 +11,15 @@ return array (
     'favicon' => '/theme/icon/favicon.ico',
     'current' => 'Default',
   ),
-  'wysiwyg' => 
-  array (
-    'editor' => 'elRTE',
-  ),
   'cron' => 
   array (
     'last_run' => 1314449280,
   ),
   'user' => 
   array (
-    'profile' => 
-    array (
-      'avatar' => 
-      array (
-        'size' => '32x32',
-      ),
-    ),
+    'avatar' => array(
+        'default' => 'avatars/0/avatar.jpg',
+    )
   ),
   'image' => 
   array (
@@ -42,6 +35,12 @@ return array (
       ),
       'avatar' => 
       array (
+        'navbar' => array(
+            'size' => '41x41',
+            'actions' => array(
+                'sizecrop',
+            )
+        ),
         'small' => 
         array (
           'size' => '24x24',

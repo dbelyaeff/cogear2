@@ -22,12 +22,12 @@ class Twitter_Bootstrap_Gear extends Gear {
     public function loadAssets() {
         $scripts_dir = $this->dir.DS.'bootstrap'.DS.'js';
         $styles_dir = $this->dir.DS.'bootstrap'.DS.'css';
-        $scripts[] = $scripts_dir.DS.'bootstrap.min.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-modal.min.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-alert.min.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-button.min.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-tab.min.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-tooltip.min.js';
+//        $scripts[] = $scripts_dir.DS.'bootstrap.js';
+//        $scripts[] = $scripts_dir.DS.'bootstrap-modal.js';
+        $scripts[] = $scripts_dir.DS.'bootstrap-alert.js';
+//        $scripts[] = $scripts_dir.DS.'bootstrap-button.js';
+//        $scripts[] = $scripts_dir.DS.'bootstrap-tab.js';
+//        $scripts[] = $scripts_dir.DS.'bootstrap-tooltip.js';
 //        $scripts[] = $scripts_dir.DS.'bootstrap-.js';
         cogear()->assets->addScript($scripts);
         cogear()->assets->addStyle($styles_dir.DS.'bootstrap.css');

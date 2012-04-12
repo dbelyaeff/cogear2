@@ -16,31 +16,23 @@
 class I18n_Gear extends Gear {
     protected $name = 'Internacionalization';
     protected $description = 'Translate site interface to different languages.';
-    protected $author = 'Dmitriy Belyaev';
     protected $order = -1000;
     protected $domains = array();
-    protected $date_format;
-    public $adapter;
-    /**
-     * Locale
-     * 
-     * @var string 
-     */
+    protected $lang;
     protected $locale;
 
     /**
      * Constructor
      */
     public function __construct(){
-        $this->lang = config('site.locale','en');
-        $this->date_format = config('site.date_format','Y-m-d H:i');
-        date_default_timezone_set(config('site.timezone','Europe/Moscow'));
+        $this->lang = config('i18n.lang','en');
+        $this->locale = config('i18n.locale');
         $adapter = config('i18n.adapter','I18n_Adapter_File');
-        $this->adapter = new $adapter(config('i18n',array(
-            'lang' => 'en',
-            'path' => ROOT.DS.'lang',
-        )));
+        $options = config('i18n');
+        $options->path OR $options->path = ROOT.DS.'lang'; 
+        $this->adapter = new $adapter($options);
         $this->adapter->load();
+        setlocale(LC_ALL,$this->locale);
         hook('done',array($this->adapter,'save'));
         parent::__construct();
     }
@@ -81,17 +73,7 @@ class I18n_Gear extends Gear {
         $domain OR $this->domains && $domain = reset($this->domains);
         return $this->adapter->get($text,$domain);
     }
-    /**
-     * Format date
-     * 
-     * @param int $time
-     * @param string $format
-     * @return string 
-     */
-    public function date($time,$format = NULL){
-        $format OR $format = $this->date_format;
-        return date($format,$time);
-    }
+    
     /**
      * Set domain
      * 
@@ -217,15 +199,4 @@ function transliterate_ru($text){
 		$text = str_replace($LettersFrom,$LettersTo,$text);
 		$text = strtr( $text, $BiLetters );
                 return $text;
-}
-/**
- * Format date
- * 
- * @param   int $time
- * @param   string  $format
- * @return  string
- */
-function df($time,$format = NULL){
-    $cogear = getInstance();
-    return $cogear->i18n->date($time,$format);
 }

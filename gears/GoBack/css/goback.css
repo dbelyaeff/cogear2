@@ -1,4 +1,23 @@
+.goback a{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 50px;
+}
+.goback a i{
+    vertical-align: middle;
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    display: none;
+}
+.goback a:hover{
+    background: #c1deff;
+}
+.goback a:hover i{
+    display: block;
+}
 .goback{
-    text-decoration: none;
-    margin: 5px 0 10px;
+    height: 0;
 }

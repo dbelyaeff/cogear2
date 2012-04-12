@@ -23,11 +23,14 @@ class User_Gear extends Gear {
      * Init
      */
     public function init() {
-        $this->router->addRoute('users:maybe', array($this, 'users'));
+//        $this->router->addRoute('users:maybe', array($this, 'users'));
         parent::init();
-        $this->current = new User_Object();
-        $this->current->init();
-        new User_Menu();
+        $this->adapter = new User_Object();
+        $this->adapter->init();
+        new Twitter_Bootstrap_Navbar(array(
+                    'name' => 'navbar',
+                    'render' => 'before',
+                ));
         $this->getRoles();
     }
 
@@ -38,67 +41,40 @@ class User_Gear extends Gear {
      * @param object $menu 
      */
     public function menu($name, $menu) {
-        d('User_CP');
+        d('User');
         switch ($name) {
-            case 'user':
-                $root = Url::gear('user');
-                if ($this->id) {
-                    $menu->{$root} = t('My Profile');
-                    $menu->{'users'} = t('Find users');
-                    $menu->{$root . 'logout'} = t('Logout');
-                    $menu->{$root . 'logout'}->order = 100;
+            case 'navbar':
+                if ($this->user->id) {
+                    $menu->register(array(
+                        'label' => $this->getAvatarImage('avatar.navbar'),
+                        'link' => $this->getProfileLink(),
+                        'place' => 'left',
+                    ));
+                    $menu->register(array(
+                        'label' => $this->getName(),
+                        'link' => $this->getProfileLink(),
+                        'place' => 'left',
+                    ));
+                    $menu->register(array(
+                        'label' => t('Logout'),
+                        'link' => s('/user/logout'),
+                        'place' => 'right',
+                    ));
                 } else {
-                    $menu->{$root . 'login'} = t('Login');
-                    $menu->{$root . 'register'} = t('Register');
+                    $menu->register(array(
+                        'label' => t('Login'),
+                        'link' => l('/user/login'),
+                        'place' => 'right',
+                    ));
+                    $menu->register(array(
+                        'label' => t('Register'),
+                        'link' => l('/user/register'),
+                        'place' => 'right',
+                    ));
                 }
-                break;
-            case 'admin':
-                $menu->{'user'} = t('Users');
-                $menu->{'user'}->order = 100;
-                break;
-            case 'tabs_admin_user':
-                $menu->{'/'} = t('List');
-                $menu->{'add'} = t('Add');
-                $menu->{'add'}->class = 'fl_r';
-                break;
-            case 'tabs_user_login':
-                $menu->{'login'} = t('Log in');
-                $menu->{'register'} = t('Register');
-                $menu->{'lostpassword'} = t('Lost password?');
                 break;
         }
         d();
-    }
-
-    /**
-     * Magic __get method
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name) {
-        $parent = parent::__get($name);
-        return $parent !== NULL ? $parent : (isset($this->current->$name) ? $this->current->$name : NULL);
-    }
-
-    /**
-     * Magic set method
-     *
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set($name, $value) {
-        $this->current->$name = $value;
-    }
-
-    /**
-     * Magic __call method
-     *
-     * @param   string  $name
-     * @param   array   $args
-     */
-    public function __call($name, $args = array()) {
-        return method_exists($this->current, $name) ? call_user_func_array(array($this->current, $name), $args) : parent::__call($name, $args);
     }
 
     /**
@@ -110,7 +86,28 @@ class User_Gear extends Gear {
             case 'login':
             case 'register':
             case 'lostpassword':
-                new Menu_Tabs('user_login', Url::gear('user'));
+                d('User');
+                new Menu_Auto(array(
+                            'name' => 'user.login',
+                            'template' => 'Twitter_Bootstrap.tabs',
+                            'elements' => array(
+                                'login' => array(
+                                    'label' => t('Login'),
+                                    'link' => l('/user/login'),
+                                ),
+                                'lostpassword' => array(
+                                    'label' => t('Lost password'),
+                                    'link' => l('/user/lostpassword'),
+                                    'access' => $this->router->check('user/lostpassword'),
+                                ),
+                                'register' => array(
+                                    'label' => t('Register'),
+                                    'link' => l('/user/register'),
+                                ),
+                            ),
+                            'render' => 'content',
+                        ));
+                d();
         }
         switch ($action) {
             case 'login':
@@ -124,9 +121,6 @@ class User_Gear extends Gear {
                 break;
             case 'register':
                 $this->register_action();
-                break;
-            case 'find':
-                $this->users();
                 break;
             case 'index':
             case 'profile':
@@ -171,17 +165,19 @@ class User_Gear extends Gear {
         if ($id) {
             $user = new User_Object();
             $this->db->where('id', $id);
-            $this->db->or_where('login', $id);
             if (!$user->find()) {
-                return _404();
+                return event('404');
             }
         } else {
-            $user = $this->current;
+            $user = $this->adapter;
         }
         if ($user->id) {
             $this->renderUserInfo($user);
+            $tpl = new Template('User.profile');
+            $tpl->user = $user;
+            $tpl->show();
         } else {
-            return _404();
+            return event('404');
         }
     }
 
@@ -190,10 +186,10 @@ class User_Gear extends Gear {
      * 
      * @param object $user 
      */
-    public function renderUserInfo($user) {
-        $tpl = new Template('User.profile');
-        $tpl->user = $user;
-        append('content', $tpl->render());
+    public function renderUserInfo($User) {
+        $tpl = new Template('User.navbar');
+        $tpl->user = $User;
+        $tpl->show();
     }
 
     /**
@@ -206,24 +202,17 @@ class User_Gear extends Gear {
         $user = new User_Object();
         $this->db->where('id', $id);
         if (!$user->find()) {
-            return _404();
+            return event('404');
         }
-        if (!access('user edit_all') && $this->id != $user->id) {
-            return _403();
+        if (!access('user.edit.all') && $this->id != $user->id) {
+            return event('403');
         }
         $this->renderUserInfo($user);
-        $user = new User_Object();
-        $user->where('id', $id);
-        $user->find();
         $form = new Form('User.profile');
         $user->password = '';
         $form->attach($user->object);
-        if ($form->elements->avatar->is_ajaxed && Ajax::get('action') == 'replace') {
-            $user->avatar = '';
-            $user->update();
-        }
-        if ($this->user->id == $user->id) {
-            unset($form->elements->delete);
+        if($user->id == 1){
+            $form->elements->delete->options->render = FALSE;
         }
         if ($result = $form->result()) {
             if ($user->login != $result['login']) {
@@ -232,22 +221,20 @@ class User_Gear extends Gear {
             if ($result->delete && access('users delete_all')) {
                 $user->delete();
                 flash_success(t('User <b>%s</b> was deleted!'));
-                redirect(Url::link('/users'));
+                redirect(l('/users'));
             }
-            $user->adopt($result);
+            $user->object->adopt($result);
             if ($result->password) {
                 $user->hashPassword();
             } else {
                 unset($user->password);
             }
             if ($user->update()) {
-                d('User edit');
-                flash_success(t('User data saved!'), t('Success'));
-                d();
+                flash_success(t('User data saved!','User'), t('Success'));
                 if ($user->id == $this->id) {
                     $this->store($user->object->toArray());
                 }
-                redirect(Url::gear('user') . $user->login);
+                redirect(l('/user/edit/'.$id));
             }
         }
         $form->show();
@@ -258,7 +245,7 @@ class User_Gear extends Gear {
      */
     public function login_action() {
         if ($this->isLogged()) {
-            return info('You are already logged in!', 'Authorization');
+            return warning('You are already logged in!', 'Authorization');
         }
         $form = new Form('User.login');
         if ($data = $form->result()) {
@@ -268,7 +255,7 @@ class User_Gear extends Gear {
                 $data->saveme && $this->remember();
                 redirect(Url::gear('user'));
             } else {
-                error('Login or password weren\'t found in the database', 'Authentification error');
+                error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
             }
         }
         $form->show();
@@ -287,13 +274,13 @@ class User_Gear extends Gear {
      */
     public function lostpassword_action() {
         $form = new Form('User.lostpassword');
-        if ($data = $form->result()) {
-            $this->attach($data);
+        if ($result = $form->result()) {
+            $this->attach($result);
             if ($this->find()) {
 
                 back();
             } else {
-                error('Login or password weren\'t found in the database', 'Authentification error');
+                error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
             }
         }
         $form->show();

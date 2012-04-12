@@ -19,8 +19,8 @@ abstract class Cogearable extends Options{
      * @return mixed 
      */
     public function __get($name){
-        $cogear = getInstance();
-        return $cogear->$name ? $cogear->$name : NULL;
+        $parent = parent::__get($name);
+        return $parent ? $parent : cogear()->$name;
     }
     /**
      * Magic __call method

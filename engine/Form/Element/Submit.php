@@ -11,5 +11,13 @@
  * @version		$Id$
  */
 class Form_Element_Submit extends Form_Element_Button{
-    protected $type = 'submit';
+    /**
+     * Constructor
+     *  
+     * @param type $options 
+     */
+    public function __construct($options) {
+        $options['wrapper'] = FALSE;
+        parent::__construct($options);
+    }
 }

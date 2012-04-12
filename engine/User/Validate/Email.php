@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Validate user email
  *
@@ -10,8 +11,9 @@
  * @subpackage          User
  * @version		$Id$
  */
-class User_Validate_Email extends Form_Validate_Abstract{
+class User_Validate_Email extends Form_Validate_Abstract {
     const EXCLUDE_SELF = 1;
+
     /**
      * Validate user email.
      * 
@@ -26,9 +28,14 @@ class User_Validate_Email extends Form_Validate_Abstract{
         }        
         $user = new Db_ORM('users');
         $user->email = $value;
-
-	    $is_exist = (boolean)$user->find();
-        if ($is_exist) $this->element->addError(t('Email is already taken!'));
-        return !$is_exist;
+        if ($user->find()) {
+            if ($user->id == cogear()->user->id && $exclude_self) {
+                return TRUE;
+            }
+            $this->element->addError(t('Email is already taken!'));
+            return FALSE;
+        }
+        return TRUE;
     }
+
 }

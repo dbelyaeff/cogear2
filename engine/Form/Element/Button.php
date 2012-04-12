@@ -24,10 +24,10 @@ class Form_Element_Button extends Form_Element_Abstract{
     }
     
     public function render(){
-        $this->getAttributes();
-        $this->attributes->value = $this->label;
-        $this->attributes->label = '';
-        $this->code = HTML::input($this->attributes);
+        $this->prepareOptions();
+        $this->options->value = $this->label;
+        $this->options->label = '';
+        $this->code = HTML::input($this->options);
         return parent::render();
     }
 }

@@ -92,8 +92,8 @@ final class Cogear implements Interface_Singleton {
         $this->events->$event OR $this->events->$event = new Event();
         $callback = new Callback($callback);
         $args = func_get_args();
-        if(sizeof($args) > 3){
-            $callback->setArgs(array_slice($args,3));
+        if (sizeof($args) > 3) {
+            $callback->setArgs(array_slice($args, 3));
         }
         if ($position !== NULL) {
             $this->events->$event->inject($callback, $position);
@@ -137,7 +137,7 @@ final class Cogear implements Interface_Singleton {
             return $this->gears->$name;
         }
         $ucname = ucfirst($name);
-        if($this->gears->$ucname){
+        if ($this->gears->$ucname) {
             return $this->gears->$ucname;
         }
         return NULL;
@@ -169,13 +169,15 @@ final class Cogear implements Interface_Singleton {
      * @return  mixed
      */
     public function get($name, $default = NULL) {
-        if ($result = $this->site->get($name, $default)) {
+        $result = $this->site->get($name);
+        if (NULL !== $result) {
+                return $result;
+        }
+        $result = $this->config->get($name);
+        if (NULL !== $result) {
             return $result;
         }
-        if ($result = $this->config->get($name, $default)) {
-            return $result;
-        }
-        return NULL;
+        return $default;
     }
 
     /**

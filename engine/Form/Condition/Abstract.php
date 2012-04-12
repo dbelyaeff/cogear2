@@ -22,7 +22,7 @@ abstract class Form_Condition_Abstract {
          *
          * @array
          */
-        protected $options;
+        public $options;
         /**
          * Element
          *

@@ -1,0 +1,13 @@
+form .btn{
+    float: left;
+    margin: 0 5px 5px 0;
+}
+.btn-group .btn{
+    margin: 0;
+}
+.delete{
+    position: relative;
+}
+.delete .delete-confirm{
+    display: none;
+}

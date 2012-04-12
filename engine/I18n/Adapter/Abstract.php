@@ -13,10 +13,10 @@
  */
 abstract class I18n_Adapter_Abstract extends Options {
 
-    protected $options = array(
+    public $options = array(
         'lang' => 'en',
     );
-    protected $update_flag;
+    protected $update_flag = TRUE;
     const SECTION_PREFIX = '#';
 
     /**
@@ -27,7 +27,7 @@ abstract class I18n_Adapter_Abstract extends Options {
      */
     public function get($text, $section = NULL) {
         if ($section) {
-            $section = self::SECTION_PREFIX.$section;
+            $section = $this->prepareSection($section);
             if ($this->$section) {
                 if ($this->$section->$text) {
                     return $this->$section->$text;
@@ -57,13 +57,27 @@ abstract class I18n_Adapter_Abstract extends Options {
     public function set($text, $value, $section = NULL) {
         $args = func_get_args();
         if ($section) {
-            $section[0] == self::SECTION_PREFIX OR $section = self::SECTION_PREFIX.$section;
-            $this->$section OR $this->$section = new Core_ArrayObject();
+            $section = $this->prepareSection($section);
+            if (!$this->$section) {
+                $this->$section = new Core_ArrayObject();
+            }
             $this->$section->$text = $value;
         } else {
             $this->$text = $value;
         }
         $this->update_flag = TRUE;
+    }
+
+    /**
+     * Prepare section
+     * 
+     * @param string $section 
+     */
+    protected function prepareSection($section) {
+        if ($section[0] != self::SECTION_PREFIX) {
+            $section = self::SECTION_PREFIX . $section;
+        }
+        return $section;
     }
 
     /**

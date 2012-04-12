@@ -15,7 +15,7 @@
  */
 class Wysiwyg_Editor extends Wysiwyg_Abstract {
 
-    protected $options = array(
+    public $options = array(
         'focus' => TRUE,
         );
     /**

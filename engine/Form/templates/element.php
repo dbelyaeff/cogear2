@@ -1,6 +1,7 @@
-<div class="form-element <? if($required){?>required<?}?><? if(isset($class)){echo ' '.$class;}?>" id="<?=$form->getId()?>-<?=$name?>">
-<? if($label){?><label for="<?=$name?>"><?=$label?><? if($required){?> *<?}?></label><?}?>
-<?=$code?>
-<div class="errors<?if(sizeof($errors) > 0){?> active<?}?>"><?=$errors->toString('<br/>')?></div>
-<? if($description){?><div class="description" id="<?=$element->getId()?>-description"><?=$description?></div><?}?>
+<div class="control-group <? if($required){?>required<?}?><? if(isset($class)){echo ' '.$class;}?>" id="<?php echo $form->getId()?>-<?php echo $name?>">
+<? if($label){?><label class="control-label" for="<?php echo $name?>"><?php echo $label?><? if($required){?> *<?}?></label><?}?>
+<div class="controls"><?php echo $code?>
+<?php if($errors->count()):?><p class="help-inline"><?php echo $errors->toString('<br/>')?></p><?php endif;?>
+<? if($description){?><span class="help-inline" id="<?php echo $element->getId()?>-description"><?php echo $description?></span><?}?>
+</div>
 </div>

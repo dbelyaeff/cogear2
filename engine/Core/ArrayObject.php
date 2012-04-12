@@ -84,7 +84,6 @@ class Core_ArrayObject extends ArrayObject {
      * @param array|object $data 
      */
     public function adopt($data) {
-        $this->exchangeArray(array());
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->offsetSet($key, $value);

@@ -32,13 +32,4 @@ class Menu_Gear extends Gear {
     public function register($name,Menu_Object &$menu){
         $this->menu->$name = $menu;
     }
-    
-    /**
-     * Get menu
-     * 
-     * @param type $name 
-     */
-    public function get($name){
-        return $this->menu->$name ? $this->menu->$name : NULL; 
-    }
 }

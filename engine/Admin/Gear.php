@@ -61,7 +61,7 @@ class Admin_Gear extends Gear {
      */
     public function index() {
         if (!access('admin'))
-            return _403();
+            return event('403');
         if ($args = $this->router->getArgs()) {
             $gear = $args[0];
             $args = array_slice($args, 1);

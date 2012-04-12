@@ -7,20 +7,20 @@
         <?php theme('before')?>
         <div class="container">
 	        <div class="row">
-				<div class="span16" id="header">
+				<div class="span12" id="header">
 					<?php theme('header')?>
 				</div>
 		    </div>
             <div class="row">
-				<div class="span3 columns" id="sidebar">
-					<?php theme('sidebar')?>
-				</div>
-				<div class="span13 columns" id="content">
+				<div class="span9" id="content">
 					<?php theme('content')?>
+				</div>
+				<div class="span3" id="sidebar">
+					<?php theme('sidebar')?>
 				</div>
 	        </div>
             <div class="row">
-	            <div class="span16" id="footer">
+	            <div class="span12" id="footer">
 		            <?php theme('footer')?>
 	            </div>
 	        </div>

@@ -1,8 +1,6 @@
-<?if($value):?>
-<div class="image-preview"><?=HTML::img($value,'',$image)?><a href="<?=Ajax::link(array(
-    'action' => 'replace',
-    'form' => $form->name,
-    'element' => $element->name,
-))?>" class="form-action delete">x</a></div>
-<?endif;?>
-<?=HTML::input($attributes)?>
+<?php if ($value && file_exists(UPLOADS.$value)): ?>
+<div class="image-preview"><img src="<?php echo File::pathToUri(UPLOADS.$value) ?>"></div>
+<label class="checkbox"><input type="checkbox" name="<?php echo $element->name ?>" value=""/> <?php echo t('Delete') ?></label>    
+<?php endif; ?>
+<?php echo HTML::input($element->options) ?>
+

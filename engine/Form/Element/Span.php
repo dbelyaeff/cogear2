@@ -28,7 +28,7 @@ class Form_Element_Span extends Form_Element_Abstract {
      * Render
      */
     public function render() {
-        $this->getAttributes();
+        $this->prepareOptions();
         $this->code = HTML::paired_tag('span',$this->value);
         return parent::render();
     }

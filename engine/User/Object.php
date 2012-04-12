@@ -55,8 +55,8 @@ class User_Object extends Db_Item {
      */
     public function autologin() {
         $cogear = cogear();
-        if ($cogear->session->user) {
-            $this->attach($cogear->session->user);
+        if ($cogear->session->get('user')) {
+            $this->attach($cogear->session->get('user'));
             return TRUE;
         } elseif ($id = Cookie::get('id') && $hash = Cookie::get('hash')) {
             $this->id = $id;
@@ -72,7 +72,7 @@ class User_Object extends Db_Item {
      * Store — save user to session
      */
     public function store($data = array()) {
-        cogear()->session->user = $data ? Core_ArrayObject::transform($data) : $this->object;
+        cogear()->session->set('user',$data ? Core_ArrayObject::transform($data) : $this->object);
         return TRUE;
     }
 
@@ -112,7 +112,7 @@ class User_Object extends Db_Item {
      * @return boolean
      */
     public function isLogged() {
-        return cogear()->session->user;
+        return $this->id;
     }
 
     /**
@@ -141,7 +141,7 @@ class User_Object extends Db_Item {
      */
     public function hashPassword($password = NULL) {
         $password OR $password = $this->password;
-        $this->password = md5(md5($password) . Cogear::key());
+        $this->password = md5(md5($password) . cogear()->secure->key());
         return $this->password;
     }
 
@@ -151,7 +151,7 @@ class User_Object extends Db_Item {
      * @param object $user
      */
     public function genHash() {
-        return md5($this->password . Cogear::key());
+        return md5($this->password . cogear()->secure->key());
     }
 
     /**

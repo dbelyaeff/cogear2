@@ -17,9 +17,10 @@ class Notify_Gear extends Gear {
     protected $name = 'Notifications';
     protected $description = 'Handle with messages dialogs and windows.';
     protected $order = -1000;
-    protected $default_template = 'Notify.alert';
+    protected $template = 'Notify.alert';
     protected $hooks = array(
-        'done' => 'renderFlash',
+        'form.load' => 'renderFlash',
+        'reponse.send' => 'renderFlash',
     );
     
     /**
@@ -30,7 +31,7 @@ class Notify_Gear extends Gear {
      * @param type $class 
      */
     public function showMessage($body, $title=NULL, $class=NULL, $region = 'content') {
-        $tpl = new Template($this->default_template);
+        $tpl = new Template($this->template);
         $tpl->body = $body;
         $tpl->title = $title;
         $tpl->class = $class;
@@ -43,7 +44,7 @@ class Notify_Gear extends Gear {
      * @param type $title
      * @param type $class 
      */
-    public function flashMessage($body, $title=NULL, $class=NULL, $region = 'content') {
+    public function flashMessage($body, $title=NULL, $class=NULL, $region = 'before') {
         $this->session->messages OR $this->session->messages = new Core_ArrayObject();
         $this->session->messages->append(array(
             'body' => $body,
@@ -56,12 +57,12 @@ class Notify_Gear extends Gear {
     /**
      * Render flash messages
      */
-    public function renderFlash(){
+    public function renderFlash($Form){
         if($this->session->messages){
             foreach($this->session->messages as $message){
                 $this->showMessage($message['body'],$message['title'],$message['class'],$message['region']);
             }
-            $this->session->messages = array();
+            $this->session->remove('messages');
         }
     }
 }
@@ -74,7 +75,17 @@ class Notify_Gear extends Gear {
  * @param string  $content
  */
 function info($body, $title = NULL, $region='content') {
-    cogear()->notify->showMessage($body, $title, NULL, $region);
+    cogear()->notify->showMessage($body, $title, 'alert-info', $region);
+}
+/**
+ * Show notification "warning"
+ * 
+ * @param string $body
+ * @param string $title 
+ * @param string  $content
+ */
+function warning($body, $title = NULL, $region='content') {
+    cogear()->notify->showMessage($body, $title, 'alert-warning', $region);
 }
 
 /**
@@ -85,7 +96,7 @@ function info($body, $title = NULL, $region='content') {
  * @param string  $content
  */
 function success($body, $title = NULL, $region='content') {
-    cogear()->notify->showMessage($body, $title, 'success', $region);
+    cogear()->notify->showMessage($body, $title, 'alert-success', $region);
 }
 
 /**
@@ -96,7 +107,7 @@ function success($body, $title = NULL, $region='content') {
  * @param string  $content
  */
 function error($body, $title = NULL, $region='content') {
-    cogear()->notify->showMessage($body, $title, 'error', $region);
+    cogear()->notify->showMessage($body, $title, 'alert-error', $region);
 }
 /**
  * Show flash  notification "info"
@@ -108,6 +119,16 @@ function error($body, $title = NULL, $region='content') {
 function flash_info($body, $title = NULL, $region='content') {
     cogear()->notify->flashMessage($body, $title, NULL, $region);
 }
+/**
+ * Show flash  notification "warning"
+ * 
+ * @param string $body
+ * @param string $title 
+ * @param string  $content
+ */
+function flash_warning($body, $title = NULL, $region='content') {
+    cogear()->notify->flashMessage($body, $title, NULL, $region);
+}
 
 /**
  * Show flash  notification "success"
@@ -117,7 +138,7 @@ function flash_info($body, $title = NULL, $region='content') {
  * @param string  $content
  */
 function flash_success($body, $title = NULL, $region='content') {
-    cogear()->notify->flashMessage($body, $title, 'success', $region);
+    cogear()->notify->flashMessage($body, $title, 'alert-success', $region);
 }
 
 /**
@@ -128,5 +149,5 @@ function flash_success($body, $title = NULL, $region='content') {
  * @param string  $content
  */
 function flash_error($body, $title = NULL, $region='content') {
-    cogear()->notify->flashMessage($body, $title, 'error', $region);
+    cogear()->notify->flashMessage($body, $title, 'alert-error', $region);
 }

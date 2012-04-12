@@ -223,15 +223,6 @@ class Access_Gear extends Gear {
         }
     }
 
-    /**
-     * 
-     */
-    public function _403() {
-        $this->response->header('Status', '403 ' . Response::$codes[403]);
-        event('exit');  
-        exit(t('You don\'t have enought permissions to access this page.'));
-    }
-
 }
 
 function access($rule) {
@@ -243,14 +234,10 @@ function page_access($rule) {
     if (access($rule)) {
         return TRUE;
     } else {
-        return _403();
+        return event('403');
     }
 }
 
-function _403() {
-    $cogear = getInstance();
-    $cogear->router->exec(array($cogear->access, '_403'));
-}
 
 function allow_role($rules, $role = NULL) {
     cogear()->access->addRoleRights($rules, $role);

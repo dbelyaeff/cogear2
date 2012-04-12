@@ -37,7 +37,8 @@ class Input_Gear extends Gear {
      * @param mixed $default
      * @return mixed 
      */
-    public function get($name,$default = NULL){
+    public function get($name = '',$default = NULL){
+        if(!$name) return $this->get;
         return isset($this->get[$name]) ? $this->get[$name] : $default;
     }
     /**
@@ -47,7 +48,8 @@ class Input_Gear extends Gear {
      * @param mixed $default
      * @return mixed 
      */
-    public function post($name,$default = NULL){
+    public function post($name = '',$default = NULL){
+        if(!$name) return $this->post;
         return isset($this->post[$name]) ? $this->post[$name] : $default;
     }
     /**
@@ -57,7 +59,8 @@ class Input_Gear extends Gear {
      * @param mixed $default
      * @return mixed 
      */
-    public function cookie($name,$default = NULL){
+    public function cookie($name = '',$default = NULL){
+        if(!$name) return $this->cookie;
         return isset($this->cookie[$name]) ? $this->cookie[$name] : $default;
     }
 }

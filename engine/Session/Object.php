@@ -47,7 +47,6 @@ class Session_Object extends Cache_Object {
         'hash_function' => NULL,
         'hash_bits_per_character' => NULL
     );
-    const HISTORY_STEPS = 10;
 
     /**
      * Constructor
@@ -87,13 +86,6 @@ class Session_Object extends Cache_Object {
             session_start();
         }
         $this->init();
-
-        // check if session id needs regeneration
-        if ($this->sessionIdExpired()) {
-            // regenerate session id (session data stays the
-            // same, but old session storage is destroyed)
-            session_regenerate_id();
-        }
     }
 
     /**
@@ -105,16 +97,7 @@ class Session_Object extends Cache_Object {
         isset($_SESSION['user_agent']) OR $_SESSION['user_agent'] = $cogear->request->getUserAgent();
         $_SESSION['ip'] = $cogear->request->get('ip');
         $_SESSION['session_id'] = session_id();
-        if (!isset($_SESSION['history'])) {
-            $_SESSION['history'] = new Core_ArrayObject();
-        } else {
-            $last = end($_SESSION['history']);
-        }
         $referer = $cogear->request->get('HTTP_REFERER', '/');
-        if (!isset($last) OR $last != $referer) {
-            $_SESSION['history'][] = $referer;
-        }
-        sizeof($_SESSION['history']) > self::HISTORY_STEPS && $_SESSION['history'] = new Core_ArrayObject(array_slice($_SESSION['history']->toArray(), sizeof($_SESSION['history']) - self::HISTORY_STEPS));
     }
 
     /**
@@ -129,36 +112,6 @@ class Session_Object extends Cache_Object {
         $needle = $current + $page;
         return isset($_SESSION['history'][$needle]) ? $_SESSION['history'][$needle] : ($default ? $default : NULL);
     }
-
-//    /**
-//     * Regenerates session id
-//     */
-//    private function regenerateId() {
-//        // copy old session data, including its id
-//        $old_session_id = session_id();
-//        $old_session_data = $_SESSION;
-//        // regenerate session id and store it
-//        session_regenerate_id();
-//        $new_session_id = session_id();
-//
-//        // switch to the old session and destroy its storage
-//        session_id($old_session_id);
-//        session_destroy();
-//
-//        $this->setHandler();
-//        session_name($this->name);
-//        // switch back to the new session id and send the cookie
-//        session_id($new_session_id);
-//        session_start();
-//
-//        // restore the old session data into the new session
-//        $_SESSION = $old_session_data;
-//
-//        // update the session creation time
-//        $_SESSION['regenerated'] = time();
-//
-//        session_write_close();
-//    }
 
     /**
      * Magic __get method
@@ -178,6 +131,15 @@ class Session_Object extends Cache_Object {
      */
     public function __set($name, $value) {
         return $this->set($name, $value);
+    }
+    
+    /**
+     * __isset magic method
+     * 
+     * @param type $name 
+     */
+    public function __isset($name){
+        return isset($_SESSION[$name]);
     }
 
     /**
@@ -270,23 +232,6 @@ class Session_Object extends Cache_Object {
     }
 
     /**
-     * Checks if session has expired
-     */
-    function sessionIdExpired() {
-        if (!isset($_SESSION['regenerated'])) {
-            $_SESSION['regenerated'] = time();
-            return FALSE;
-        }
-        $expiry_time = time() - $this->options->session_expire;
-
-        if ($_SESSION['regenerated'] <= $expiry_time) {
-            return TRUE;
-        }
-
-        return FALSE;
-    }
-
-    /**
      * Alias to unset method
      */
     public function remove() {
@@ -299,7 +244,6 @@ class Session_Object extends Cache_Object {
      */
     public function delete() {
         $args = func_get_args();
-        return call_user_func_array(array($this, 'unset'), $args);
+        return call_user_func_array(array($this, 'destroy'), $args);
     }
-
 }

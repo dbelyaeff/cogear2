@@ -155,7 +155,7 @@ class Theme_Gear extends Gear {
      * Output
      */
     public function output(){
-        $this->current->render();
+        $this->current && $this->current->render();
     }
 }
 

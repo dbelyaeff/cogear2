@@ -92,7 +92,7 @@ class Image_Preset extends Core_ArrayObject {
      */
     public function render(){
         $preset_image = $this->buildPath();
-        if(!file_exists($preset_image) OR filemtime($preset_image) < filemtime($this->image->path)){
+        if(!file_exists($preset_image) OR filemtime($preset_image) < filemtime($this->image->file)){
             $this->process();
             $this->image->save($preset_image);
         }

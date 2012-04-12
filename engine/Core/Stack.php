@@ -12,23 +12,13 @@
  * @version		$Id$
  */
 class Stack extends Object {
-
     /**
-     * Stack name
-     * 
-     * @var string 
+     * Init
      */
-    protected $name;
-
-    /**
-     * Constructor
-     * 
-     * @param   string  $name
-     */
-    public function __construct($name) {
-        $this->name = $name;
-        parent::__construct();
+    public function init() {
+        event('stack.' . $this->name, $this);
     }
+
     /**
      * Render stack
      * 
@@ -36,7 +26,7 @@ class Stack extends Object {
      * @return string
      */
     public function render($glue = ' ') {
-        event('stack.' . $this->name, $this);
+        $this->init();
         return $this->toString($glue);
     }
 

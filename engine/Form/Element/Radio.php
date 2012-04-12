@@ -34,7 +34,7 @@ class Form_Element_Radio extends Form_Element_Abstract {
         $this->setAttributes();
         $code = array();
         foreach ($this->values as $key => $value) {
-            $attributes = $this->attributes;
+            $attributes = $this->options;
             $attributes['value'] = $key;
             if ($key === $this->value) {
                 $attributes['checked'] = 'checked';
@@ -44,7 +44,7 @@ class Form_Element_Radio extends Form_Element_Abstract {
         $code = implode("<br/>", $code);
         if ($this->wrapper) {
             $tpl = new Template($this->wrapper);
-            $tpl->assign($this->attributes);
+            $tpl->assign($this->options);
             $tpl->code = $code;
             $code = $tpl->render();
         }

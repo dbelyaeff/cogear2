@@ -13,7 +13,7 @@
  */
 class Menu_Object extends Object {
     protected $pointer = 0;
-    protected $options = array(
+    public $options = array(
         'name' => 'primary',
         'template' => 'Menu.menu',
         'show_empty' => TRUE,
@@ -49,7 +49,7 @@ class Menu_Object extends Object {
             isset($item['order']) OR $item['order'] = $this->pointer++;
             $item = new Menu_Item($item);
         }
-        if ($item->condition !== FALSE) {
+        if ($item->access !== FALSE) {
             $this->append($item);
         }
         return $this;
@@ -59,23 +59,8 @@ class Menu_Object extends Object {
      * Set menu items active
      */
     public function setActive() {
-        $uri = cogear()->router->getUri();
-        $no_active = TRUE;
-        foreach ($this as $item) {
-            if ($item->link) {
-                $link = trim(str_replace(Url::link(), '', $item->link), '/ ');
-                if (strpos($uri, $link) === 0) {
-                    $item->active !== NULL OR $item->active = TRUE;
-                    $no_active && $no_active = FALSE;
-                }
-            }
-        }
-        if ($no_active) {
-            foreach ($this as $item) {
-                if ($item->default_active) {
-                    $item->active = TRUE;
-                }
-            }
+        foreach($this as &$item){
+            cogear()->router->check(trim($item->link,' /')) && $item->options->active = TRUE;
         }
     }
 
@@ -90,12 +75,9 @@ class Menu_Object extends Object {
         foreach ($this as $item) {
             $stop = FALSE;
             foreach ($condtitions as $key => $value) {
-                if ($item->$key !== $value) {
-                    $stop = TRUE;
+                if ($item->$key == $value) {
+                    $result->append($item);
                 }
-            }
-            if (!$stop) {
-                $result->append($item);
             }
         }
         return $result->count() ? $result : NULL;

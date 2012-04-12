@@ -1,7 +1,29 @@
 img.avatar{
-   /*border: 1px solid #C4E3F6; */
    vertical-align: middle;
 }
-a.implicit{
-    text-decoration: none;
+.navbar .container{
+    position: relative;
+}
+.navbar .avatar{
+    position: absolute;
+    top: 0;
+    left: -25px;
+}
+.user_profile_navbar .avatar{
+    vertical-align: middle;
+}
+.user_profile_navbar strong a{
+    font-size: 1.5em;
+}
+.user_profile .nav{
+    margin: 5px 0;
+}
+.user_profile_fields{
+    margin: 10px 0;
+}
+.user_profile_fields .control-group .control-label{
+    font-weight: bold;
+}
+.user_profile_fields .control-group .controls{
+    padding-top: 5px;
 }

@@ -29,7 +29,7 @@ class jQuery_Gear extends Gear {
 //            $server_version = $matches[1];
 //            if (version_compare($server_version, $current_version, '>')) {
 //                if($action = 'update'){
-//                    Filesystem::delete($current_script);
+//                    File::delete($current_script);
 //                    copy($server_script,dirname($current_script).DS.basename($server_script));
 //                    success(t('jQuery library has been update successfully!'));
 //                }

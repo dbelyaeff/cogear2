@@ -28,8 +28,8 @@ class Form_Element_Select extends Form_Element_Abstract{
             $callback = Callback::prepare($this->callback);
             is_callable($callback) && $this->setValues(call_user_func($callback));
         }
-        $this->getAttributes();
-        $code[] = HTML::open_tag('select', $this->attributes);
+        $this->prepareOptions();
+        $code[] = HTML::open_tag('select', $this->options);
         foreach($this->values as $key=>$value){
             $attributes = array();
             if($key == $this->value){
@@ -42,7 +42,7 @@ class Form_Element_Select extends Form_Element_Abstract{
         $code = implode("\n",$code);
         if ($this->wrapper) {
             $tpl = new Template($this->wrapper);
-            $tpl->assign($this->attributes);
+            $tpl->assign($this->options);
             $tpl->code = $code;
             $code = $tpl->render();
         }

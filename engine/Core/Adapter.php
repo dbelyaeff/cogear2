@@ -41,8 +41,17 @@ class Adapter extends Cogearable {
             $this->adapter->$name = $value;
         }
         else {
-            $this->$name = $value;
+            $this->offsetSet($name,$value);
         }
+    }
+    
+    /**
+     * __isset magic method
+     *
+     * @param string $name 
+     */
+    public function __isset($name){
+        return isset($this->adapter->$name); 
     }
 
     /**

@@ -169,6 +169,10 @@ class Router_Object extends Options {
      * @return  boolean
      */
     public function check($uri,$type = self::STARTS){
+        $site = 'http://'.config('site.url').'/';
+        if(strpos($uri,$site) !== FALSE){
+            $uri = str_replace($site,'',$uri);
+        }
         switch($type){
             case self::STARTS:
                 if(strpos($this->uri,$uri) === 0){
@@ -181,7 +185,7 @@ class Router_Object extends Options {
                 }
                 break;
             case self::BOTH:
-                if(strpos($this->uri,$uri) !== FALSE){
+                if(strpos($this->uri,$uri) !== FALSE && strlen($this->uri) == strlen($uri)){
                     return TRUE;
                 }
                 break;
@@ -198,6 +202,7 @@ class Router_Object extends Options {
                             $this->rules['from'],
                             $this->rules['to'],
                             $route);
+            $clean_route = $route;
             if (strpos($route, '^') === FALSE) {
                 $route = '^' . $route;
             }
@@ -207,7 +212,7 @@ class Router_Object extends Options {
             $regexp = '#' . $route . '#isU';
             if (preg_match($regexp, $this->uri,$this->matches)) {
                 $args = array();
-                $root = trim(substr($route,0,strpos($route,'(')),self::DELIM);
+                $root = trim(substr($clean_route,0,strpos($clean_route,'(')),self::DELIM);
                 $exclude = strpos($root,self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
                 $this->args = array_merge($args,array_diff_assoc($this->segments,$exclude));
                 // We have a nice method in hooks to prepare callback

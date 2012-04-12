@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Template_Object {
+class Template_Object extends Core_ArrayObject{
 
     protected $name = '';
     protected $path = '';
@@ -29,8 +29,8 @@ class Template_Object {
         if (file_exists($path)) {
             $this->path = $path;
         } else {
-            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', 'Errors', $this->name, $this->path);
-            exit($message);
+            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', 'Errors', $name, $path);
+            error($message);
         }
     }
 
@@ -131,12 +131,26 @@ class Template_Object {
      * @return type 
      */
     public function render(){
-        event('template.render.before', $this);
+        if(!$this->path) return;
         ob_start();
+        event('template.render.before', $this);
         extract($this->vars);
         include $this->path;
         event('template.render.after', $this);
         return ob_get_clean();;
     }
 
+}
+
+/**
+ * Template object alias
+ *
+ * @param string $name
+ * @param array $args
+ * @return Template 
+ */
+function template($name,$args = array()){
+    $tpl = new Template($name);
+    $args && $tpl->assign($args);
+    return $tpl;
 }

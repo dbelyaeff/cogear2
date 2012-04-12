@@ -139,7 +139,7 @@ abstract class Gear extends Adapter {
      * @var boolean 
      */
     protected $is_requested;
-
+    
     /**
      * Required gears [version is optoinal]
      *
@@ -252,16 +252,6 @@ abstract class Gear extends Adapter {
             }
         }
         return TRUE;
-    }
-
-    /**
-     * Magic __get method
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name) {
-        return isset($this->$name) ? $this->$name : parent::__get($name);
     }
 
     /**

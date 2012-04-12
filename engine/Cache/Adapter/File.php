@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Filesystem cache
+ * File cache
  *
  *
  *
@@ -27,7 +27,7 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract{
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        Filesystem::makeDir($this->options->path);
+        File::mkdir($this->options->path);
     }
     /**
      * Read from cache
@@ -83,7 +83,7 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract{
                 $this->write('tags/'.$tag,'',array(),$ttl);
             }
         }
-        Filesystem::makeDir($this->options->path);
+        File::mkdir($this->options->path);
         file_put_contents($this->options->path.DS.$name, PHP_FILE_PREFIX.'return '.var_export($data,TRUE).';');
     }
     /**

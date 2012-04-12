@@ -1332,7 +1332,7 @@ class Mail_PHPMailer {
   /////////////////////////////////////////////////
 
   /**
-   * Adds an attachment from a path on the filesystem.
+   * Adds an attachment from a path on the File.
    * Returns false if the file could not be found
    * or accessed.
    * @param string $path Path to the attachment.
@@ -1744,7 +1744,7 @@ class Mail_PHPMailer {
   }
 
   /**
-   * Adds a string or binary attachment (non-filesystem) to the list.
+   * Adds a string or binary attachment (non-File) to the list.
    * This method can be used to attach ascii or binary data,
    * such as a BLOB record from a database.
    * @param string $string String attachment data.
@@ -1879,7 +1879,7 @@ class Mail_PHPMailer {
   }
 
   /**
-   * Clears all previously set filesystem, string, and binary
+   * Clears all previously set File, string, and binary
    * attachments.  Returns void.
    * @return void
    */

@@ -15,6 +15,7 @@ class Router_Gear extends Gear {
 
     protected $name = 'Router';
     protected $description = 'Manage routes';
+    protected $order = -1000;
 
     /**
      * Constructor
@@ -23,5 +24,4 @@ class Router_Gear extends Gear {
         parent::__construct();
         $this->adapter = new Router_Object();
     }
-
 }

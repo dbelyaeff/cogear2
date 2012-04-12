@@ -11,23 +11,33 @@
  * @version		$Id$
  */
 class Form_Element_Checkbox extends Form_Element_Abstract{
-    protected $type = 'checkbox';
-    protected $attributes = array('class'=>'inline left');
+    /**
+     * Constructor
+     * 
+     * @param type $options 
+     */
+    public function __construct($options) {
+        $options['template'] = 'Form.checkbox';
+        parent::__construct($options);
+    }
     /**
      * Process elements value from request
      *
      * @return
      */
     public function result() {
-        $this->value = isset($this->form->request[$this->name]) ? 1 : 0;
+        $method = $this->form->method;
+        $this->value = cogear()->input->$method($this->name) ? 1 : 0;
         $this->is_fetched = TRUE;
-//        $this->filter();
         return $this->validate() ? $this->value : FALSE;
     }
-    public function getAttributes() {
-        $this->value && $this->attributes->checked = 'checked';
-        parent::getAttributes();
-        $this->attributes->offsetUnset('value');
-        return $this->attributes;
+    /**
+     * Prepare options
+     * @return type 
+     */
+    public function prepareOptions() {
+        $this->value && $this->options->checked = 'checked';
+        parent::prepareOptions();
+        return $this->options;
     }
 }

@@ -12,7 +12,6 @@
  * @version		$Id$
  */
 class Response_Object extends Core_ArrayObject {
-
     /**
      * HTTP codes
      *
@@ -142,10 +141,12 @@ class Response_Object extends Core_ArrayObject {
      * Send response
      */
     public function send() {
+        event('reponse.send',$this);
         $this->sendHeaders();
         foreach ($this as $value) {
             echo $value;
         }
+        event('reponse.send.after',$this);
     }
 
 }
@@ -160,11 +161,13 @@ function redirect($url = NULL) {
     exit;
 }
 
-function history($step = -1) {
-    $cogear = cogear();
-    redirect($cogear->session->history($step, '/'));
-}
 
 function back() {
-    history(-1);
+    $referer = cogear()->request->get('HTTP_REFERER');
+    $referer = str_replace('http://'.config('site.url'),'',$referer);
+    $referer = ltrim($referer,'/');
+    $uri = cogear()->router->getUri();
+    if($uri != $referer){
+        redirect(l('/'.$referer));
+    }
 }

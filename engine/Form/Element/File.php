@@ -13,13 +13,6 @@
  */
 class Form_Element_File extends Form_Element_Abstract {
 
-    protected $type = 'file';
-    protected $path;
-    protected $allowed_types;
-    protected $maxsize;
-    protected $overwrite = TRUE;
-    protected $rename;
-
     /**
      * Process elements value from request
      *
@@ -27,7 +20,7 @@ class Form_Element_File extends Form_Element_Abstract {
      */
     public function result() {
         $cogear = cogear();
-        $file = new Upload_File($this->name, $this->prepareOptions(), $this->validators->findByValue('Required'));
+        $file = new File_Upload($this->prepareOptions());
         if ($value = $file->upload()) {
             $this->is_fetched = TRUE;
             $this->value = $value;
@@ -42,13 +35,8 @@ class Form_Element_File extends Form_Element_Abstract {
      */
     public function render() {
         $this->prepareOptions();
-        if ($this->value && $this->value = Url::link(Url::toUri(UPLOADS . $this->value, ROOT, FALSE))) {
-            $tpl = new Template('Form.file');
-            $tpl->assign($this->attributes);
-            $tpl->value = $this->value;
-            $this->code = $tpl->render();
-        }
-        return parent::render();
+        $tpl = new Template('Form.file');
+        $tpl->assign($this->options);
+        return $this->code = $tpl->render();
     }
-
 }

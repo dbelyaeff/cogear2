@@ -124,7 +124,7 @@ class Dev_Gear extends Gear {
         }
         return array(
             'time' => self::microToSec($point['time']),
-            'memory' => Filesystem::fromBytes($point['memory'], $measure),
+            'memory' => File::fromBytes($point['memory'], $measure),
         );
     }
 

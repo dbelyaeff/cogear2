@@ -27,8 +27,8 @@ class GoBack_Gear extends Gear {
     /**
      * Show GoBack button hook
      */
-    public function showGoBackButton(){
-        $link = $this->session->history->getIterator()->current();
-        append('content',HTML::a($link,t("← Go back"),array('class'=>'button goback')));
+    public function showGoBackButton($Form){
+       $tpl = new Template('GoBack.button');
+       $tpl->show();
     }
 }

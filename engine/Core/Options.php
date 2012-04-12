@@ -18,7 +18,7 @@ class Options extends Core_ArrayObject {
      * 
      * @var array 
      */
-    protected $options = array();
+    public $options = array();
     const SELF = 1;
 
     /**
@@ -63,14 +63,5 @@ class Options extends Core_ArrayObject {
         return isset($this->options->$name) ? $this->options->$name : parent::__isset($name);
     }
 
-    /**
-     * Magic set method
-     * 
-     * @param type $name
-     * @param type $value 
-     */
-    public function __set($name, $value) {
-        $this->options->$name = $value;
-    }
 
 }

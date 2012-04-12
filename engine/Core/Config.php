@@ -147,7 +147,7 @@ class Config extends Core_ArrayObject {
      * @return  mixed 
      */
     public static function write($file, $data) {
-        Filesystem::makeDir(dirname($file));
+        File::mkdir(dirname($file));
         $data = var_export($data, TRUE);
         // Now we need to replace paths with constants
         $constants = get_defined_constants(true);

@@ -1,1 +1,0 @@
-<?=t("You are about to upload a file.")?>

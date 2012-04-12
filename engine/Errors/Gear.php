@@ -21,6 +21,8 @@ class Errors_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
+        ini_set('display_errors',1);
+        ini_set('error_reporting',E_ALL);
         set_error_handler(array($this, 'showRawError'));
     }
 
@@ -66,7 +68,7 @@ HTML;
      * @param type $context 
      */
     public function showError($errno, $error, $file, $line, $context) {
-        error(t('Error in file <b>%s</b> was found at line <b>%d</b>: <blockquote>%s</blockquote>', 'Errors', $file, $line, $error), t('Error'));
+        error(t('Error in file <b>%s</b> was found at line <b>%d</b>: <p><i>%s</i>', 'Errors', $file, $line, $error), t('Error'));
     }
 
     public function _404() {

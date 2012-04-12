@@ -76,4 +76,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `hash`, `email`, `name`, `role`, `avatar`, `posts`, `comments`, `is_active`, `reg_date`, `last_visit`) VALUES
-(1, 'admin', '9307dfe7122068a78c5d37c77d9c2c15', '', 'admin@cogear.ru', 'Беляев Дмитрий', 100, '/avatars/1/av.jpg', 3, 0, 0, 1333104704, 1333371473);
+(1, 'admin', 'bd42842bce58feac3b237dc19fe9ff89', '', 'admin@cogear.ru', 'Беляев Дмитрий', 100, '/avatars/1/av.jpg', 3, 0, 0, 1333104704, 1333371473);

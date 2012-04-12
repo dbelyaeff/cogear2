@@ -12,7 +12,7 @@
  */
 abstract class Wysiwyg_Abstract extends Form_Element_Textarea {
     protected static $is_loaded;
-    protected $options;
+    public $options;
 
     /**
      * This is the place where assets must be loaded
