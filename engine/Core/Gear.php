@@ -195,7 +195,7 @@ abstract class Gear extends Adapter {
     /**
      * Load assets
      */
-    public function loadAssets() {
+    protected function loadAssets() {
         $scripts = $this->dir . DS . 'js';
         $styles = $this->dir . DS . 'css';
         is_dir($scripts) && $this->assets->addScriptsFolder($scripts);
@@ -424,7 +424,15 @@ abstract class Gear extends Adapter {
         if (!$args = func_get_args()) {
             $args[] = 'index';
         }
-        method_exists($this, $args[0] . '_action') && call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));
+        if(method_exists($this, $args[0] . '_action')){
+            call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));
+        }
+        elseif(method_exists($this, 'index_action')){
+            call_user_func_array(array($this, 'index_action'), $args);
+        }
+        else {
+            event('404');
+        }
     }
 
 }

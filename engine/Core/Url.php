@@ -14,7 +14,7 @@
  * @version		$Id$
  */
 class Url {
-    const SECURE = '?s=';
+    const SECURE = 's';
     /**
      * Build link
      *
@@ -51,7 +51,7 @@ class Url {
      */
     public static function slink($url='', $absolute_flag = FALSE, $protocol = 'http'){
         $link = self::link($url,$absolute_flag,$protocol);
-        $link .= self::SECURE.cogear()->secure->salt();
+        $link .= '?'.self::SECURE.'='.cogear()->secure->salt();
         return $link;
     }
 

@@ -1,0 +1,24 @@
+.fl_l{
+    float: left;
+}
+.fl_r{
+    float: right;
+}
+.p5{
+    padding: 5px;
+}
+.p10{
+    padding: 10px;
+}
+.p20{
+    padding: 20px;
+}
+.m5{
+    margin: 5px;
+}
+.m10{
+    margin: 10px;
+}
+.m20{
+    margin: 20px;
+}

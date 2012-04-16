@@ -173,6 +173,9 @@ class Router_Object extends Options {
         if(strpos($uri,$site) !== FALSE){
             $uri = str_replace($site,'',$uri);
         }
+        if(!$uri && $this->uri){
+            return FALSE;
+        }
         switch($type){
             case self::STARTS:
                 if(strpos($this->uri,$uri) === 0){

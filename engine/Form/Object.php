@@ -24,6 +24,7 @@ class Form_Object extends Object {
     );
     protected $is_init;
     protected $errors = 0;
+    protected $counter = 0;
     public $result;
     /**
      * Rendered form code
@@ -91,7 +92,8 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct($options);
-        event('form.load',$this);
+        event('Form.load',$this);
+        event('Form.load.'.$this->name,$this);
     }
 
     /**
@@ -104,6 +106,10 @@ class Form_Object extends Object {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
         $config->name = $name;
         $config->form = $this;
+        if(!$config->order){
+            $this->counter++;
+            $config->order = $this->counter; 
+        }
         if ($config->access !== FALSE) {
             if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
                 $this->elements->$name = new self::$types[$config->type]($config);
@@ -116,7 +122,8 @@ class Form_Object extends Object {
      */
     public function init() {
         if($this->is_init) return;
-        event('form.init', $this);
+        event('Form.init', $this);
+        event('Form.init.'.$this->name, $this);
         foreach ($this->options->elements as $name => $config) {
             $this->addElement($name, $config);
         }
@@ -137,7 +144,7 @@ class Form_Object extends Object {
      */
     public function attach($data) {
         parent::attach($data);
-        event('form.attach', $this);
+        event('Form.attach', $this);
         $this->setValues($this->object);
     }
 
@@ -163,7 +170,7 @@ class Form_Object extends Object {
      */
     public function result() {
         $this->init();
-        event('form.result.before', $this);
+        event('Form.result.before', $this);
         $method = strtolower($this->options->method);
         $result = array();
         $is_valid = TRUE;
@@ -177,7 +184,7 @@ class Form_Object extends Object {
                 }
             }
         }
-        event('form.result.after', $this, $is_valid, $result);
+        event('Form.result.after', $this, $is_valid, $result);
         return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
     }
 
@@ -195,13 +202,14 @@ class Form_Object extends Object {
      */
     public function render() {
         $this->init();
-        event('form.render', $this);
+        event('Form.render', $this);
+        $this->elements->uasort('Core_ArrayObject::sortByOrder');
         $tpl = new Template($this->options->template);
         $id = $this->getId();
         $tpl->form = $this;
         $tpl->options = $this->options;
         $this->code = $tpl->render();
-        event('form.render.after', $this);
+        event('Form.render.after', $this);
         return $this->code;
     }
     

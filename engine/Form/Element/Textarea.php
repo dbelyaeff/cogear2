@@ -11,7 +11,6 @@
  * @version		$Id$
  */
 class Form_Element_Textarea extends Form_Element_Abstract{
-    protected $type = 'textarea';
     /**
      * Render
      * 

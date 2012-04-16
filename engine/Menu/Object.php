@@ -12,6 +12,7 @@
  * @version		$Id$
  */
 class Menu_Object extends Object {
+
     protected $pointer = 0;
     public $options = array(
         'name' => 'primary',
@@ -31,8 +32,8 @@ class Menu_Object extends Object {
         $this->options->base_uri = rtrim(parse_url($this->options->base_uri ? $this->options->base_uri : Url::link(), PHP_URL_PATH), '/') . '/';
         $this->options->render && hook($this->options->render, array($this, 'output'));
         // Register elements from config
-        if($this->options->elements){
-            foreach($this->options->elements as $item){
+        if ($this->options->elements) {
+            foreach ($this->options->elements as $item) {
                 $this->register($item->toArray());
             }
         }
@@ -59,8 +60,8 @@ class Menu_Object extends Object {
      * Set menu items active
      */
     public function setActive() {
-        foreach($this as &$item){
-            cogear()->router->check(trim($item->link,' /')) && $item->options->active = TRUE;
+        foreach ($this as &$item) {
+            cogear()->router->check(trim($item->link, ' /')) && $item->options->active = TRUE;
         }
     }
 
@@ -89,8 +90,8 @@ class Menu_Object extends Object {
      * @param string $glue
      * @return string
      */
-    public function render($to = NULL) {
-        event('menu.' . $this->options->name, $this);
+    public function render() {
+        event('menu.render', $this);
         if ($this->count()) {
             $this->uasort('Core_ArrayObject::sortByOrder');
             $this->setActive();
@@ -98,7 +99,7 @@ class Menu_Object extends Object {
         if ($this->count() OR $this->options->show_empty) {
             $tpl = new Template($this->options->template);
             $tpl->menu = $this;
-            return $tpl->render($to);
+            return $tpl->render();
         }
         return NULL;
     }

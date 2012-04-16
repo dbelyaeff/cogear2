@@ -18,14 +18,15 @@ class Form_Element_Button extends Form_Element_Abstract{
      * @return NULL
      */
     public function result(){
-        $this->value = isset($this->form->request[$this->name]) ? $this->form->request[$this->name] : FALSE;
+        $method = strtolower($this->form->method);
+        $this->value = cogear()->input->$method($this->name);
         $this->is_fetched = TRUE;
-        return isset($this->form->request[$this->name]) ? TRUE : NULL;
+        return $this->value ? TRUE : NULL;
     }
     
     public function render(){
         $this->prepareOptions();
-        $this->options->value = $this->label;
+        $this->value = $this->label;
         $this->options->label = '';
         $this->code = HTML::input($this->options);
         return parent::render();

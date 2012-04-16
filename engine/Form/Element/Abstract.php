@@ -61,7 +61,7 @@ class Form_Element_Abstract extends Options {
      * @param mixed $value
      */
     public function setValue($value) {
-        $this->options->value = $value;
+        $this->value = $value;
     }
 
     /**
@@ -126,7 +126,6 @@ class Form_Element_Abstract extends Options {
     public function result() {
         $method = strtolower($this->form->method);
         $this->value = cogear()->input->$method($this->name,$this->options->value);
-        $this->is_fetched = TRUE;
         $this->filter();
         $result = $this->validate() ? $this->value : FALSE;
         return $result;
@@ -150,6 +149,7 @@ class Form_Element_Abstract extends Options {
         $this->options->required = $this->validators && $this->validators->findByValue('Required');
         $this->options->errors = $this->errors;
         $this->options->errors->count() && $this->options->class .= ' error';
+        $this->options->value = $this->value;
         $this->options->element = $this;
         return $this->options;
     }

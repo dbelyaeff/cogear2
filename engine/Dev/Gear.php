@@ -61,7 +61,6 @@ class Dev_Gear extends Gear {
             $template = new Template('Dev.results');
             $template->data = Dev_Gear::humanize($cogear->dev->measurePoint('system'));
             append('footer', $template->render());
-            js($this->folder . '/js/inline/debug.js');
         }
     }
 
@@ -138,4 +137,16 @@ class Dev_Gear extends Gear {
         return $microtime;
     }
 
+}
+
+
+/**
+ * Temp debug
+ * 
+ * @param type $data 
+ */
+function debug($data){
+    echo '<pre class="debug">';
+    $data ? print_r($data) : var_export($data);
+    echo '</pre>';
 }

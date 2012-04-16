@@ -18,6 +18,9 @@ class User_Gear extends Gear {
     protected $order = -10;
     protected $current;
     protected $roles;
+    protected $hooks = array(
+        'post.show.full.before' => 'postShowUserNavbar',
+    );
 
     /**
      * Init
@@ -47,13 +50,14 @@ class User_Gear extends Gear {
                 if ($this->user->id) {
                     $menu->register(array(
                         'label' => $this->getAvatarImage('avatar.navbar'),
-                        'link' => $this->getProfileLink(),
+                        'link' => $this->getLink(),
                         'place' => 'left',
                     ));
                     $menu->register(array(
                         'label' => $this->getName(),
-                        'link' => $this->getProfileLink(),
+                        'link' => $this->getLink(),
                         'place' => 'left',
+                        'active' => TRUE,
                     ));
                     $menu->register(array(
                         'label' => t('Logout'),
@@ -161,10 +165,10 @@ class User_Gear extends Gear {
      * 
      * @param string $login
      */
-    public function show_action($id = NULL) {
-        if ($id) {
+    public function show_action($login = NULL) {
+        if ($login) {
             $user = new User_Object();
-            $this->db->where('id', $id);
+            $this->db->where('login', $login);
             if (!$user->find()) {
                 return event('404');
             }
@@ -172,24 +176,13 @@ class User_Gear extends Gear {
             $user = $this->adapter;
         }
         if ($user->id) {
-            $this->renderUserInfo($user);
+            $user->navbar()->show();
             $tpl = new Template('User.profile');
             $tpl->user = $user;
             $tpl->show();
         } else {
             return event('404');
         }
-    }
-
-    /**
-     * Render user info
-     * 
-     * @param object $user 
-     */
-    public function renderUserInfo($User) {
-        $tpl = new Template('User.navbar');
-        $tpl->user = $User;
-        $tpl->show();
     }
 
     /**
@@ -207,11 +200,11 @@ class User_Gear extends Gear {
         if (!access('user.edit.all') && $this->id != $user->id) {
             return event('403');
         }
-        $this->renderUserInfo($user);
+        $user->navbar()->show();
         $form = new Form('User.profile');
         $user->password = '';
         $form->attach($user->object);
-        if($user->id == 1){
+        if ($user->id == 1) {
             $form->elements->delete->options->render = FALSE;
         }
         if ($result = $form->result()) {
@@ -230,11 +223,11 @@ class User_Gear extends Gear {
                 unset($user->password);
             }
             if ($user->update()) {
-                flash_success(t('User data saved!','User'), t('Success'));
+                flash_success(t('User data saved!', 'User'), t('Success'));
                 if ($user->id == $this->id) {
                     $this->store($user->object->toArray());
                 }
-                redirect(l('/user/edit/'.$id));
+                redirect(l('/user/edit/' . $id));
             }
         }
         $form->show();
@@ -372,5 +365,13 @@ class User_Gear extends Gear {
         else
             $form->show();
     }
-
+    
+    /**
+     * Show user navbar
+     *
+     * @param object $Stack 
+     */
+    public function postShowUserNavbar($Stack){
+        return $Stack->object->author->navbar()->show();
+    }
 }

@@ -26,6 +26,7 @@ class Form_Element_Image extends Form_Element_File {
             $this->value = $result;
         } else {
             $this->errors = $image->errors;
+            $this->value = $this->options->value;
         }
         return $this->value;
     }

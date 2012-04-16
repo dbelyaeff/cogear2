@@ -34,14 +34,6 @@ class Access_Gear extends Gear {
      */
     public function init() {
         parent::init();
-//        if ($rules = $this->system_cache->read('access/rules', TRUE)) {
-//            $this->rules->adopt($rules);
-//        }
-//        if ($roles = $this->system_cache->read('access/roles', TRUE)) {
-//            $this->roles->adopt($roles);
-//        }
-//        $this->getRights();
-//        hook('exit', array($this, 'save'));
     }
 
     /**
@@ -79,7 +71,7 @@ class Access_Gear extends Gear {
         if (!$this->session->access) {
             return FALSE;
         }
-        return $this->session->access->{$rule};
+        return $this->session->access->{$rule} ? $this->session->access->{$rule} : FALSE;
     }
 
     /**
@@ -95,7 +87,6 @@ class Access_Gear extends Gear {
      * Get rights for user and his role
      */
     public function getRights() {
-        DEVELOPMENT && $this->reset();
         if ($this->session->access !== NULL) {
             return;
         }

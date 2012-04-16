@@ -91,7 +91,7 @@ class Secure_Gear extends Gear {
      */
     public function checkRequest() {
         if ($s = $this->input->get(Url::SECURE)) {
-            if ($this->salt($s)) {
+            if ($s === $this->salt()) {
                 return TRUE;
             }
             flash_warning(t('You secret key doesn\'t match the original. Please, try once again.'), t('Warning'));

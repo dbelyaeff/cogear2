@@ -15,6 +15,7 @@ class Default_Gear extends Gear {
 
     protected $name = 'Default Gear';
     protected $description = 'Simple example of Gear';
+    protected $order = 100;
     protected $routes = array(
         ':index' => 'index',
     );

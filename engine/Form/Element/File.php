@@ -26,6 +26,7 @@ class Form_Element_File extends Form_Element_Abstract {
             $this->value = $value;
         } else {
             $this->errors = $file->errors;
+            $this->value = $this->options->value;
         }
         return $this->value;
     }

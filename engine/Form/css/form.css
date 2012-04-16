@@ -1,5 +1,4 @@
 form .btn{
-    float: left;
     margin: 0 5px 5px 0;
 }
 .btn-group .btn{
@@ -10,4 +9,11 @@ form .btn{
 }
 .delete .delete-confirm{
     display: none;
+}
+input[type=text],input[type=password]{
+    width: 100%;
+}
+textarea{
+    width: 100%;
+    height: 300px;
 }

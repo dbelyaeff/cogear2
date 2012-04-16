@@ -16,7 +16,7 @@ class Stack extends Object {
      * Init
      */
     public function init() {
-        event('stack.' . $this->name, $this);
+        event($this->name, $this);
     }
 
     /**

@@ -1,6 +1,10 @@
 img.avatar{
    vertical-align: middle;
 }
+.container img.avatar{
+    padding: 1px;
+    border:1px solid #C4E3F6;
+}
 .navbar .container{
     position: relative;
 }

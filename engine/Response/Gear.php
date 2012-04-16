@@ -18,6 +18,7 @@ class Response_Gear extends Gear {
     protected $hooks = array(
         'exit' => 'send',
         '404' => 'notFound',
+        'empty' => 'showEmpty',
     );
 
     /**
@@ -42,5 +43,12 @@ class Response_Gear extends Gear {
         $this->request();
         $tpl = new Template('Response.404');
         $tpl->show();
+    }
+    /**
+     * Not found
+     */
+    public function showEmpty(){
+        $this->request();
+        warning(t('Nothing found','Response'));
     }
 }

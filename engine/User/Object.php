@@ -15,19 +15,15 @@ class User_Object extends Db_Item {
 
     public $dir;
     protected $template = 'User.list';
-    public  $avatar;
+    public $avatar;
 
     /**
      * Constructor
      * 
      * @param   boolean $autoinit
      */
-    public function __construct($id = NULL) {
+    public function __construct() {
         parent::__construct('users');
-        if ($id) {
-            cogear()->db->where('id', $id);
-            $this->find();
-        }
     }
 
     /**
@@ -38,7 +34,7 @@ class User_Object extends Db_Item {
             event('user.autologin', $this);
             $this->dir = $this->dir();
             $this->avatar = $this->getAvatar();
-            if($this->last_visit < time() - config('User.last_visit.peroiod',86400)){
+            if ($this->last_visit < time() - config('User.last_visit.period', 86400)) {
                 $this->last_visit = time();
                 $this->update();
             }
@@ -71,8 +67,8 @@ class User_Object extends Db_Item {
     /**
      * Store — save user to session
      */
-    public function store($data = array()) {
-        cogear()->session->set('user',$data ? Core_ArrayObject::transform($data) : $this->object);
+    public function store() {
+        cogear()->session->set('user', $this->object);
         return TRUE;
     }
 
@@ -171,11 +167,11 @@ class User_Object extends Db_Item {
     /**
      * Get user profile link
      */
-    public function getProfileLink() {
+    public function getLink() {
         if ($this->id) {
-            $this->link = $this->id;
-            event('User.link',$this);
-            return Url::gear('user') . $this->link;
+            $this->link = $this->login;
+            event('User.link', $this);
+            return Url::gear('user') . $this->link . '/';
         }
         return NULL;
     }
@@ -183,8 +179,8 @@ class User_Object extends Db_Item {
     /**
      * Get HTML link to user profile
      */
-    public function getLink() {
-        return HTML::a($this->getProfileLink(), $this->getName());
+    public function getProfileLink() {
+        return HTML::a($this->getLink(), $this->getName());
     }
 
     /**
@@ -203,16 +199,16 @@ class User_Object extends Db_Item {
      * @return string
      */
     public function getAvatarLinked() {
-        return HTML::a($this->getProfileLink(), $this->getAvatarImage());
+        return HTML::a($this->getLink(), $this->getAvatarImage());
     }
-    
+
     /**
      * Get view snippet
      * 
      * @return string
      */
-    public function getListView(){
-        return $this->getAvatarImage().' '.$this->getLink();
+    public function getListView() {
+        return $this->getAvatarImage() . ' ' . $this->getLink();
     }
 
     /**
@@ -226,6 +222,17 @@ class User_Object extends Db_Item {
         }
         $this->avatar->attach($this);
         return $this->avatar;
+    }
+    
+    /**
+     * User navbar
+     */
+    public function navbar() {
+        if (!$this->navbar) {
+            $this->navbar = new User_Navbar();
+            $this->navbar->attach($this);
+        }
+        return $this->navbar;
     }
 
     /**

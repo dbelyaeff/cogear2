@@ -13,26 +13,31 @@
  */
 class Menu_Auto extends Menu_Object {
 
+    protected $is_init;
+
     /**
-     * Constructor
+     * Render
      * 
-     * @param   array   options
+     * @return string
      */
-    public function __construct($options) {
-        parent::__construct($options);
+    public function render() {
         $this->init();
+        return parent::render();
     }
 
     /**
      * Init
      */
     public function init() {
+        if ($this->is_init)
+            return;
         $cogear = getInstance();
         foreach ($cogear->gears as $gear) {
             if (method_exists($gear, 'menu')) {
                 call_user_func_array(array($gear, 'menu'), array($this->options->name, &$this));
             }
-        } 
+        }
+        $this->is_init = TRUE;
     }
 
 }
