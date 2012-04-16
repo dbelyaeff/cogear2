@@ -1,35 +1,29 @@
-<div class="pagination<?if($ajaxed):?> ajaxed<?endif?>"<?if($target):?> rel="<?=$target?>"<?endif?>>
+<div class="pagination">
     <ul>
+        <?php if ($first) { ?><li><a href="<?php echo $base_uri . $first ?>/">&laquo;</a></li><?php } ?>
+        <?php if ($prev) { ?><li><a class="prev" href="<?php echo $base_uri . $prev ?>/">&larr;</a></li><?php } ?>
         <?php
-        $disabled ='';
-        if ($current == $first) {
-				$disabled ='disabled';
-			}
-            echo '<li class="turn-pages '.$disabled.'"><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $first)) : $first) . '">' . t('&laquo;', 'Pager') . '</a></li>';
-            echo '<li class="turn-pages '.$disabled.'"><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $prev)) : $prev) . '">' . t('&lsaquo;', 'Pager') . '</a></li>';      
-        if ($order == Pager_Pages::FORWARD) {
-            for ($i = $first; $i <= $last; $i++) {
-                if ($i != $current) {
-                    echo '<li><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $i)) : $i) . '">' . $i . '</a></li>';
-                } else {
-                    echo '<li class="active"><a href="">' . $i . '</a></li>';
-                }
-            }
-        } else {
-            for ($i = $first; $i >= $last; $i--) {
-                if ($i != $current) {
-                    echo '<li><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $i)) : $i) . '">' . $i . '</a></li>';
-                } else {
-                    echo '<li class="active"><a href="">' . $i . '</a></li>';
-                }
-            }
+        if ($order == Pager::FORWARD) {
+            for ($i = 1; $i <= $pages_num; $i++):
+                ?>
+                <li class="<?php if ($i == $current) { ?>active<?php } ?>">
+                    <a href="<?php echo $base_uri . $i ?>/"><?php echo $i ?></a>
+                </li>
+                <?php
+            endfor;
         }
-        $disabled ='';
-        if ($current == $last) { 
-				$disabled ='disabled'; 
-			}
-			echo '<li class="turn-pages '.$disabled.'"><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $next)) : $next) . '">' . t('&rsaquo;', 'Pager') . '</a></li>';
-            echo '<li class="turn-pages '.$disabled.'"><a href="' . $base_uri . ($method ? '?' . Url::extendQuery(array(Pager_Pages::ARG => $last)) : $last) . '">' . t('&raquo;', 'Pager') . '</a></li>';
+        if ($order == Pager::REVERSE) {
+            for ($i = $pages_num; $i > 0; $i--):
+                ?>
+                <li class="<?php if ($i == $current) { ?>active<?php } ?>">
+                    <a href="<?php echo $base_uri . $i ?>/"><?php echo $i ?></a>
+                </li>
+                <?php
+            endfor;
+        }
         ?>
+
+        <?php if ($next) { ?><li><a class="next" href="<?php echo $base_uri . $next ?>/">&rarr;</a></li><?php } ?>
+        <?php if ($last) { ?><li><a href="<?php echo $base_uri . $last ?>/">&raquo;</a></li><?php } ?>
     </ul>
 </div>
