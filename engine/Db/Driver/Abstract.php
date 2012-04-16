@@ -122,11 +122,11 @@ abstract class Db_Driver_Abstract {
         $this->config = array_merge($this->config, $config);
         $this->_swap = $this->_query;
     }
-    
+
     /**
      * Init driver
      */
-    public function init(){
+    public function init() {
         return $this->open();
     }
 
@@ -135,8 +135,8 @@ abstract class Db_Driver_Abstract {
      */
     public function open() {
         if (!$this->connect()) {
-              error(t(Db_Gear::$error_codes[101],'Db.errors'));
-              return FALSE;
+            error(t(Db_Gear::$error_codes[101], 'Db.errors'));
+            return FALSE;
         }
         return TRUE;
     }
@@ -147,6 +147,7 @@ abstract class Db_Driver_Abstract {
      * @return  resource
      */
     abstract protected function connect();
+
     /**
      * Desctructor
      */
@@ -173,19 +174,10 @@ abstract class Db_Driver_Abstract {
      * @param array $values
      * @param boolean   $escape
      */
-    protected function addQuery($type, $values, $escape = TRUE) {
+    protected function addQuery($type, $values) {
+        $args = func_get_args();
         $values = $this->parse($values);
-        if (is_array($values)) {
-            if ($escape) {
-                foreach ($values as &$value) {
-                    $value = $this->escape($value);
-                }
-            }
-            return $this->_query[$type] = array_merge($this->_query[$type], $values);
-        } else {
-            $escape && $value = $this->escape($value);
-            return $value;
-        }
+        return $this->_query[$type] = array_merge($this->_query[$type], $values);
     }
 
     /**
@@ -208,7 +200,8 @@ abstract class Db_Driver_Abstract {
     protected function argsToString($args, $condition = ' = ', $glue = ' AND ') {
         $query = array();
         foreach ($args as $key => $value) {
-            $query[] = $key . ' ' . trim($condition) . ' "' . $this->escape($value) . '" ';
+            !is_numeric($value) && $value = '"'.$value.'"';
+            $query[] = $key . ' ' . trim($condition) . ' ' . $value . ' ';
         }
         return implode($glue, $query);
     }
@@ -236,7 +229,6 @@ abstract class Db_Driver_Abstract {
         }
         return implode(', ', $result);
     }
-
 
     /**
      * SELECT subquery
@@ -269,7 +261,7 @@ abstract class Db_Driver_Abstract {
      * @param   string $value
      * @return object   Self intsance.
      */
-    public function where($name, $value = NULL, $condition = ' = ') {
+    public function where($name, $value = 1, $condition = ' = ') {
         if (is_array($name)) {
             $this->addQuery('where', $name, $condition);
         } else {
@@ -565,9 +557,9 @@ abstract class Db_Driver_Abstract {
         $result = array();
         $fields = isset($this->fields[$table]) ? $this->fields[$table] : $this->fields[$table] = $this->getFields($table);
         foreach ($values as $key => $value) {
-            $key = preg_replace('/[^\w_-]/', '', $key);
-            if (isset($fields[$key])) {
-                $type = preg_replace('/[^a-z]/', '', $fields[$key]);
+            $skey = preg_replace('/[^\w_-]/', '', $key);
+            if (isset($fields[$skey])) {
+                $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
                 switch ($type) {
                     case 'int':
                     case 'tinyint':
@@ -597,7 +589,7 @@ abstract class Db_Driver_Abstract {
                         break;
                     case 'char':
                     case 'varchar':
-                        $result[$key] = (string) $value;
+                        $result[$key] = $this->escape((string) $value);
                         break;
                     default:
                         $result[$key] = $value;
@@ -724,6 +716,7 @@ abstract class Db_Driver_Abstract {
     }
 
     public function createTable($table, $fields) {
+        
     }
 
     public function dropTable($table, $if_exists) {

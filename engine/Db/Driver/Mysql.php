@@ -49,7 +49,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         }
         self::start($query);
         if (!$this->result = mysql_query($query, $this->connection)) {
-            $this->silent OR $this->errors[] = mysql_errno();
+            $this->silent OR $this->errors[] =  mysql_error().' ('.mysql_errno().')';
         }
         $this->clear();
         self::stop($query);
@@ -101,14 +101,13 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
                     } else {
                         $query[] = ' WHERE ';
                     }
-                    $args = preg_split('/[\s]+/', $value, 2, PREG_SPLIT_NO_EMPTY);
+                    $args = preg_split('/[\s]+/', $field, 2, PREG_SPLIT_NO_EMPTY);
                     if (count($args) > 1) {
-                        $value = $args[1];
-                        $condition = $args[0];
+                        $field = $args[0];
+                        $condition = $args[1];
                     } else {
                         $condition = ' = ';
                     }
-
                     $query[] = $this->argsToString(array($field => $value), $condition);
                     $i++;
                 }
