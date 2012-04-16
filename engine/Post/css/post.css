@@ -1,0 +1,24 @@
+.post{
+    margin: 10px 0 15px;
+}
+.post-title{
+
+}
+.post-title i{
+    vertical-align: middle;
+}
+.post-title h2{
+    display: inline;
+    font-size: 1.4em;
+    margin: 0 5px 0 0;
+}
+.post-title a{
+    vertical-align: middle;
+}
+.post-body{
+    padding: 5px 0 0 10px;
+}
+.post-info{
+    border-top: 1px solid #CFCFCF;
+    padding: 5px 10px;
+}
