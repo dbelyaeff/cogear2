@@ -88,7 +88,7 @@ class Install_Gear extends Gear {
                 if ($result = $form->result()) {
                     $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;
-                    $config->key = md5(md5(time()) + time() + $config->site->name);
+                    $config->key OR $config->key = md5(md5(time()) + time() + $config->site->name);
                     $config->database->dsn = $result->database;
                     $config->store(TRUE);
                     redirect('/install/finish');
