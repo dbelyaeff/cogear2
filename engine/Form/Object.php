@@ -59,6 +59,7 @@ class Form_Object extends Object {
         'group' => 'Form_Element_Group',
         'fieldset' => 'Form_Element_Fieldset',
         'link' => 'Form_Element_Link',
+        'title' => 'Form_Element_Title',
     );
     protected $callback;
     /**
@@ -223,16 +224,6 @@ class Form_Object extends Object {
         $this->code = $tpl->render();
         event('Form.render.after', $this);
         return $this->code;
-    }
-    
-    /**
-     * Show form
-     * 
-     * @param   string  $region
-     * @parah   null    $where  This is a fake param to match predecessor method args count
-     */
-    public function show($region = 'content',$where = NULL){
-        append($region,$this->render());
     }
 
     /**

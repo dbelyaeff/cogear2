@@ -297,8 +297,8 @@ class Core_ArrayObject extends ArrayObject {
      * 
      * @param int $position 
      */
-    public function show($position = 0, $where = 0) {
-        $position ? inject('content', $this->render(), $position, $where) : append('content', $this->render());
+    public function show($region = 'content',$position = 0, $where = 0) {
+        $position ? inject($region, $this->render(), $position, $where) : append($region, $this->render());
     }
 
     /**

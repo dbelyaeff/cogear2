@@ -317,12 +317,4 @@ class Db_ORM extends Object {
     public function merge($data = array()) {
         $data && $this->object->mix($data);
     }
-
-    /**
-     * Clear current object
-     */
-    public function clear() {
-        $this->object = new Core_ArrayObject();
-    }
-
 }

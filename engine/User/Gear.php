@@ -80,60 +80,39 @@ class User_Gear extends Gear {
     }
 
     /**
+     * Show login page menu
+     */
+    public function showMenu() {
+        d('User');
+        new Menu_Auto(array(
+                    'name' => 'user.login',
+                    'template' => 'Twitter_Bootstrap.tabs',
+                    'elements' => array(
+                        'login' => array(
+                            'label' => t('Login'),
+                            'link' => l('/user/login'),
+                        ),
+                        'lostpassword' => array(
+                            'label' => t('Lost password'),
+                            'link' => l('/user/lostpassword'),
+                            'access' => $this->router->check('user/lostpassword'),
+                        ),
+                        'register' => array(
+                            'label' => t('Register'),
+                            'link' => l('/user/register'),
+                        ),
+                    ),
+                    'render' => 'info',
+                ));
+        d();
+    }
+
+    /**
      * Dispatcher
      * @param string $action
      */
-    public function index($action = 'index', $subaction=NULL) {
-        switch ($action) {
-            case 'login':
-            case 'register':
-            case 'lostpassword':
-                d('User');
-                new Menu_Auto(array(
-                            'name' => 'user.login',
-                            'template' => 'Twitter_Bootstrap.tabs',
-                            'elements' => array(
-                                'login' => array(
-                                    'label' => t('Login'),
-                                    'link' => l('/user/login'),
-                                ),
-                                'lostpassword' => array(
-                                    'label' => t('Lost password'),
-                                    'link' => l('/user/lostpassword'),
-                                    'access' => $this->router->check('user/lostpassword'),
-                                ),
-                                'register' => array(
-                                    'label' => t('Register'),
-                                    'link' => l('/user/register'),
-                                ),
-                            ),
-                            'render' => 'content',
-                        ));
-                d();
-        }
-        switch ($action) {
-            case 'login':
-                $this->login_action();
-                break;
-            case 'logout':
-                $this->logout_action();
-                break;
-            case 'lostpassword':
-                $this->lostpassword_action();
-                break;
-            case 'register':
-                $this->register_action();
-                break;
-            case 'index':
-            case 'profile':
-                $this->show_action();
-                break;
-            case 'edit':
-                $this->edit_action($subaction);
-                break;
-            default:
-                $this->show_action($action);
-        }
+    public function index_action($action = 'index', $subaction=NULL) {
+        $this->show_action($action);
     }
 
     /**
@@ -238,6 +217,7 @@ class User_Gear extends Gear {
         if ($this->isLogged()) {
             return warning('You are already logged in!', 'Authorization');
         }
+        $this->showMenu();
         $form = new Form('User.login');
         if ($data = $form->result()) {
             $this->attach($data);
@@ -264,6 +244,7 @@ class User_Gear extends Gear {
      * Lost password recovery
      */
     public function lostpassword_action() {
+        $this->showMenu();
         $form = new Form('User.lostpassword');
         if ($result = $form->result()) {
             $this->attach($result);
@@ -287,122 +268,60 @@ class User_Gear extends Gear {
         if ($this->isLogged()) {
             return warning('You are already logged in!', 'Authorization');
         }
+        $this->showMenu();
         if ($code) {
             $user = new User();
             $user->hash = $code;
-            if($user->find()){
-                $form = new Form('User.register.verify');
-                if($result = $form->result()){
-                    $user->attach($result); 
+            if ($user->find()) {
+                $form = new Form('User.verify');
+                $form->init();
+                $form->email->setValue($user->email);
+                if ($result = $form->result()) {
+                    $user->object->mix($result);
+                    $result->realname && $user->name = $result->realname;
                     $user->hashPassword();
-                    $user->hash = $user->genHash($user->password);
+                    $user->hash = $this->secure->genHash($user->password);
+                    $user->reg_date = time();
+                    $user->role = config('User.default.role', 100);
                     $user->save();
-                    $this->attach($user->adapter->object);
-                    if($this->login()){
-                        flash_success(t('Registration is complete!','User.register'));
-                        redirect($this->getLink());
+                    if ($user->login()) {
+                        flash_success(t('Registration is complete!', 'User.register'));
+                        redirect($user->getLink());
                     }
                 }
                 $form->show();
-            }
-            else {
-                error(t('Registration code was not found.','User.register'));
+            } else {
+                error(t('Registration code was not found.', 'User.register'));
             }
         } else {
             $form = new Form('User.register');
             if ($result = $form->result()) {
                 $user = new User();
                 $user->email = $result->email;
-                if(!$user->find()){
-                    $user->hash = $this->secure->genHash();
-                }
-                if (config('user.register.verification',TRUE)) {
-                    $verify_link = l('/register/'.$user->hash, TRUE);
+                $user->find();
+                $user->hash = $this->secure->genHash(date('H d.m.Y').$this->session->get('ip').$result->email);
+                if (config('user.register.verification', TRUE)) {
+                    $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
-                        'name' => 'register.verify',
-                        'subject' => t('Registraion on %s','Mail.registration',config('site.url')),
-                        'body' => t('You have been successfully registered on http://%s. <br/>
+                                'name' => 'register.verify',
+                                'subject' => t('Registraion on %s', 'Mail.registration', config('site.url')),
+                                'body' => t('You have been successfully registered on http://%s. <br/>
                             Please, click following link to procceed email verification:<p>
-                            <a href="http://%s">%s</a>','Mail.registration',config('site.url'),$verify_link,$verify_link),
-                    ));
+                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $verify_link, $verify_link),
+                            ));
                     $mail->to($user->email);
-                    if($mail->send()){
+                    if ($mail->send()) {
                         $user->save();
-                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.','Mail.registration',$user->email));
+                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.', 'Mail.registration', $user->email));
                     }
                 } else {
                     $user->save();
-                    redirect(l('/user/register/'.$user->hash));
+                    redirect(l('/user/register/' . $user->hash));
                 }
             } else {
                 $form->show();
             }
         }
-    }
-
-    /**
-     * Get user roles
-     * 
-     * @return  Core_ArrayObject
-     */
-    public function getRoles() {
-        if ($this->roles) {
-            return $this->roles;
-        }
-        $this->roles = new Core_ArrayObject(array(
-                    0 => 'guest',
-                    1 => 'admin',
-                    100 => 'user'
-                ));
-        if ($extra_groups = $this->system_cache->read('user_roles', TRUE)) {
-            $this->roles->mix($extra_groups);
-        }
-        return $this->roles;
-    }
-
-    /**
-     * Get translated roles list
-     * 
-     * @return array
-     */
-    public function getRolesList() {
-        $roles = array();
-        foreach ($this->roles as $id => $role) {
-            $roles[$id] = t($role, 'User Roles');
-        }
-        return $roles;
-    }
-
-    /**
-     * Administrate users
-     * 
-     * @param string $action 
-     */
-    public function admin($action = '') {
-        new Menu_Tabs('admin_user', Url::gear('admin') . 'user');
-        switch ($action) {
-            case 'add':
-                $this->admin_add();
-                break;
-            default:
-                $this->users();
-        }
-    }
-
-    /**
-     * Add a new user
-     */
-    public function admin_add() {
-        $form = new Form('User.register');
-        if ($data = $form->result()) {
-            $user = new User_Object(FALSE);
-            $user->attach($data);
-            $user->hashPassword();
-            $user->save();
-            info('User was successfully registered!', 'Registration succeed.');
-        }
-        else
-            $form->show();
     }
 
     /**

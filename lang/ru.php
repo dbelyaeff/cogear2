@@ -89,6 +89,9 @@ return array (
                             Please, click following link to procceed email verification:<p>
                             <a href="http://%s">%s</a>' => '',
     'Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.' => '',
+    'You have been successfully registered on http://%s. <br/>
+                            Please, click following link to procceed email verification:<p>
+                            <a href="%s">%s</a>' => '',
   ),
   '#Post' => 
   array (
@@ -132,6 +135,10 @@ return array (
     'User data saved!' => '',
     'Success' => '',
   ),
+  '#User.register' => 
+  array (
+    'Registration is complete!' => '',
+  ),
   '1. Start' => '',
   '2. Check' => '',
   '3. Settings' => '',
@@ -161,6 +168,7 @@ return array (
   'Image preset <b>%s</b> doesn\'t exists.' => '',
   'Last' => '',
   'Login' => '',
+  'Login name already in use!' => '',
   'Lost password' => '',
   'Name' => '',
   'Next' => '',
@@ -175,9 +183,11 @@ return array (
   'Promote to front page' => '',
   'Reflections' => '',
   'Register' => '',
+  'Registration' => '',
   'Renew password' => '',
   'Required' => '',
   'SPL Library' => '',
+  'Save' => '',
   'Session' => '',
   'Site name' => '',
   'Start' => '',

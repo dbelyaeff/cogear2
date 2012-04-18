@@ -18,7 +18,7 @@ abstract class Object extends Adapter {
      * @param array $data
      */
     public function __construct($options = NULL,$place = NULL) {
-        $options && parent::__construct($options, $place);
+        parent::__construct($options, $place);
         $this->object = new Core_ArrayObject();
     }
     /**
@@ -28,5 +28,12 @@ abstract class Object extends Adapter {
      */
     public function attach($data){
         $this->object = is_object($data) ? $data : Core_ArrayObject::transform($data);
+    }
+    
+    /**
+     * Detach object
+     */
+    public function detach(){
+        $this->object = NULL;
     }
 }

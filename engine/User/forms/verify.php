@@ -3,6 +3,20 @@
 return array(
     'name' => 'user-register-verify',
     'elements' => array(
+        'label' => array(
+            'type' => 'title',
+            'label' => t('Registration'),
+        ),
+        'email' => array(
+            'type' => 'text',
+            'label' => t('Email', 'User'),
+            'disabled' => TRUE,
+        ),
+        'realname' => array(
+            'label' => t('Real name', 'User'),
+            'type' => 'text',
+            'validators' => array('Required',array('Length', 3), 'Name'),
+        ),
         'login' => array(
             'label' => t('Login', 'User'),
             'type' => 'text',

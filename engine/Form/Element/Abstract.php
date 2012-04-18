@@ -126,6 +126,9 @@ class Form_Element_Abstract extends Options {
      * @return
      */
     public function result() {
+        if($this->options->disabled){
+            return $this->value ? $this->value : TRUE;
+        }
         $method = strtolower($this->form->method);
         $this->value = cogear()->input->$method($this->name, $this->options->value);
         $this->filter();

@@ -14,6 +14,7 @@
 		    </div>
             <div class="row">
 				<div class="span9" id="content">
+					<?php theme('info')?>
 					<?php theme('content')?>
 				</div>
 				<div class="span3" id="sidebar">

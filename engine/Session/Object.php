@@ -54,7 +54,6 @@ class Session_Object extends Cache_Object {
      * @param	array	$options
      */
     public function __construct($options) {
-        hook('exit', array($this, 'close'));
         $defaults = array(
             'adapter' => 'Session_Adapter_File',
             'save_path' => CACHE . DS . 'sessions',
@@ -188,13 +187,6 @@ class Session_Object extends Cache_Object {
                 $this->set($key, $val);
             }
         }
-    }
-
-    /**
-     * Close session
-     */
-    public function close() {
-        session_write_close();
     }
 
     /**

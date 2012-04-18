@@ -21,11 +21,11 @@ return array(
         'from' => 'admin@cogear.ru',
         'from_name' => 'cogear',
         'signature' => '<p>-----------------------<br/>Best regards<br/>cogear<br/>http://cogear.ru',
-        'smtp' => array(
-            'login' => 'test@cogear.ru',
-            'password' => 'VsIQ4PYPPhdD13um',
-            'host' => 'ssl://smtp.gmail.com:465',
-        )
+//        'smtp' => array(
+//            'login' => 'test@cogear.ru',
+//            'password' => 'VsIQ4PYPPhdD13um',
+//            'host' => 'ssl://smtp.gmail.com:465',
+//        )
     ),
     'installed' => true,
 );

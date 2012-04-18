@@ -153,10 +153,10 @@ class Mail_Object extends Object{
         }
 
         $mail->Subject = $this->subject;
-        $this->signature OR $this->signature = config('mail.signature');
-        $this->signature && $this->body .= $this->signature;
+        if($this->signature){
+            $this->options->body .= $this->signature;
+        }
         $mail->AltBody = strip_tags($this->body);
-
         $mail->MsgHTML($this->body);
         foreach ($this->attachments as $attachment) {
             $mail->AddAttachment($attachment);

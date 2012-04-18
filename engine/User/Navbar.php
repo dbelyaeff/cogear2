@@ -12,7 +12,9 @@
  * @version		$Id$
  */
 class User_Navbar extends Object {
-
+    public $options = array(
+        'render' => 'info',
+    );
     /**
      * Render
      * 
@@ -27,7 +29,7 @@ class User_Navbar extends Object {
         $navbar = new Stack(array('name' => 'user.navbar'));
         $navbar->attach($user);
         $navbar->avatar = $user->getAvatarImage('avatar.profile');
-        $navbar->name = '<strong>' . $user->getProfileLink() . '</strong>';
+        $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
         if (access('user.edit_all') OR $user->id == cogear()->user->id) {
             $navbar->edit = '<a href="' . l('/user/edit/' . $user->id) . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
         }

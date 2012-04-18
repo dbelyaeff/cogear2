@@ -76,7 +76,12 @@ class User_Object extends Db_Item {
      * Activate user
      */
     public function login() {
-        return $this->find() && $this->store();
+        if(!$this->object){
+            if(!$this->find()){
+                return FALSE;
+            }
+        }
+        return $this->store();
     }
 
     /**

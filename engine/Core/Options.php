@@ -33,7 +33,7 @@ class Options extends Core_ArrayObject {
             parent::__construct($options);
         } else {
             if ($this->options->count()) {
-                $this->options->mix($options);    
+                $this->options->mix($options);
             } else {
                 $this->options = Core_ArrayObject::transform($options);
             }
@@ -63,5 +63,12 @@ class Options extends Core_ArrayObject {
         return isset($this->options->$name) ? $this->options->$name : parent::__isset($name);
     }
 
+    /**
+     * Show
+     */
+    public function show($region = NULL, $position = 0, $where = 0) {
+        !$region && $region = $this->options->render && is_string($this->options->render) ? $this->options->render : 'content';
+        $position ? inject($region, $this->render(), $position, $where) : append($region, $this->render());
+    }
 
 }

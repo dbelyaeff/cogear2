@@ -24,11 +24,10 @@ class User_Validate_Login extends Form_Validate_Abstract{
                 return TRUE;
                 break;
         }        
-        $user = new Db_ORM('users');
+        $user = new User();
         $user->login = $value;
-        
-	    $finded = (boolean) $user->find();
-        if ($finded) $this->element->addError(t('Login name already in use!'));
-        return !$finded;
+        $user->find();
+        if ($user->id) $this->element->addError(t('Login name already in use!'));
+        return $user->id ? FALSE : TRUE;
     }
 }

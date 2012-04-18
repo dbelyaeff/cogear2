@@ -19,7 +19,7 @@ class Notify_Gear extends Gear {
     protected $order = -1000;
     protected $template = 'Notify.alert';
     protected $hooks = array(
-        'content' => 'renderFlash',
+        'ignite' => 'renderFlash',
     );
     
     /**
@@ -29,7 +29,7 @@ class Notify_Gear extends Gear {
      * @param type $title
      * @param type $class 
      */
-    public function showMessage($body, $title=NULL, $class=NULL, $region = 'content') {
+    public function showMessage($body, $title=NULL, $class=NULL, $region = 'info') {
         $tpl = new Template($this->template);
         $tpl->body = $body;
         $tpl->title = $title;
@@ -61,7 +61,7 @@ class Notify_Gear extends Gear {
             foreach($this->session->messages as $message){
                 $this->showMessage($message['body'],$message['title'],$message['class'],$message['region']);
             }
-            $this->session->messages = NULL;
+            $this->session->destroy('messages');
         }
     }
 }
@@ -71,9 +71,9 @@ class Notify_Gear extends Gear {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function info($body, $title = NULL, $region='content') {
+function info($body, $title = NULL, $region='info') {
     cogear()->notify->showMessage($body, $title, 'alert-info', $region);
 }
 /**
@@ -81,9 +81,9 @@ function info($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function warning($body, $title = NULL, $region='content') {
+function warning($body, $title = NULL, $region='info') {
     cogear()->notify->showMessage($body, $title, 'alert-warning', $region);
 }
 
@@ -92,9 +92,9 @@ function warning($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function success($body, $title = NULL, $region='content') {
+function success($body, $title = NULL, $region='info') {
     cogear()->notify->showMessage($body, $title, 'alert-success', $region);
 }
 
@@ -103,9 +103,9 @@ function success($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function error($body, $title = NULL, $region='content') {
+function error($body, $title = NULL, $region='info') {
     cogear()->notify->showMessage($body, $title, 'alert-error', $region);
 }
 /**
@@ -113,9 +113,9 @@ function error($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function flash_info($body, $title = NULL, $region='content') {
+function flash_info($body, $title = NULL, $region='info') {
     cogear()->notify->flashMessage($body, $title, NULL, $region);
 }
 /**
@@ -123,9 +123,9 @@ function flash_info($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function flash_warning($body, $title = NULL, $region='content') {
+function flash_warning($body, $title = NULL, $region='info') {
     cogear()->notify->flashMessage($body, $title, NULL, $region);
 }
 
@@ -134,9 +134,9 @@ function flash_warning($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function flash_success($body, $title = NULL, $region='content') {
+function flash_success($body, $title = NULL, $region='info') {
     cogear()->notify->flashMessage($body, $title, 'alert-success', $region);
 }
 
@@ -145,8 +145,8 @@ function flash_success($body, $title = NULL, $region='content') {
  * 
  * @param string $body
  * @param string $title 
- * @param string  $content
+ * @param string  $info
  */
-function flash_error($body, $title = NULL, $region='content') {
+function flash_error($body, $title = NULL, $region='info') {
     cogear()->notify->flashMessage($body, $title, 'alert-error', $region);
 }
