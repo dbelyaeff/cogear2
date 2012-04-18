@@ -20,7 +20,7 @@ class Mail_Object extends Object{
         'to' => array(),
         'subject' => '',
         'body' => '',
-        'encoding' => 'utf-8',
+        'charset' => 'utf-8',
         'signature' => '',
         'attachments' => array(),
         'smtp' => array(
@@ -98,16 +98,6 @@ class Mail_Object extends Object{
     }
 
     /**
-     * Set email "encoding" param.
-     * 
-     * @param type $encoding 
-     */
-    public function encoding($encoding) {
-        $this->options->encoding = $encoding;
-        return $this;
-    }
-
-    /**
      * Set email "signature" param.
      * 
      * @param type $signature 
@@ -132,7 +122,7 @@ class Mail_Object extends Object{
      */
     public function send() {
         $mail = new Mail_PHPMailer();
-
+        $this->charset && $mail->CharSet($this->charset);
         if($this->smtp->login && $this->smtp->host){
             $mail->IsSMTP();
             $mail->Username = $this->smtp->login;
