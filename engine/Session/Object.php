@@ -75,16 +75,6 @@ class Session_Object extends Cache_Object {
         session_set_save_handler(
                 array($this->adapter, 'open'), array($this->adapter, 'close'), array($this->adapter, 'read'), array($this->adapter, 'write'), array($this->adapter, 'destroy'), array($this->adapter, 'gc')
         );
-        $this->run();
-    }
-
-    /**
-     * Starts up the session system for current request
-     */
-    private function run() {
-        if (!session_id()) {
-            session_start();
-        }
         $this->init();
     }
 
@@ -92,6 +82,7 @@ class Session_Object extends Cache_Object {
      * Init
      */
     private function init() {
+        session_id() OR session_start();
         $cogear = getInstance();
         event('session.init', $this);
         isset($_SESSION['user_agent']) OR $_SESSION['user_agent'] = $cogear->request->getUserAgent();
@@ -132,13 +123,13 @@ class Session_Object extends Cache_Object {
     public function __set($name, $value) {
         return $this->set($name, $value);
     }
-    
+
     /**
      * __isset magic method
      * 
      * @param type $name 
      */
-    public function __isset($name){
+    public function __isset($name) {
         return isset($_SESSION[$name]);
     }
 
@@ -246,4 +237,5 @@ class Session_Object extends Cache_Object {
         $args = func_get_args();
         return call_user_func_array(array($this, 'destroy'), $args);
     }
+
 }

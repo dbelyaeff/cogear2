@@ -16,6 +16,9 @@ class Session_Gear extends Gear {
     protected $name = 'Sessions';
     protected $description = 'Handle sessions.';
     protected $order = -1000;
+    protected $hooks = array(
+//        'dev.info' => 'trace',
+    );
 
     /**
      * Init
@@ -23,6 +26,13 @@ class Session_Gear extends Gear {
     public function init() {
         parent::init();
         $this->adapter = new Session_Object(array('name' => 'session'));
+    }
+    
+    /**
+     * Trace session
+     */
+    public function trace($Stack){
+        $Stack->append(template('Session.trace')->render());
     }
 
 }
