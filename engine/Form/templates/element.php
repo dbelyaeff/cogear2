@@ -2,6 +2,6 @@
 <? if($label){?><label class="control-label" for="<?php echo $name?>"><?php echo $label?><? if($required){?> *<?}?></label><?}?>
 <div class="controls"><?php echo $code?>
 <?php if($errors->count()):?><p class="help-inline"><?php echo $errors->toString('<br/>')?></p><?php endif;?>
-<? if($description){?><span class="help-inline" id="<?php echo $element->getId()?>-description"><?php echo $description?></span><?}?>
+<? if($description){?><div class="description" id="<?php echo $element->getId()?>-description"><?php echo $description?></div><?}?>
 </div>
 </div>

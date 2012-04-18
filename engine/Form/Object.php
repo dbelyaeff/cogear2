@@ -116,6 +116,18 @@ class Form_Object extends Object {
             } 
         }
     }
+    
+    /**
+     * Magic __get method
+     * 
+     * @param type $name 
+     */
+    public function __get($name){
+        if($this->elements->$name){
+            return $this->elements->$name;
+        }
+        return parent::__get($name);
+    }
 
     /**
      * Initialize elements

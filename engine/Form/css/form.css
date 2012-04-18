@@ -17,3 +17,7 @@ textarea{
     width: 100%;
     height: 300px;
 }
+form .controls .description{
+    font-size: 0.975em;
+    color: #696969;
+}
