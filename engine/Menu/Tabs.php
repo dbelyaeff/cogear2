@@ -15,7 +15,7 @@ class Menu_Tabs extends Menu_Auto{
      * Constructor
      */
     public function __construct($options) {
-        isset($options['template']) OR $options['template'] = 'Twitter_Bootstrap.basic.tabs';
+        isset($options['template']) OR $options['template'] = 'Twitter_Bootstrap.tabs';
         parent::__construct($options);
     }
     

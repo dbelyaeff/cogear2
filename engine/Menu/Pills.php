@@ -15,7 +15,7 @@ class Menu_Pills extends Menu_Auto{
      * Constructor
      */
     public function __construct($options) {
-        isset($options['template']) OR $options['template'] = 'Twitter_Bootstrap.basic.pills';
+        isset($options['template']) OR $options['template'] = 'Twitter_Bootstrap.pills';
         parent::__construct($options);
     }
     

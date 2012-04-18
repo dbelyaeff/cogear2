@@ -61,7 +61,7 @@ class Menu_Object extends Object {
      */
     public function setActive() {
         foreach ($this as &$item) {
-            cogear()->router->check(trim($item->link, ' /')) && $item->options->active = TRUE;
+           NULL === $item->options->active && cogear()->router->check(trim($item->link, ' /')) && $item->options->active = TRUE;
         }
     }
 

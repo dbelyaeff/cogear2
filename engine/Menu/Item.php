@@ -17,6 +17,6 @@ class Menu_Item extends Options{
         'label' => '',
         'access' => TRUE,
         'order' => 0,
-        'active' => FALSE,
+        'active' => NULL,
     );
 }
