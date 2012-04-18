@@ -15,7 +15,6 @@ class Install_Gear extends Gear {
 
     protected $name = 'Install';
     protected $description = 'Help to install system.';
-    protected $package = 'Core';
     protected $order = 0;
 
     /**
@@ -23,9 +22,11 @@ class Install_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        if (!cogear()->default) {
+        if (!config('installed')) {
             $this->router->addRoute(':index', array($this, 'index'), TRUE);
-            new Install_Menu();
+            if(!$this->router->check('install',  Router::STARTS)){
+                redirect(l('/install'));
+            }
         }
     }
 
@@ -37,15 +38,7 @@ class Install_Gear extends Gear {
      */
     public function menu($name, $menu) {
         if ($name == 'install') {
-            $root = Url::gear('install');
-            d('Install');
-            $menu->{$root . 'welcome'} = t('1. Welcome.');
-            $menu->{$root . 'requirements'} = t('2. Requirements.');
-            $menu->{$root . 'site'} = t('3. Site info.');
-            $menu->{$root . 'theme'} = t('4. Theme.');
-            $menu->{$root . 'finish'} = t('10. Finish.');
-            d();
-            !$this->router->getSegments() && $menu->setActive($root . 'welcome');
+            
         }
     }
 
@@ -56,59 +49,68 @@ class Install_Gear extends Gear {
      * @param string $subaction 
      */
     public function index($action = '') {
+        new Menu(array(
+                    'name' => 'install',
+                    'template' => 'Twitter_Bootstrap.tabs',
+                    'render' => 'content',
+                    'elements' => array(
+                        array(
+                            'label' => t('1. Start'),
+                            'link' => '',
+                            'active' => $this->router->check('install',  Router::ENDS),
+                        ),
+                        array(
+                            'label' => t('2. Check'),
+                            'link' => '',
+                            'active' => $this->router->check('check',  Router::ENDS),
+                        ),
+                        array(
+                            'label' => t('3. Settings'),
+                            'link' => '',
+                            'active' => $this->router->check('site',  Router::ENDS),
+                        ),
+                        array(
+                            'label' => t('4. Finish'),
+                            'link' => '',
+                            'active' => $this->router->check('finish',  Router::ENDS),
+                        ),
+                    ),
+                ));
         switch ($action) {
-            case 'requirements':
-                $tpl = new Template('install.requirements');
+            case 'check':
+                $tpl = new Template('Install.check');
                 $tpl->show();
                 break;
             case 'site':
-                append('content', t('Define basic settings for your site.', 'Install'));
-                $form = new Form('install.site');
+                append('content', '<p class="alert alert-info">'.t('Define basic settings for your site.', 'Install').'</p>');
+                $form = new Form('Install.site');
                 $form->init();
-                $form->sitename->setValue(config('site.name'));
                 if ($result = $form->result()) {
-                    $config = new Config(SITE . DS . 'settings' . EXT);
+                    $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;
                     $config->key = md5(md5(time()) + time() + $config->site->name);
                     $config->database->dsn = $result->database;
-                    $config->store();
-                    redirect('/install/theme');
+                    $config->store(TRUE);
+                    redirect('/install/finish');
                 } else {
                     $form->save->label = t('Try again', 'Form');
                 }
                 $form->show();
                 break;
-            case 'theme':
-                append('content', t('It\'s now time to choose site theme.', 'Install'));
-                $themes = $this->theme->searchThemes();
-                $form = new Form('install.theme');
-                $form->init();
-                $values = array();
-                foreach ($themes as $name => $theme) {
-                    $values[$name] = $name;
-                }
-                $form->theme->setValues($values);
-                if ($result = $form->result()) {
-                    cogear()->set('theme.current', $result->theme);
-                    redirect('/install/finish/');
-                }
-                $form->show();
-                break;
             case 'finish':
-                $tpl = new Template('install.finish');
+                $tpl = new Template('Install.finish');
                 $tpl->show();
                 break;
             case 'done':
-                cogear()->set('installed', TRUE);
-                cogear()->activate('default');
+                $config = new Config(SITE . DS . 'site' . EXT);
+                $config->installed = TRUE;
+                $config->store(TRUE);
                 flash_success(t('Your site has been successfully configured!', 'Install'));
                 redirect();
                 break;
             default:
             case 'welcome':
-                cogear()->deactivate('db');
-                cogear()->deactivate('default');
-                $tpl = new Template('install.welcome');
+                $tpl = new Template('Install.welcome');
                 $tpl->show();
         }
     }
