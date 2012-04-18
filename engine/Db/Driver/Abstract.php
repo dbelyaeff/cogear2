@@ -479,6 +479,15 @@ abstract class Db_Driver_Abstract {
         $where && $this->where($where);
         return $this->query();
     }
+    
+    /**
+     * Add error
+     * 
+     * @param type $error 
+     */
+    public function error($error){
+        array_push($this->errors, $error);
+    }
 
     /**
      * Result
