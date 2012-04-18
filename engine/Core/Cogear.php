@@ -42,7 +42,7 @@ final class Cogear implements Interface_Singleton {
     private $write_config = FALSE;
 
     /**
-     * Stop current event executrion flag
+     * Stop current event execution flag
      */
     public $stop_event = FALSE;
 
@@ -64,6 +64,21 @@ final class Cogear implements Interface_Singleton {
         $this->config = new Config(ROOT . DS . 'config' . EXT);
         $this->system_cache = new Cache(array('path' => CACHE . DS . 'system'));
         hook('ignite', array($this, 'loadGears'));
+        hook('autoload', array($this, 'loadObjects'));
+    }
+    
+    /**
+     * Include Object
+     * 
+     * @param type $class
+     * @return type 
+     */
+    public function loadObjects($class) {
+        $obj_class = $class . '_Object';
+        $filename = str_replace('_', DS, $obj_class);
+        if ($path = find($filename . EXT)) {
+            return TRUE;
+        }
     }
 
     /**
@@ -171,7 +186,7 @@ final class Cogear implements Interface_Singleton {
     public function get($name, $default = NULL) {
         $result = $this->site->get($name);
         if (NULL !== $result) {
-                return $result;
+            return $result;
         }
         $result = $this->config->get($name);
         if (NULL !== $result) {
@@ -179,6 +194,7 @@ final class Cogear implements Interface_Singleton {
         }
         return $default;
     }
+
     /**
      * Set config
      * 
@@ -187,7 +203,7 @@ final class Cogear implements Interface_Singleton {
      * @return  mixed
      */
     public function set($name, $value) {
-        return $this->config->set($name,$value);
+        return $this->config->set($name, $value);
     }
 
     /**

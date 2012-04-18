@@ -32,7 +32,8 @@ class Options extends Core_ArrayObject {
         if ($place) {
             parent::__construct($options);
         } else {
-            if ($this->options->count() && $options) {
+            $reflection = new ReflectionClass($this);
+            if ($this->options->count()) {
                 $this->options->mix($options);
             } else {
                 $this->options = Core_ArrayObject::transform($options);
