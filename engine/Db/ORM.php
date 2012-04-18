@@ -92,7 +92,7 @@ class Db_ORM extends Object {
     public function __set($name, $value) {
         $this->object->$name = $value;
     }
-
+    
     /**
      * Magic __get method
      *
@@ -129,7 +129,20 @@ class Db_ORM extends Object {
             unset($this->object->$name);
         }
     }
-
+    /**
+     * Saving session
+     */
+    public function __sleep() {
+        debug($this->fields);
+        die('asdasd');
+        return array();
+    }
+    /**
+     * Restoring session
+     */
+    public function __wakeup() {
+        die('wakeup');
+    }
     /**
      * Magic __call method
      *

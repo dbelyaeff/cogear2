@@ -129,6 +129,7 @@ return array (
     'Success' => '',
     'Wrong credentials.' => '',
     'Authentification error' => '',
+    'OR' => '',
   ),
   '#User edit' => 
   array (

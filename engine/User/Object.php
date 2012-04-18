@@ -25,7 +25,20 @@ class User_Object extends Db_Item {
     public function __construct() {
         parent::__construct('users');
     }
-
+    /**
+     * Saving session
+     */
+    public function __sleep() {
+        debug($this->fields);
+        die('asdasd');
+        return array();
+    }
+    /**
+     * Restoring session
+     */
+    public function __wakeup() {
+        die('wakeup');
+    }
     /**
      * Init user as current
      */
@@ -166,9 +179,19 @@ class User_Object extends Db_Item {
      */
     public function getLink() {
         if ($this->id) {
-            $this->link = $this->login;
-            event('User.link', $this);
-            return Url::gear('user') . $this->link . '/';
+            $link = $this->login;
+            return Url::gear('user') . $link . '/';
+        }
+        return NULL;
+    }
+    /**
+     * Get user profile link
+     */
+    public function getEditLink() {
+        if ($this->id) {
+            $link = $this->id;
+            event('User.edit.link', $link);
+            return Url::gear('user') .'/edit/'. $link . '/';
         }
         return NULL;
     }

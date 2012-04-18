@@ -220,6 +220,7 @@ class Form_Object extends Object {
         $tpl = new Template($this->options->template);
         $id = $this->getId();
         $tpl->form = $this;
+        $this->options->id = $this->getId();
         $tpl->options = $this->options;
         $this->code = $tpl->render();
         event('Form.render.after', $this);

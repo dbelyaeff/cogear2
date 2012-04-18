@@ -29,8 +29,8 @@ class Form_Element_Div extends Form_Element_Abstract {
      */
     public function render() {
         $this->prepareOptions();
-        $this->code = HTML::paired_tag('div',$this->value);
-        return parent::render();
+        $this->code = '<div class="'.$this->class.'">'.$this->label.'</div>';
+        return $this->code;
     }
 
 }

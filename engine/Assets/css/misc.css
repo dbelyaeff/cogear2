@@ -4,6 +4,15 @@
 .fl_r{
     float: right;
 }
+.t_c{
+    text-align: center;
+}
+.t_l{
+    text-align: left;
+}
+.t_r{
+    text-align: right;
+}
 .p5{
     padding: 5px;
 }

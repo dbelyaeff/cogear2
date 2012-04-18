@@ -15,6 +15,16 @@ class User_Navbar extends Object {
     public $options = array(
         'render' => 'info',
     );
+    
+    /**
+     * Constructor
+     * 
+     * @param type $options
+     * @param type $place 
+     */
+    public function __construct($options = NULL, $place = NULL) {
+        parent::__construct($options, $place);
+    }
     /**
      * Render
      * 
@@ -31,7 +41,7 @@ class User_Navbar extends Object {
         $navbar->avatar = $user->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
         if (access('user.edit_all') OR $user->id == cogear()->user->id) {
-            $navbar->edit = '<a href="' . l('/user/edit/' . $user->id) . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
+            $navbar->edit = '<a href="' . $user->getEditLink() . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
         }
         $tpl->navbar = $navbar;
         $tabs = new Menu_Auto(array(

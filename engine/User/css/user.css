@@ -31,3 +31,9 @@ img.avatar{
 .user_profile_fields .control-group .controls{
     padding-top: 5px;
 }
+#form-user-lostpassword .or{
+    text-align: center;
+    padding: 5px 0 25px 0;
+    font-weight: bold;
+    font-size: 1.2em;
+}

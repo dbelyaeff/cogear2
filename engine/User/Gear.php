@@ -243,19 +243,50 @@ class User_Gear extends Gear {
     /**
      * Lost password recovery
      */
-    public function lostpassword_action() {
+    public function lostpassword_action($code= NULL) {
         $this->showMenu();
-        $form = new Form('User.lostpassword');
-        if ($result = $form->result()) {
-            $this->attach($result);
-            if ($this->find()) {
-
-                back();
-            } else {
-                error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
+        if ($code) {
+          $user = new User();
+          $user->hash = $code;
+          if($user->find()){
+              $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $user->password);
+              $user->save();
+              $user->login();
+              redirect($user->ge);
+          }
+          else {
+              error(t('Password recovery code has been already used.', 'User.lostpassword'));
+          }
+        } else {
+            $form = new Form('User.lostpassword');
+            if ($result = $form->result()) {
+                $user = new User();
+                if ($result->email) {
+                    $user->email = $result->email;
+                } elseif ($result->login) {
+                    $user->login = $result->login;
+                }
+                if ($user->find()) {
+                    $recover = l('/user/lostpassword/' . $user->hash, TRUE);
+                    $mail = new Mail(array(
+                                'name' => 'register.lostpassword',
+                                'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
+                                'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
+                                    <p>If it wasn\'t you action, just leave this letter unattended or contant site administration.
+                                    <p>To recover password, click following link:<p>
+                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'),$this->session->get('ip'), $recover, $recover),
+                            ));
+                    $mail->to($user->email);
+                    if ($mail->send()) {
+                        $user->save();
+                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.', 'Mail.lostpassword', $user->email));
+                    }
+                } else {
+                    error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
+                }
             }
+            $form->show();
         }
-        $form->show();
     }
 
     /**
@@ -299,7 +330,7 @@ class User_Gear extends Gear {
                 $user = new User();
                 $user->email = $result->email;
                 $user->find();
-                $user->hash = $this->secure->genHash(date('H d.m.Y').$this->session->get('ip').$result->email);
+                $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $result->email);
                 if (config('user.register.verification', TRUE)) {
                     $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
