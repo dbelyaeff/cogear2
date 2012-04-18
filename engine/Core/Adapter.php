@@ -39,19 +39,18 @@ class Adapter extends Cogearable {
     public function __set($name, $value) {
         if ($this->adapter) {
             $this->adapter->$name = $value;
-        }
-        else {
-            $this->offsetSet($name,$value);
+        } else {
+            $this->offsetSet($name, $value);
         }
     }
-    
+
     /**
      * __isset magic method
      *
      * @param string $name 
      */
-    public function __isset($name){
-        return isset($this->adapter->$name); 
+    public function __isset($name) {
+        return isset($this->adapter->$name);
     }
 
     /**
@@ -62,9 +61,13 @@ class Adapter extends Cogearable {
      * @return mixed
      */
     public function __call($name, $args) {
-        if(!$this->adapter) return NULL;
-        $callback = new Callback(array($this->adapter, $name));
-        return $callback->check() ? $callback->run($args) : parent::__call($name, $args);
+        if ($this->adapter) {
+            $callback = new Callback(array($this->adapter, $name));
+            if ($callback->check()) {
+                return $callback->run($args);
+            }
+        }
+        return parent::__call($name, $args);
     }
 
 }

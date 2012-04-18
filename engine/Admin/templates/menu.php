@@ -14,7 +14,7 @@
             <? if($level <= $last_level && $z != 0):?>
             <?endif?>
             <li <?if($item->active()):?>class="active"<?endif?>>
-                <a href="<?= $item->getUri() ?>"><?= $item->value ?></a>
+                <a href="<?php echo  $item->getUri() ?>"><?php echo  $item->value ?></a>
             <? $last_level = $level ?>
             <?$z++?>
         <? endforeach ?>

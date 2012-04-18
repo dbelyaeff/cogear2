@@ -10,6 +10,8 @@ define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
 define('EXT', '.php');
 define('ROOT', realpath(dirname(__FILE__)));
+// For the future multisiting
+define('SITE', ROOT);
 define('CACHE',ROOT.DS.'cache');
 define('ENGINE',ROOT.DS.'engine');
 define('GEARS', ROOT.DS.'gears');
@@ -39,17 +41,6 @@ function find($file) {
         }
     }
     return FALSE;
-}
-
-/**
- * Temp debug
- * 
- * @param type $data 
- */
-function debug($data){
-    echo '<pre>';
-    $data ? print_r($data) : var_export($data);
-    echo '</pre>';
 }
 /**
  * Autoload

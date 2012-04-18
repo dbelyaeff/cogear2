@@ -1,5 +1,17 @@
 <?php 
 return array (
+  '#Blog' => 
+  array (
+    'Blog' => '',
+    'Title' => '',
+    'Content' => '',
+    'Preview' => '',
+    'Save' => '',
+    'Publish' => '',
+    'Drafts' => '',
+    'Draft' => '',
+    'Error' => '',
+  ),
   '#Database Debug' => 
   array (
     '<b>Database queries:</b>' => '',
@@ -36,6 +48,12 @@ return array (
     'Nov' => 'ноября',
     'Dec' => 'декабря',
   ),
+  '#Db.errors' => 
+  array (
+    'Database <b>%s</b> doesn\'t exists.' => '',
+    'Couldn\'t connect to the database.' => '',
+    'Look at the database errors and fix them.' => '',
+  ),
   '#Default' => 
   array (
     'Simple default gear' => '',
@@ -48,18 +66,46 @@ return array (
   '#Errors' => 
   array (
     'Error in file <b>%s</b> was found at line <b>%d</b>: <p><i>%s</i>' => '',
+    'Template <b>%s</b> is not found by path <u>%s</u>.' => '',
   ),
   '#Form' => 
   array (
     'Shure?' => '',
+    'Try again' => '',
   ),
   '#Image' => 
   array (
     'Maximum image dimensions are <b>%sx%s</b>pixels.' => '',
   ),
+  '#Install' => 
+  array (
+    'Define basic settings for your site.' => '',
+    'Your site has been successfully configured!' => '',
+  ),
+  '#Mail.registration' => 
+  array (
+    'Registraion on %s' => '',
+    'You have been successfully registered on http://%s. <br/>
+                            Please, click following link to procceed email verification:<p>
+                            <a href="http://%s">%s</a>' => '',
+    'Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.' => '',
+  ),
+  '#Post' => 
+  array (
+    'Post published! You can view it by link: %s' => '',
+    'Post saved to drafts! %s' => '',
+    'Post published! %s' => '',
+    'Drafts' => '',
+    'Post is saved to drafts! %s' => '',
+    'Post is published! %s' => '',
+    'Draft' => '',
+    'Edit' => '',
+    'Error' => '',
+  ),
   '#Response' => 
   array (
     'Not found' => '',
+    'Nothing found' => '',
   ),
   '#User' => 
   array (
@@ -78,26 +124,88 @@ return array (
     'Email' => '',
     'User data saved!' => '',
     'Success' => '',
+    'Wrong credentials.' => '',
+    'Authentification error' => '',
   ),
   '#User edit' => 
   array (
     'User data saved!' => '',
     'Success' => '',
   ),
+  '1. Start' => '',
+  '2. Check' => '',
+  '3. Settings' => '',
+  '4. Finish' => '',
+  '<p class="alert alert-warning">Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
+    <p class="alert alert-success"> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
+    <p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>' => '',
+  'Before start system must check your server for requirements. <br/>Just look at the table below and follow the instructions.' => '',
+  'Cannot read form config <b>%s</b>.' => '',
+  'Continue' => '',
+  'Create post' => '',
+  'Current' => '',
+  'Database connection' => '',
   'Delete' => '',
   'Edit' => '',
+  'Edit post' => '',
+  'Email is already taken!' => '',
   'Error' => '',
+  'Example: <b>mysql://root:password@localhost/database</b>.<br/>You can leave this field blank if you don\'t want to use Database gear.' => '',
+  'Example: mysql://root:password@localhost/database.<br/>You can leave this field blank if you don\'t want to use Database gear.' => '',
+  'Filters' => '',
+  'Finish' => '',
+  'Finish!' => '',
+  'First' => '',
+  'Great, you\'ve just configured your site! Congratulations!' => '',
+  'Iconv extension' => '',
+  'Image preset <b>%s</b> doesn\'t exists.' => '',
+  'Last' => '',
   'Login' => '',
   'Lost password' => '',
+  'Name' => '',
+  'Next' => '',
   'No' => '',
+  'PHP Version' => '',
+  'Passed' => '',
   'Please, provide correct e-mail address.' => '',
+  'Post has been deleted!' => '',
+  'Post published!' => '',
+  'Post saved to drafts!' => '',
+  'Prev.' => '',
+  'Promote to front page' => '',
+  'Reflections' => '',
+  'Register' => '',
+  'Renew password' => '',
+  'Required' => '',
+  'SPL Library' => '',
+  'Session' => '',
+  'Site name' => '',
+  'Start' => '',
+  'Start!' => '',
   'Success' => '',
+  'Test' => '',
   'The page you are looking for is not found.' => '',
   'This field is required.' => '',
+  'URL rewrite' => '',
   'Update' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
+  'View' => '',
+  'Warning' => '',
+  'Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
+    <br/> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
+    <br/><p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>' => '',
+  'Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
+    <br/> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
+    <br/>Right now you are one step to go. Just press the button below and ignite your site engine.' => '',
+  'Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
+    <p class="alert alert-success"> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
+    <p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>' => '',
+  'Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
+    <p> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
+    <p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>' => '',
   'Yes' => '',
+  'You secret key doesn\'t match the original. Please, try once again.' => '',
   'cogear' => '',
   'or' => '',
   'remember me' => '',

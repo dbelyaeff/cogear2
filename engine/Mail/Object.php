@@ -11,16 +11,25 @@
  * @subpackage          
  * @version		$Id$
  */
-class Mail_Object {
-
-    protected $from = '';
-    protected $from_name = '';
-    protected $to = array();
-    protected $subject = '';
-    protected $body = '';
-    protected $encoding = 'utf-8';
-    protected $signature = '';
-    protected $attachments = array();
+class Mail_Object extends Object{
+    
+    public $options = array(
+        'name' => '',
+        'from' => '',
+        'from_name' => '',
+        'to' => array(),
+        'subject' => '',
+        'body' => '',
+        'encoding' => 'utf-8',
+        'signature' => '',
+        'attachments' => array(),
+        'smtp' => array(
+            'login' => '',
+            'password' => '',
+            'host' => '',
+            'port' => 25,
+        ),
+    );
 
     /**
      * Constructor
@@ -31,13 +40,10 @@ class Mail_Object {
      * @param string $subject
      * @param string $body 
      */
-    public function __construct($from = NULL, $from_name = NULL, $to = NULL, $subject = NULL, $body = NULL) {
-        $from && $this->from($from);
-        $from_name && $this->fromName($from_name);
-        $to && $this->to($to);
-        $subject && $this->subject($subject);
-        $body && $this->body($body);
-        $signature = config('mail.signature');
+    public function __construct($options) {
+        parent::__construct($options);
+        $this->options->mix(config('mail'));
+        event('mail.'.$this->name);
     }
 
     /**
@@ -46,7 +52,7 @@ class Mail_Object {
      * @param string $from 
      */
     public function from($from) {
-        $this->from = $from;
+        $this->options->from = $from;
         return $this;
     }
 
@@ -56,7 +62,7 @@ class Mail_Object {
      * @param string $from 
      */
     public function fromName($from_name) {
-        $this->from_name = $from_name;
+        $this->options->from_name = $from_name;
         return $this;
     }
 
@@ -65,8 +71,9 @@ class Mail_Object {
      * 
      * @param array $from 
      */
-    public function to(array $to) {
-        $this->to = array_unique(array_merge($this->to, $to));
+    public function to($to) {
+       is_string($to) && $to = explode(',', $to);
+       $this->options->to->mix($to);
         return $this;
     }
 
@@ -76,7 +83,7 @@ class Mail_Object {
      * @param type $subject 
      */
     public function subject($subject) {
-        $this->subject = $subject;
+        $this->options->subject = $subject;
         return $this;
     }
 
@@ -86,7 +93,7 @@ class Mail_Object {
      * @param type $body 
      */
     public function body($body) {
-        $this->body = $body;
+        $this->options->body = $body;
         return $this;
     }
 
@@ -96,7 +103,7 @@ class Mail_Object {
      * @param type $encoding 
      */
     public function encoding($encoding) {
-        $this->encoding = $encoding;
+        $this->options->encoding = $encoding;
         return $this;
     }
 
@@ -106,7 +113,7 @@ class Mail_Object {
      * @param type $signature 
      */
     public function signature($signature) {
-        $this->signature = $signature;
+        $this->options->signature = $signature;
         return $this;
     }
 
@@ -116,7 +123,7 @@ class Mail_Object {
      * @param array|string $files 
      */
     public function attach($files) {
-        $this->attachments = array_unique(array_merge($this->attachments, (array) $files));
+        $this->options->attachments = array_unique(array_merge($this->options->attachments, (array) $files));
         return $this;
     }
 
@@ -126,9 +133,19 @@ class Mail_Object {
     public function send() {
         $mail = new Mail_PHPMailer();
 
-        $mail->IsSendmail();
-
-
+        if($this->smtp->login && $this->smtp->host){
+            $mail->IsSMTP();
+            $mail->Username = $this->smtp->login;
+            $mail->Password = $this->smtp->password;
+            $mail->Host = $this->smtp->host;
+            $mail->SMTPAuth = TRUE;
+            $mail->SMTPDebug = TRUE;
+        }
+        else {
+            $mail->IsSendmail();
+        }
+        $this->from OR $this->from = config('mail.from');
+        $this->from_name OR $this->from_name = config('mail.from_name');
         $mail->AddReplyTo($this->from, $this->from_name);
         $mail->SetFrom($this->from, $this->from_name);
         foreach ($this->to as $address) {
@@ -136,13 +153,15 @@ class Mail_Object {
         }
 
         $mail->Subject = $this->subject;
-
+        $this->signature OR $this->signature = config('mail.signature');
+        $this->signature && $this->body .= $this->signature;
         $mail->AltBody = strip_tags($this->body);
 
         $mail->MsgHTML($this->body);
         foreach ($this->attachments as $attachment) {
             $mail->AddAttachment($attachment);
         }
+        event('Mail.send',$mail);
         if (!$mail->Send()) {
             error($mail->ErrorInfo);
             return FALSE;

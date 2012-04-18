@@ -87,6 +87,16 @@ class Secure_Gear extends Gear {
     }
 
     /**
+     * Generate hash for user
+     *
+     * @param string $salt
+     */
+    public function genHash($salt = NULL) {
+        $salt OR $salt = $this->session->get('ip');
+        return md5($salt . $this->key());
+    }
+
+    /**
      * Check request for security hash
      */
     public function checkRequest() {

@@ -42,6 +42,7 @@ class Cron_Gear extends Gear {
      * Check cron
      */
     public function check() {
+        if(!config('installed')) return;
         if (time() - $this->get('cron.last_run') > self::STEP) {
             // Set cron execute time
             $this->set('cron.last_run', time());

@@ -1,4 +1,4 @@
-<div class="menu" id="<?= $menu->getName() ?>">
+<div class="menu" id="<?php echo  $menu->getName() ?>">
     <ul class="tabs">
         <? $last_level = 1 ?>
         <? $z = 0?>
@@ -13,8 +13,8 @@
             ?>
             <? if($level <= $last_level && $z != 0):?>
             <?endif?>
-            <li<?if($item->class){?> class="<?=$item->class?>"<?}?>>
-                <a href="<?= $item->link ?>"><?= $item->text ?></a>
+            <li<?if($item->class){?> class="<?php echo $item->class?>"<?}?>>
+                <a href="<?php echo  $item->link ?>"><?php echo  $item->text ?></a>
             <? $last_level = $level ?>
             <?$z++?>
         <? endforeach ?>

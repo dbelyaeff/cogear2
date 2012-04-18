@@ -8,6 +8,7 @@
         <div class="container">
 	        <div class="row">
 				<div class="span12" id="header">
+                                    <a href="<?php echo l();?>"><img src="<?php echo $theme->folder?>/img/logo.png"/></a>
 					<?php theme('header')?>
 				</div>
 		    </div>

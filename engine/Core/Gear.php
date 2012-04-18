@@ -248,7 +248,7 @@ abstract class Gear extends Adapter {
     private function checkRequiredGears() {
         if ($this->required) {
             foreach ($this->required as $required_gear) {
-                preg_match('#([\w_-]+)\s?([<>=]{1}?)\s([\f]+)?#', $required_gear, $matches);
+                preg_match('#([\w_-]+)\s?([<?php echo ]{1}?)\s([\f]+)?#', $required_gear, $matches);
             }
         }
         return TRUE;

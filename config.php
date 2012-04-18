@@ -4,6 +4,7 @@ return array (
   array (
     'lang' => 'ru',
     'locale' => 'ru_RU.UTF8',
+    'path' => SITE.'\lang',
   ),
   'theme' => 
   array (
@@ -13,13 +14,18 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1314449280,
+    'last_run' => 1334758740,
   ),
   'user' => 
   array (
-    'avatar' => array(
-        'default' => 'avatars/0/avatar.jpg',
-    )
+    'register' => 
+    array (
+      'verification' => true,
+    ),
+    'avatar' => 
+    array (
+      'default' => 'avatars/0/avatar.jpg',
+    ),
   ),
   'image' => 
   array (
@@ -35,13 +41,23 @@ return array (
       ),
       'avatar' => 
       array (
-        'navbar' => array(
-            'size' => '41x41',
-            'actions' => array(
-                'sizecrop',
-            )
+        'navbar' => 
+        array (
+          'size' => '38x38',
+          'actions' => 
+          array (
+            0 => 'sizecrop',
+          ),
         ),
         'small' => 
+        array (
+          'size' => '24x24',
+          'actions' => 
+          array (
+            0 => 'sizecrop',
+          ),
+        ),
+        'post' => 
         array (
           'size' => '24x24',
           'actions' => 
@@ -68,5 +84,4 @@ return array (
       ),
     ),
   ),
-  'installed' => true,
 );

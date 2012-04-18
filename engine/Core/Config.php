@@ -29,7 +29,7 @@ class Config extends Core_ArrayObject {
         if ($path) {
             $this->file = $path;
             $this->load($path, $section);
-            hook('exit',array($this,'store'));
+            hook('exit', array($this, 'store'));
         }
     }
 
@@ -125,18 +125,18 @@ class Config extends Core_ArrayObject {
      * @param string $file
      * @param array $data
      */
-    public function store($file = NULL, $data = NULL) {
-        if(!$this->write_flag) return;
-        $file OR $file = $this->file;
-        $data OR $data = $this->toArray();
-        if (self::write($file, $data)) {
-            return TRUE;
-        } else {
-            error(t('Cannot write file:<br/>
+    public function store($force = FALSE) {
+        if ($this->write_flag OR $force) {
+            if (self::write($this->file, $this->toArray())) {
+                return TRUE;
+            } else {
+                error(t('Cannot write file:<br/>
                 <b>%s</b><br/>
                 Please, check the permissions (must be 0755 at least.', NULL, $file));
-            return FALSE;
+                return FALSE;
+            }
         }
+        return NULL;
     }
 
     /**

@@ -26,7 +26,6 @@ class User_Gear extends Gear {
      * Init
      */
     public function init() {
-//        $this->router->addRoute('users:maybe', array($this, 'users'));
         parent::init();
         $this->adapter = new User_Object();
         $this->adapter->init();
@@ -34,7 +33,6 @@ class User_Gear extends Gear {
                     'name' => 'navbar',
                     'render' => 'before',
                 ));
-        $this->getRoles();
     }
 
     /**
@@ -282,23 +280,64 @@ class User_Gear extends Gear {
     /**
      * User registration
      */
-    public function register_action() {
-        if (!config('user.register', TRUE)) {
-            return info('Registration is turned off by site admin');
+    public function register_action($code = NULL) {
+        if (!config('user.register.enabled', TRUE)) {
+            return warning('Registration is turned off by site admin');
         }
         if ($this->isLogged()) {
-            return info('You are already logged in!', 'Authorization');
+            return warning('You are already logged in!', 'Authorization');
         }
-        $form = new Form('User.register');
-        if ($data = $form->result()) {
-            $this->attach($data);
-            $this->role = config('user.default.user_group', 100);
-            $this->hashPassword();
-            $this->save();
-            info('User was successfully registered! Please, check your email for further instructions.', 'Registration succeed.');
+        if ($code) {
+            $user = new User();
+            $user->hash = $code;
+            if($user->find()){
+                $form = new Form('User.register.verify');
+                if($result = $form->result()){
+                    $user->attach($result); 
+                    $user->hashPassword();
+                    $user->hash = $user->genHash($user->password);
+                    $user->save();
+                    $this->attach($user->adapter->object);
+                    if($this->login()){
+                        flash_success(t('Registration is complete!','User.register'));
+                        redirect($this->getLink());
+                    }
+                }
+                $form->show();
+            }
+            else {
+                error(t('Registration code was not found.','User.register'));
+            }
+        } else {
+            $form = new Form('User.register');
+            if ($result = $form->result()) {
+                $user = new User();
+                $user->email = $result->email;
+                if(!$user->find()){
+                    $user->hash = $this->secure->genHash();
+                }
+                if (config('user.register.verification',TRUE)) {
+                    $verify_link = l('/register/'.$user->hash, TRUE);
+                    $mail = new Mail(array(
+                        'name' => 'register.verify',
+                        'subject' => t('Registraion on %s','Mail.registration',config('site.url')),
+                        'body' => t('You have been successfully registered on http://%s. <br/>
+                            Please, click following link to procceed email verification:<p>
+                            <a href="http://%s">%s</a>','Mail.registration',config('site.url'),$verify_link,$verify_link),
+                    ));
+                    $mail->to($user->email);
+                    if($mail->send()){
+                        $user->save();
+                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.','Mail.registration',$user->email));
+                    }
+                } else {
+                    $user->save();
+                    redirect(l('/user/register/'.$user->hash));
+                }
+            } else {
+                $form->show();
+            }
         }
-        else
-            $form->show();
     }
 
     /**
@@ -365,13 +404,14 @@ class User_Gear extends Gear {
         else
             $form->show();
     }
-    
+
     /**
      * Show user navbar
      *
      * @param object $Stack 
      */
-    public function postShowUserNavbar($Stack){
+    public function postShowUserNavbar($Stack) {
         return $Stack->object->author->navbar()->show();
     }
+
 }

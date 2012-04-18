@@ -179,6 +179,16 @@ final class Cogear implements Interface_Singleton {
         }
         return $default;
     }
+    /**
+     * Set config
+     * 
+     * @param type $name
+     * @param type $value 
+     * @return  mixed
+     */
+    public function set($name, $value) {
+        return $this->config->set($name,$value);
+    }
 
     /**
      * Find gears in direcotry

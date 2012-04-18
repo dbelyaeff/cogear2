@@ -1,6 +1,6 @@
 <?php
 /**
- *  gear
+ * Dev gear
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
@@ -10,10 +10,10 @@
  * @subpackage          
  * @version		$Id$
  */
-class _Gear extends Gear {
+class Dev_Gear extends Gear {
 
-    protected $name = '';
-    protected $description = '';
+    protected $name = 'Dev';
+    protected $description = 'Dev description';
     protected $package = '';
     protected $order = 0;
 

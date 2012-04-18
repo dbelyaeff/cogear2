@@ -29,7 +29,7 @@ class User_Validate_Email extends Form_Validate_Abstract {
         $user = new Db_ORM('users');
         $user->email = $value;
         if ($user->find()) {
-            if ($user->id == cogear()->user->id && $exclude_self) {
+            if ($user->id == cogear()->user->id) {
                 return TRUE;
             }
             $this->element->addError(t('Email is already taken!'));

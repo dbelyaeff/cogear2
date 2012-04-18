@@ -1,0 +1,36 @@
+@import 'kube.css';
+
+
+/* =Typography
+-----------------------------------------------------------------------------*/
+body {
+	font-family: "Trebuchet MS", Arial, serif;
+	font-size: 15px;
+}
+
+
+
+/* =Links
+-----------------------------------------------------------------------------*/
+a, a.blue { color: #2a5e92; }
+a:hover {
+	color: #922a2a !important;
+	text-decoration: underline;
+}
+a.red:hover {
+	color: #000 !important;
+}
+
+
+
+/* =Layout
+-----------------------------------------------------------------------------*/
+#page {
+	padding: 40px 0;
+	width: 980px;
+	margin: auto;	
+}
+
+
+
+

@@ -32,7 +32,7 @@ class Db_Gear extends Gear {
                 fatal_error($this->adapter->errors());
             } else {
                 hook('done', array($this, 'showErrors'));
-                hook('debug', array($this, 'trace'));
+                hook('dev.info', array($this, 'trace'));
             }
         } else {
             error(t('Database connection string is not defined.', 'Db.errors'));
@@ -99,10 +99,10 @@ class Db_Gear extends Gear {
     /**
      * Output all queries
      */
-    public function trace() {
+    public function trace($Stack) {
         $tpl = new Template('Db.debug');
         $tpl->queries = $this->adapter->getBenchmark();
-        echo $tpl->render();
+        $Stack->append($tpl->render());
     }
 
 }

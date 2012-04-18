@@ -1,3 +1,3 @@
-<div class="user" id="user-<?=$item->id?>">
-   <?=$item->getPanel()?>
+<div class="user" id="user-<?php echo $item->id?>">
+   <?php echo $item->getPanel()?>
 </div>

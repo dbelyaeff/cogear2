@@ -141,14 +141,6 @@ class User_Object extends Db_Item {
         return $this->password;
     }
 
-    /**
-     * Generate hash for user
-     *
-     * @param object $user
-     */
-    public function genHash() {
-        return md5($this->password . cogear()->secure->key());
-    }
 
     /**
      * Get name

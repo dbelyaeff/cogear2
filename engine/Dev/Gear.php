@@ -56,12 +56,12 @@ class Dev_Gear extends Gear {
      */
     public function finalPoint() {
         $this->addPoint('system.end');
-        if (access('development')) {
+//        if (access('development')) {
             $cogear = getInstance();
             $template = new Template('Dev.results');
             $template->data = Dev_Gear::humanize($cogear->dev->measurePoint('system'));
             append('footer', $template->render());
-        }
+//        }
     }
 
     /**

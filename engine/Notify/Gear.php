@@ -19,8 +19,7 @@ class Notify_Gear extends Gear {
     protected $order = -1000;
     protected $template = 'Notify.alert';
     protected $hooks = array(
-        'form.load' => 'renderFlash',
-        'reponse.send' => 'renderFlash',
+        'content' => 'renderFlash',
     );
     
     /**
@@ -57,12 +56,12 @@ class Notify_Gear extends Gear {
     /**
      * Render flash messages
      */
-    public function renderFlash($Form){
+    public function renderFlash(){
         if($this->session->messages){
             foreach($this->session->messages as $message){
                 $this->showMessage($message['body'],$message['title'],$message['class'],$message['region']);
             }
-            $this->session->remove('messages');
+            $this->session->messages = NULL;
         }
     }
 }

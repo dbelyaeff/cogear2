@@ -50,7 +50,7 @@ class Callback extends Cogearable {
      * @return string
      */
     public function check(){
-        return Callback::prepare($this->callback);
+        return Callback::prepare($this->callback) ? TRUE : FALSE;
     }
     /**
      * Run

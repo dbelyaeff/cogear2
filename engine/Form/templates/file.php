@@ -1,1 +1,1 @@
-<?=HTML::input($element->options)?>
+<?php echo HTML::input($element->options)?>
