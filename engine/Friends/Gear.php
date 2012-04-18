@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Friends gear
  *
@@ -14,32 +15,70 @@ class Friends_Gear extends Gear {
 
     protected $name = 'Friends';
     protected $description = 'Manage friends';
-    protected $package = '';
-    protected $order = 0;
+    protected $hooks = array(
+        'user.navbar' => 'hookUserNavbar',
+    );
 
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
+    public function hookUserNavbar($Navbar) {
+        if ($Navbar->object->id != $this->user->id) {
+            $is_friend = $this->check($Navbar->object->id);
+            $link = l('/friends/status/'.$Navbar->object->id.'/');
+            $link = sprintf('<a href="%s" class="ajax btn btn-mini %s">%s</a>',$link,$is_friend ? 'btn-success' : 'btn-danger',t($is_friend ? 'Friend':'Unfriend','Friends'));
+            $Navbar->append($link);
+        }
     }
-
+    
+    /**
+     * Check user to be a friend
+     * 
+     * @reutrn boolean
+     */
+    public function check($uid){
+        return TRUE;
+    }
     /**
      * Default dispatcher
      * 
      * @param string $action
      * @param string $subaction 
      */
-    public function index($action = '', $subaction = NULL) {
-            
+    public function index_action($action = '', $subaction = NULL) {
+        
     }
     
     /**
-     * Custom dispatcher
+     * Change status
      * 
-     * @param   string  $subaction
-     */
-    public function action_index($subaction = NULL){
-        
+     * @param type $id
+status     */
+    public function status_action($id = 0){
+        $user = new User();
+        $user->id = $id;
+        new Friends();
+        if($id && $user->find()){
+            $status = $this->check($id);
+            $form = new Form('Friends.status');
+            $form->init();
+            switch($status){
+                case FALSE:
+                    $form->title->options->label = t('Remove %s from friends?','Friends',$user->getListView());
+                    break;
+                default:
+                case TRUE:
+                $form->title->options->label = t('Add %s to friends?','Friends',$user->getListView());
+            }
+            if($result = $form->result()){
+                if($result->yes){
+                    $friends = new Friends_Object();
+                }
+                else {
+                    redirect($user->getLink());
+                }
+            }
+            $form->show();
+        }
+        else {
+            return event('404');
+        }
     }
 }

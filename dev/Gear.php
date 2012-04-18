@@ -39,7 +39,7 @@ class Dev_Gear extends Gear {
      * 
      * @param   string  $subaction
      */
-    public function action_index($subaction = NULL){
+    public function some_action($subaction = NULL){
         
     }
 }

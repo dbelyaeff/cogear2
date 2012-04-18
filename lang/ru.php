@@ -73,6 +73,25 @@ return array (
     'Shure?' => '',
     'Try again' => '',
   ),
+  '#Form_Validate' => 
+  array (
+    'Value must be longer that %d.' => '',
+  ),
+  '#Friends' => 
+  array (
+    'Friend' => '',
+    'Unfriend' => '',
+    'Add %s to friends?' => '',
+    'Remove %s from friends?' => '',
+  ),
+  '#IM' => 
+  array (
+    'Messages (%s)' => '',
+    'New message' => '',
+    'Recipients' => '',
+    'Subject' => '',
+    'Send' => '',
+  ),
   '#Image' => 
   array (
     'Maximum image dimensions are <b>%sx%s</b>pixels.' => '',
@@ -81,6 +100,12 @@ return array (
   array (
     'Define basic settings for your site.' => '',
     'Your site has been successfully configured!' => '',
+  ),
+  '#Mail.lostpassword' => 
+  array (
+    'Password recovery on %s' => '',
+    'Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.' => '',
+    'Follow the instructions that were send to your email.' => '',
   ),
   '#Mail.registration' => 
   array (
@@ -91,6 +116,14 @@ return array (
     'Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.' => '',
     'You have been successfully registered on http://%s. <br/>
                             Please, click following link to procceed email verification:<p>
+                            <a href="%s">%s</a>' => '',
+    'You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
+                                    <p>If it wasn\'t you action, just leave this letter unattended or contant site administration.
+                                    <p>To recover password, click following link:<p>
+                            <a href="%s">%s</a>' => '',
+    'You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
+                                    <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
+                                    <p>To recover password, click following link:<p>
                             <a href="%s">%s</a>' => '',
   ),
   '#Post' => 
@@ -130,11 +163,17 @@ return array (
     'Wrong credentials.' => '',
     'Authentification error' => '',
     'OR' => '',
+    'Create Post' => '',
   ),
   '#User edit' => 
   array (
     'User data saved!' => '',
     'Success' => '',
+  ),
+  '#User.lostpassword' => 
+  array (
+    'You have been logged in be temporary link. Now you can change your password.' => '',
+    'Password recovery code has been already used.' => '',
   ),
   '#User.register' => 
   array (

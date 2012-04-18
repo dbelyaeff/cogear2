@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class User_Object extends Db_Item {
+class User extends Db_Item {
 
     public $dir;
     protected $template = 'User.list';
@@ -25,6 +25,7 @@ class User_Object extends Db_Item {
     public function __construct() {
         parent::__construct('users');
     }
+
     /**
      * Saving session
      */
@@ -33,12 +34,14 @@ class User_Object extends Db_Item {
         die('asdasd');
         return array();
     }
+
     /**
      * Restoring session
      */
     public function __wakeup() {
         die('wakeup');
     }
+
     /**
      * Init user as current
      */
@@ -89,10 +92,8 @@ class User_Object extends Db_Item {
      * Activate user
      */
     public function login() {
-        if(!$this->object){
-            if(!$this->find()){
-                return FALSE;
-            }
+        if (!$this->find()) {
+            return FALSE;
         }
         return $this->store();
     }
@@ -159,7 +160,6 @@ class User_Object extends Db_Item {
         return $this->password;
     }
 
-
     /**
      * Get name
      * 
@@ -184,6 +184,7 @@ class User_Object extends Db_Item {
         }
         return NULL;
     }
+
     /**
      * Get user profile link
      */
@@ -191,7 +192,7 @@ class User_Object extends Db_Item {
         if ($this->id) {
             $link = $this->id;
             event('User.edit.link', $link);
-            return Url::gear('user') .'/edit/'. $link . '/';
+            return Url::gear('user') . 'edit/' . $link . '/';
         }
         return NULL;
     }
@@ -199,8 +200,8 @@ class User_Object extends Db_Item {
     /**
      * Get HTML link to user profile
      */
-    public function getProfileLink() {
-        return HTML::a($this->getLink(), $this->getName());
+    public function getProfileLink($useName = FALSE) {
+        return HTML::a($this->getLink(), $useName ? $this->getName() : $this->login);
     }
 
     /**
@@ -228,7 +229,7 @@ class User_Object extends Db_Item {
      * @return string
      */
     public function getListView() {
-        return $this->getAvatarImage() . ' ' . $this->getLink();
+        return $this->getAvatarImage() . ' ' . $this->getProfileLink();
     }
 
     /**
@@ -243,7 +244,7 @@ class User_Object extends Db_Item {
         $this->avatar->attach($this);
         return $this->avatar;
     }
-    
+
     /**
      * User navbar
      */

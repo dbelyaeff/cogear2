@@ -12,14 +12,19 @@
  * @version		$Id$
  */
 class User_Validate_Email extends Form_Validate_Abstract {
-
+    const EXCLUDE_SELF = 1;
     /**
      * Validate user email.
      * 
      * @param string $value 
      */
-    public function validate($value){
+    public function validate($value,$state = NULL){
         if(!$value) return TRUE;
+        switch($state){
+            case self::EXCLUDE_SELF:
+                return TRUE;
+                break;
+        }   
         $user = new User();
         $user->email = $value;
         if ($user->find()) {

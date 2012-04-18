@@ -222,9 +222,9 @@ class User_Gear extends Gear {
         if ($data = $form->result()) {
             $this->attach($data);
             $this->hashPassword();
-            if ($this->login()) {
+            if ($this->find() && $this->login()) {
                 $data->saveme && $this->remember();
-                redirect(Url::gear('user'));
+                redirect($this->getLink());
             } else {
                 error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
             }
@@ -252,7 +252,8 @@ class User_Gear extends Gear {
               $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $user->password);
               $user->save();
               $user->login();
-              redirect($user->ge);
+              flash_success(t('You have been logged in be temporary link. Now you can change your password.','User.lostpassword'));
+              redirect($user->getEditLink());
           }
           else {
               error(t('Password recovery code has been already used.', 'User.lostpassword'));
@@ -272,20 +273,20 @@ class User_Gear extends Gear {
                                 'name' => 'register.lostpassword',
                                 'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
                                 'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
-                                    <p>If it wasn\'t you action, just leave this letter unattended or contant site administration.
+                                    <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
                                     <p>To recover password, click following link:<p>
                             <a href="%s">%s</a>', 'Mail.registration', config('site.url'),$this->session->get('ip'), $recover, $recover),
                             ));
                     $mail->to($user->email);
                     if ($mail->send()) {
                         $user->save();
-                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.', 'Mail.lostpassword', $user->email));
+                        success(t('Follow the instructions that were send to your email.', 'Mail.lostpassword', $user->email));
                     }
                 } else {
                     error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
                 }
             }
-            $form->show();
+            else $form->show();
         }
     }
 

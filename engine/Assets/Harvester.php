@@ -47,7 +47,7 @@ class Assets_Harvester {
     public function __construct() {
         $this->clear();
         hook('head', array($this, 'output'), NULL, 'css');
-        hook('after', array($this, 'output'), NULL, 'js');
+        hook('head', array($this, 'output'), NULL, 'js');
     }
 
     /**

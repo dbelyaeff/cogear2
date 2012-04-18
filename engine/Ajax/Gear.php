@@ -21,6 +21,15 @@ class Ajax_Gear extends Gear {
     const PATH = '/';
     
     /**
+     * Init
+     */
+    public function init(){
+        parent::init();
+        if(Ajax::is()){
+            event('ajax.hashchange');
+        }
+    }
+    /**
      * Form ajax request via params
      * 
      * @param array $params 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *  Assets gear
  *
@@ -15,7 +16,7 @@ class Assets_Gear extends Gear {
     protected $name = 'Assets';
     protected $description = 'Manage assets';
     protected $order = -1000;
-    
+
     /**
      * Constructor
      */
@@ -24,4 +25,19 @@ class Assets_Gear extends Gear {
         $this->adapter = new Assets_Harvester();
         cogear()->assets = $this;
     }
+
+    /**
+     * Init
+     */
+    public function init() {
+        parent::init();
+        $cogear = new Core_ArrayObject();
+        $cogear->settings = new Core_ArrayObject();
+        $cogear->settings->site = config('site.url');
+        event('Assets.js.global', $cogear);
+        inline_js("
+            var cogear = cogear || " . json_encode($cogear) . ";               
+", 'head');
+    }
+
 }

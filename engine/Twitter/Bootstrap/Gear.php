@@ -20,17 +20,20 @@ class Twitter_Bootstrap_Gear extends Gear {
      * Load assets
      */
     public function loadAssets() {
-        $scripts_dir = $this->dir.DS.'bootstrap'.DS.'js';
-        $styles_dir = $this->dir.DS.'bootstrap'.DS.'css';
-//        $scripts[] = $scripts_dir.DS.'bootstrap.js';
-//        $scripts[] = $scripts_dir.DS.'bootstrap-modal.js';
-        $scripts[] = $scripts_dir.DS.'bootstrap-alert.js';
+        $scripts_dir = $this->dir . DS . 'bootstrap' . DS . 'js';
+        $styles_dir = $this->dir . DS . 'bootstrap' . DS . 'css';
+        $scripts[] = $scripts_dir . DS . 'bootstrap-modal.js';
+        $scripts[] = $scripts_dir . DS . 'bootstrap-alert.js';
+        $scripts[] = $scripts_dir.DS.'bootstrap-tooltip.js';
 //        $scripts[] = $scripts_dir.DS.'bootstrap-button.js';
 //        $scripts[] = $scripts_dir.DS.'bootstrap-tab.js';
-//        $scripts[] = $scripts_dir.DS.'bootstrap-tooltip.js';
 //        $scripts[] = $scripts_dir.DS.'bootstrap-.js';
         cogear()->assets->addScript($scripts);
-        cogear()->assets->addStyle($styles_dir.DS.'bootstrap.css');
+        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap.css');
     }
 
+}
+
+function badge($count,$class = 'default'){
+    return '<span class="badge badge-'.$class.'">'.$count.'</span>';
 }

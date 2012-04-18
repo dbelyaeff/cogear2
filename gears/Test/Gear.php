@@ -1,4 +1,5 @@
 <?php
+
 /**
  *  gear
  *
@@ -22,7 +23,6 @@ class Test_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        $this->adapter = new Options(array('param' => 'value'));
     }
 
     /**
@@ -32,16 +32,35 @@ class Test_Gear extends Gear {
      * @param string $subaction 
      */
     public function index($action = '', $subaction = NULL) {
-        debug($_SESSION);
-        debug($this->session->user);
+        $window = new Modal_Window(array(
+                    'header' => 'Test',
+                    'body' => 'Test',
+                    'name' => 'test',
+                    'actions' => array(
+                        'go' => array(
+                            'link' => '/',
+                            'label' => 'Go',
+                            'class' => 'btn btn-primary',
+                        ),
+                        'close' => array(
+                            'label' => 'Close',
+                            'class' => 'btn btn-warning modal-close',
+                        ),
+                    ),
+                    'settings' => array(
+                        'show' => TRUE
+                    ),
+                ));
+        $window->show();
     }
-    
+
     /**
      * Custom dispatcher
      * 
      * @param   string  $subaction
      */
-    public function action_index($subaction = NULL){
+    public function action_index($subaction = NULL) {
         
     }
+
 }

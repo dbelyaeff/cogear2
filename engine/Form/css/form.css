@@ -27,3 +27,6 @@ form h1{
     color: #0d3349;
     margin: 5px 0 15px 0;
 }
+fieldset legend{
+    margin-bottom: 0;
+}

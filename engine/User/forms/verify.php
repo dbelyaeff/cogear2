@@ -4,7 +4,8 @@ return array(
     'name' => 'user-register-verify',
     'elements' => array(
         'label' => array(
-            'type' => 'title',
+            'type' => 'div',
+            'class' => 'page-header',
             'label' => t('Registration'),
         ),
         'email' => array(

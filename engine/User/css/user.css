@@ -13,6 +13,9 @@ img.avatar{
     top: 0;
     left: -25px;
 }
+.navbar .badge{
+    padding: 1px 5px 2px;
+}
 .user_profile_navbar .avatar{
     vertical-align: middle;
 }

@@ -171,10 +171,10 @@ class Post_Gear extends Gear {
                 if ($post->save()) {
                     if ($post->published) {
                         $link = l($post->getLink());
-                        info(t('Post is published! %s', 'Post', '<a href="' . $link . '">' . t('View') . '</a>'));
+                        info(t('Post is published! %s', 'Post', '<a class="btn btn-primary btn-mini" href="' . $link . '">' . t('View') . '</a>'));
                     } else {
                         $link = l($post->getLink());
-                        success(t('Post is saved to drafts! %s', 'Post', '<a href="' . $link . '">' . t('View') . '</a>'));
+                        success(t('Post is saved to drafts! %s', 'Post', '<a class="btn btn-primary btn-mini" href="' . $link . '">' . t('View') . '</a>'));
                     }
                 }
             }

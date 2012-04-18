@@ -219,6 +219,7 @@ class Form_Object extends Object {
         $this->elements->uasort('Core_ArrayObject::sortByOrder');
         $tpl = new Template($this->options->template);
         $id = $this->getId();
+        $this->action OR $this->options->action = l(cogear()->router->getUri());
         $tpl->form = $this;
         $this->options->id = $this->getId();
         $tpl->options = $this->options;

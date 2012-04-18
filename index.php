@@ -54,6 +54,11 @@ function autoload($class) {
         include $path;
         return TRUE;
     }
+    if(function_exists('event')){
+        if($result = event('autoload',$class)){
+            return $result;
+        }
+    }
     return NULL;
 }
 

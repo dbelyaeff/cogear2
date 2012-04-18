@@ -32,7 +32,7 @@ class Db_ORM extends Object {
      *
      * @var primary
      */
-    protected $primary;
+    protected $primary = 'id';
 
     /**
      * Fields
@@ -174,6 +174,7 @@ class Db_ORM extends Object {
         $primary = $this->primary;
         if ($this->object->$primary && isset(self::$loaded_items[$this->object->$primary])) {
             $this->object = self::$loaded_items[$this->object->$primary];
+            return TRUE;
         } else
         if ($this->object) {
             $cogear->db->where($this->object->toArray());
@@ -182,8 +183,9 @@ class Db_ORM extends Object {
             event('Db_ORM.find', $result);
             $this->object = $this->filter($result, self::FILTER_OUT);
             self::$loaded_items[$result->$primary] = $this->object;
+            return TRUE;
         }
-        return $this->object;
+        return FALSE;
     }
 
     /**
