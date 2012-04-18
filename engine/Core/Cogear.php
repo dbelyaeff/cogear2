@@ -64,21 +64,6 @@ final class Cogear implements Interface_Singleton {
         $this->config = new Config(ROOT . DS . 'config' . EXT);
         $this->system_cache = new Cache(array('path' => CACHE . DS . 'system'));
         hook('ignite', array($this, 'loadGears'));
-        hook('autoload', array($this, 'loadObjects'));
-    }
-    
-    /**
-     * Include Object
-     * 
-     * @param type $class
-     * @return type 
-     */
-    public function loadObjects($class) {
-        $obj_class = $class . '_Object';
-        $filename = str_replace('_', DS, $obj_class);
-        if ($path = find($filename . EXT)) {
-            return TRUE;
-        }
     }
 
     /**

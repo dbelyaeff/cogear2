@@ -20,8 +20,8 @@ define('UPLOADS', ROOT . DS . 'uploads');
 define('PHP_FILE_PREFIX', '<?php ' . "\n");
 define('IGNITE', time());
 
-//ini_set('display_errors', 1);
-//ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('error_reporting', E_ALL);
 /**
  * Search for file — layerd pancake ideology
  *
@@ -53,11 +53,6 @@ function autoload($class) {
     if ($path = find($filename.EXT)) {
         include $path;
         return TRUE;
-    }
-    if(function_exists('event')){
-        if($result = event('autoload',$class)){
-            return $result;
-        }
     }
     return NULL;
 }

@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class User extends Db_Item {
+class User_Object extends Db_Item {
 
     public $dir;
     protected $template = 'User.list';
