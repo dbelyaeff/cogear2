@@ -1,9 +1,12 @@
-<div class="modal hide fade" id="<?php echo $id?>"<?php if(!$settings->show):?> style="display:none"<?php endif;?>>
+<div class="modal <?php if(!$settings->show):?>hide fade<?php endif;?>" id="<?php echo $id?>"<?php if($source):?> data-source="<?php echo $source?>"<?php endif;?>>
 
-    <div class="modal-header">
+    <?php if ($header): ?> <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
-        <?php if ($header): ?>   <h3><?php echo $header ?></h3><?php endif; ?>
+        <h3><?php echo $header ?></h3>
     </div>
+    <?php else:?>
+    <a class="close close-standalone" data-dismiss="modal">×</a>
+    <?php endif; ?>
 
     <div class="modal-body">
         <p><?php echo $body ?></p>

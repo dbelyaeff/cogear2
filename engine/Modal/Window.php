@@ -35,6 +35,16 @@ class Modal_Window extends Object {
     }
 
     /**
+     * Get modal scripts
+     * 
+     * @return string
+     */
+    public function script() {
+        $script = "$('#{$this->id}').modal(" . json_encode($this->settings) . ");";
+        return $script;
+    }
+
+    /**
      * Render
      */
     public function render() {
@@ -43,30 +53,8 @@ class Modal_Window extends Object {
         $tpl = new Template('Modal.window');
         $this->options->id = $this->id();
         $tpl->assign($this->options);
-        $script = "$('#{$this->id}').modal(".json_encode($this->settings).");";
-        if ($this->source) {
-            $script .= "
-            $('#{$this->id}').on('shown', function () {
-                    $('#{$this->id} .modal-body').load('{$this->source}',function(){
-                    var actions = $('#{$this->id} .modal-body .form-actions');
-                    if(actions.length && $('#{$this->id} .modal-footer').length == 0){
-                        $('<div class=\"modal-footer\"/>').appendTo($('#{$this->id}'));
-                        actions.children().each(function(){
-                         var clone = $(this).clone();
-                         clone.appendTo('#{$this->id} .modal-footer').bind('click',{source:$(this)},function(e){
-                            e.data.source.click();
-                         });
-                         });
-                        
-                    }
-                    if(actions.length) actions.hide();
-                    
-                    });
-                    
-            })
-";
-        }
-        inline_js($script, 'after');
+
+        inline_js($this->script(), 'after');
         return $tpl->render();
     }
 

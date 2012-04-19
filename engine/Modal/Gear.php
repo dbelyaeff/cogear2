@@ -22,6 +22,22 @@ class Modal_Gear extends Gear {
      */
     public function init(){
         parent::init();
+        if(Ajax::is() && $this->input->get('modal')){
+            $uri = $this->router->getUri();
+            $window = new Modal_Window(array(
+                'name' => 'ajax',
+                'source' => l('/'.$uri.' #'.$this->input->get('modal')),
+                'settings' => array(
+                    'show' => TRUE,
+                )
+            ));
+            $ajax = new Ajax();
+            // Delete duplicate if exists
+            $ajax->append('$("#'.$window->id().'").remove()');
+            $ajax->append('$("'.Ajax::escape($window->render()).'").appendTo("#content");');
+            $ajax->append($window->script());
+            $ajax->send();
+        }
         $login_window = new Modal_Window(array(
             'name' => 'login',
             'header' => t('Login','User'),
