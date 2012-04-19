@@ -69,7 +69,7 @@ class Post_Object extends Db_Item {
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
-        $data['last_update'] = time();
+        isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
             cogear()->post->recalculateUserPostCount();
         }
@@ -92,6 +92,10 @@ class Post_Object extends Db_Item {
      */
     public function render($template = NULL) {
         event('post.render', $this);
+        if(!$this->teaser){
+            $this->views++;
+            $this->update(array('views'=>$this->views));
+        }
         return parent::render($template);
     }
 
