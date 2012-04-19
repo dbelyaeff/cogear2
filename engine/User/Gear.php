@@ -17,7 +17,6 @@ class User_Gear extends Gear {
     protected $description = 'Manage users.';
     protected $order = -10;
     protected $current;
-    protected $roles;
     protected $hooks = array(
         'post.show.full.before' => 'postShowUserNavbar',
     );
@@ -75,6 +74,13 @@ class User_Gear extends Gear {
                     ));
                 }
                 break;
+            case 'admin':
+                $menu->register(array(
+                    'link' => l('/admin/user'),
+                    'label' => icon('user') . ' ' . t('Users', 'User.admin'),
+                    'order' => 100,
+                ));
+                break;
         }
         d();
     }
@@ -95,7 +101,7 @@ class User_Gear extends Gear {
                         'lostpassword' => array(
                             'label' => t('Lost password'),
                             'link' => l('/user/lostpassword'),
-                            'access' => $this->router->check('user/lostpassword'),
+                            'access' => check_route('user/lostpassword'),
                         ),
                         'register' => array(
                             'label' => t('Register'),
@@ -188,10 +194,11 @@ class User_Gear extends Gear {
             if ($user->login != $result['login']) {
                 $redirect = Url::gear('user') . $result['login'];
             }
-            if ($result->delete && access('users delete_all')) {
-                $user->delete();
-                flash_success(t('User <b>%s</b> was deleted!'));
-                redirect(l('/users'));
+            if ($result->delete && access('user.delete.all')) {
+                if ($user->delete()) {
+                    flash_success(t('User <b>%s</b> was deleted!', 'User', $user->login));
+                    redirect(l());
+                }
             }
             $user->object->adopt($result);
             if ($result->password) {
@@ -246,18 +253,17 @@ class User_Gear extends Gear {
     public function lostpassword_action($code= NULL) {
         $this->showMenu();
         if ($code) {
-          $user = new User();
-          $user->hash = $code;
-          if($user->find()){
-              $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $user->password);
-              $user->save();
-              $user->login();
-              flash_success(t('You have been logged in be temporary link. Now you can change your password.','User.lostpassword'));
-              redirect($user->getEditLink());
-          }
-          else {
-              error(t('Password recovery code has been already used.', 'User.lostpassword'));
-          }
+            $user = new User();
+            $user->hash = $code;
+            if ($user->find()) {
+                $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $user->password);
+                $user->save();
+                $user->login();
+                flash_success(t('You have been logged in be temporary link. Now you can change your password.', 'User.lostpassword'));
+                redirect($user->getEditLink());
+            } else {
+                error(t('Password recovery code has been already used.', 'User.lostpassword'));
+            }
         } else {
             $form = new Form('User.lostpassword');
             if ($result = $form->result()) {
@@ -275,7 +281,7 @@ class User_Gear extends Gear {
                                 'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
                                     <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
                                     <p>To recover password, click following link:<p>
-                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'),$this->session->get('ip'), $recover, $recover),
+                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $this->session->get('ip'), $recover, $recover),
                             ));
                     $mail->to($user->email);
                     if ($mail->send()) {
@@ -286,7 +292,8 @@ class User_Gear extends Gear {
                     error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
                 }
             }
-            else $form->show();
+            else
+                $form->show();
         }
     }
 
@@ -314,7 +321,6 @@ class User_Gear extends Gear {
                     $user->hashPassword();
                     $user->hash = $this->secure->genHash($user->password);
                     $user->reg_date = time();
-                    $user->role = config('User.default.role', 100);
                     $user->save();
                     if ($user->login()) {
                         flash_success(t('Registration is complete!', 'User.register'));

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ajax Object alias
+ * Mail Object alias
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Dmitriy Belyaev
@@ -11,6 +11,6 @@
  * @subpackage
  * @version		$Id$
  */
-class Ajax extends Ajax_Object {
+class Mail extends Mail_Object {
     
 }

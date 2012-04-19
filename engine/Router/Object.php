@@ -20,36 +20,42 @@ class Router_Object extends Options {
      */
     private $routes = array(
     );
+
     /**
      * URI — path or URL after domain address.
      *
      * @var string
      */
     protected $uri;
+
     /**
      * URI segments
      *
      * @var array
      */
     private $segments = array();
+
     /**
      * Arguments — filtered segments
      * 
      * @var array
      */
     private $args = array();
+
     /**
      * Matches
      * 
      * @var array
      */
     protected $matches = array();
+
     /**
      * Callback
      * 
      * @var array
      */
     protected $callback = array();
+
     /**
      * Route expression transformation variables
      *
@@ -90,7 +96,7 @@ class Router_Object extends Options {
         $this->uri = $this->sanitizePath(cogear()->request->get('PATH_INFO'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
-        hook('ignite',array($this,'run'));
+        hook('ignite', array($this, 'run'));
     }
 
     /**
@@ -102,7 +108,7 @@ class Router_Object extends Options {
         $cogear = getInstance();
         // Sanitize unwanted data from the path
         $path = urldecode($path);
-        $path = preg_replace('#[^' . config('permitted_uri_chars','\w-_.') . self::DELIM . ']+#imsu', '', $path);
+        $path = preg_replace('#[^' . config('permitted_uri_chars', '\w-_.') . self::DELIM . ']+#imsu', '', $path);
         return trim($path, '/');
     }
 
@@ -117,6 +123,7 @@ class Router_Object extends Options {
         // Explode uri into pieces, but previosely trim it from aside delimiters and whitespaces
         return $this->segments = preg_split('#[' . preg_quote(self::DELIM) . ']+#', $path, -1, PREG_SPLIT_NO_EMPTY);
     }
+
     /**
      * Add route
      *
@@ -124,43 +131,48 @@ class Router_Object extends Options {
      * @param callback $callback
      */
     public function addRoute($route, $callback, $rewrite = FALSE) {
-        if($rewrite OR !isset($this->routes[$route])){
+        if ($rewrite OR !isset($this->routes[$route])) {
             $this->routes[$route] = $callback;
         }
     }
+
     /**
      * Get uri
      * 
      * @return string
      */
-    public function getUri(){
+    public function getUri() {
         return $this->uri;
     }
+
     /**
      * Get arguments
      * 
      * @return array
      */
-    public function getArgs(){
+    public function getArgs() {
         return $this->args;
     }
+
     /**
      * Get route matches
      * 
      * @return array
      */
-    public function getMatches(){
+    public function getMatches() {
         return $this->matches;
     }
+
     /**
      * Get segments
      *
      * @param   int     $num
      * @return array|string
      */
-    public function getSegments($num = NULL){
+    public function getSegments($num = NULL) {
         return $num ? (isset($this->segments[$num]) ? $this->segments[$num] : NULL) : $this->segments;
     }
+
     /**
      * Check uri match
      * 
@@ -168,33 +180,34 @@ class Router_Object extends Options {
      * @param int $type 
      * @return  boolean
      */
-    public function check($uri,$type = self::STARTS){
-        $site = 'http://'.config('site.url').'/';
-        if(strpos($uri,$site) !== FALSE){
-            $uri = str_replace($site,'',$uri);
+    public function check($uri, $type = self::STARTS) {
+        $site = 'http://' . config('site.url') . '/';
+        if (strpos($uri, $site) !== FALSE) {
+            $uri = str_replace($site, '', $uri);
         }
-        if(!$uri && $this->uri){
+        if (!$uri && $this->uri) {
             return FALSE;
         }
-        switch($type){
+        switch ($type) {
             case self::STARTS:
-                if(strpos($this->uri,$uri) === 0){
+                if (strpos($this->uri, $uri) === 0) {
                     return TRUE;
                 }
                 break;
             case self::ENDS:
-                if(strpos($this->uri,$uri) == (strlen($this->uri)-strlen($uri))){
+                if (strpos($this->uri, $uri) == (strlen($this->uri) - strlen($uri))) {
                     return TRUE;
                 }
                 break;
             case self::BOTH:
-                if(strpos($this->uri,$uri) !== FALSE && strlen($this->uri) == strlen($uri)){
+                if (strpos($this->uri, $uri) !== FALSE && strlen($this->uri) == strlen($uri)) {
                     return TRUE;
                 }
                 break;
         }
         return FALSE;
     }
+
     /**
      * Run dispatched request
      */
@@ -202,9 +215,7 @@ class Router_Object extends Options {
         $cogear = getInstance();
         foreach ($this->routes as $route => $callback) {
             $route = str_replace(
-                            $this->rules['from'],
-                            $this->rules['to'],
-                            $route);
+                    $this->rules['from'], $this->rules['to'], $route);
             $clean_route = $route;
             if (strpos($route, '^') === FALSE) {
                 $route = '^' . $route;
@@ -213,19 +224,13 @@ class Router_Object extends Options {
                 $route .= '$';
             }
             $regexp = '#' . $route . '#isU';
-            if (preg_match($regexp, $this->uri,$this->matches)) {
+            if (preg_match($regexp, $this->uri, $this->matches)) {
                 $args = array();
-                $root = trim(substr($clean_route,0,strpos($clean_route,'(')),self::DELIM);
-                $exclude = strpos($root,self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
-                $this->args = array_merge($args,array_diff_assoc($this->segments,$exclude));
+                $root = trim(substr($clean_route, 0, strpos($clean_route, '(')), self::DELIM);
+                $exclude = strpos($root, self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
+                $this->args = array_merge($args, array_diff_assoc($this->segments, $exclude));
                 // We have a nice method in hooks to prepare callback
-                if($callback = Callback::prepare($callback)){
-                    $this->callback = new Callback($callback);
-                    event('callback.before',$this);
-                    method_exists($callback[0],'request') && $callback[0]->request();
-                    $this->callback->setArgs($this->args);
-                    $this->callback->run();
-                    event('callback.after',$this);
+                if($this->exec($callback, $args)){
                     return;
                 }
             }
@@ -233,17 +238,22 @@ class Router_Object extends Options {
         event('404');
         return;
     }
+
     /**
      * Execute callback
      * 
      */
-    public function exec($callback,$args = array()){
-        if($callback = Callback::prepare($callback)){
-            $callback = new Callback($callback);
-            $args && $callback->setArgs($args);
-            return $callback->run();
+    public function exec($callback, $args = array()) {
+        if ($callback = Callback::prepare($callback)) {
+            $this->callback = new Callback($callback);
+            event('callback.before', $this);
+            method_exists($callback[0], 'request') && $callback[0]->request();
+            $this->callback->setArgs($this->args);
+            $this->callback->run();
+            event('callback.after', $this);
+            return TRUE;
         }
-        return NULL;
+        return FALSE;
     }
 
 }
@@ -254,6 +264,17 @@ class Router_Object extends Options {
  * @param type $route
  * @param type $callback
  */
-function route($route,$callback){
-    cogear()->router->addRoute($route,$callback);
+function route($route, $callback) {
+    cogear()->router->addRoute($route, $callback);
+}
+
+/**
+ * Check route alias
+ * 
+ * @param type $route
+ * @param type $arg
+ * @return type 
+ */
+function check_route($route, $arg = Router::BOTH) {
+    return cogear()->router->check($route, $arg);
 }

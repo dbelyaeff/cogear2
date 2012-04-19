@@ -14,7 +14,7 @@ class Input_Gear extends Gear {
 
     protected $name = 'Input';
     protected $description = 'Catch user input';
-    
+    protected $order = -1000;
     protected $get = array();
     protected $post = array();
     protected $cookies = array();

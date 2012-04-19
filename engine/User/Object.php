@@ -13,34 +13,10 @@
  */
 class User_Object extends Db_Item {
 
+    protected $table = 'users';
     public $dir;
     protected $template = 'User.list';
     public $avatar;
-
-    /**
-     * Constructor
-     * 
-     * @param   boolean $autoinit
-     */
-    public function __construct() {
-        parent::__construct('users');
-    }
-
-    /**
-     * Saving session
-     */
-    public function __sleep() {
-        debug($this->fields);
-        die('asdasd');
-        return array();
-    }
-
-    /**
-     * Restoring session
-     */
-    public function __wakeup() {
-        die('wakeup');
-    }
 
     /**
      * Init user as current
@@ -50,9 +26,10 @@ class User_Object extends Db_Item {
             event('user.autologin', $this);
             $this->dir = $this->dir();
             $this->avatar = $this->getAvatar();
-            if ($this->last_visit < time() - config('User.last_visit.period', 86400)) {
+            if ($this->last_visit < time() - config('user.refresh', 86400)) {
                 $this->last_visit = time();
                 $this->update();
+                event('user.refresh', $this);
             }
         }
         // Set data for guest
@@ -84,6 +61,7 @@ class User_Object extends Db_Item {
      * Store — save user to session
      */
     public function store() {
+        event('user.store', $this);
         cogear()->session->set('user', $this->object);
         return TRUE;
     }
@@ -111,12 +89,47 @@ class User_Object extends Db_Item {
     }
 
     /**
+     * 
+     */
+    public function insert($data = NULL) {
+        if ($result = parent::insert($data)) {
+            event('user.insert', $this);
+        }
+        return $result;
+    }
+
+    /**
+     * User find method overload
+     * 
+     * @return boolean
+     */
+    public function find() {
+        if ($result = parent::find()) {
+            event('user.find', $this);
+        }
+        return $result;
+    }
+    
+    /**
+     * Delete user
+     * 
+     * @return type 
+     */
+    public function delete() {
+        if ($result = parent::delete()) {
+            event('user.delete', $this);
+        }
+        return $result;
+    }
+
+    /**
      * Deactivate user
      */
     public function logout() {
         if (!$this->object)
             return;
         $cogear = cogear();
+        event('user.logout', $this);
         $cogear->session->remove('user');
         $this->forget();
     }
@@ -138,6 +151,7 @@ class User_Object extends Db_Item {
             return;
         Cookie::set('id', $this->id);
         Cookie::set('hash', $this->genHash());
+        event('user.remember', $this);
     }
 
     /**
@@ -146,6 +160,7 @@ class User_Object extends Db_Item {
     public function forget() {
         Cookie::delete('id');
         Cookie::delete('hash');
+        event('user.forget', $this);
     }
 
     /**

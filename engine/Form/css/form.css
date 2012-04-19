@@ -21,12 +21,6 @@ form .controls .description{
     font-size: 0.975em;
     color: #696969;
 }
-form h1{
-    border-bottom: 1px solid #ccc;
-    font-size: 18px;
-    color: #0d3349;
-    margin: 5px 0 15px 0;
-}
 fieldset legend{
     margin-bottom: 0;
 }

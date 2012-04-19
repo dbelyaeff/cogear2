@@ -24,7 +24,7 @@ class Install_Gear extends Gear {
         parent::init();
         if (!config('installed')) {
             $this->router->addRoute(':index', array($this, 'index'), TRUE);
-            if(!$this->router->check('install',  Router::STARTS)){
+            if(!check_route('install',  Router::STARTS)){
                 redirect(l('/install'));
             }
         }
@@ -57,22 +57,22 @@ class Install_Gear extends Gear {
                         array(
                             'label' => t('1. Start'),
                             'link' => '',
-                            'active' => $this->router->check('install',  Router::ENDS),
+                            'active' => check_route('install',  Router::ENDS),
                         ),
                         array(
                             'label' => t('2. Check'),
                             'link' => '',
-                            'active' => $this->router->check('check',  Router::ENDS),
+                            'active' => check_route('check',  Router::ENDS),
                         ),
                         array(
                             'label' => t('3. Settings'),
                             'link' => '',
-                            'active' => $this->router->check('site',  Router::ENDS),
+                            'active' => check_route('site',  Router::ENDS),
                         ),
                         array(
                             'label' => t('4. Finish'),
                             'link' => '',
-                            'active' => $this->router->check('finish',  Router::ENDS),
+                            'active' => check_route('finish',  Router::ENDS),
                         ),
                     ),
                 ));

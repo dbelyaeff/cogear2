@@ -4,7 +4,8 @@ return array(
     'elements' => array(
       'title' => array(
           'type' => 'div',
-          'value' => '<h1>'.t('Internacionalization settings','Forms').'</h1>',
+          'class' => 'page-header',
+          'label' => '<h1>'.t('Language settings','I18n.admin').'</h1>',
       ),
       'lang' => array(
         'type' => 'select',
@@ -17,6 +18,7 @@ return array(
       ),  
       'save' => array(
           'type' => 'submit',
+          'class' => 'btn btn-primary',
           'label' => t('Save')
       )
     ),

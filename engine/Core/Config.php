@@ -126,6 +126,7 @@ class Config extends Core_ArrayObject {
      * @param array $data
      */
     public function store($force = FALSE) {
+        if(!$this->file) return FALSE;
         if ($this->write_flag OR $force) {
             if (self::write($this->file, $this->toArray())) {
                 return TRUE;

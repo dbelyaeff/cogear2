@@ -10,6 +10,11 @@ $(document).ready(function(){
     })
     $('.modal[data-source]').live('shown', function () {
         var modal = $(this);
+        modal.live('keydown',function(e){
+            if(e.keyCode == 13 && e.ctrlKey){
+              modal.find('.btn-primary').click();  
+            }
+        });
         modal.find('.modal-body').load(modal.attr('data-source'),function(){
             var actions = modal.find(' .modal-body .form-actions');
             if(actions.length && modal.find('.modal-footer').length == 0){

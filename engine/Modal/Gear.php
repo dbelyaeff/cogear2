@@ -14,9 +14,7 @@ class Modal_Gear extends Gear {
 
     protected $name = 'Modal';
     protected $description = 'Modal windows manager';
-    protected $package = '';
-    protected $order = 0;
-    
+
     /**
      * Init
      */
@@ -25,7 +23,8 @@ class Modal_Gear extends Gear {
         if(Ajax::is() && $this->input->get('modal')){
             $uri = $this->router->getUri();
             $window = new Modal_Window(array(
-                'name' => 'ajax',
+                'name' => $this->input->get('name','ajax'),
+                'header' => $this->input->get('header'),
                 'source' => l('/'.$uri.' #'.$this->input->get('modal')),
                 'settings' => array(
                     'show' => TRUE,
@@ -38,11 +37,28 @@ class Modal_Gear extends Gear {
             $ajax->append($window->script());
             $ajax->send();
         }
-        $login_window = new Modal_Window(array(
-            'name' => 'login',
-            'header' => t('Login','User'),
-            'source' => l('/user/login #form-user-login'),
-        ));
-        $login_window->show();
+    }
+    
+    /**
+     * Hook menu
+     * 
+     * @param string $name
+     * @param array $menu 
+     */
+    public function menu($name,$menu){
+        if($name == 'navbar'){
+            if($this->user->id == 0){
+                $menu[0]->options->link = '#'.$menu[0]->link.'?'.Ajax::query(array(
+                    'modal' => 'form-user-login',
+                    'header' => t('Login','User'),
+                    'name' => 'login',
+                ));
+                $menu[1]->options->link = '#'.$menu[1]->link.'?'.Ajax::query(array(
+                    'modal' => 'form-user-register',
+                    'header' => t('Register','User'),
+                    'name' => 'register',
+                ));
+            }
+        }
     }
 }

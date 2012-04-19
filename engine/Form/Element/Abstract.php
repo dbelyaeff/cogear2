@@ -82,6 +82,9 @@ class Form_Element_Abstract extends Options {
             $class = $class[0];
         }
         class_exists($class) OR $class = 'Form_' . $suffix . '_' . $class;
+        if(!class_exists($class)){
+            return NULL;
+        }
         $callback = array($class, $args);
         return class_exists($class) ? $callback : NULL;
     }

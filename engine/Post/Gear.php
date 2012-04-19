@@ -35,7 +35,7 @@ class Post_Gear extends Gear {
         switch ($name) {
             case 'navbar':
                 $menu->register(array(
-                    'label' => icon('pencil icon-white') . ' ' . t('Create'),
+                    'label' => icon('pencil icon-white'),
                     'link' => l('/post/create/'),
                     'place' => 'left',
                     'access' => access('post.create'),
@@ -46,7 +46,7 @@ class Post_Gear extends Gear {
                     $menu->register(array(
                         'label' => t('Drafts') . ' (' . $this->user->drafts . ')',
                         'link' => l('/post/drafts/'),
-                        'active' => $this->router->check('post/drafts'),
+                        'active' => check_route('post/drafts'),
                     ));
                 }
                 break;

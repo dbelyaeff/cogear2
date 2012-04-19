@@ -34,6 +34,6 @@ abstract class Object extends Adapter {
      * Detach object
      */
     public function detach(){
-        $this->object = NULL;
+        $this->object = new Core_ArrayObject();
     }
 }

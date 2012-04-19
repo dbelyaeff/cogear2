@@ -40,7 +40,7 @@ class User_Navbar extends Object {
         $navbar->attach($user);
         $navbar->avatar = $user->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
-        if (access('user.edit_all') OR $user->id == cogear()->user->id) {
+        if (access('user.edit.all') OR $user->id == cogear()->user->id) {
             $navbar->edit = '<a href="' . $user->getEditLink() . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
         }
         $tpl->navbar = $navbar;
@@ -52,7 +52,6 @@ class User_Navbar extends Object {
                         'profile' => array(
                             'label' => t('Profile', 'User'),
                             'link' => $user->getLink(),
-                            'active' => cogear()->router->check('user', Router::BOTH),
                         ),
                         'edit' => array(
                             'label' => t('Edit'),

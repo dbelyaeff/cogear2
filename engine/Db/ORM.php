@@ -90,9 +90,9 @@ class Db_ORM extends Object {
      * @param mixed $value
      */
     public function __set($name, $value) {
-        $this->object->$name = $value;
+        $this->object instanceof Core_ArrayObject && $this->object->$name = $value;
     }
-    
+
     /**
      * Magic __get method
      *
@@ -129,20 +129,7 @@ class Db_ORM extends Object {
             unset($this->object->$name);
         }
     }
-    /**
-     * Saving session
-     */
-    public function __sleep() {
-        debug($this->fields);
-        die('asdasd');
-        return array();
-    }
-    /**
-     * Restoring session
-     */
-    public function __wakeup() {
-        die('wakeup');
-    }
+
     /**
      * Magic __call method
      *
@@ -180,7 +167,7 @@ class Db_ORM extends Object {
             $cogear->db->where($this->object->toArray());
         }
         if ($result = $cogear->db->get($this->table)->row()) {
-            event('Db_ORM.find', $result);
+            event('Db_ORM.find', $this, $result);
             $this->object = $this->filter($result, self::FILTER_OUT);
             self::$loaded_items[$result->$primary] = $this->object;
             return TRUE;
@@ -195,11 +182,12 @@ class Db_ORM extends Object {
      */
     public function findAll() {
         $cogear = getInstance();
-        if ($this->object) {
+        if ($this->object instanceof Core_ArrayObject) {
             $cogear->db->where($this->object->toArray());
         }
         if ($result = $cogear->db->get($this->table)->result()) {
             foreach ($result as &$element) {
+                event('Db_ORM.findAll', $this, $result);
                 $element = $this->filter($element, self::FILTER_OUT);
             }
             $primary = $this->primary;
@@ -234,15 +222,22 @@ class Db_ORM extends Object {
             default:
                 $filters = $this->filters_out;
         }
+        // Set scope to $this
+        foreach ($filters as $field => $filter) {
+            foreach ($filter as $key => $callback) {
+                is_string($callback) && $filters[$field][$key] = array($this, $callback);
+            }
+        }
         // Seeking through the data
         foreach ($data as $field => $value) {
             // If filter isset for field
             if (isset($filters[$field])) {
                 // Seeking through filters
                 foreach ($filters[$field] as $callback) {
+                    $callback = new Callback($callback);
                     // Apply filter if it's callable
-                    if (is_callable($callback)) {
-                        $data[$field] = call_user_func_array($callback, array($value));
+                    if ($callback->check()) {
+                        $data[$field] = $callback->run(array($value));
                     }
                 }
             }
@@ -261,14 +256,14 @@ class Db_ORM extends Object {
         if (!$data) {
             return FALSE;
         } elseif (isset($data[$this->primary])) {
-            event('Db_ORM.update', $this, $data);
             $data = $this->filter($data, self::FILTER_IN);
             $this->update($data);
+            event('Db_ORM.update', $this, $data);
             return TRUE;
         } else {
-            event('Db_ORM.insert', $this, $data);
             $data = $this->filter($data, self::FILTER_IN);
-            $this->object->{$this->primary} = $this->insert($data);
+            $this->insert($data);
+            event('Db_ORM.insert', $this, $data);
             return $this->object->{$this->primary};
         }
     }
@@ -285,7 +280,7 @@ class Db_ORM extends Object {
             return;
         $cogear = getInstance();
         event('Db_ORM.insert', $data);
-        return $cogear->db->insert($this->table, $data);
+        return $this->object->{$this->primary} = $cogear->db->insert($this->table, $data);
     }
 
     /**
@@ -296,11 +291,9 @@ class Db_ORM extends Object {
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
-        if (!$data OR !isset($data[$this->primary]))
-            return;
-        $cogear = getInstance();
         event('Db_ORM.update', $data);
-        return $cogear->db->update($this->table, $data, array($this->primary => $data[$this->primary]));
+        $primary = $this->primary;
+        return cogear()->db->update($this->table, $data, array($this->primary => $this->$primary));
     }
 
     /**
@@ -312,16 +305,17 @@ class Db_ORM extends Object {
         $cogear = getInstance();
         $primary = $this->primary;
         $data = $this->object->toArray();
+        $result = FALSE;
         if (!$data) {
             return;
         } elseif (!isset($data[$primary])) {
             event('Db_ORM.delete.before', $this);
-            return $cogear->db->delete($this->table, $data) ? TRUE : FALSE;
+            $result = $cogear->db->delete($this->table, $data) ? TRUE : FALSE;
         } else {
             event('Db_ORM.delete.before', $this);
-            return $cogear->db->delete($this->table, array($primary => $data[$primary])) ? TRUE : FALSE;
+            $result = $cogear->db->delete($this->table, array($primary => $data[$primary])) ? TRUE : FALSE;
         }
-        event('Db_ORM.delete.after', $this);
+        return $result;
     }
 
     /**
@@ -332,4 +326,5 @@ class Db_ORM extends Object {
     public function merge($data = array()) {
         $data && $this->object->mix($data);
     }
+
 }

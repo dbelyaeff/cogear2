@@ -15,7 +15,7 @@ class IM_Gear extends Gear {
 
     protected $name = 'IM';
     protected $description = 'Instant messenger';
-    protected $order = 10;
+    protected $order = 20;
 
     /**
      * Init
@@ -28,10 +28,10 @@ class IM_Gear extends Gear {
         switch ($name) {
             case 'navbar':
                 $menu->register(array(
-                    'label' => (cogear()->user->pm_new ? badge(cogear()->user->pm_new, 'info') : icon('envelope icon-white')) . ' ' . t('Mail'),
+                    'label' => icon('envelope icon-white') . ' ' . (cogear()->user->pm_new ? badge(cogear()->user->pm_new, 'info') : ''),
                     'link' => l('/im/'),
                     'place' => 'left',
-                    'access' => access('Mail'),
+                    'access' => access('im'),
                 ));
                 break;
         }
@@ -47,7 +47,7 @@ class IM_Gear extends Gear {
                         'inbox' => array(
                             'label' => t('Messages (%s)', 'IM', $this->user->pm),
                             'link' => l('/im'),
-                            'active' => $this->router->check('im/create',Router::ENDS) ? FALSE : TRUE,
+                            'active' => check_route('im/create', Router::ENDS) ? FALSE : TRUE,
                         ),
                         'create' => array(
                             'label' => t('New message', 'IM'),

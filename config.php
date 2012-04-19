@@ -14,10 +14,11 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1334784250,
+    'last_run' => 1334835273,
   ),
   'user' => 
   array (
+    'refresh' => 60,
     'register' => 
     array (
       'verification' => true,

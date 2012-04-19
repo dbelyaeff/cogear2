@@ -32,26 +32,7 @@ class Test_Gear extends Gear {
      * @param string $subaction 
      */
     public function index($action = '', $subaction = NULL) {
-        $window = new Modal_Window(array(
-                    'header' => 'Test',
-                    'body' => 'Test',
-                    'name' => 'test',
-                    'actions' => array(
-                        'go' => array(
-                            'link' => '/',
-                            'label' => 'Go',
-                            'class' => 'btn btn-primary',
-                        ),
-                        'close' => array(
-                            'label' => 'Close',
-                            'class' => 'btn btn-warning modal-close',
-                        ),
-                    ),
-                    'settings' => array(
-                        'show' => TRUE
-                    ),
-                ));
-        $window->show();
+        append('content','<a href="#/user/login?modal=form-user-login" class="btn btn-primary">Test</a>');
     }
 
     /**

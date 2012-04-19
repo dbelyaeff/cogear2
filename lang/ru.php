@@ -1,5 +1,14 @@
 <?php 
 return array (
+  '#Admin.site' => 
+  array (
+    'Site name' => '',
+    'Site url' => '',
+    'Site config' => '',
+    'Site settings' => '',
+    'Development mode' => '',
+    'Date format' => '',
+  ),
   '#Blog' => 
   array (
     'Blog' => '',
@@ -72,10 +81,15 @@ return array (
   array (
     'Shure?' => '',
     'Try again' => '',
+    'Data is saved!' => '',
   ),
   '#Form_Validate' => 
   array (
     'Value must be longer that %d.' => '',
+  ),
+  '#Forms' => 
+  array (
+    'Internacionalization settings' => '',
   ),
   '#Friends' => 
   array (
@@ -83,6 +97,14 @@ return array (
     'Unfriend' => '',
     'Add %s to friends?' => '',
     'Remove %s from friends?' => '',
+  ),
+  '#I18n' => 
+  array (
+    'Please, choose site interface language:' => '',
+  ),
+  '#I18n.admin' => 
+  array (
+    'Language settings' => '',
   ),
   '#IM' => 
   array (
@@ -164,6 +186,7 @@ return array (
     'Authentification error' => '',
     'OR' => '',
     'Create Post' => '',
+    'User <b>%s</b> was deleted!' => '',
   ),
   '#User edit' => 
   array (
@@ -238,6 +261,7 @@ return array (
   'This field is required.' => '',
   'URL rewrite' => '',
   'Update' => '',
+  'User <b>%s</b> was deleted!' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
   'View' => '',

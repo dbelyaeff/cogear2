@@ -29,20 +29,6 @@ class Wysiwyg_Gear extends Gear {
     }
 
     /**
-     * Hook to add admin menu element
-     * 
-     * @param type $structure 
-     */
-    public function menu($name, &$menu) {
-        switch ($name) {
-            case 'admin':
-                $menu->{'wysiwyg'} = t('Editor');
-                $menu->{'wysiwyg'}->order = 200;
-                break;
-        }
-    }
-
-    /**
      * Control Panel
      */
     public function admin() {
