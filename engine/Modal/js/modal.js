@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $('.modal .modal-footer .modal-close').click(function(e){
         e.preventDefault();
-        $(this).parent().parent().modal('hide');  
+        $(this).parent().parent().modal('hide');
         return false;
     })
     $('.navbar a[href="/user/login"]').click(function(){
@@ -12,7 +12,7 @@ $(document).ready(function(){
         var modal = $(this);
         modal.live('keydown',function(e){
             if(e.keyCode == 13 && e.ctrlKey){
-              modal.find('.btn-primary').click();  
+                modal.find('.btn-primary').click();
             }
         });
         modal.find('.modal-body').load(modal.attr('data-source'),function(){
@@ -27,11 +27,17 @@ $(document).ready(function(){
                         e.data.source.click();
                     });
                 });
-                        
+
             }
             if(actions.length) actions.hide();
-                    
+
         });
     })
+    $('a[data-type="modal"]').live('click',function(e){
+        e.preventDefault();
+        var link = $(this).attr('href')+'?modal='+$(this).attr('data-source');
+        $.getScript(link);
+        return false;
+    });
 })
 

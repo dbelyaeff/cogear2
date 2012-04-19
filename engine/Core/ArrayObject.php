@@ -70,9 +70,9 @@ class Core_ArrayObject extends ArrayObject {
         $data = self::transform(array_merge($this->toArray(), $data));
         /* Found some issue with PHP < 5.3
          * Object can't accept another instance of self for exchange
-         * 
+         *
          * $this->exchangeArray($data);
-         * 
+         *
          * Have to reinterpret exchangeArray method with simple foreach cycle
          */
         $this->adopt($data);
@@ -80,8 +80,8 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Merge some data with existing
-     * 
-     * @param array|object $data 
+     *
+     * @param array|object $data
      */
     public function adopt($data) {
         if ($data) {
@@ -93,8 +93,8 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Find element by value
-     * 
-     * @param mixed $needle 
+     *
+     * @param mixed $needle
      * @return  NULL|mixed  Null or found element key.
      */
     public function findByValue($needle) {
@@ -141,8 +141,8 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Detelte by offset
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
     public function __unset($name) {
         $this->offsetUnset($name);
@@ -161,7 +161,7 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Reverse object
-     * 
+     *
      * @return object
      */
     public function reverse() {
@@ -170,8 +170,8 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Exclude elements with the same keys from input $data
-     * 
-     * @param array $data 
+     *
+     * @param array $data
      */
     public function differ($data) {
         $data instanceof self && $data = $data->toArray();
@@ -181,7 +181,7 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Inject value at special position or before key
-     * 
+     *
      * @param   mixed   $value
      * @param   int|string     $position
      * @param   int $order
@@ -218,10 +218,10 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Place a piece of array at position
-     * 
+     *
      * @param array $array
      * @param int/string $position
-     * @param int $order 
+     * @param int $order
      */
     public function place($array, $position=0, $order = NULL) {
         $order OR $order = self::BEFORE;
@@ -245,9 +245,9 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Slice a piece of iterable
-     * 
+     *
      * @param int $from
-     * @param int $length 
+     * @param int $length
      */
     public function slice($from, $length = NULL) {
         $copy = $this->toArray();
@@ -285,7 +285,7 @@ class Core_ArrayObject extends ArrayObject {
 
     /**
      * Render object
-     * 
+     *
      * @return string
      */
     public function render() {
@@ -293,9 +293,9 @@ class Core_ArrayObject extends ArrayObject {
     }
 
     /**
-     * 
-     * 
-     * @param int $position 
+     *
+     *
+     * @param int $position
      */
     public function show($region = 'content',$position = 0, $where = 0) {
         $position ? inject($region, $this->render(), $position, $where) : append($region, $this->render());
@@ -313,11 +313,11 @@ class Core_ArrayObject extends ArrayObject {
     }
     /**
      * Sort by param
-     * 
+     *
      * @param string $param
      * @param object $a
      * @param object $b
-     * @return int 
+     * @return int
      */
     public static function sortBy($param,$a, $b) {
         if ($a->order == $b->order) {
@@ -325,15 +325,14 @@ class Core_ArrayObject extends ArrayObject {
         }
         return floatval($a->order) < floatval($b->order) ? -1 : 1;
     }
-
 }
 
 /**
  * Diff keys recursive
- * 
+ *
  * @param array $a1
  * @param array $a2
- * @return array 
+ * @return array
  */
 function array_diff_key_recursive($a, $b) {
     foreach($a as $key=>$value){

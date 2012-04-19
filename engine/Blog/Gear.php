@@ -29,7 +29,7 @@ class Blog_Gear extends Gear {
         switch ($name) {
             case 'user.profile.tabs':
                 $menu->register(array(
-                    'label' => t('Blog').' ('.$menu->object->posts.')',
+                    'label' => t('Blog') . ' (' . $menu->object->posts . ')',
                     'link' => $this->getLink($menu->object),
                 ));
                 break;
@@ -52,17 +52,15 @@ class Blog_Gear extends Gear {
             event('404');
         }
         $post = new Post();
-        $post->aid = $user->id;
-        $this->db->where(array(
-            'published' => 1
-        ));
+        cogear()->db->where('aid',$user->id);
+        cogear()->db->where('published');
         $this->db->order('created_date', 'DESC');
         $pager = new Pager(array(
-            'current' => $page ? intval(str_replace('page','',$page)) : NULL,
-            'count' => $post->count(),
-            'per_page' => config('Blog.per_page',5),
-            'base_uri' => l('/blog/'.$login.'/page')
-        ));
+                    'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
+                    'count' => $post->count(),
+                    'per_page' => config('Blog.per_page', 5),
+                    'base_uri' => l('/blog/' . $login . '/page')
+                ));
         if ($posts = $post->findAll()) {
             foreach ($posts as $post) {
                 $post->teaser = TRUE;

@@ -30,6 +30,7 @@ class User_Object extends Db_Item {
                 $this->last_visit = time();
                 $this->update();
                 event('user.refresh', $this);
+                $this->store();
             }
         }
         // Set data for guest
@@ -73,6 +74,7 @@ class User_Object extends Db_Item {
         if (!$this->find()) {
             return FALSE;
         }
+        event('user.login',$this);
         return $this->store();
     }
 
@@ -89,7 +91,7 @@ class User_Object extends Db_Item {
     }
 
     /**
-     * 
+     *
      */
     public function insert($data = NULL) {
         if ($result = parent::insert($data)) {
@@ -100,7 +102,7 @@ class User_Object extends Db_Item {
 
     /**
      * User find method overload
-     * 
+     *
      * @return boolean
      */
     public function find() {
@@ -109,11 +111,11 @@ class User_Object extends Db_Item {
         }
         return $result;
     }
-    
+
     /**
      * Delete user
-     * 
-     * @return type 
+     *
+     * @return type
      */
     public function delete() {
         if ($result = parent::delete()) {
@@ -177,9 +179,9 @@ class User_Object extends Db_Item {
 
     /**
      * Get name
-     * 
+     *
      * If name is not provided, login will be used
-     * 
+     *
      * @return string
      */
     public function getName() {
@@ -221,9 +223,9 @@ class User_Object extends Db_Item {
 
     /**
      * Get HTML image avatar
-     *  
+     *
      * @param string $preset
-     * @return string 
+     * @return string
      */
     public function getAvatarImage($preset = 'avatar.small') {
         return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar'));
@@ -231,7 +233,7 @@ class User_Object extends Db_Item {
 
     /**
      * Get HTML avatar linked to profile
-     * 
+     *
      * @return string
      */
     public function getAvatarLinked() {
@@ -240,7 +242,7 @@ class User_Object extends Db_Item {
 
     /**
      * Get view snippet
-     * 
+     *
      * @return string
      */
     public function getListView() {
@@ -249,7 +251,7 @@ class User_Object extends Db_Item {
 
     /**
      * Get user avatar
-     * 
+     *
      * @return  User_Avatar
      */
     public function getAvatar() {

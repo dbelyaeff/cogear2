@@ -20,7 +20,7 @@ class Template_Object extends Core_ArrayObject{
 
     /**
      * Constructor
-     * 
+     *
      * @param string $name
      */
     public function __construct($name) {
@@ -125,10 +125,10 @@ class Template_Object extends Core_ArrayObject{
             $this->vars[$name] = & $value;
         }
     }
-    
+
         /**
      *
-     * @return type 
+     * @return type
      */
     public function render(){
         if(!$this->path) return;
@@ -147,7 +147,7 @@ class Template_Object extends Core_ArrayObject{
  *
  * @param string $name
  * @param array $args
- * @return Template 
+ * @return Template
  */
 function template($name,$args = array()){
     $tpl = new Template($name);

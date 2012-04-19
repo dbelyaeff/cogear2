@@ -68,9 +68,9 @@ class Form_Element_Abstract extends Options {
 
     /**
      * Transform option
-     * 
+     *
      * array('Length') OR array(array('Length',0,1))
-     * 
+     *
      * @param callback $class
      * @param string   $suffix
      * @return  callback|NULL
@@ -150,7 +150,7 @@ class Form_Element_Abstract extends Options {
 
     /**
      * Form and return HTML object options from object data
-     * 
+     *
      * @return array
      */
     public function prepareOptions() {
@@ -189,5 +189,4 @@ class Form_Element_Abstract extends Options {
             $this->code = $tpl->render();
         }
     }
-
 }

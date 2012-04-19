@@ -2,7 +2,7 @@
 
 /**
  * Abstract Database Driver
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
@@ -36,7 +36,7 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Swap query
-     * 
+     *
      * @var array
      */
     protected $_swap = array();
@@ -77,7 +77,7 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Errors
-     * 
+     *
      * @var array
      */
     protected $errors = array();
@@ -106,10 +106,10 @@ abstract class Db_Driver_Abstract {
 
     /**
      * If this flag is off query elements will be saved after it's execution
-     * 
+     *
      * Useful for count query rows
-     * 
-     * @var boolean 
+     *
+     * @var boolean
      */
     protected $qr_flag = TRUE;
 
@@ -200,7 +200,7 @@ abstract class Db_Driver_Abstract {
     protected function argsToString($args, $condition = ' = ', $glue = ' AND ') {
         $query = array();
         foreach ($args as $key => $value) {
-            !is_numeric($value) && $value = '"'.$value.'"';
+            !is_numeric($value) && $value = '"' . $value . '"';
             $query[] = $key . ' ' . trim($condition) . ' ' . $value . ' ';
         }
         return implode($glue, $query);
@@ -416,7 +416,7 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Count rows
-     * 
+     *
      * @param   string  $table
      * @param   string  $field
      */
@@ -479,13 +479,13 @@ abstract class Db_Driver_Abstract {
         $where && $this->where($where);
         return $this->query();
     }
-    
+
     /**
      * Add error
-     * 
-     * @param type $error 
+     *
+     * @param type $error
      */
-    public function error($error){
+    public function error($error) {
         array_push($this->errors, $error);
     }
 
@@ -513,7 +513,7 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Build query
-     * 
+     *
      * @return  string
      */
     abstract public function buildQuery();
@@ -538,9 +538,9 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Grab table for fields
-     * 
+     *
      * @param string $table
-     * @return array 
+     * @return array
      */
     public function getFields($table = '') {
         $table OR $table = reset($this->_query['from']);
@@ -564,44 +564,46 @@ abstract class Db_Driver_Abstract {
      */
     protected function filterFields($table, $values) {
         $result = array();
+        if (is_array($values)) {
         $fields = isset($this->fields[$table]) ? $this->fields[$table] : $this->fields[$table] = $this->getFields($table);
-        foreach ($values as $key => $value) {
-            $skey = preg_replace('/[^\w_-]/', '', $key);
-            if (isset($fields[$skey])) {
-                $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
-                switch ($type) {
-                    case 'int':
-                    case 'tinyint':
-                    case 'smallint':
-                    case 'mediumint':
-                    case 'bigint':
-                        $result[$key] = (int) $value;
-                        break;
-                    case 'float':
-                        $result[$key] = (float) $value;
-                        break;
-                    case 'double':
-                        $result[$key] = (double) $value;
-                        break;
-                    case 'date':
-                        $result[$key] = date('Y-m-d', strtotime($value));
-                        break;
-                    case 'time':
-                        $result[$key] = date('H:i:s', strtotime($value));
-                        break;
-                    case 'datetime':
-                    case 'timestamp':
-                        $result[$key] = date('Y-m-d H:i:s', strtotime($value));
-                        break;
-                    case 'year':
-                        $result[$key] = date('Y', strtotime($value));
-                        break;
-                    case 'char':
-                    case 'varchar':
-                        $result[$key] = $this->escape((string) $value);
-                        break;
-                    default:
-                        $result[$key] = $value;
+            foreach ($values as $key => $value) {
+                $skey = preg_replace('/[^\w_-]/', '', $key);
+                if (isset($fields[$skey])) {
+                    $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
+                    switch ($type) {
+                        case 'int':
+                        case 'tinyint':
+                        case 'smallint':
+                        case 'mediumint':
+                        case 'bigint':
+                            $result[$key] = (int) $value;
+                            break;
+                        case 'float':
+                            $result[$key] = (float) $value;
+                            break;
+                        case 'double':
+                            $result[$key] = (double) $value;
+                            break;
+                        case 'date':
+                            $result[$key] = date('Y-m-d', strtotime($value));
+                            break;
+                        case 'time':
+                            $result[$key] = date('H:i:s', strtotime($value));
+                            break;
+                        case 'datetime':
+                        case 'timestamp':
+                            $result[$key] = date('Y-m-d H:i:s', strtotime($value));
+                            break;
+                        case 'year':
+                            $result[$key] = date('Y', strtotime($value));
+                            break;
+                        case 'char':
+                        case 'varchar':
+                            $result[$key] = $this->escape((string) $value);
+                            break;
+                        default:
+                            $result[$key] = $value;
+                    }
                 }
             }
         }
@@ -629,8 +631,8 @@ abstract class Db_Driver_Abstract {
 
     /**
      * Swap query
-     * 
-     * @param string $type 
+     *
+     * @param string $type
      */
     public function swap($type = NULL) {
         if (!$type) {
@@ -725,23 +727,23 @@ abstract class Db_Driver_Abstract {
     }
 
     public function createTable($table, $fields) {
-        
+
     }
 
     public function dropTable($table, $if_exists) {
-        
+
     }
 
     public function createFields($fields) {
-        
+
     }
 
     public function alterTable($table, $fields) {
-        
+
     }
 
     public function alterFields($fields) {
-        
+
     }
 
 }

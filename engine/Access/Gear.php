@@ -38,18 +38,19 @@ class Access_Gear extends Gear {
     public function init() {
         parent::init();
         $this->setRules();
+        $this->setRights();
     }
 
     /**
      * Set rigths for current user
-     * 
+     *
      * @param   mixed   $rights
      */
     protected function setRights($rights = array()) {
-        if(!$rights && $this->session->access && !$this->session->access->count()){
+        if(!$rights && $this->session->get('access') && 0 !== $this->session->access->count()){
             return;
         }
-        $this->session->access = new Config();
+        $this->session->set('access',new Config());
         if ($rights) {
             foreach ($rights as $key => $right) {
                 if (is_bool($right)) {
@@ -104,9 +105,9 @@ class Access_Gear extends Gear {
 
     /**
      * Get rights for user
-     * 
+     *
      * @param int $uid
-     * @return mixed 
+     * @return mixed
      */
     public function getUserRights($uid) {
         $uid OR $uid = $this->user->id;
@@ -117,7 +118,7 @@ class Access_Gear extends Gear {
 
     /**
      * Set rights for user
-     * 
+     *
      * @param   int $uid
      * @param   array   $rights
      */
@@ -134,7 +135,7 @@ class Access_Gear extends Gear {
 
     /**
      * Remove rights from user
-     * 
+     *
      * @param   int $uid
      * @param   array   $rights
      */
@@ -151,9 +152,9 @@ class Access_Gear extends Gear {
 
     /**
      * Get rights for group
-     * 
+     *
      * @param int $rid
-     * @return mixed 
+     * @return mixed
      */
     public function getRoleRights($rid) {
         $rule = new Access_Rule();
@@ -164,7 +165,7 @@ class Access_Gear extends Gear {
 
     /**
      * Set rights for role
-     * 
+     *
      * @param   int $role
      * @param   array   $rights
      * @param   boolean $refresh
@@ -181,7 +182,7 @@ class Access_Gear extends Gear {
 
     /**
      * Remove rights from role
-     * 
+     *
      * @param   int $role
      * @param   array   $rights
      */

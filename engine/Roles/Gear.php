@@ -86,7 +86,7 @@ class Roles_Gear extends Gear {
      */
     public function getRoles($uid) {
         $roles = new Roles_User();
-        $roles->id = $uid;
+        $roles->uid = $uid;
         $data = new Core_ArrayObject();
         if ($result = $roles->findAll()) {
             foreach ($result as $role) {

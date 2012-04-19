@@ -97,6 +97,13 @@ return array (
     'Unfriend' => '',
     'Add %s to friends?' => '',
     'Remove %s from friends?' => '',
+    '+' => '',
+  ),
+  '#Friends.profile' => 
+  array (
+    'Friends' => '',
+    'Subscribed to' => '',
+    'Subscribers' => '',
   ),
   '#I18n' => 
   array (
@@ -279,7 +286,9 @@ return array (
     <p> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
     <p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>' => '',
   'Yes' => '',
+  'You have a new friend.' => '',
   'You secret key doesn\'t match the original. Please, try once again.' => '',
+  'Your friendship is over.' => '',
   'cogear' => '',
   'or' => '',
   'remember me' => '',

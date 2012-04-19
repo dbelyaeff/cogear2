@@ -78,7 +78,7 @@ class Form_Object extends Object {
 
     /**
      * Constructor
-     * 
+     *
      * @param string|array $options
      */
     public function __construct($options) {
@@ -99,9 +99,9 @@ class Form_Object extends Object {
 
     /**
      * Add element
-     * 
+     *
      * @param string $name
-     * @param array $options 
+     * @param array $options
      */
     public function addElement($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
@@ -109,19 +109,19 @@ class Form_Object extends Object {
         $config->form = $this;
         if(!$config->order){
             $this->counter++;
-            $config->order = $this->counter; 
+            $config->order = $this->counter;
         }
         if ($config->access !== FALSE) {
             if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
                 $this->elements->$name = new self::$types[$config->type]($config);
-            } 
+            }
         }
     }
-    
+
     /**
      * Magic __get method
-     * 
-     * @param type $name 
+     *
+     * @param type $name
      */
     public function __get($name){
         if($this->elements->$name){
@@ -143,17 +143,17 @@ class Form_Object extends Object {
         if ($this->callback && $callback = Cogear::prepareCallback($this->callback)) {
             if ($this->result = $this->result()) {
                 call_user_func_array($callback, array($this));
-            } 
+            }
         }
         $this->is_init = TRUE;
     }
 
     /**
      * Get or set form object
-     * 
+     *
      * Form elements values are set automatically
-     * 
-     * @param object $data 
+     *
+     * @param object $data
      */
     public function attach($data) {
         parent::attach($data);
@@ -163,8 +163,8 @@ class Form_Object extends Object {
 
     /**
      * Set values for fields
-     * 
-     * @param array $data 
+     *
+     * @param array $data
      */
     public function setValues($data) {
         $this->is_init OR $this->init();
@@ -229,7 +229,7 @@ class Form_Object extends Object {
     }
 
     /**
-     *  Add error 
+     *  Add error
      */
     public function error($error) {
         $this->errors++;
@@ -237,7 +237,7 @@ class Form_Object extends Object {
 
     /**
      * Get number of errors
-     * 
+     *
      * @return int
      */
     public function errors() {

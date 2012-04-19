@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Menu 
+ * Menu
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Menu_Object extends Object {
@@ -23,7 +23,7 @@ class Menu_Object extends Object {
 
     /**
      * Constructor
-     *  
+     *
      * @param array $options
      */
     public function __construct($options) {
@@ -41,9 +41,9 @@ class Menu_Object extends Object {
 
     /**
      * Register menu item to menu
-     * 
+     *
      * @param string $path
-     * @param Menu_Item $item 
+     * @param Menu_Item $item
      */
     public function register($item) {
         if (is_array($item)) {
@@ -64,10 +64,10 @@ class Menu_Object extends Object {
            NULL === $item->options->active && cogear()->router->check(trim($item->link, ' /')) && $item->options->active = TRUE;
         }
     }
-
+    
     /**
      * Filter menu elements with conditions
-     * 
+     *
      * @param   array   $conditions
      * @return Menu_Object
      */
@@ -86,7 +86,7 @@ class Menu_Object extends Object {
 
     /**
      * Render menu
-     * 
+     *
      * @param string $glue
      * @return string
      */

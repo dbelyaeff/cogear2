@@ -7,7 +7,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Template_Gear extends Gear {

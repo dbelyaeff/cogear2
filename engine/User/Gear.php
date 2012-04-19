@@ -151,7 +151,7 @@ class User_Gear extends Gear {
     public function show_action($login = NULL) {
         if ($login) {
             $user = new User_Object();
-            $this->db->where('login', $login);
+            $user->login = $login;
             if (!$user->find()) {
                 return event('404');
             }
