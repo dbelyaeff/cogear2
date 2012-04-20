@@ -1,10 +1,10 @@
 .fl_l{
     float: left;
 }
-.fl_r{
+.fl_r, .nav .fl_r{
     float: right;
 }
-.t_c{
+.t_c {
     text-align: center;
 }
 .t_l{

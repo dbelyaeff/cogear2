@@ -266,7 +266,7 @@ abstract class Db_Driver_Abstract {
             $this->addQuery('where', $name, $condition);
         } else {
             $name .= ' ' . trim($condition);
-            $this->addQuery('where', array($name => $value));
+            $this->addQuery('where', array($name => $value), $condition);
         }
         return $this;
     }
@@ -354,21 +354,33 @@ abstract class Db_Driver_Abstract {
      * @param   string  $value
      * @return object   Self intsance.
      */
-    public function like($name, $value, $type = 'before') {
+    public function like($name, $value, $type = 'before', $pattern = 'LIKE ') {
         $value = $this->escape($value);
         switch ($type) {
             case 'both':
-                $like = 'LIKE %' . $value . '%';
+                $like = '%' . $value . '%';
                 break;
             case 'after':
-                $like = 'LIKE ' . $value . '%';
+                $like = $value . '%';
                 break;
             default:
             case 'before':
-                $like = 'LIKE %' . $value;
+                $like = '%' . $value;
         }
-        $this->where($name, $like);
+        $this->addQuery('where', array($name . ' ' . $pattern => $like));
         return $this;
+    }
+
+    /**
+     * NOT LIKE subquery
+     *
+     * @param   string  $name
+     * @param   string  $value
+     * @return object   Self intsance.
+     */
+    public function not_like($name, $value, $type = 'before'){
+        return $this->like($name,$value,$type,'NOT LIKE');
+
     }
 
     /**
@@ -565,9 +577,14 @@ abstract class Db_Driver_Abstract {
     protected function filterFields($table, $values) {
         $result = array();
         if (is_array($values)) {
-        $fields = isset($this->fields[$table]) ? $this->fields[$table] : $this->fields[$table] = $this->getFields($table);
+            $fields = isset($this->fields[$table]) ? $this->fields[$table] : $this->fields[$table] = $this->getFields($table);
             foreach ($values as $key => $value) {
-                $skey = preg_replace('/[^\w_-]/', '', $key);
+                if (strpos($key, 'LIKE')) {
+                    $data = explode(' ', $key);
+                    $skey = $data[0];
+                }
+                else
+                    $skey = preg_replace('/[^\w_-]/', '', $key);
                 if (isset($fields[$skey])) {
                     $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
                     switch ($type) {

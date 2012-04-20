@@ -17,7 +17,7 @@ if (!$item->teaser) {
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
             if (access('post.edit.all') OR access('post.edit') && cogear()->user->id == $item->aid) {
-                $title->edit = '<a href="' . l('/post/edit/' . $item->id) . '" class="btn ' . ($item->published ? 'btn-primary ' : ' ') . 'btn-mini">' . t($item->published ? 'Edit' : 'Draft', 'Post') . '</a>';
+                $title->edit = '<a href="' . $item->getEditLink() . '" class="btn ' . ($item->published ? 'btn-primary ' : ' ') . 'btn-mini">' . t($item->published ? 'Edit' : 'Draft', 'Post') . '</a>';
             }
         }
         echo $title->render();

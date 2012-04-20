@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Callback 
+ *  Callback
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
@@ -18,7 +18,7 @@ class Callback extends Cogearable {
 
     /**
      * Default action for callback
-     * 
+     *
      * @var string
      */
     private static $default_action = 'index';
@@ -30,33 +30,34 @@ class Callback extends Cogearable {
 
     /**
      * Construct
-     * 
+     *
      * @param   string|callback $callback
      */
     public function __construct($callback) {
         $this->callback = self::prepare($callback);
     }
-    
+
     /**
      * Invoke method
      */
-    public function __invoke(){
-       return $this->callback; 
+    public function __invoke() {
+        return $this->callback;
     }
-    
+
     /**
      * Check callback to be callable
-     * 
+     *
      * @return string
      */
-    public function check(){
+    public function check() {
         return Callback::prepare($this->callback) ? TRUE : FALSE;
     }
+
     /**
      * Run
-     * 
+     *
      * Execute callback
-     * 
+     *
      * @param   array   $args
      * @return  boolean
      */
@@ -67,8 +68,8 @@ class Callback extends Cogearable {
 
     /**
      * Set args
-     * 
-     * @param array $args 
+     *
+     * @param array $args
      */
     public function setArgs($args) {
         $this->args = $args;
@@ -76,7 +77,7 @@ class Callback extends Cogearable {
 
     /**
      * Get args
-     * 
+     *
      * @return array
      */
     public function getArgs() {
@@ -127,7 +128,7 @@ class Callback extends Cogearable {
                 return $cogear->$gear_name;
             }
             return NULL;
-        } elseif (isset($cogear->$class)) {
+        } elseif ($cogear->$class) {
             return $cogear->$class;
         }
         return NULL;
@@ -135,7 +136,7 @@ class Callback extends Cogearable {
 
     /**
      * Magic __toString method
-     * 
+     *
      * @return string
      */
     public function __toString() {

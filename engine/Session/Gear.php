@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Session_Gear extends Gear {
@@ -17,7 +17,7 @@ class Session_Gear extends Gear {
     protected $description = 'Handle sessions.';
     protected $order = -1000;
     protected $hooks = array(
-//        'dev.info' => 'trace',
+        'dev.info' => 'trace',
     );
 
     /**
@@ -27,18 +27,18 @@ class Session_Gear extends Gear {
         parent::init();
         $this->adapter = new Session_Object(array('name' => 'session'));
     }
-    
+
     /**
      * Trace session
      */
     public function trace($Stack){
         $Stack->append(template('Session.trace')->render());
     }
-    
+
     /**
      * Overload Cogearable __get
-     * 
-     * @param type $name 
+     *
+     * @param type $name
      */
     public function __get($name){
         return $this->adapter->__get($name);

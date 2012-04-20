@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dev gear
  *
@@ -7,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Dev_Gear extends Gear {
@@ -25,21 +26,34 @@ class Dev_Gear extends Gear {
     }
 
     /**
+     * Hook menu
+     *
+     * @param string $name
+     * @param object $menu
+     */
+    public function menu($name, $menu) {
+        switch ($name) {
+
+        }
+    }
+
+    /**
      * Default dispatcher
-     * 
+     *
      * @param string $action
-     * @param string $subaction 
+     * @param string $subaction
      */
     public function index($action = '', $subaction = NULL) {
-            
+
     }
-    
+
     /**
      * Custom dispatcher
-     * 
+     *
      * @param   string  $subaction
      */
-    public function some_action($subaction = NULL){
-        
+    public function some_action($subaction = NULL) {
+
     }
+
 }

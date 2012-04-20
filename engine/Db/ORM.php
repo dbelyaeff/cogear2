@@ -156,15 +156,16 @@ class Db_ORM extends Object {
      *
      * @return array
      */
-    public function getData(){
+    public function getData() {
         $data = array();
-        if($this->object->count()){
-            foreach($this->fields as $key=>$value){
+        if ($this->object->count()) {
+            foreach ($this->fields as $key => $value) {
                 isset($this->object->$key) && $data[$key] = $this->object->$key;
             }
         }
         return $data;
     }
+
     /**
      * Find row
      *
@@ -271,14 +272,16 @@ class Db_ORM extends Object {
             return FALSE;
         } elseif (isset($data[$this->primary])) {
             $data = $this->filterData($data, self::FILTER_IN);
-            $this->update($data);
-            event('Db_ORM.update', $this, $data);
-            return TRUE;
+            if ($this->update($data)) {
+                event('Db_ORM.update', $this);
+                return TRUE;
+            }
         } else {
             $data = $this->filterData($data, self::FILTER_IN);
-            $this->insert($data);
-            event('Db_ORM.insert', $this, $data);
-            return $this->object->{$this->primary};
+            if ($this->insert($data)) {
+                event('Db_ORM.insert', $this);
+                return $this->object->{$this->primary};
+            }
         }
     }
 
@@ -321,7 +324,7 @@ class Db_ORM extends Object {
         $data = $this->getData();
         $result = FALSE;
         if (!$data) {
-            return;
+            return FALSE;
         } elseif (!isset($data[$primary])) {
             event('Db_ORM.delete.before', $this);
             $result = $cogear->db->delete($this->table, $data) ? TRUE : FALSE;

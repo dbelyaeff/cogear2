@@ -20,6 +20,7 @@ return array (
     'Drafts' => '',
     'Draft' => '',
     'Error' => '',
+    'Friends' => '',
   ),
   '#Database Debug' => 
   array (
@@ -155,6 +156,19 @@ return array (
                                     <p>To recover password, click following link:<p>
                             <a href="%s">%s</a>' => '',
   ),
+  '#Pages' => 
+  array (
+    'Create page' => '',
+    'Pages is published! %s' => '',
+    'Title' => '',
+    'Parent' => '',
+    'Content' => '',
+    'Preview' => '',
+    'Draft' => '',
+    'Publish' => '',
+    'Parent page' => '',
+    'Page is saved to drafts! %s' => '',
+  ),
   '#Post' => 
   array (
     'Post published! You can view it by link: %s' => '',
@@ -166,6 +180,7 @@ return array (
     'Draft' => '',
     'Edit' => '',
     'Error' => '',
+    'Create post' => '',
   ),
   '#Response' => 
   array (
@@ -219,11 +234,13 @@ return array (
   'Before start system must check your server for requirements. <br/>Just look at the table below and follow the instructions.' => '',
   'Cannot read form config <b>%s</b>.' => '',
   'Continue' => '',
+  'Create' => '',
   'Create post' => '',
   'Current' => '',
   'Database connection' => '',
   'Delete' => '',
   'Edit' => '',
+  'Edit page' => '',
   'Edit post' => '',
   'Email is already taken!' => '',
   'Error' => '',
@@ -237,6 +254,7 @@ return array (
   'Iconv extension' => '',
   'Image preset <b>%s</b> doesn\'t exists.' => '',
   'Last' => '',
+  'List' => '',
   'Login' => '',
   'Login name already in use!' => '',
   'Lost password' => '',
@@ -244,6 +262,8 @@ return array (
   'Next' => '',
   'No' => '',
   'PHP Version' => '',
+  'Page has been deleted!' => '',
+  'Page published!' => '',
   'Passed' => '',
   'Please, provide correct e-mail address.' => '',
   'Post has been deleted!' => '',
@@ -272,6 +292,7 @@ return array (
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
   'View' => '',
+  'Views' => '',
   'Warning' => '',
   'Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
     <br/> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.

@@ -11,22 +11,25 @@
  * @version		$Id$
  */
 class Form_Element_Select extends Form_Element_Abstract{
-    protected $type = 'select';
-    protected $values = array();
-    protected $callback;
     /**
      * Set values
-     *  
-     * @param array $data 
+     *
+     * @param array $data
      */
     public function setValues($data){
         $this->values = $data;
     }
 
+    /**
+     *
+     * @return type
+     */
     public function render(){
         if($this->callback){
-            $callback = Callback::prepare($this->callback);
-            is_callable($callback) && $this->setValues(call_user_func($callback));
+            $callback = new Callback($this->callback);
+            if($callback->check()){
+                $this->options->values = $callback->run(array($this->form));
+            }
         }
         $this->prepareOptions();
         $code[] = HTML::open_tag('select', $this->options);

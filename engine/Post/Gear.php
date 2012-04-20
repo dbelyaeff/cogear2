@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Post_Gear extends Gear {
@@ -26,7 +26,7 @@ class Post_Gear extends Gear {
 
     /**
      * Menu hook
-     * 
+     *
      * @param   string  $name
      * @param   object  $menu
      */
@@ -56,9 +56,9 @@ class Post_Gear extends Gear {
 
     /**
      * Default dispatcher
-     * 
+     *
      * @param string $action
-     * @param string $subaction 
+     * @param string $subaction
      */
     public function index_action($id = '', $subaction = NULL) {
         if (!$id) {
@@ -76,8 +76,8 @@ class Post_Gear extends Gear {
 
     /**
      * Show drafts
-     * 
-     * @param type $page 
+     *
+     * @param type $page
      */
     public function drafts_action($page = NULL) {
         $this->user->navbar()->show();
@@ -124,7 +124,7 @@ class Post_Gear extends Gear {
                     $post->published = 1;
                 }
                 if ($post->save()) {
-                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!'));
+                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!').' <a class="btn btn-primary btn-mini" href="' . $post->getLink() . '">' . t('View') . '</a>');
                     redirect($post->getEditLink());
                 }
             }
@@ -184,8 +184,8 @@ class Post_Gear extends Gear {
 
     /**
      * Recalculate user posts count and store it to database
-     * 
-     * @param type $uid 
+     *
+     * @param type $uid
      */
     public function recalculateUserPostCount($uid = NULL) {
         if (!$uid) {

@@ -11,6 +11,8 @@ return array (
     'avatar' => 'varchar(255)',
     'posts' => 'int(11) unsigned',
     'drafts' => 'int(11) unsigned',
+    'friends' => 'int(11) unsigned',
+    'subscribers' => 'int(11) unsigned',
     'pm' => 'int(11) unsigned',
     'pm_new' => 'int(11) unsigned',
     'comments' => 'int(11) unsigned',

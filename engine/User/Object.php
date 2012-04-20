@@ -47,6 +47,7 @@ class User_Object extends Db_Item {
         $cogear = cogear();
         if ($cogear->session->get('user')) {
             $this->attach($cogear->session->get('user'));
+            $this->store();
             return TRUE;
         } elseif ($id = Cookie::get('id') && $hash = Cookie::get('hash')) {
             $this->id = $id;

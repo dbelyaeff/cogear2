@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Router 
+ * Router
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Dmitriy Belyaev
@@ -37,21 +37,21 @@ class Router_Object extends Options {
 
     /**
      * Arguments — filtered segments
-     * 
+     *
      * @var array
      */
     private $args = array();
 
     /**
      * Matches
-     * 
+     *
      * @var array
      */
     protected $matches = array();
 
     /**
      * Callback
-     * 
+     *
      * @var array
      */
     protected $callback = array();
@@ -138,7 +138,7 @@ class Router_Object extends Options {
 
     /**
      * Get uri
-     * 
+     *
      * @return string
      */
     public function getUri() {
@@ -147,7 +147,7 @@ class Router_Object extends Options {
 
     /**
      * Get arguments
-     * 
+     *
      * @return array
      */
     public function getArgs() {
@@ -156,7 +156,7 @@ class Router_Object extends Options {
 
     /**
      * Get route matches
-     * 
+     *
      * @return array
      */
     public function getMatches() {
@@ -175,9 +175,9 @@ class Router_Object extends Options {
 
     /**
      * Check uri match
-     * 
+     *
      * @param string $uri
-     * @param int $type 
+     * @param int $type
      * @return  boolean
      */
     public function check($uri, $type = self::STARTS) {
@@ -230,7 +230,7 @@ class Router_Object extends Options {
                 $exclude = strpos($root, self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
                 $this->args = array_merge($args, array_diff_assoc($this->segments, $exclude));
                 // We have a nice method in hooks to prepare callback
-                if($this->exec($callback, $args)){
+                if($this->exec($callback, $this->args)){
                     return;
                 }
             }
@@ -241,14 +241,14 @@ class Router_Object extends Options {
 
     /**
      * Execute callback
-     * 
+     *
      */
     public function exec($callback, $args = array()) {
         if ($callback = Callback::prepare($callback)) {
             $this->callback = new Callback($callback);
             event('callback.before', $this);
             method_exists($callback[0], 'request') && $callback[0]->request();
-            $this->callback->setArgs($this->args);
+            $this->callback->setArgs($args);
             $this->callback->run();
             event('callback.after', $this);
             return TRUE;
@@ -260,7 +260,7 @@ class Router_Object extends Options {
 
 /**
  * Routes
- * 
+ *
  * @param type $route
  * @param type $callback
  */
@@ -270,10 +270,10 @@ function route($route, $callback) {
 
 /**
  * Check route alias
- * 
+ *
  * @param type $route
  * @param type $arg
- * @return type 
+ * @return type
  */
 function check_route($route, $arg = Router::BOTH) {
     return cogear()->router->check($route, $arg);

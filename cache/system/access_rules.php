@@ -2,14 +2,6 @@
 return array (
   'value' => 
   array (
-    'user' => 
-    array (
-      'edit' => 
-      array (
-        'all' => true,
-      ),
-    ),
-    'friends' => true,
     'admin' => true,
     'post' => 
     array (

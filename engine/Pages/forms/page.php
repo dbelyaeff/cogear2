@@ -1,20 +1,25 @@
 <?php
 
 return array(
-    'name' => 'post',
+    'name' => 'page',
     'elements' => array(
         'title' => array(
             'type' => 'fieldset',
-            'label' => t('Create post','Post'),
+            'label' => t('Create page','Pages'),
             'elements' => array(
                 'name' => array(
                     'type' => 'text',
-                    'label' => t('Title', 'Post'),
+                    'label' => t('Title', 'Pages'),
                     'validators' => array('Required', array('Length', 5)),
+                ),
+                'pid' => array(
+                    'type' => 'select',
+                    'label' => t('Parent page', 'Pages'),
+                    'callback' => 'Pages->getFormSelect',
                 ),
                 'body' => array(
                     'type' => 'editor',
-                    'label' => t('Content', 'Post'),
+                    'label' => t('Content', 'Pages'),
                     'validators' => array('Required', array('Length', 5)),
                 ),
                 'actions' => array(
@@ -28,17 +33,17 @@ return array(
                                 'preview' => array(
                                     'type' => 'submit',
                                     'class' => 'btn',
-                                    'label' => t('Preview', 'Post'),
+                                    'label' => t('Preview', 'Pages'),
                                 ),
                                 'draft' => array(
                                     'type' => 'submit',
                                     'class' => 'btn btn-success',
-                                    'label' => t('Draft', 'Post'),
+                                    'label' => t('Draft', 'Pages'),
                                 ),
                                 'publish' => array(
                                     'type' => 'submit',
                                     'class' => 'btn btn-primary',
-                                    'label' => t('Publish', 'Post'),
+                                    'label' => t('Publish', 'Pages'),
                                 ),
                             ),
                         ),

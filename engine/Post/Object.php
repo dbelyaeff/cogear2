@@ -2,28 +2,21 @@
 
 /**
  * Blog post.
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Blog
- * @subpackage          
+ * @subpackage
  */
 class Post_Object extends Db_Item {
-
+    protected $table = 'posts';
+    protected $primary = 'id';
     protected $template = 'Post.post';
-
-    /**
-     * Constructor
-     */
-    public function __construct() {
-        parent::__construct('posts', 'id');
-    }
-
     /**
      * Get post Uri
-     * 
+     *
      * @return string
      */
     public function getLink() {
@@ -35,7 +28,7 @@ class Post_Object extends Db_Item {
 
     /**
      * Get post Uri
-     * 
+     *
      * @return string
      */
     public function getEditLink() {
@@ -48,8 +41,8 @@ class Post_Object extends Db_Item {
 
     /**
      * Create new post
-     * 
-     * @param type $data 
+     *
+     * @param type $data
      */
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
@@ -64,8 +57,8 @@ class Post_Object extends Db_Item {
 
     /**
      * Update post
-     * 
-     * @param type $data 
+     *
+     * @param type $data
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
@@ -98,5 +91,4 @@ class Post_Object extends Db_Item {
         }
         return parent::render($template);
     }
-
 }
