@@ -36,7 +36,7 @@ class Admin_Gear extends Gear {
      * Load assets - do not load everytime
      */
     public function loadAssets() {}
-    
+
     /**
      * Load assets only if requested
      */
@@ -86,7 +86,7 @@ class Admin_Gear extends Gear {
             $this->router->exec($callback, $args);
         }
     }
-    
+
     /**
      * Site config
      */
