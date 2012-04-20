@@ -31,7 +31,34 @@ class Friends_Gear extends Gear {
     public function __construct() {
         parent::__construct();
         // This hook must be placed earlier, because it deals with User init method which loads before Friends gear init
-        hook('user.refresh', array($this, 'refreshUserFriends'));
+        hook('user.refresh', array($this, 'clear'));
+    }
+
+    /**
+     * Init
+     */
+    public function init() {
+        parent::init();
+        NULL !== $this->session->get('friends') OR $this->setFriends();
+    }
+
+    /**
+     * Menu hook
+     *
+     * @param   string  $name
+     * @param   object  $menu
+     */
+    public function menu($name, $menu) {
+        d('Blog');
+        switch ($name) {
+            case 'user.profile.tabs':
+                $menu->register(array(
+                    'label' => t('Friends') . ' (' . $menu->object->posts . ')',
+                    'link' => $this->getLink($menu->object),
+                ));
+                break;
+        }
+        d();
     }
 
     /**
@@ -100,22 +127,10 @@ class Friends_Gear extends Gear {
     }
 
     /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-        if ($this->user->object->friends === NULL) {
-            $this->setFriends();
-        }
-    }
-
-    /**
      * Set user friends
      */
     public function setFriends() {
-        if ($this->user->object->friends = $this->getFriends()) {
-            $this->user->store();
-        }
+        $this->session->set('friends', $this->getFriends());
     }
 
     /**
@@ -125,11 +140,13 @@ class Friends_Gear extends Gear {
      * @reutnr  array
      */
     public function getFriends($uid = 0) {
-        $uid OR $uid = $this->user->id;
+        $uid OR $uid = $this->user->id && $self = TRUE;
         $friends = new Friends_Object();
         $friends->where('f', $uid)->or_where('t', $uid);
         if ($result = $friends->findAll()) {
             $friends = array();
+            $fcount = 0;
+            $scount = 0;
             foreach ($result as $item) {
                 if ($item->f == $uid) {
                     if (isset($friends[$item->t])) {
@@ -146,6 +163,22 @@ class Friends_Gear extends Gear {
                     }
                 }
             }
+            foreach ($friends as $status) {
+                switch ($status) {
+                    case 2:
+                        $scount++;
+                        break;
+                    case 3:
+                        $fcount++;
+                        break;
+                }
+            }
+            if (isset($self)) {
+                $user = $this->user->adapter ? $this->user->adapter : new User();
+                $user->friends = $fcount;
+                $user->subscribers = $scount;
+                $user->update(array('friends' => $user->friends, 'subscribers' => $user->subscribers));
+            }
             return new Core_ArrayObject($friends);
         }
         return array();
@@ -154,8 +187,8 @@ class Friends_Gear extends Gear {
     /**
      * Reset current user friends
      */
-    public function refreshUserFriends() {
-        $this->setFriends();
+    public function clear() {
+        $this->session->delete('friends');
     }
 
     /**
@@ -164,8 +197,8 @@ class Friends_Gear extends Gear {
      * @return int // 0 - no friendship, 1 - oneway, 2 - both
      */
     public function check($uid) {
-        if ($this->user->friends) {
-            return isset($this->user->friends[$uid]) ? $this->user->friends[$uid] : 0;
+        if ($friends = $this->session->get('friends')) {
+            return isset($friends[$uid]) ? $friends[$uid] : 0;
         }
     }
 
@@ -218,7 +251,7 @@ class Friends_Gear extends Gear {
                             flash_error($message = t('Your friendship is over.'));
                     }
                 }
-                $this->refreshUserFriends();
+                $this->clear();
                 redirect($user->getLink());
             }
             $form->show();
