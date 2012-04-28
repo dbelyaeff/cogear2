@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Test_Gear extends Gear {
@@ -27,21 +27,27 @@ class Test_Gear extends Gear {
 
     /**
      * Default dispatcher
-     * 
+     *
      * @param string $action
-     * @param string $subaction 
+     * @param string $subaction
      */
     public function index($action = '', $subaction = NULL) {
-        append('content','<a href="#/user/login?modal=form-user-login" class="btn btn-primary">Test</a>');
+        $this->db->where_in('id', array())->order('id', 'ASC');
+        $blog = new Blog();
+        if ($result = $blog->findAll()) {
+            foreach ($result as $blog) {
+//                $result[$blog->id] = $blog->name;
+            }
+        }
     }
 
     /**
      * Custom dispatcher
-     * 
+     *
      * @param   string  $subaction
      */
     public function action_index($subaction = NULL) {
-        
+
     }
 
 }

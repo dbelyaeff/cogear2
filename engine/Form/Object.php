@@ -93,8 +93,8 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct($options);
-        event('Form.load',$this);
-        event('Form.load.'.$this->name,$this);
+        event('form.load',$this);
+        event('form.load.'.$this->name,$this);
     }
 
     /**
@@ -135,8 +135,8 @@ class Form_Object extends Object {
      */
     public function init() {
         if($this->is_init) return;
-        event('Form.init', $this);
-        event('Form.init.'.$this->name, $this);
+        event('form.init', $this);
+        event('form.init.'.$this->name, $this);
         foreach ($this->options->elements as $name => $config) {
             $this->addElement($name, $config);
         }
@@ -157,7 +157,7 @@ class Form_Object extends Object {
      */
     public function attach($data) {
         parent::attach($data);
-        event('Form.attach', $this);
+        event('form.attach', $this);
         $this->setValues($this->object);
     }
 
@@ -183,7 +183,7 @@ class Form_Object extends Object {
      */
     public function result() {
         $this->init();
-        event('Form.result.before', $this);
+        event('form.result.before', $this);
         $method = strtolower($this->options->method);
         $result = array();
         $is_valid = TRUE;
@@ -197,7 +197,7 @@ class Form_Object extends Object {
                 }
             }
         }
-        event('Form.result.after', $this, $is_valid, $result);
+        event('form.result.after', $this, $is_valid, $result);
         return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
     }
 
@@ -215,7 +215,7 @@ class Form_Object extends Object {
      */
     public function render() {
         $this->init();
-        event('Form.render', $this);
+        event('form.render', $this);
         $this->elements->uasort('Core_ArrayObject::sortByOrder');
         $tpl = new Template($this->options->template);
         $id = $this->getId();
@@ -224,7 +224,7 @@ class Form_Object extends Object {
         $this->options->id = $this->getId();
         $tpl->options = $this->options;
         $this->code = $tpl->render();
-        event('Form.render.after', $this);
+        event('form.render.after', $this);
         return $this->code;
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-class Db_Item extends Db_ORM implements Interface_Render {
+class Db_Item extends Db_ORM {
 
     protected $template = 'Db.item';
 
@@ -21,12 +21,9 @@ class Db_Item extends Db_ORM implements Interface_Render {
 
     /**
      * Render
-     * 
-     * @param type $template 
      */
-    public function render($template = NULL) {
-        $template OR $template = $this->template;
-        $tpl = new Template($template);
+    public function render() {
+        $tpl = new Template($this->template);
         $tpl->item = $this;
         return $tpl->render();
     }

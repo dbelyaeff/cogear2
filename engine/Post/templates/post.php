@@ -13,7 +13,8 @@ if (!$item->teaser) {
 <div class="post">
     <div class="post-title">
         <?php
-        $title = new Stack('post.title');
+        $title = new Stack(array('name'=>'post.title'));
+        $title->attach($item);
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
             if (access('post.edit.all') OR access('post.edit') && cogear()->user->id == $item->aid) {
@@ -28,10 +29,11 @@ if (!$item->teaser) {
     </div>
     <div class="post-info">
         <?php
-        $info = new Stack('post.info');
+        $info = new Stack(array('name'=>'post.info'));
         $info->time = icon('time') . ' ' . df($item->created_date);
         $info->author = $user->getAvatarImage('avatar.post');
         $info->author_link = $user->getProfileLink();
+        $item->allow_comments && $info->comments = icon('comment').' <a href="'.$item->getLink().'#comments">'.$item->comments.'</a>';
         echo $info->render();
         ?>
     </div>

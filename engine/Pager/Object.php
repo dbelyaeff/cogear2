@@ -18,9 +18,11 @@ class Pager_Object extends Pager_Abstract {
         'count' => 0,
         'per_page' => 5,
         'order' => self::FORWARD,
-        'base_uri' => '',
+        'base' => '',
         'show_empty' => FALSE,
         'autolimit' => TRUE,
+        'prefix' => 'page',
+        'method' => self::PATH,
     );
     protected $prev;
     protected $next;
@@ -31,11 +33,13 @@ class Pager_Object extends Pager_Abstract {
     public $start;
     const FORWARD = 0;
     const REVERSE = 1;
+    const PATH = 0;
+    const GET = 1;
 
     /**
      * Constructor
-     *  
-     * @param type $options 
+     *
+     * @param type $options
      */
     public function __construct($options = NULL) {
         parent::__construct($options);
@@ -46,6 +50,22 @@ class Pager_Object extends Pager_Abstract {
      * Init pager
      */
     protected function init() {
+        // Auto parse page from uri
+        if ($this->current == 0 && $uri = cogear()->router->getUri()) {
+            switch ($this->method) {
+                case self::PATH:
+                    if (preg_match('#' . preg_quote($this->prefix) . '([\d+])#', $uri, $matches)) {
+                        $this->options->current = $matches[1];
+                    }
+                    break;
+                case self::GET:
+                        $this->options->current = cogear()->input->get($this->prefix);
+                    break;
+            }
+        }
+        if ($this->options->per_page == 0) {
+            $this->options->per_page = config('per_page', 5);
+        }
         $this->pages_num = ceil($this->count / $this->per_page);
         if ($this->order == self::FORWARD) {
             $this->first = 1;
@@ -75,7 +95,7 @@ class Pager_Object extends Pager_Abstract {
             $this->first = NULL;
         }
         if ($this->last == $this->current) {
-            $this->next= NULL;
+            $this->next = NULL;
             $this->last = NULL;
         }
         if ($this->last == $this->next) {
@@ -100,7 +120,9 @@ class Pager_Object extends Pager_Abstract {
                 'prev' => $this->prev,
                 'next' => $this->next,
                 'order' => $this->order,
-                'base_uri' => $this->base_uri,
+                'base' => $this->base,
+                'prefix' => $this->method == self::GET ? '?'.$this->prefix.'=' : $this->prefix,
+                'options' => $this->options,
             ));
             return $tpl->render();
         }

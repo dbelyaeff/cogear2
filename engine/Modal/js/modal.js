@@ -1,11 +1,7 @@
 $(document).ready(function(){
-    $('.modal .modal-footer .modal-close').click(function(e){
+    $('.modal .modal-close').live('click',function(e){
         e.preventDefault();
-        $(this).parent().parent().modal('hide');
-        return false;
-    })
-    $('.navbar a[href="/user/login"]').click(function(){
-        $('#modal-login').modal('show');
+        $(this).parents('.modal').modal('hide');
         return false;
     })
     $('.modal[data-source]').live('shown', function () {
@@ -30,13 +26,27 @@ $(document).ready(function(){
 
             }
             if(actions.length) actions.hide();
-
         });
     })
     $('a[data-type="modal"]').live('click',function(e){
         e.preventDefault();
-        var link = $(this).attr('href')+'?modal='+$(this).attr('data-source');
-        $.getScript(link);
+        var link = $(this).attr('href')+'?modal';
+        if($(this).attr('data-source')) link += '='+$(this).attr('data-source');
+        var obj = $(this);
+        $.getScript(link,function(){
+            if(obj.attr('data-width')){
+                $('#modal-ajax').css({
+                    width: obj.attr('data-width')+'px',
+                    marginTop: '-'+obj.attr('data-width')/2+'px',
+                });
+            }
+            if(obj.attr('data-height')){
+                $('#modal-ajax').css({
+                    height: obj.attr('data-height')+'px',
+                    marginTop: '-'+obj.attr('data-height')/2+'px',
+                });
+            }
+        });
         return false;
     });
 })

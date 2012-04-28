@@ -4,6 +4,7 @@ return array (
   array (
     'id' => 'int(11) unsigned',
     'aid' => 'int(11) unsigned',
+    'bid' => 'int(11)',
     'name' => 'varchar(255)',
     'body' => 'longtext',
     'comments' => 'int(11) unsigned',

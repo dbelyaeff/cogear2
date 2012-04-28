@@ -50,20 +50,20 @@ class Image_Upload extends File_Upload {
     protected $type;
     /**
      * Image mime
-     * 
+     *
      * @var string
      */
     protected $mime;
     /**
      * Preset name
-     * 
+     *
      * @var string
      */
     protected $preset;
 
     /**
      * Upload
-     * 
+     *
      * @return  boolean
      */
     public function upload() {
@@ -115,7 +115,10 @@ class Image_Upload extends File_Upload {
      */
     public function getInfo($file = '') {
         $file OR $file = $this->file->path;
-        list($this->width, $this->height, $this->type) = new Core_ArrayObject(getimagesize($file));
+        $info = getimagesize($file);
+        $this->width = $info[0];
+        $this->height = $info[1];
+        $this->type = $info[2];
         return new Core_ArrayObject(array(
             'width' => $this->width,
             'height' => $this->height,

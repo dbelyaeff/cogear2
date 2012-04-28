@@ -11,14 +11,15 @@
  * @subpackage          Form
  * @version		$Id$
  */
-class Form_Element_Title extends Form_Element_Abstract {
+class Form_Element_Title extends Form_Element_Div {
     /**
      * Render
      */
     public function render() {
         $this->prepareOptions();
-        $this->code = HTML::paired_tag('h1',$this->label);
-        return $this->code;
+        $this->options->class = "page-header";
+        $this->options->label = HTML::paired_tag('h2',$this->label);
+        return parent::render();
     }
 
 }

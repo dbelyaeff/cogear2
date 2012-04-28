@@ -37,14 +37,14 @@ class Table_Object extends Object {
                     $name = $field->source ? $field->source : $key;
                     $items[$i][$key] = new Core_ArrayObject();
                     $field->class && $items[$i][$key]->class = $field->class;
-                    if ($field->callback && method_exists($item, $field->callback)) {
-                        $items[$i][$key]->value = $item->{$field->callback}($item->$name);
-                    }
-                    else {
+                    if ($field->callback && $field->callback instanceof Callback) {
+                        $field->callback->setArgs(array($item,$key));
+                        $items[$i][$key]->value = $field->callback->run();
+                    } else {
                         $items[$i][$key]->value = $item->$name;
                     }
-                    if($field->template){
-                        $items[$i][$key]->value = sprintf($field->template,$items[$i][$key]->value);
+                    if ($field->template) {
+                        $items[$i][$key]->value = sprintf($field->template, $items[$i][$key]->value);
                     }
                 }
                 $i++;
@@ -57,6 +57,8 @@ class Table_Object extends Object {
      * Render
      */
     public function render() {
+        event('table.render',$this);
+        event('table.render.'.$this->name,$this);
         $tpl = new Template($this->template);
         $tpl->table = $this->name;
         $tpl->class = $this->class;

@@ -63,7 +63,7 @@ class Front_Gear extends Gear {
                     'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
                     'count' => $post->count(),
                     'per_page' => config('Front.per_page', 5),
-                    'base_uri' => l('/page')
+                    'base' => l('/page')
                 ));
         $post->order('front_time', 'DESC');
         if ($posts = $post->findAll()) {

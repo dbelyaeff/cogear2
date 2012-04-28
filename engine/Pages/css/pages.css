@@ -22,3 +22,18 @@
     border-top: 1px solid #CFCFCF;
     padding: 5px 10px;
 }
+ul.dd-list{
+    list-style: none;
+    margin: 0;
+}
+ul.dd-list li{
+    list-style: none;
+    padding: 10px;
+}
+.dd-name{
+    width:350px;
+    float: left;
+}
+.dd-controls{
+    float: left;
+}

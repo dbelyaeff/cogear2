@@ -2,3 +2,9 @@ body{
 	color: #222;
         padding-top: 40px;
 }
+body#splash{
+    padding:5px;
+}
+body#splash .page-header{
+    margin: 0 0;
+}

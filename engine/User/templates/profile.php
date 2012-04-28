@@ -1,4 +1,4 @@
-<div class="form-horizontal user_profile_fields">
+<div class="form-horizontal profile_fields">
     <?php
     $fields = new Stack(array('name' => 'user.profile.fields'));
     $fields->attach($user);

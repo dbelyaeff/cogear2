@@ -2,13 +2,13 @@
 
 /**
  * Ajax object
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Ajax_Object extends Core_ArrayObject{
@@ -16,18 +16,18 @@ class Ajax_Object extends Core_ArrayObject{
 
     /**
      * Check if the ajax request has been caught
-     * 
+     *
      * @return boolean
      */
     public static function is() {
         $cogear = getInstance();
         return $cogear->request->isAjax();
     }
-    
+
     /**
      * Build query string
-     * 
-     * @param array $args 
+     *
+     * @param array $args
      * @return  string
      */
     public static function query($args){
@@ -37,19 +37,19 @@ class Ajax_Object extends Core_ArrayObject{
 
     /**
      * Send html response
-     * 
-     * @param type $data 
+     *
+     * @param type $data
      */
     public function send() {
         echo $this;
-        event('exit');
-        event('ajax.exit');
+        event('done');
+        event('ajax');
         exit();
     }
-    
+
     /**
-     * Escape string 
-     * 
+     * Escape string
+     *
      * @param   string  $data
      * @param   boolean $addslashes
      * @return  string
@@ -59,7 +59,7 @@ class Ajax_Object extends Core_ArrayObject{
         $data = preg_replace("#([\n\r]+)#","\" + \n\"", $data);
         return $data;
     }
-    
+
 
 
 }

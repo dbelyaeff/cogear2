@@ -17,9 +17,6 @@ class User_Gear extends Gear {
     protected $description = 'Manage users.';
     protected $order = -10;
     protected $current;
-    protected $hooks = array(
-        'post.show.full.before' => 'postShowUserNavbar',
-    );
 
     /**
      * Init
@@ -36,9 +33,9 @@ class User_Gear extends Gear {
 
     /**
      * Menu builder
-     * 
+     *
      * @param string $name
-     * @param object $menu 
+     * @param object $menu
      */
     public function menu($name, $menu) {
         d('User');
@@ -122,55 +119,30 @@ class User_Gear extends Gear {
     }
 
     /**
-     * Users list
-     */
-    public function users($action = NULL, $subaction = NULL) {
-        switch ($action) {
-            default:
-                $grid = new Grid('users');
-                $users = new User_Object();
-                $this->db->order('id', 'ASC');
-                $pager = new Pager_Pages(array(
-                            'count' => $users->count(),
-                            'current' => $subaction,
-                            'per_page' => config('pages.per_page', 5),
-                            'base_uri' => '/users/page/',
-                            'target' => 'content',
-                        ));
-                $grid->adopt($users->findAll());
-                $grid->show();
-                $pager->show();
-        }
-    }
-
-    /**
      * Show user profile
-     * 
+     *
      * @param string $login
      */
     public function show_action($login = NULL) {
         if ($login) {
             $user = new User_Object();
             $user->login = $login;
-            if (!$user->find()) {
-                return event('404');
+            if ($user->find()) {
+                $user->navbar()->show();
+                $tpl = new Template('User.profile');
+                $tpl->user = $user;
+                $tpl->show();
+                return;
             }
-        } else {
-            $user = $this->adapter;
         }
-        if ($user->id) {
-            $user->navbar()->show();
-            $tpl = new Template('User.profile');
-            $tpl->user = $user;
-            $tpl->show();
-        } else {
-            return event('404');
-        }
+        new User_List(array(
+                    'name' => 'user',
+                ));
     }
 
     /**
      * Edit action
-     * 
+     *
      * @param   string  $login
      */
     public function edit_action($id = NULL) {
@@ -278,7 +250,7 @@ class User_Gear extends Gear {
                     $mail = new Mail(array(
                                 'name' => 'register.lostpassword',
                                 'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
-                                'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>. 
+                                'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>.
                                     <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
                                     <p>To recover password, click following link:<p>
                             <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $this->session->get('ip'), $recover, $recover),
@@ -321,10 +293,12 @@ class User_Gear extends Gear {
                     $user->hashPassword();
                     $user->hash = $this->secure->genHash($user->password);
                     $user->reg_date = time();
-                    $user->save();
-                    if ($user->login()) {
-                        flash_success(t('Registration is complete!', 'User.register'));
-                        redirect($user->getLink());
+                    if ($user->save()) {
+                        event('user.verified', $user);
+                        if ($user->login()) {
+                            flash_success(t('Registration is complete!', 'User.register'));
+                            redirect($user->getLink());
+                        }
                     }
                 }
                 $form->show();
@@ -360,15 +334,6 @@ class User_Gear extends Gear {
                 $form->show();
             }
         }
-    }
-
-    /**
-     * Show user navbar
-     *
-     * @param object $Stack 
-     */
-    public function postShowUserNavbar($Stack) {
-        return $Stack->object->author->navbar()->show();
     }
 
 }

@@ -7,7 +7,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Modal_Gear extends Gear {
@@ -33,17 +33,17 @@ class Modal_Gear extends Gear {
             $ajax = new Ajax();
             // Delete duplicate if exists
             $ajax->append('$("#'.$window->id().'").remove()');
-            $ajax->append('$("'.Ajax::escape($window->render()).'").appendTo("#content");');
+            $ajax->append('$("'.Ajax::escape($window->render()).'").appendTo("body");');
             $ajax->append($window->script());
             $ajax->send();
         }
     }
-    
+
     /**
      * Hook menu
-     * 
+     *
      * @param string $name
-     * @param array $menu 
+     * @param array $menu
      */
     public function menu($name,$menu){
         if($name == 'navbar'){

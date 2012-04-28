@@ -197,10 +197,10 @@ abstract class Db_Driver_Abstract {
      * @param   string  $glue
      * @return  string
      */
-    protected function argsToString($args, $condition = ' = ', $glue = ' AND ') {
+    protected function argsToString($args, $condition = '=', $glue = ' AND ', $escape = '"') {
         $query = array();
         foreach ($args as $key => $value) {
-            !is_numeric($value) && $value = '"' . $value . '"';
+            $escape && $value = $escape . $value . $escape;
             $query[] = $key . ' ' . trim($condition) . ' ' . $value . ' ';
         }
         return implode($glue, $query);
@@ -250,7 +250,7 @@ abstract class Db_Driver_Abstract {
      * @return object   Self intsance.
      */
     public function from($table) {
-        $this->addQuery('from', $table);
+        $this->_query['from'] = $table;
         return $this;
     }
 
@@ -295,8 +295,8 @@ abstract class Db_Driver_Abstract {
      * @param   array   $values
      * @return object   Self intsance.
      */
-    public function whereIn($name, $values) {
-        $this->addQuery('where_in', $values);
+    public function where_in($name, $values) {
+        $this->addQuery('where_in', array($name => $values));
         return $this;
     }
 
@@ -342,7 +342,7 @@ abstract class Db_Driver_Abstract {
      */
     public function join($table, $fields, $type='') {
         $type = strtoupper($type);
-        $query = $type . ' JOIN ' . $table . ' ON ' . $this->argsToString($fields);
+        $query = $type . ' JOIN ' . $table . ' ON ' . $this->argsToString($fields, '=', ' AND ', '');
         $this->addQuery('join', $query);
         return $this;
     }
@@ -378,9 +378,8 @@ abstract class Db_Driver_Abstract {
      * @param   string  $value
      * @return object   Self intsance.
      */
-    public function not_like($name, $value, $type = 'before'){
-        return $this->like($name,$value,$type,'NOT LIKE');
-
+    public function not_like($name, $value, $type = 'before') {
+        return $this->like($name, $value, $type, 'NOT LIKE');
     }
 
     /**
@@ -407,6 +406,7 @@ abstract class Db_Driver_Abstract {
         $this->from($table);
         $limit && $this->limit($limit, $offset);
         $this->buildQuery();
+        $this->clear();
         $this->query($this->query);
         return $this;
     }
@@ -583,8 +583,9 @@ abstract class Db_Driver_Abstract {
                     $data = explode(' ', $key);
                     $skey = $data[0];
                 }
-                else
+                else {
                     $skey = preg_replace('/[^\w_-]/', '', $key);
+                }
                 if (isset($fields[$skey])) {
                     $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
                     switch ($type) {

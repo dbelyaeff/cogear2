@@ -104,6 +104,7 @@ class Callback extends Cogearable {
      * @return  mixed
      */
     public static function prepare($callback) {
+        $callback instanceof Core_ArrayObject && $callback = $callback->toArray();
         if (!is_callable($callback)) {
             if (is_string($callback)) {
                 $callback = self::stringToAction($callback);

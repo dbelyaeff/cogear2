@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Response_Gear extends Gear {
@@ -28,14 +28,14 @@ class Response_Gear extends Gear {
         parent::__construct();
         $this->adapter = new Response_Object();
     }
-    
+
     /**
      * Send output to user
      */
     public function send(){
         $this->adapter->send();
     }
-    
+
     /**
      * Not found
      */

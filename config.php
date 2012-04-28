@@ -14,11 +14,11 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1334920007,
+    'last_run' => 1335608327,
   ),
   'user' => 
   array (
-    'refresh' => 2,
+    'refresh' => 60,
     'register' => 
     array (
       'verification' => true,
@@ -32,9 +32,20 @@ return array (
   array (
     'presets' => 
     array (
+      'blog' => 
+      array (
+        'avatar' => 
+        array (
+          'size' => '100x100',
+          'actions' => 
+          array (
+            0 => 'resize',
+          ),
+        ),
+      ),
       'post' => 
       array (
-        'size' => '150x150',
+        'size' => '500x500',
         'actions' => 
         array (
           0 => 'resize',

@@ -75,7 +75,7 @@ class User_Object extends Db_Item {
         if (!$this->find()) {
             return FALSE;
         }
-        event('user.login',$this);
+        event('user.login', $this);
         return $this->store();
     }
 
@@ -97,6 +97,19 @@ class User_Object extends Db_Item {
     public function insert($data = NULL) {
         if ($result = parent::insert($data)) {
             event('user.insert', $this);
+        }
+        return $result;
+    }
+
+    /**
+     * Update user
+     *
+     * @param type $data
+     */
+    public function update($data = NULL) {
+        $data OR $data = $this->object->toArray();
+        if ($result = parent::update($data)) {
+            event('user.update',$this,$data);
         }
         return $result;
     }

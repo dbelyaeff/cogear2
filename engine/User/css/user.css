@@ -16,22 +16,22 @@ img.avatar{
 .navbar .badge{
     padding: 1px 5px 2px;
 }
-.user_profile_navbar .avatar{
+.profile_navbar .avatar{
     vertical-align: middle;
 }
-.user_profile_navbar strong a{
+.profile_navbar strong a{
     font-size: 1.5em;
 }
-.user_profile .nav{
+.profile .nav{
     margin: 5px 0;
 }
-.user_profile_fields{
+.profile_fields{
     margin: 10px 0;
 }
-.user_profile_fields .control-group .control-label{
+.profile_fields .control-group .control-label{
     font-weight: bold;
 }
-.user_profile_fields .control-group .controls{
+.profile_fields .control-group .controls{
     padding-top: 5px;
 }
 #form-user-lostpassword .or{

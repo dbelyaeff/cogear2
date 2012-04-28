@@ -40,6 +40,7 @@ class Form_Element_Image extends Form_Element_File {
         $tpl = new Template('Form.image');
         $tpl->assign($this->options);
         $this->code = $tpl->render();
+        $this->decorate();
         return $this->code;
     }
 

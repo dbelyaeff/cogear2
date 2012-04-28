@@ -1,0 +1,22 @@
+.comment{
+    padding: 10px 10px 0;
+}
+.comment-info{
+    margin: 5px 0;
+}
+.comment-body{
+    padding: 10px;
+    border: 1px solid #CFCFCF;
+    border-radius: 5px;
+}
+.comment-action{
+    text-align:right;
+    padding: 5px 0;
+}
+.comment-add{
+    text-align: center;
+    margin: 10px 10px;
+}
+.comment-anchor {
+
+}

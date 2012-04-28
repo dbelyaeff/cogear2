@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Stack — enhanced Core_ArrayObject 
+ * Stack — enhanced Core_ArrayObject
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
@@ -21,7 +21,7 @@ class Stack extends Object {
 
     /**
      * Render stack
-     * 
+     *
      * @param string $glue
      * @return string
      */

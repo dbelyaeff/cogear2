@@ -1,33 +1,33 @@
 .l0, table td.l0{
-    padding-left: 0px;
+    margin-left: 0px;
 }
 .l1, table td.l1{
-    padding-left: 5px;
+    margin-left: 10px;
 }
 .l2, table td.l2{
-    padding-left: 20px;
+    margin-left: 30px;
 }
 .l3, table td.l3{
-    padding-left: 35px;
+    margin-left: 50px;
 }
 .l4, table td.l4{
-    padding-left: 50px;
+    margin-left: 70px;
 }
 .l5, table td.l5{
-    padding-left: 65px;
+    margin-left: 90px;
 }
 .l6, table td.l6{
-    padding-left: 80px;
+    margin-left: 110px;
 }
 .l7, table td.l7{
-    padding-left: 95px;
+    margin-left: 130px;
 }
 .l8, table td.l8{
-    padding-left: 110px;
+    margin-left: 150px;
 }
 .l9, table td.l9{
-    padding-left: 125px;
+    margin-left: 170px;
 }
-.l1, table td.l10{
-    padding-left: 140px;
+.l10, table td.l10{
+    margin-left: 190px;
 }

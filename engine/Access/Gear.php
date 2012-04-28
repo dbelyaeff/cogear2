@@ -74,11 +74,6 @@ class Access_Gear extends Gear {
                         $this->setRights($rules);
                     }
                 }
-            } else {
-                $rule = new Access_Rule();
-                if ($rules = $this->getRoleRights(0)) {
-                    $this->setRights($rules);
-                }
             }
         }
     }
@@ -97,7 +92,7 @@ class Access_Gear extends Gear {
         if ($this->user->id == 1) {
             return TRUE;
         }
-        if (!$this->session->access) {
+        if (!$this->user->id OR !$this->session->access) {
             return FALSE;
         }
         return $this->session->access->get($rule) ? TRUE : FALSE;

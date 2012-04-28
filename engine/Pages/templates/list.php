@@ -1,19 +1,11 @@
-<table class="table table-bordered">
-    <thead>
-    <tr>
-    <th><?php echo t('Name'); ?></th>
-    <th width="5%"><?php echo t('Views'); ?></th>
-    </tr>
-</thead>
-<tbody>
+<ul class="dd-list">
     <?php foreach ($pages as $page): ?>
-        <tr>
-            <td class="l<?php echo $page->level?>"><a href="<?php echo $page->getEditLink() ?>"><?php echo $page->name ?></a>
+        <li id="page-<?php echo $page->id ?>" class="alert l<?php echo $page->level?>">
+            <div class="dd-name"><a href="<?php echo $page->getEditLink() ?>"><?php echo $page->name ?></a></div>
+            <div class="dd-controls">
                 <a href="<?php echo $page->getEditLink() ?>" class="btn btn-primary btn-mini"><?php echo t('Edit'); ?></a>
-                <?php echo icon('eye-'.($page->published ? 'open' : 'close'));?>
-            </td>
-            <td><?php echo $page->views ?></td>
-        </tr>
+                <?php echo icon('eye-' . ($page->published ? 'open' : 'close')); ?>
+            </div>1
+        </li>
     <?php endforeach; ?>
-</tbody>
-</table>
+</ul>

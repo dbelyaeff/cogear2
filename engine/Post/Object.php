@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Blog post.
+ * Post.
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Blog
+ * @package		Post
  * @subpackage
  */
 class Post_Object extends Db_Item {
@@ -47,6 +47,7 @@ class Post_Object extends Db_Item {
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
         $data['created_date'] = time();
+        $this->ip = cogear('session')->get('ip');
         $data['last_update'] = time();
         $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
@@ -62,6 +63,7 @@ class Post_Object extends Db_Item {
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
+        $data['ip'] = cogear('session')->get('ip');
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
             cogear()->post->recalculateUserPostCount();
@@ -90,5 +92,19 @@ class Post_Object extends Db_Item {
             $this->update(array('views'=>$this->views));
         }
         return parent::render($template);
+    }
+
+    /**
+     * Recalculate params
+     *
+     * @param type $type
+     */
+    public function recalculate($type){
+        switch ($type){
+            case 'comments':
+                $this->comments = cogear()->db->where('pid',$this->id)->count('comments_posts',TRUE);
+                break;
+        }
+        $this->update();
     }
 }

@@ -30,7 +30,7 @@ class Template_Object extends Core_ArrayObject{
             $this->path = $path;
         } else {
             $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', 'Errors', $name, $path);
-            error($message);
+            exit($message);
         }
     }
 

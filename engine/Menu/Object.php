@@ -29,7 +29,7 @@ class Menu_Object extends Object {
     public function __construct($options) {
         parent::__construct($options);
         cogear()->menu->register($this->options->name, $this);
-        $this->options->base_uri = rtrim(parse_url($this->options->base_uri ? $this->options->base_uri : Url::link(), PHP_URL_PATH), '/') . '/';
+        $this->options->base = rtrim(parse_url($this->options->base ? $this->options->base : Url::link(), PHP_URL_PATH), '/') . '/';
         $this->options->render && hook($this->options->render, array($this, 'output'));
         // Register elements from config
         if ($this->options->elements) {

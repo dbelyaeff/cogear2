@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Date_Gear extends Gear {
@@ -29,13 +29,13 @@ class Date_Gear extends Gear {
 
     /**
      * Format date
-     * 
+     *
      * @param int $time
      * @param string $format
-     * @return string 
+     * @return string
      */
     public function get($time, $format = NULL) {
-        $date = date($this->format, $time);
+        $date = date($format ? $format : $this->format, $time);
         event('date.format',$date);
         $month = date('F',$time);
         $date = str_replace($month, t($month,'Date.Month.Full'), $date);
@@ -48,7 +48,7 @@ class Date_Gear extends Gear {
 
 /**
  * Format date
- * 
+ *
  * @param   int $time
  * @param   string  $format
  * @return  string

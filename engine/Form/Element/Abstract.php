@@ -157,6 +157,7 @@ class Form_Element_Abstract extends Options {
         $this->options->required = $this->validators && $this->validators->findByValue('Required');
         $this->options->errors = $this->errors;
         $this->options->errors->count() && $this->options->class .= ' error';
+        $this->options->id = $this->getId().'-element';
         if ($this->value) {
             $this->options->value = $this->value;
         } else {

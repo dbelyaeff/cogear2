@@ -7,7 +7,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class GoBack_Gear extends Gear {
@@ -23,11 +23,12 @@ class GoBack_Gear extends Gear {
         parent::init();
         hook('form.render',array($this,'showGoBackButton'));
     }
-    
+
     /**
      * Show GoBack button hook
      */
     public function showGoBackButton($Form){
+       if(defined('LAYOUT')) return;
        $tpl = new Template('GoBack.button');
        $tpl->show();
     }

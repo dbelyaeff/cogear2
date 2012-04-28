@@ -44,7 +44,7 @@ class Post_Gear extends Gear {
             case 'user.profile.tabs':
                 if ($menu->object->id == $this->user->id) {
                     $menu->register(array(
-                        'label' => t('Drafts') . ' (' . $this->user->drafts . ')',
+                        'label' => t('Drafts') . ' <sup>' . $this->user->drafts . '</sup>',
                         'link' => l('/post/drafts/'),
                         'active' => check_route('post/drafts'),
                     ));
@@ -91,7 +91,7 @@ class Post_Gear extends Gear {
                     'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
                     'count' => $post->count(),
                     'per_page' => config('Post.drafts.per_page', 5),
-                    'base_uri' => l('/post/drafts/')
+                    'base' => l('/post/drafts/')
                 ));
         if ($posts = $post->findAll()) {
             foreach ($posts as $post) {
@@ -124,7 +124,7 @@ class Post_Gear extends Gear {
                     $post->published = 1;
                 }
                 if ($post->save()) {
-                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!').' <a class="btn btn-primary btn-mini" href="' . $post->getLink() . '">' . t('View') . '</a>');
+                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!') . ' <a class="btn btn-primary btn-mini" href="' . $post->getLink() . '">' . t('View') . '</a>');
                     redirect($post->getEditLink());
                 }
             }

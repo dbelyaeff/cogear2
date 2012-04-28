@@ -10,26 +10,30 @@
  * @package		Core
  * @subpackage          messages
  * @version		$Id$
- * 
+ *
  */
 class Notify_Gear extends Gear {
 
     protected $name = 'Notifications';
     protected $description = 'Handle with messages dialogs and windows.';
-    protected $order = -1000;
+    protected $order = -999;
     protected $template = 'Notify.alert';
     protected $hooks = array(
         'ignite' => 'renderFlash',
     );
-    
+
     /**
      * Show message
-     *  
+     *
      * @param type $body
      * @param type $title
-     * @param type $class 
+     * @param type $class
      */
     public function showMessage($body, $title=NULL, $class=NULL, $region = 'info') {
+        if($region == 'growl'){
+            $this->template = 'Notify.growl';
+            $region = 'after';
+        }
         $tpl = new Template($this->template);
         $tpl->body = $body;
         $tpl->title = $title;
@@ -38,10 +42,10 @@ class Notify_Gear extends Gear {
     }
     /**
      * Show message
-     *  
+     *
      * @param type $body
      * @param type $title
-     * @param type $class 
+     * @param type $class
      */
     public function flashMessage($body, $title=NULL, $class=NULL, $region = 'before') {
         $this->session->messages OR $this->session->messages = new Core_ArrayObject();
@@ -52,7 +56,7 @@ class Notify_Gear extends Gear {
             'region' => $region,
         ));
     }
-    
+
     /**
      * Render flash messages
      */
@@ -68,9 +72,9 @@ class Notify_Gear extends Gear {
 
 /**
  * Show notification "info"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function info($body, $title = NULL, $region='info') {
@@ -78,9 +82,9 @@ function info($body, $title = NULL, $region='info') {
 }
 /**
  * Show notification "warning"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function warning($body, $title = NULL, $region='info') {
@@ -89,9 +93,9 @@ function warning($body, $title = NULL, $region='info') {
 
 /**
  * Show notification "success"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function success($body, $title = NULL, $region='info') {
@@ -100,9 +104,9 @@ function success($body, $title = NULL, $region='info') {
 
 /**
  * Show notification "error"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function error($body, $title = NULL, $region='info') {
@@ -110,9 +114,9 @@ function error($body, $title = NULL, $region='info') {
 }
 /**
  * Show flash  notification "info"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function flash_info($body, $title = NULL, $region='info') {
@@ -120,9 +124,9 @@ function flash_info($body, $title = NULL, $region='info') {
 }
 /**
  * Show flash  notification "warning"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function flash_warning($body, $title = NULL, $region='info') {
@@ -131,9 +135,9 @@ function flash_warning($body, $title = NULL, $region='info') {
 
 /**
  * Show flash  notification "success"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function flash_success($body, $title = NULL, $region='info') {
@@ -142,9 +146,9 @@ function flash_success($body, $title = NULL, $region='info') {
 
 /**
  * Show flash  notification "error"
- * 
+ *
  * @param string $body
- * @param string $title 
+ * @param string $title
  * @param string  $info
  */
 function flash_error($body, $title = NULL, $region='info') {

@@ -174,16 +174,18 @@ class Db_ORM extends Object {
     public function find() {
         $cogear = getInstance();
         $primary = $this->primary;
-        if ($this->object->$primary && isset(self::$loaded_items[$this->object->$primary])) {
-            $this->object = self::$loaded_items[$this->object->$primary];
-            return TRUE;
-        } else
+//        if ($this->object->$primary && isset(self::$loaded_items[$this->object->$primary])) {
+//            $this->object = self::$loaded_items[$this->object->$primary];
+//            return TRUE;
+//        }
         if ($this->object->count()) {
-            $cogear->db->where($this->getData());
+            if ($data = $this->getData()) {
+                $cogear->db->where($data);
+            }
             if ($result = $cogear->db->get($this->table)->row()) {
                 event('Db_ORM.find', $this, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
-                self::$loaded_items[$result->$primary] = $this->object;
+//                self::$loaded_items[$result->$primary] = $this->object;
                 return TRUE;
             }
         }
@@ -196,17 +198,16 @@ class Db_ORM extends Object {
      * @return object/NULL
      */
     public function findAll() {
-        $cogear = getInstance();
         if ($this->object) {
-            $cogear->db->where($this->getData());
+            cogear()->db->where($this->getData());
         }
-        if ($result = $cogear->db->get($this->table)->result()) {
+        if ($result = cogear()->db->get($this->table)->result()) {
             foreach ($result as &$element) {
                 event('Db_ORM.findAll', $this, $result);
                 $element = $this->filterData($element, self::FILTER_OUT);
             }
             $primary = $this->primary;
-            self::$loaded_items[$result->$primary] = $result;
+//            self::$loaded_items[$result->$primary] = $result;
         }
         return $result;
     }
@@ -216,8 +217,8 @@ class Db_ORM extends Object {
      *
      * @return  int
      */
-    public function count() {
-        return cogear()->db->count($this->table, $this->primary);
+    public function count($reset = FALSE) {
+        return cogear()->db->count($this->table, $this->table . '.' . $this->primary,$reset);
     }
 
     /**
@@ -295,9 +296,8 @@ class Db_ORM extends Object {
         $data OR $data = $this->getData();
         if (!$data)
             return;
-        $cogear = getInstance();
         event('Db_ORM.insert', $data);
-        return $this->object->{$this->primary} = $cogear->db->insert($this->table, $data);
+        return $this->object->{$this->primary} = cogear()->db->insert($this->table, $data);
     }
 
     /**

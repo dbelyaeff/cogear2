@@ -38,9 +38,37 @@ class Db_Tree extends Db_Item {
         if ($id = parent::insert($data)) {
             $this->{$this->path_field} = $this->formPath();
             $this->{$this->level_field} = sizeof(explode(self::DELIM, $this->{$this->path_field}));
-            $this->save();
+            parent::update($this->getData());
         }
         return $id;
+    }
+    /**
+     * Insert data
+     *
+     * @param type $data
+     * @return  int
+     */
+    public function update($data = NULL) {
+        if ($result = parent::update($data)) {
+            $this->{$this->path_field} = $this->formPath();
+            $this->{$this->level_field} = sizeof(explode(self::DELIM, $this->{$this->path_field}));
+            parent::update($this->getData());
+        }
+        return $result;
+    }
+
+    /**
+     * Delete
+     *
+     * @return boolean
+     */
+    public function delete(){
+        if($result = parent::delete()){
+            $item = new self();
+            $this->like($this->path_field,$result->path,'after');
+            $item->delete();
+        }
+        return $result;
     }
 
     /**

@@ -1,6 +1,6 @@
 .redactor_box {
 	position: relative;
-	border: 1px solid #ddd;	
+	border: 1px solid #ddd;
 	line-height: 0;
 }
 .redactor_box, .redactor_box textarea {
@@ -14,7 +14,7 @@ body .redactor_air {
 	z-index: 1001;
 }
 .redactor_box iframe {
-	outline: none;	
+	outline: none;
 	width: 100%;
 	background: #fff;
 	display: block;
@@ -27,8 +27,8 @@ body .redactor_air {
 	padding: 0;
 	display: block;
 	position: relative;
-	z-index: 1;	
-	outline: none;	
+	z-index: 1;
+	outline: none;
 	border: none;
 	width: 100%;
 	font-size: 13px;
@@ -65,7 +65,7 @@ body .redactor_box_fullscreen .redactor_resizer {
 	list-style: none;
 	font-size: 0;
 	background: url(../i/bg_toolbar.png) repeat-x bottom #f4f4f4;
-	overflow: hidden;	
+	overflow: hidden;
 	border-bottom: 1px solid #cecccc;
 }
 .redactor_toolbar li {
@@ -91,25 +91,25 @@ body .redactor_box_fullscreen .redactor_resizer {
 .redactor_toolbar li a, .redactor_toolbar li a span {
 	width: 25px;
 	height: 26px;
-}	
+}
 
 .redactor_toolbar li a {
 	border: 1px solid transparent;
-	* border: 1px solid #eee; 
+	* border: 1px solid #eee;
 	display: block;
 	line-height: 0;
 	font-size: 0;
 	cursor: pointer;
 	zoom: 1;
 	text-decoration: none;
-}	
+}
 
 .redactor_toolbar li a span {
 	display: block;
 	text-indent: -3000px;
 	background: url(../i/icons.png) no-repeat top left;
 }
-	
+
 .redactor_toolbar li a:hover {
 	border-color: #98a6ba;
 	background-color: #d6dce6;
@@ -128,14 +128,14 @@ body .redactor_toolbar li a.redactor_btn_html span				 { background-position: 0;
 body .redactor_toolbar li a.redactor_btn_styles span			 { background-position: -25px; }
 body .redactor_toolbar li a.redactor_btn_bold span				 { background-position: -50px; }
 body .redactor_toolbar li a.redactor_btn_italic span			 { background-position: -75px; }
-body .redactor_toolbar li a.redactor_btn_deleted span		 	 { background-position: -550px; }		
-body .redactor_toolbar li a.redactor_btn_insertunorderedlist span { background-position: -100px; }		
+body .redactor_toolbar li a.redactor_btn_deleted span		 	 { background-position: -550px; }
+body .redactor_toolbar li a.redactor_btn_insertunorderedlist span { background-position: -100px; }
 body .redactor_toolbar li a.redactor_btn_insertorderedlist span  { background-position: -125px; }
 body .redactor_toolbar li a.redactor_btn_outdent span	 		 { background-position: -150px; }
 body .redactor_toolbar li a.redactor_btn_indent span		 	 { background-position: -175px; }
 body .redactor_toolbar li a.redactor_btn_image span		 		 { background-position: -200px; }
 body .redactor_toolbar li a.redactor_btn_video span		 		 { background-position: -225px; }
-body .redactor_toolbar li a.redactor_btn_file span		 		 { background-position: -250px; }	
+body .redactor_toolbar li a.redactor_btn_file span		 		 { background-position: -250px; }
 body .redactor_toolbar li a.redactor_btn_table span		 		 { background-position: -275px; }
 body .redactor_toolbar li a.redactor_btn_link span		 		 { background-position: -300px; }
 body .redactor_toolbar li a.redactor_btn_fontcolor span		 	 { background-position: -325px; }
@@ -145,8 +145,9 @@ body .redactor_toolbar li a.redactor_btn_justifycenter span		 { background-posit
 body .redactor_toolbar li a.redactor_btn_justifyright span		 { background-position: -425px; }
 body .redactor_toolbar li a.redactor_btn_justify span		 	 { background-position: -450px; }
 body .redactor_toolbar li a.redactor_btn_horizontalrule span 	 { background-position: -475px; }
-body .redactor_toolbar li a.redactor_btn_fullscreen span		 { background-position: -500px; }							
-body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-position: -525px !important; }	
+body .redactor_toolbar li a.redactor_btn_fullscreen span		 { background-position: -500px; }
+body .redactor_toolbar li a.redactor_btn_pcode span		 { background-position: -573px; }
+body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-position: -525px !important; }
 
 
 
@@ -181,9 +182,9 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	border: 1px solid #ccc;
 	font-size: 13px;
 	-webkit-box-shadow: 0 2px 4px #ccc;
-	-moz-box-shadow: 0 2px 4px #ccc;	
-	box-shadow: 0 2px 4px #ccc;	
-	line-height: 21px;		
+	-moz-box-shadow: 0 2px 4px #ccc;
+	box-shadow: 0 2px 4px #ccc;
+	line-height: 21px;
 }
 .redactor_separator_drop {
 	border-top: 1px solid #ddd;;
@@ -201,7 +202,7 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	color: #444 !important;
 	text-decoration: none;
 	background-color: #f2f2f2;
-}		
+}
 
 /* ColorPicker */
 .redactor_color_link {
@@ -226,13 +227,13 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	width: 100%;
 	height: 100%;
 	z-index: 50000;
-	
 
-	
+
+
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 	filter:alpha(opacity=70);
 	opacity: 0.70;
-	
+
 	background-color: #000 !important;
 }
 #redactor_modal_overlay[id] { position: fixed; }
@@ -242,17 +243,17 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	
+
 	box-shadow: 0px 5px 20px #111;
-	-webkit-box-shadow: 0 5px 20px #111; 
-  	-moz-box-shadow: 0 5px 20px #111;	
-  	
+	-webkit-box-shadow: 0 5px 20px #111;
+  	-moz-box-shadow: 0 5px 20px #111;
+
   	-webkit-border-radius: 8px;
   	-moz-border-radius: 8px;
-  	border-radius: 8px;  	  	
-  		
-  	z-index: 50001;	
-	font-family: "Trebuchet MS", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;   	
+  	border-radius: 8px;
+
+  	z-index: 50001;
+	font-family: "Trebuchet MS", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 	color: #000;
 }
 #redactor_modal_header {
@@ -284,8 +285,8 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	border: none !important;
 }
 #redactor_image_box {
-	height: 270px; 
-	overflow: auto; 
+	height: 270px;
+	overflow: auto;
 	margin-bottom: 10px;
 }
 
@@ -319,19 +320,19 @@ body .redactor_toolbar li a.redactor_btn_normalscreen span		 { background-positi
 	color: #777 !important;
   	-webkit-border-radius: 4px;
   	-moz-border-radius: 4px;
-  	border-radius: 4px;  		
+  	border-radius: 4px;
 }
 
 /* Drag'n'Drop Area */
 .redactor_droparea {
 	position: relative;
     width: 100%;
-    margin: auto;	
+    margin: auto;
 }
-.redactor_droparea .redactor_dropareabox {    
+.redactor_droparea .redactor_dropareabox {
 	z-index: 1;
 	position: relative;
-    text-align: center;    
+    text-align: center;
     width: 96%;
     padding: 80px 0;
     border: 2px dashed #bbb;

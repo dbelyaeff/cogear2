@@ -45,10 +45,12 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      */
     public function query($query = '') {
         if (!$query) {
-            $query = $this->buildQuery();
+            if (!$query = $this->buildQuery()) {
+                return FALSE;
+            }
         }
         self::start($query);
-        if (!$this->result = mysql_query($query, $this->connection)) {
+        if (!$this->result = @mysql_query($query, $this->connection)) {
             $this->silent OR $this->errors[] = mysql_error() . ' (' . mysql_errno() . ')';
         }
         $this->clear();
@@ -74,7 +76,9 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
     public function buildQuery() {
         $query = array();
         extract($this->_query);
-        $from = $from[0];
+        if (!$from) {
+            return FALSE;
+        }
         if ($insert) {
             $values = $this->filterFields($from, $insert);
             $into = array_keys($values);
@@ -90,10 +94,17 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
             $query[] = 'SELECT ' . $select;
             $query[] = ' FROM ' . $this->prepareTableName($from);
         }
-        $join && $query[] = implode(' ', $join);
+        $join && $query[] = ' ' . implode(' ', $join) . ' ';
+        if ($where_in) {
+            // @todo: Make it more safe and usable
+            foreach ($where_in as $field => $values) {
+                $query[] = ' WHERE '.$field.' IN ('.implode(',',$values).') ';
+            }
+        }
         if ($where) {
             $i = 0;
-            $where = $this->filterFields($from, $where, TRUE);
+            // Safe but trouble with join queries
+//            $where = $this->filterFields($from, $where, TRUE);
             if ($where) {
                 foreach ($where as $field => $value) {
                     if ($i > 0) {

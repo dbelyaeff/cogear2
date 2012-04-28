@@ -36,10 +36,11 @@ class File_Upload extends Adapter {
      * @var array
      */
     public $options = array(
+        'name' => 'file',
         'allowed_types' => array(),
         'maxsize' => '',
         'overwrite' => TRUE,
-        'path' => UPLOADS,        
+        'path' => UPLOADS,
     );
 
     /**
@@ -123,7 +124,7 @@ class File_Upload extends Adapter {
 
     /**
      * Process upload
-     * 
+     *
      * @return string
      */
     protected function process() {
@@ -153,7 +154,7 @@ class File_Upload extends Adapter {
 
     /**
      * Prepare filename
-     * @param string $filename 
+     * @param string $filename
      */
     public function prepareFileName($filename) {
         if ($this->options->rename) {

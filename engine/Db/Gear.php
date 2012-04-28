@@ -15,17 +15,18 @@ class Db_Gear extends Gear {
 
     protected $name = 'Database';
     protected $description = 'Database operations management';
-    protected $order = -100;
+    protected $order = 0;
     protected $adapter;
     public static $error_codes = array(
         100 => 'Driver not found.',
         101 => 'Couldn\'t connect to the database.',
     );
+
     /**
-     * Init
+     * Constructor
      */
-    public function init() {
-        parent::init();
+    public function __construct() {
+        parent::__construct();
         if ($dsn = config('database.dsn')) {
             if (!$this->checkDSN($dsn)) {
                 $this->adapter->error(t('Couldn\'t establish database connection.', 'Db.errors'));
@@ -38,10 +39,9 @@ class Db_Gear extends Gear {
             error(t('Database connection string is not defined.', 'Db.errors'));
         }
     }
-
     /**
      * Check data source name
-     *  
+     *
      * @param string $dsn
      * @return boolean
      */

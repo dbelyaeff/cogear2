@@ -1,0 +1,24 @@
+.blog{
+    margin: 10px 0 15px;
+}
+.blog-title{
+
+}
+.blog-title i{
+    vertical-align: middle;
+}
+.blog-title h2{
+    display: inline;
+    font-size: 22px;
+    margin: 0 5px 0 0;
+}
+.blog-title a{
+    vertical-align: middle;
+}
+.blog-body{
+    padding: 5px 0 0 10px;
+}
+.blog-info{
+    border-top: 1px solid #CFCFCF;
+    padding: 5px 10px;
+}

@@ -33,7 +33,7 @@ abstract class Theme_Object extends Gear {
 
     /**
      * Init
-     * 
+     *
      * With inheritance
      */
     public function init() {
@@ -54,8 +54,8 @@ abstract class Theme_Object extends Gear {
 
     /**
      * Get theme screenshot
-     * 
-     * @return type 
+     *
+     * @return type
      */
     public function getScreenshot() {
         return file_exists($this->dir . $this->screenshot) ? $this->folder . $this->screenshot : '/' . THEMES_FOLDER . '/Default/images/screenshot.png';
@@ -63,9 +63,9 @@ abstract class Theme_Object extends Gear {
 
     /**
      * Set or get current layout
-     * 
+     *
      * @param string $template
-     * @return string 
+     * @return string
      */
     public function layout($template) {
         $this->layout = $template;
@@ -76,6 +76,7 @@ abstract class Theme_Object extends Gear {
      * Render theme
      */
     public function render() {
+        defined('LAYOUT') && $this->layout(LAYOUT);
         $this->template = new Template($this->theme . '.' . $this->layout);
         $this->template->theme = $this;
         cogear()->response->adapter->append($this->template->render());

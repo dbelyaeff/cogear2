@@ -38,6 +38,8 @@ class Form_Element_File extends Form_Element_Abstract {
         $this->prepareOptions();
         $tpl = new Template('Form.file');
         $tpl->assign($this->options);
-        return $this->code = $tpl->render();
+        $this->code = $tpl->render();
+        $this->decorate();
+        return $this->code;
     }
 }
