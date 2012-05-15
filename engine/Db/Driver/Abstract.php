@@ -172,7 +172,6 @@ abstract class Db_Driver_Abstract {
      *
      * @param string $type
      * @param array $values
-     * @param boolean   $escape
      */
     protected function addQuery($type, $values) {
         $args = func_get_args();
@@ -225,6 +224,7 @@ abstract class Db_Driver_Abstract {
     protected function prepareValues(array $values, $isolator='"') {
         $result = array();
         foreach ($values as $key => $value) {
+            $value = $this->escape($value);
             $result[] = is_numeric($key) ? $isolator . $value . $isolator : $key . ' = ' . $isolator . $value . $isolator;
         }
         return implode(', ', $result);
