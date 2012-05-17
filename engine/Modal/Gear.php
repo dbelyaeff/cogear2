@@ -20,7 +20,7 @@ class Modal_Gear extends Gear {
      */
     public function init(){
         parent::init();
-        if(Ajax::is() && $this->input->get('modal')){
+        if(Ajax::is() && $this->input->get('modal') !== NULL){
             $uri = $this->router->getUri();
             $window = new Modal_Window(array(
                 'name' => $this->input->get('name','ajax'),

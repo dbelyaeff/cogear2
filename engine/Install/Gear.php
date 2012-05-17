@@ -23,7 +23,7 @@ class Install_Gear extends Gear {
     public function init() {
         parent::init();
         if (!config('installed')) {
-            $this->router->addRoute(':index', array($this, 'index'), TRUE);
+            $this->router->bind(':index', array($this, 'index'), TRUE);
             if(!check_route('install',  Router::STARTS)){
                 redirect(l('/install'));
             }
@@ -32,21 +32,21 @@ class Install_Gear extends Gear {
 
     /**
      * Initializing menu system
-     * 
+     *
      * @param type $name
-     * @param type $menu 
+     * @param type $menu
      */
     public function menu($name, $menu) {
         if ($name == 'install') {
-            
+
         }
     }
 
     /**
      * Default dispatcher
-     * 
+     *
      * @param string $action
-     * @param string $subaction 
+     * @param string $subaction
      */
     public function index($action = '') {
         new Menu(array(

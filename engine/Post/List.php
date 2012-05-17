@@ -18,7 +18,6 @@ class Post_List extends Options {
         'base' => '',
         'page_suffix' => 'page',
         'where' => array(
-            'published' => 1,
         ),
         'render' => 'content',
     );

@@ -48,6 +48,19 @@ class Ajax_Object extends Core_ArrayObject{
     }
 
     /**
+     * Send json reponse
+     *
+     * @param array $data
+     */
+    public function json($data = array()){
+        $data && $this->mix($data);
+        echo json_encode($this);
+        event('done');
+        event('ajax');
+        exit();
+    }
+
+    /**
      * Escape string
      *
      * @param   string  $data

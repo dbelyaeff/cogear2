@@ -45,8 +45,8 @@ abstract class Gear extends Adapter {
 
     /**
      * Package
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $package = 'Core';
 
@@ -67,7 +67,7 @@ abstract class Gear extends Adapter {
 
     /**
      * Gear website
-     *  
+     *
      * @var string
      */
     protected $site = 'http://cogear.ru';
@@ -121,25 +121,25 @@ abstract class Gear extends Adapter {
 
     /**
      * Info about gear file
-     * 
-     * @var SplFileInfo 
+     *
+     * @var SplFileInfo
      */
     protected $file;
 
     /**
      * Simple uri name
      * It can be set in configuration, but if empty — will be default gear_name
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $base;
 
     /**
      * If gear is requested by router
-     * @var boolean 
+     * @var boolean
      */
     protected $is_requested;
-    
+
     /**
      * Required gears [version is optoinal]
      *
@@ -156,14 +156,14 @@ abstract class Gear extends Adapter {
 
     /**
      * Hooks
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $hooks = array();
 
     /**
      * Routes
-     * 
+     *
      * @var routes
      */
     protected $routes = array();
@@ -216,20 +216,20 @@ abstract class Gear extends Adapter {
 
     /**
      * Set routes
-     * 
+     *
      */
     public function routes() {
         foreach ($this->routes as $route => $callback) {
             if (!is_array($callback)) {
                 $callback = array($this, $callback);
             }
-            cogear()->router->addRoute($route, $callback);
+            cogear()->router->bind($route, $callback);
         }
     }
 
     /**
      * Check gear to be ready for charge in chain
-     * 
+     *
      * @return  boolean
      */
     public function checkGear() {
@@ -242,7 +242,7 @@ abstract class Gear extends Adapter {
 
     /**
      * Check required gears
-     * 
+     *
      * @return boolean
      */
     private function checkRequiredGears() {
@@ -258,35 +258,35 @@ abstract class Gear extends Adapter {
      * Install
      */
     public function install() {
-        
+
     }
 
     /**
      * Uninstall
      */
     public function uninstall() {
-        
+
     }
 
     /**
      * Activate
      */
     public function activate() {
-        
+
     }
 
     /**
      * Deactivate
      */
     public function deactivate() {
-        
+
     }
 
     /**
      * Update gear
      */
     public function update() {
-        
+
     }
 
     /**

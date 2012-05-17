@@ -33,8 +33,8 @@ class Pages_Object extends Db_Tree {
      *
      * @return string
      */
-    public function getEditLink() {
-        $uri = new Stack(array('name' => 'page.edit.link'));
+    public function getLink($type = 'default') {
+        $uri = new Stack(array('name' => 'page.link.edit'));
         $uri->append('admin');
         $uri->append('pages');
         $uri->append('edit');

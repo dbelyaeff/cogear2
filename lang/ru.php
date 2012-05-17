@@ -8,6 +8,10 @@ return array (
     'Development mode' => '',
     'Date format' => '',
   ),
+  '#Ajax' => 
+  array (
+    'Loading…' => '',
+  ),
   '#Blog' => 
   array (
     'Blog' => '',
@@ -55,6 +59,9 @@ return array (
     'Reply to %s comment' => '',
     'Comments' => '',
     'Allow comments' => '',
+    'Post comment %s' => '',
+    'Post comment text here…' => '',
+    'Comments has been deleted' => '',
   ),
   '#Database' => 
   array (
@@ -71,17 +78,32 @@ return array (
     'April' => '',
     'March' => '',
     'January' => '',
+    'May' => '',
   ),
   '#Date.Month.Short' => 
   array (
     'Apr' => '',
     'Mar' => '',
     'Jan' => '',
+    'May' => '',
   ),
   '#Dev' => 
   array (
     '<b>Generated in:</b> %.3f (second|seconds)' => '',
     '<b>Memory consumption:</b> %s' => '',
+  ),
+  '#Editor' => 
+  array (
+    'Bold' => '',
+    'Italic' => '',
+    'Underline' => '',
+    'Deleted' => '',
+    'List' => '',
+    'Outdent' => '',
+    'indent' => '',
+    'Insert link' => '',
+    'Session' => '',
+    'striked' => '',
   ),
   '#Errors' => 
   array (
@@ -94,6 +116,11 @@ return array (
   '#Friends.profile' => 
   array (
     'Friends' => '',
+  ),
+  '#Front' => 
+  array (
+    'Post has been removed from front page!' => '',
+    'Post has been promoted to front page!' => '',
   ),
   '#I18n' => 
   array (
@@ -132,6 +159,34 @@ return array (
     'Publish' => '',
     'Drafts' => '',
     'Post is published! %s' => '',
+    'Post has been deleted' => '',
+    'Save' => '',
+  ),
+  '#Redactor' => 
+  array (
+    'HTML' => '',
+    'Styles' => '',
+    'Paragraph' => '',
+    'Quote' => '',
+    'Preformatted' => '',
+    'Header1' => '',
+    'Header2' => '',
+    'Header3' => '',
+    'Header4' => '',
+    'Bold' => '',
+    'Italic' => '',
+    'Deleted' => '',
+    'Session' => '',
+    'List' => '',
+    'Outdent' => '',
+    'indent' => '',
+    'Insert link' => '',
+    'Unlink' => '',
+    'Left' => '',
+    'Center' => '',
+    'Right' => '',
+    'Fullscreen' => '',
+    'Underline' => '',
   ),
   '#Response' => 
   array (
@@ -151,6 +206,8 @@ return array (
     'E-Mail' => '',
     'Real name' => '',
     'OR' => '',
+    'Wrong credentials.' => '',
+    'Authentification error' => '',
   ),
   '#User.register' => 
   array (
@@ -163,6 +220,7 @@ return array (
   ),
   'Add comment' => '',
   'Blog is updated!' => '',
+  'Close' => '',
   'Code Editor' => '',
   'Create' => '',
   'Delete' => '',
@@ -170,14 +228,19 @@ return array (
   'Edit comment' => '',
   'Edit post' => '',
   'Error' => '',
+  'Hide' => '',
   'Image preset <b>%s</b> doesn\'t exists.' => '',
+  'Link' => '',
+  'Link to video' => '',
   'List' => '',
   'Login' => '',
   'Login name already in use!' => '',
   'Lost password' => '',
   'No' => '',
   'Post published!' => '',
+  'Post saved to drafts!' => '',
   'Preview' => '',
+  'Promote to front page' => '',
   'Publish' => '',
   'Register' => '',
   'Registration' => '',
@@ -186,6 +249,7 @@ return array (
   'Session' => '',
   'The page you are looking for is not found.' => '',
   'This field is required.' => '',
+  'Unlink' => '',
   'Update' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',

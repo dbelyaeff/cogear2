@@ -33,7 +33,7 @@ class Form_Element_Abstract extends Options {
      *
      * @var object
      */
-    protected $errors = array();
+    public $errors = array();
     protected $value;
     public $code = '';
 

@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1335608327,
+    'last_run' => 1337292382,
   ),
   'user' => 
   array (
@@ -56,6 +56,14 @@ return array (
         'navbar' => 
         array (
           'size' => '38x38',
+          'actions' => 
+          array (
+            0 => 'sizecrop',
+          ),
+        ),
+        'comment' => 
+        array (
+          'size' => '48x48',
           'actions' => 
           array (
             0 => 'sizecrop',

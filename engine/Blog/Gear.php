@@ -23,8 +23,11 @@ class Blog_Gear extends Gear {
         'post.show.full.before' => 'hookShowUserNavbar',
         'user.verified' => 'hookAutoRegUserBlog',
         'post.title' => 'hookPostTitle',
+        'post.insert' => 'hookBlogPostCount',
+        'post.update' => 'hookBlogPostCount',
+        'post.delete' => 'hookBlogPostCount',
     );
-    protected $current_blog;
+    public $current;
     const LEFT = 0;
     const JOINED = 1;
     const APPROVED = 2;
@@ -49,17 +52,44 @@ class Blog_Gear extends Gear {
     }
 
     /**
+     * Recalculate user posts count and store it to database
+     *
+     * @param type $uid
+     */
+    public function hookBlogPostCount($data = array(), $uid = NULL) {
+        $blog = new Blog();
+        if($data && isset($data['bid'])){
+            $blog->id = $data['bid'];
+        }
+        elseif($uid){
+            $blog->aid = $uid;
+            $blog->type = 0; // Personal blog
+        }
+        if($blog->find()){
+            $blog->posts = $this->db->where(array('bid'=>$blog->id,'published'=>1))->count('posts','id',TRUE);
+        }
+        $blog->save();
+    }
+
+    /**
      * Hook Post title
      *
      * @param type $title
      */
-    public function hookPostTitle($title){
+    public function hookPostTitle($title) {
+        if($title->object->preview){
+            return;
+        }
         $blog = new Blog();
         $blog->id = $title->object->bid;
-        if($blog->find() && $blog != $this->current_blog && $title->object->teaser){
-            $title->inject(' &larr; '.$blog->getAvatarImage().' '.$blog->getProfileLink(),1);
+        if($this->blog->current && $blog->id != $this->blog->current->id){
+            return;
+        }
+        if ($blog->find() &&$title->object->teaser) {
+            $title->inject(' &larr; ' . $blog->getAvatarImage() . ' ' . $blog->getLink('profile'), 1);
         }
     }
+
     /**
      * Autoregister user blog
      *
@@ -69,6 +99,7 @@ class Blog_Gear extends Gear {
         $blog = new Blog();
         $blog->aid = $User->id;
         $blog->login = $User->login;
+        $blog->type = Blog::$types['personal'];
         if (!$blog->find()) {
             $blog->name = t('%s blog', 'Blog', $User->getName());
             $blog->save();
@@ -134,8 +165,8 @@ class Blog_Gear extends Gear {
         $data = array();
         if ($blogs = $this->session->get('blogs')) {
             $keys = array();
-            foreach($blogs as $key=>$blog){
-                if($blog > 1){
+            foreach ($blogs as $key => $blog) {
+                if ($blog > 1) {
                     $keys[] = $key;
                 }
             }
@@ -179,6 +210,7 @@ class Blog_Gear extends Gear {
         $blog = new Blog();
         $blog->login = $login;
         if ($blog->find()) {
+            $this->current = $blog;
             $blog->navbar()->show();
             switch ($action) {
                 case 'info':
@@ -201,7 +233,6 @@ class Blog_Gear extends Gear {
                             ));
                     break;
                 default:
-                    $this->current_blog = $blog;
                     $blog->show();
             }
         } else {
@@ -225,7 +256,7 @@ class Blog_Gear extends Gear {
 
             if ($blog->save()) {
                 flash_success(t('Blog is created!') . ' <a class="btn btn-primary btn-mini" href="' . $blog->getLink() . '">' . t('View') . '</a>');
-                redirect($blog->getEditLink());
+                redirect($blog->getLink('edit'));
             }
         }
         // Remove 'delete' button from create blog form
@@ -254,13 +285,13 @@ class Blog_Gear extends Gear {
         $form->attach($blog);
         access('blog.edit.login') OR $form->login->options->disabled = TRUE;
         access('blog.delete.all') OR $form->elements->offsetUnset('delete');
-        $form->title->options->label = t('Edit blog %s', 'Blog', $blog->getProfileLink());
+        $form->title->options->label = t('Edit blog %s', 'Blog', $blog->getLink('profile'));
         $form->create->options->label = t('Save');
         if ($result = $form->result()) {
             $blog->object->adopt($result);
             if ($blog->save()) {
                 flash_success(t('Blog is updated!') . ' <a class="btn btn-primary btn-mini" href="' . $blog->getLink() . '">' . t('View') . '</a>');
-                redirect($blog->getEditLink());
+                redirect($blog->getLink('edit'));
             }
         }
         // Remove 'delete' button from create blog form

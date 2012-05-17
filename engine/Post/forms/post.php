@@ -15,6 +15,7 @@ return array(
         'body' => array(
             'type' => 'editor',
             'label' => t('Content', 'Post'),
+            'filters' => array('Jevix_Filter'),
             'validators' => array('Required', array('Length', 5)),
         ),
         'actions' => array(

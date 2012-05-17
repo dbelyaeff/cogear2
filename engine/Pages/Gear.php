@@ -116,7 +116,7 @@ class Pages_Gear extends Gear {
                 }
                 if ($page->save()) {
                     flash_success(t($page->published ? 'Page published!' : 'Page saved to drafts!') . ' <a class="btn btn-primary btn-mini" href="' . $page->getLink() . '">' . t('View') . '</a>');
-                    redirect($page->getEditLink());
+                    redirect($page->getLink('edit'));
                 }
             }
         }

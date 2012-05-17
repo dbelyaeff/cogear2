@@ -15,37 +15,42 @@ class Blog_Object extends Db_Item {
     protected $table = 'blogs';
     protected $primary = 'id';
     protected $template = 'Blog.blog';
+    public static $types = array(
+        'personal' => 0,
+        'private' => 1,
+        'public' => 2,
+    );
+    public $where = array(
+        'published' => 1,
+    );
 
     /**
-     * Get blog Uri
-     *
-     * @return string
+     * Get blog link
      */
-    public function getLink() {
-        $uri = new Stack(array('name' => 'blog.link'));
-        $uri->append('blog');
-        $uri->append($this->login);
+    public function getLink($type = 'default', $param = NULL) {
+        switch ($type) {
+            case 'profile':
+                $uri = new Stack(array('name' => 'blog.link.profile'));
+                $uri->append($this->getLink());
+                return HTML::a($uri->render('/'), $this->name);
+                break;
+            case 'avatar':
+                $uri = new Stack(array('name' => 'blog.link.avatar'));
+                $uri->append($this->getLink());
+                return HTML::a($uri->render('/'), $this->getAvatarImage($param));
+                break;
+            case 'edit':
+                $uri = new Stack(array('name' => 'blog.link.edit'));
+                $uri->append('blog');
+                $uri->append('edit');
+                $uri->append($this->login);
+                break;
+            default:
+                $uri = new Stack(array('name' => 'blog.link'));
+                $uri->append('blog');
+                $uri->append($this->login);
+        }
         return '/' . $uri->render('/');
-    }
-
-    /**
-     * Get blog Uri
-     *
-     * @return string
-     */
-    public function getEditLink() {
-        $uri = new Stack(array('name' => 'blog.edit.link'));
-        $uri->append('blog');
-        $uri->append('edit');
-        $uri->append($this->login);
-        return '/' . $uri->render('/');
-    }
-
-    /**
-     * Get HTML link to user profile
-     */
-    public function getProfileLink() {
-        return HTML::a($this->getLink(), $this->name);
     }
 
     /**
@@ -58,7 +63,7 @@ class Blog_Object extends Db_Item {
         $data['created_date'] = time();
         $this->aid OR $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
-            event('blog.insert',$this);
+            event('blog.insert', $this);
             $role = new Blog_Role();
             $role->uid = $data['aid'];
             $role->bid = $result;
@@ -77,7 +82,7 @@ class Blog_Object extends Db_Item {
         $data OR $data = $this->object->toArray();
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
-            event('blog.update',$this,$data);
+            event('blog.update', $this, $data);
         }
         return $result;
     }
@@ -104,21 +109,12 @@ class Blog_Object extends Db_Item {
     }
 
     /**
-     * Get HTML avatar linked to profile
-     *
-     * @return string
-     */
-    public function getAvatarLinked() {
-        return HTML::a($this->getLink(), $this->getAvatarImage());
-    }
-
-    /**
      * Get view snippet
      *
      * @return string
      */
     public function getListView() {
-        return $this->getAvatarImage() . ' ' . $this->getProfileLink();
+        return $this->getAvatarImage() . ' ' . $this->getLink('profile');
     }
 
     /**
@@ -156,14 +152,12 @@ class Blog_Object extends Db_Item {
      * Render blog
      */
     public function render() {
+        $this->where['bid'] = $this->id;
         $posts = new Post_List(array(
                     'name' => 'blog',
-                    'base' => $this->getLink().'/',
+                    'base' => $this->getLink() . '/',
                     'per_page' => $this->per_page,
-                    'where' => array(
-                        'bid' => $this->id,
-                        'published' => 1,
-                    ),
+                    'where' => $this->where,
                     'render' => FALSE,
                 ));
         return $posts->render();
@@ -172,7 +166,7 @@ class Blog_Object extends Db_Item {
     /**
      * Update counters
      */
-    public function recalculate(){
+    public function recalculate() {
         $users = new Blog_Role();
         $users->bid = $this->id;
         $this->users = $users->count();

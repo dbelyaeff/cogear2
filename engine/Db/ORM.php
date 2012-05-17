@@ -63,6 +63,8 @@ class Db_ORM extends Object {
      */
     protected $filters_out = array();
     protected $reflection;
+    public static $skipClear = FALSE;
+
     const FILTER_IN = 0;
     const FILTER_OUT = 1;
 
@@ -74,7 +76,11 @@ class Db_ORM extends Object {
      */
     public function __construct($table = NULL, $primary = NULL) {
         parent::__construct();
-        $this->clear();
+        if (self::$skipClear) {
+            self::$skipClear = FALSE;
+        } else {
+            $this->clear();
+        }
         $table && $this->table = $table;
         $this->fields = cogear()->db->getFields($this->table);
         $this->reflection = new ReflectionClass($this);
@@ -163,6 +169,7 @@ class Db_ORM extends Object {
                 isset($this->object->$key) && $data[$key] = $this->object->$key;
             }
         }
+        $data = $this->filterData($data, self::FILTER_IN);
         return $data;
     }
 
@@ -218,7 +225,10 @@ class Db_ORM extends Object {
      * @return  int
      */
     public function count($reset = FALSE) {
-        return cogear()->db->count($this->table, $this->table . '.' . $this->primary,$reset);
+        if ($data = $this->getData()) {
+            cogear()->db->where($data);
+        }
+        return cogear()->db->count($this->table, $this->table . '.' . $this->primary, $reset);
     }
 
     /**
@@ -241,20 +251,9 @@ class Db_ORM extends Object {
         // Set scope to $this
         foreach ($filters as $field => $filter) {
             foreach ($filter as $key => $callback) {
-                is_string($callback) && $filters[$field][$key] = array($this, $callback);
-            }
-        }
-        // Seeking through the data
-        foreach ($data as $field => $value) {
-            // If filter isset for field
-            if (isset($filters[$field])) {
-                // Seeking through filters
-                foreach ($filters[$field] as $callback) {
-                    $callback = new Callback($callback);
-                    // Apply filter if it's callable
-                    if ($callback->check()) {
-                        $data[$field] = $callback->run(array($value));
-                    }
+                $callback = new Callback($callback);
+                if ($callback->check()) {
+                    $filters[$field][$key] = $callback->run(array($value));
                 }
             }
         }
@@ -272,13 +271,11 @@ class Db_ORM extends Object {
         if (!$data) {
             return FALSE;
         } elseif (isset($data[$this->primary])) {
-            $data = $this->filterData($data, self::FILTER_IN);
             if ($this->update($data)) {
                 event('Db_ORM.update', $this);
                 return TRUE;
             }
         } else {
-            $data = $this->filterData($data, self::FILTER_IN);
             if ($this->insert($data)) {
                 event('Db_ORM.insert', $this);
                 return $this->object->{$this->primary};

@@ -21,11 +21,14 @@ class Form_Object extends Object {
         'enctype' => self::ENCTYPE_MULTIPART,
         'template' => 'Form.form',
         'prefix' => 'form',
+        'ajax' => FALSE,
     );
     protected $is_init;
     protected $errors = 0;
     protected $counter = 0;
+    public $ajaxed;
     public $result;
+
     /**
      * Rendered form code
      * @var string
@@ -93,8 +96,8 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct($options);
-        event('form.load',$this);
-        event('form.load.'.$this->name,$this);
+        event('form.load', $this);
+        event('form.load.' . $this->name, $this);
     }
 
     /**
@@ -107,7 +110,7 @@ class Form_Object extends Object {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
         $config->name = $name;
         $config->form = $this;
-        if(!$config->order){
+        if (!$config->order) {
             $this->counter++;
             $config->order = $this->counter;
         }
@@ -123,8 +126,8 @@ class Form_Object extends Object {
      *
      * @param type $name
      */
-    public function __get($name){
-        if($this->elements->$name){
+    public function __get($name) {
+        if ($this->elements->$name) {
             return $this->elements->$name;
         }
         return parent::__get($name);
@@ -134,9 +137,10 @@ class Form_Object extends Object {
      * Initialize elements
      */
     public function init() {
-        if($this->is_init) return;
+        if ($this->is_init)
+            return;
         event('form.init', $this);
-        event('form.init.'.$this->name, $this);
+        event('form.init.' . $this->name, $this);
         foreach ($this->options->elements as $name => $config) {
             $this->addElement($name, $config);
         }
@@ -183,6 +187,8 @@ class Form_Object extends Object {
      */
     public function result() {
         $this->init();
+        // Define if form is requested via ajaxed
+        $this->ajaxed = $this->options->ajax && Ajax::is() && cogear()->input->post('ajaxed') === $this->getId();
         event('form.result.before', $this);
         $method = strtolower($this->options->method);
         $result = array();
@@ -198,6 +204,19 @@ class Form_Object extends Object {
             }
         }
         event('form.result.after', $this, $is_valid, $result);
+        if ($this->ajaxed) {
+            $data = array();
+            $data['success'] = $is_valid && $result;
+            if ($data['success']) {
+                $data['result'] = $result;
+            } else {
+                foreach ($this->elements as $key => $element) {
+                    $element->errors->count() > 0 && $data['errors'][$key] = $element->errors;
+                }
+                $ajax = new Ajax();
+                $ajax->json($data);
+            }
+        }
         return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
     }
 
@@ -219,6 +238,7 @@ class Form_Object extends Object {
         $this->elements->uasort('Core_ArrayObject::sortByOrder');
         $tpl = new Template($this->options->template);
         $id = $this->getId();
+        $this->options->ajaxed && $this->options->class = trim($this->options->class . ' ajax');
         $this->action OR $this->options->action = l(cogear()->router->getUri());
         $tpl->form = $this;
         $this->options->id = $this->getId();
@@ -243,4 +263,5 @@ class Form_Object extends Object {
     public function errors() {
         return $this->errors;
     }
+
 }

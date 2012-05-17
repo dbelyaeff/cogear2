@@ -33,7 +33,7 @@ class Blog_Navbar extends Object {
         $navbar->avatar = $blog->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $blog->getLink() . '">' . $blog->name . '</a></strong>';
         if (access('blog.edit.all') OR $blog->id == cogear()->blog->id) {
-            $navbar->edit = '<a href="' . $blog->getEditLink() . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
+            $navbar->edit = '<a class="blog-edit" href="' . $blog->getLink('edit') . '"><i class="icon-pencil"></i></a>';
         }
         if (access('blog') && $this->user->id != $blog->aid) {
             $status = cogear()->blog->check($blog->id);
@@ -52,18 +52,18 @@ class Blog_Navbar extends Object {
         }
         $tpl->navbar = $navbar;
         $tabs = new Menu_Auto(array(
-                    'name' => 'blog.profile.tabs',
+                    'name' => 'blog.tabs',
                     'template' => 'Twitter_Bootstrap.tabs',
                     'render' => FALSE,
                     'elements' => array(
                         'profile' => array(
-                            'label' => t('Posts', 'Blog'),
+                            'label' => t('Posts', 'Blog').' <sup>'.$blog->posts.'</sup>',
                             'link' => $blog->getLink(),
-                            'active' => !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
+                            'active' => check_route('blog', Router::STARTS) && !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
                         ),
                         'edit' => array(
                             'label' => t('Edit'),
-                            'link' => $blog->getEditLink(),
+                            'link' => $blog->getLink('edit'),
                             'access' => cogear()->router->check('blog/edit'),
                         ),
                         'info' => array(

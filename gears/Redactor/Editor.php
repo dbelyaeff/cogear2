@@ -15,10 +15,10 @@
  */
 class Redactor_Editor extends Wysiwyg_Abstract {
     public $editor = array(
-        'toolbar' => 'post',
+        'toolbar' => '/redactor/toolbar/post',
         'autosave' => FALSE,
         'interval' => 20,
-        'css' => 'blank.css',
+        'css' => 'style.css',
         'visual' => true,
         'fullscreen' => false,
         'overlay' => true,
@@ -32,24 +32,24 @@ class Redactor_Editor extends Wysiwyg_Abstract {
         $folder = cogear()->redactor->folder . '/js/redactor/';
         css($folder . 'css/redactor.css');
         js($folder . 'redactor.js','after');
-        $this->options->editor && $this->editor->mix($this->options->editor);
+        $this->options->toolbar && $this->editor->mix($this->options->toolbar);
         $options = array(
             'lang' => config('i18n.lang','en'),
             'toolbar' => $this->editor->toolbar,
-//            'path' => cogear()->redactor->folder.'/js/',
             'autosave' => $this->editor->autosave,
             'interval' => $this->editor->interval,
             'css' => $this->editor->css,
             'visual' => $this->editor->visual,
             'fullscreen' => $this->editor->fullscreen,
             'overlay' => $this->overlay,
+            'toolbar' => l($this->editor->toolbar),
             'imageUpload' => l('/redactor/upload/image/'),
         );
         inline_js("
 $(document).ready(
 		function()
 		{
-			document.redactor = $('[name=".$this->name."]').redactor(".json_encode($options).");
+			document.redactor = $('[name=".$this->name."]').redactor(".stripcslashes(json_encode($options)).");
 		}
 	);",'after');
     }

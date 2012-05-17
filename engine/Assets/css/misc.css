@@ -40,3 +40,25 @@
 .ms20{
     margin: 0 20px;
 }
+/**
+* Show-Hide (sh) class for hidden controls
+*/
+.sh {
+    float: right;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.sh i{
+    opacity: 0.2;
+    visibility: hidden;
+}
+
+.sh:hover i{
+    opacity: 1;
+}
+/**
+* Show-Hide Holder (shd) class for hidden controls
+*/
+.shd:hover .sh i{
+    visibility: visible;
+}

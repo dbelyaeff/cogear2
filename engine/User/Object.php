@@ -205,34 +205,34 @@ class User_Object extends Db_Item {
         return NULL;
     }
 
-    /**
-     * Get user profile link
-     */
-    public function getLink() {
-        if ($this->id) {
-            $link = $this->login;
-            return Url::gear('user') . $link . '/';
-        }
-        return NULL;
-    }
 
     /**
      * Get user profile link
      */
-    public function getEditLink() {
-        if ($this->id) {
-            $link = $this->id;
-            event('User.edit.link', $link);
-            return Url::gear('user') . 'edit/' . $link . '/';
+    public function getLink($type = 'default',$param = NULL) {
+        switch ($type) {
+            case 'profile':
+                $uri = new Stack(array('name' => 'user.link.profile'));
+                $uri->append($this->getLink());
+                return HTML::a($uri->render('/'), $this->getName());
+                break;
+            case 'avatar':
+                $uri = new Stack(array('name' => 'user.link.avatar'));
+                $uri->append($this->getLink());
+                return HTML::a($uri->render('/'), $this->getAvatarImage($param));
+                break;
+            case 'edit':
+                $uri = new Stack(array('name' => 'user.link.edit'));
+                $uri->append('user');
+                $uri->append('edit');
+                $uri->append($this->id);
+                break;
+            default:
+                $uri = new Stack(array('name' => 'user.link'));
+                $uri->append('user');
+                $uri->append($this->login);
         }
-        return NULL;
-    }
-
-    /**
-     * Get HTML link to user profile
-     */
-    public function getProfileLink($useName = FALSE) {
-        return HTML::a($this->getLink(), $useName ? $this->getName() : $this->login);
+        return '/' . $uri->render('/');
     }
 
     /**
@@ -246,21 +246,12 @@ class User_Object extends Db_Item {
     }
 
     /**
-     * Get HTML avatar linked to profile
-     *
-     * @return string
-     */
-    public function getAvatarLinked() {
-        return HTML::a($this->getLink(), $this->getAvatarImage());
-    }
-
-    /**
      * Get view snippet
      *
      * @return string
      */
     public function getListView() {
-        return $this->getAvatarImage() . ' ' . $this->getProfileLink();
+        return $this->getAvatarImage() . ' ' . $this->getLink('profile');
     }
 
     /**
@@ -293,5 +284,12 @@ class User_Object extends Db_Item {
     public function dir() {
         return UPLOADS . DS . 'users' . DS . $this->id;
     }
-
+    /**
+     * Recalculate data
+     *
+     * @param type $type
+     */
+    public function recalculate($type){
+        event('user.recalculate',$this,$type);
+    }
 }

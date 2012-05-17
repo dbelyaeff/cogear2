@@ -1,5 +1,6 @@
 .post{
     margin: 10px 0 15px;
+    border: 1px solid transparent;
 }
 .post-title{
 
@@ -16,9 +17,17 @@
     vertical-align: middle;
 }
 .post-body{
-    padding: 5px 0 0 10px;
+    padding: 5px 0 10px 10px;
 }
 .post-info{
     border-top: 1px solid #CFCFCF;
     padding: 5px 10px;
+}
+
+.sh i.icon-eye-close {
+    visibility: visible;
+}
+
+.post:hover .sh i{
+    visibility: visible;
 }

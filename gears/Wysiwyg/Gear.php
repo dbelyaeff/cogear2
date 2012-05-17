@@ -17,6 +17,8 @@ class Wysiwyg_Gear extends Gear {
     protected $description = 'Visual editors manager.';
     public static $editors = array(
         'redactor' => 'Redactor_Editor',
+        'markitup' => 'Markitup_Editor',
+        'textarea' => 'Form_Element_Textarea',
     );
     protected $order = -10;
 
@@ -25,7 +27,7 @@ class Wysiwyg_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        Form::$types['editor'] = self::$editors[config('wysiwyg.editor', 'redactor')];
+        Form::$types['editor'] = self::$editors[config('wysiwyg.editor', 'textarea')];
     }
 
     /**

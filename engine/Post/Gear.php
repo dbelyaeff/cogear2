@@ -16,14 +16,39 @@ class Post_Gear extends Gear {
     protected $name = 'Post';
     protected $description = 'Manage posts';
     protected $order = 10;
+    protected $hooks = array(
+        'user.recalculate' => 'hookUserPostCount',
+        'comment.insert' => 'hookPostCommentsCount',
+        'comment.update' => 'hookPostCommentsCount',
+        'comment.delete' => 'hookPostCommentsCount',
+    );
 
     /**
-     * Init
+     * Recalculate user posts count and store it to database
+     *
+     * @param type $uid
      */
-    public function init() {
-        parent::init();
+    public function hookUserPostCount($User, $type) {
+        if ($type == 'posts') {
+            $User->posts = $this->db->where(array('aid' => $User->id, 'published' => 1))->count('posts', 'id', TRUE);
+            $User->drafts = $this->db->where(array('aid' => $User->id, 'published' => 0))->count('posts', 'id', TRUE);
+            $User->update();
+            $this->user->store();
+        }
     }
 
+    /**
+     * Recalculate post comments count
+     *
+     * @param type $Comment
+     */
+    public function hookPostCommentsCount($Comment){
+        $post = new Post();
+        $post->id = $Comment->post_id;
+        if($post->find()){
+            $post->recalculate('comments');
+        }
+    }
     /**
      * Menu hook
      *
@@ -41,8 +66,8 @@ class Post_Gear extends Gear {
                     'access' => access('post.create'),
                 ));
                 break;
-            case 'user.profile.tabs':
-                if ($menu->object->id == $this->user->id) {
+            case 'blog.tabs':
+                if ($menu->object->aid == $this->user->id && $menu->object->type == 0) {
                     $menu->register(array(
                         'label' => t('Drafts') . ' <sup>' . $this->user->drafts . '</sup>',
                         'link' => l('/post/drafts/'),
@@ -80,25 +105,32 @@ class Post_Gear extends Gear {
      * @param type $page
      */
     public function drafts_action($page = NULL) {
-        $this->user->navbar()->show();
-        $post = new Post();
-        $post->aid = $this->user->id;
-        $this->db->where(array(
-            'published' => 0
-        ));
-        $this->db->order('created_date', 'DESC');
-        $pager = new Pager(array(
-                    'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
-                    'count' => $post->count(),
-                    'per_page' => config('Post.drafts.per_page', 5),
-                    'base' => l('/post/drafts/')
-                ));
-        if ($posts = $post->findAll()) {
-            foreach ($posts as $post) {
-                $post->teaser = TRUE;
-                $post->show();
-            }
-            $pager->show();
+        $blog = new Blog();
+        $blog->aid = $this->user->id;
+        $blog->type = Blog::$types['personal'];
+        if ($blog->find()) {
+            $blog->navbar()->show();
+            $blog->where['published'] = 0;
+            $blog->show();
+
+//        $post = new Post();
+//        $post->aid = $this->user->id;
+//        $this->db->where(array(
+//            'published' => 0
+//        ));
+//        $this->db->order('created_date', 'DESC');
+//        $pager = new Pager(array(
+//                    'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
+//                    'count' => $post->count(),
+//                    'per_page' => config('Post.drafts.per_page', 5),
+//                    'base' => l('/post/drafts/')
+//                ));
+//        if ($posts = $post->findAll()) {
+//            foreach ($posts as $post) {
+//                $post->teaser = TRUE;
+//                $post->show();
+//            }
+//            $pager->show();
         } else {
             event('empty');
         }
@@ -125,7 +157,7 @@ class Post_Gear extends Gear {
                 }
                 if ($post->save()) {
                     flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!') . ' <a class="btn btn-primary btn-mini" href="' . $post->getLink() . '">' . t('View') . '</a>');
-                    redirect($post->getEditLink());
+                    redirect($post->getLink('edit'));
                 }
             }
         }
@@ -152,9 +184,12 @@ class Post_Gear extends Gear {
         if ($result = $form->result()) {
             $post->object->mix($result);
             if ($result->delete && (access('post.delete.all') OR access('post.delete') && $this->user->id == $post->aid)) {
+                $blog = new Blog();
+                $blog->id = $post->bid;
+                $blog->find();
                 if ($post->delete()) {
                     flash_success(t('Post has been deleted!'));
-                    redirect($this->blog->getLink());
+                    redirect($blog->getLink());
                 }
             }
             if ($result->preview) {
@@ -183,23 +218,66 @@ class Post_Gear extends Gear {
     }
 
     /**
-     * Recalculate user posts count and store it to database
+     * Hide or show post
      *
-     * @param type $uid
+     * @param type $post_id
      */
-    public function recalculateUserPostCount($uid = NULL) {
-        if (!$uid) {
-            $user = $this->user->adapter;
-            $self = TRUE;
-        } else {
-            $user = new User();
-            $user->id = $uid;
-            $user->find();
+    public function hide_action($post_id) {
+        $post = new Post();
+        $post->id = $post_id;
+        if ($post->find() && (access('post.hide.all') OR $post->aid == $this->user->id)) {
+            $data = array();
+            if ($post->published) {
+                $post->published = 0;
+                $data['action'] = 'hide';
+            } else {
+                $post->published = 1;
+                $data['action'] = 'show';
+            }
+            if ($post->save()) {
+                $data['success'] = TRUE;
+            }
+            if (Ajax::is()) {
+                $ajax = new Ajax();
+                $ajax->json($data);
+            } else {
+                redirect($post->getLink());
+            }
         }
-        $user->posts = $this->db->where(array('aid' => $user->id, 'published' => 1))->count('posts', 'id', TRUE);
-        $user->drafts = $this->db->where(array('aid' => $user->id, 'published' => 0))->count('posts', 'id', TRUE);
-        $user->save();
-        $user->store();
+    }
+
+    /**
+     * Delete post
+     *
+     * @param type $cid
+     */
+    public function delete_action($post_id) {
+        $post = new Post();
+        $post->id = $post_id;
+        if ($post->find() && access('post.delete.all')) {
+            $blog = new Blog();
+            $blog->id = $post->bid;
+            $blog->find();
+            if ($post->delete()) {
+                $message = t('Post has been deleted', 'Post');
+                if (Ajax::is()) {
+                    $data['success'] = TRUE;
+                    $data['messages'] = array(
+                        array(
+                            'type' => 'success',
+                            'body' => $message,
+                        )
+                    );
+                    $data['redirect'] = $this->response->get('referer');
+                    $ajax = new Ajax();
+                    $ajax->json($data);
+                }
+                $post = new Post();
+                $post->id = $post->post_id;
+                flash_success($message);
+                redirect($blog->getLink());
+            }
+        }
     }
 
 }

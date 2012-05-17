@@ -87,7 +87,7 @@ class User_List extends Cogearable {
     public function prepareFields($user,$key){
         switch($key){
             case 'login':
-                return $user->getAvatarLinked().' '.$user->getProfileLink();
+                return $user->getLink('avatar').' '.$user->getLink('profile');
                 break;
             case 'reg_date':
                 return df($user->reg_date,'d M Y');

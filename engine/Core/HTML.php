@@ -18,10 +18,10 @@ final class HTML {
         'a' => array('href', 'target','rel'),
         'img' => array('width', 'height', 'alt', 'title','src'),
         'form' => array('action', 'method', 'enctype'),
-        'input' => array('type', 'value', 'disabled', 'checked', 'name'),
+        'input' => array('type', 'value', 'disabled', 'checked', 'name','placeholder'),
         'select' => array('type', 'disabled', 'name'),
         'option' => array('selected','value'),
-        'textarea' => array('rows', 'cols', 'name', 'disabled'),
+        'textarea' => array('rows', 'cols', 'name', 'disabled','placeholder'),
         'script' => array('src', 'type', 'charset'),
         'link' => array('media', 'type', 'rel', 'href'),
         'meta' => array('content', 'type'),
@@ -40,16 +40,16 @@ final class HTML {
         }
         return $result ? ' ' . trim($result) : '';
     }
-    
+
     /**
      * Encode special characters in a plain-text string for display as HTML
 	 *
 	 * @param string $text
 	 *			The text to be checked or processed.
-	 * @return 
+	 * @return
 	 *			An HTML safe version of $text
 	 */
-	
+
 	public static function check_plain($text) {
 		return htmlspecialchars($text, ENT_QUOTES);
 	}
@@ -166,10 +166,10 @@ final class HTML {
 
     /**
      * Render a tag
-     * 
+     *
      * @param string $href
      * @param string $content
-     * @param array $attributes 
+     * @param array $attributes
      * @return string
      */
     public static function a($href, $content='', $attributes = array()) {
@@ -179,11 +179,11 @@ final class HTML {
 
     /**
      * Render image
-     *  
+     *
      * @param string $src
      * @param string $alt
      * @param array $attributes
-     * @return type 
+     * @return type
      */
     public static function img($src, $alt='', $attributes=array()) {
         $attributes['src'] = $src;

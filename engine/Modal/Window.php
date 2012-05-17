@@ -2,13 +2,13 @@
 
 /**
  * Modal Window
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Modal_Window extends Object {
@@ -19,6 +19,7 @@ class Modal_Window extends Object {
         'body' => '',
         'actions' => array(
         ),
+        'destroy' => FALSE,
         'settings' => array(
             'show' => false,
             'keyboard' => true,
@@ -28,7 +29,7 @@ class Modal_Window extends Object {
 
     /**
      * Get name
-     * @return type 
+     * @return type
      */
     public function id() {
         return 'modal-' . $this->name;
@@ -36,7 +37,7 @@ class Modal_Window extends Object {
 
     /**
      * Get modal scripts
-     * 
+     *
      * @return string
      */
     public function script() {

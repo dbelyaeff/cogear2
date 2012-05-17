@@ -15,16 +15,17 @@
  */
 class Db_Tree extends Db_Item {
 
-    protected $path_field = 'path';
+    protected $thread_field = 'thread';
     protected $level_field = 'level';
     protected $parent_field = 'pid';
+    protected $object_field = 'post_id';
     const DELIM = '.';
 
     /**
      * Find all
      */
     public function findAll() {
-        $this->order($this->path_field, 'ASC');
+        $this->order($this->thread_field, 'DESC');
         return parent::findAll();
     }
 
@@ -36,12 +37,13 @@ class Db_Tree extends Db_Item {
      */
     public function insert($data = NULL) {
         if ($id = parent::insert($data)) {
-            $this->{$this->path_field} = $this->formPath();
-            $this->{$this->level_field} = sizeof(explode(self::DELIM, $this->{$this->path_field}));
-            parent::update($this->getData());
+            $this->{$this->thread_field} = $this->formThread();
+            $this->{$this->level_field} = sizeof(explode(self::DELIM, $this->{$this->thread_field}))-1;
+            $this->update();
         }
         return $id;
     }
+
     /**
      * Insert data
      *
@@ -50,8 +52,6 @@ class Db_Tree extends Db_Item {
      */
     public function update($data = NULL) {
         if ($result = parent::update($data)) {
-            $this->{$this->path_field} = $this->formPath();
-            $this->{$this->level_field} = sizeof(explode(self::DELIM, $this->{$this->path_field}));
             parent::update($this->getData());
         }
         return $result;
@@ -62,10 +62,10 @@ class Db_Tree extends Db_Item {
      *
      * @return boolean
      */
-    public function delete(){
-        if($result = parent::delete()){
-            $item = new self();
-            $this->like($this->path_field,$result->path,'after');
+    public function delete() {
+        if ($result = parent::delete()) {
+            $item = new self($this->table,$this->primary);
+            $this->like($this->thread_field, $result->{$this->thread_field}, 'after');
             $item->delete();
         }
         return $result;
@@ -76,16 +76,37 @@ class Db_Tree extends Db_Item {
      *
      * @return string
      */
-    public function formPath() {
+    public function formThread() {
         if ($this->{$this->parent_field}) {
-            $parent = new Db_ORM($this->table, $this->primary);
+            $parent = new self($this->table,$this->primary);
             $parent->{$this->primary} = $this->{$this->parent_field};
             if ($parent->find()) {
-                $path = $parent->{$this->path_field} . self::DELIM . $this->{$this->primary};
+                $obj = new self($this->table,$this->primary);
+                $obj->{$this->object_field} = $this->{$this->object_field};
+                $obj->{$this->parent_field} = $this->{$this->parent_field};
+                $thread = str_replace('/','',$parent->{$this->thread_field}) .self::DELIM. $obj->count(TRUE).'/';
             }
+        } else {
+            $obj = new self($this->table,$this->primary);
+            $obj->{$this->object_field} = $this->{$this->object_field};
+            $obj->{$this->parent_field} = 0;
+            $thread = $obj->count(TRUE).'/';
         }
-        isset($path) OR $path = str_pad($this->id, 15, ' ', STR_PAD_LEFT);
-        return $path;
+        return $thread;
+    }
+
+    /**
+     * Get childs of current item
+     *
+     * @return  array
+     */
+    public function getChilds(){
+        $item = new self($this->table,$this->primary);
+        cogear()->db->like($this->thread_field,str_replace('/','',$this->{$this->thread_field}),'after');
+        if($result = $item->findAll()){
+            return $result;
+        }
+        return NULL;
     }
 
 }

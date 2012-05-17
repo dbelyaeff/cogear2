@@ -1,4 +1,4 @@
-<div class="modal <?php if(!$settings->show):?>hide fade<?php endif;?>" id="<?php echo $id?>"<?php if($source):?> data-source="<?php echo $source?>"<?php endif;?>>
+<div class="modal <?php if(!$settings->show):?>hide fade<?php endif;?><?php if($destroy){echo " destroyable";}?>" id="<?php echo $id?>"<?php if($source):?> data-source="<?php echo $source?>"<?php endif;?>>
 
     <?php if ($header): ?> <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>

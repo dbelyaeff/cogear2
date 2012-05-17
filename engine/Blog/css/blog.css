@@ -22,3 +22,13 @@
     border-top: 1px solid #CFCFCF;
     padding: 5px 10px;
 }
+.blog .blog-edit{
+    visibility: hidden;
+    opacity: 0.2;
+}
+.blog:hover .blog-edit{
+    visibility: visible;
+}
+.blog .blog-edit:hover{
+    opacity: 1;
+}

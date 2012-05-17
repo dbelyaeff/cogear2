@@ -1,45 +1,55 @@
 <?php
+event('post.render', $item);
 $user = new User();
 $user->id = $item->aid;
 $user->find();
 $item->author = $user;
 
-if (!$item->teaser) {
+if (!($item->teaser OR $item->preview)) {
     $before = new Stack(array('name' => 'post.show.full.before'));
     $before->attach($item);
     echo $before->render();
 }
+if(!$item->published && !$item->preview){
+    $item->class = $item->class ? $item->class.' draft' : 'draft';
+}
 ?>
-<div class="post">
+<div class="post <?php echo $item->class?> shd" id="post-<?php echo $item->id?>">
     <div class="post-title">
         <?php
-        $title = new Stack(array('name'=>'post.title'));
+        $title = new Stack(array('name' => 'post.title'));
         $title->attach($item);
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
+            if (access('post.delete.all')) {
+                $title->delete = '<a class="post-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';
+            }
+            if (access('post.hide')) {
+                $title->hide = '<a class="post-hide sh" data-id="' . $item->id . '" href="' . $item->getLink('hide') . '"><i class="icon-eye-' . ($item->published ? 'open' : 'close') . '"></i></a>';
+            }
             if (access('post.edit.all') OR access('post.edit') && cogear()->user->id == $item->aid) {
-                $title->edit = '<a href="' . $item->getEditLink() . '" class="btn ' . ($item->published ? 'btn-primary ' : ' ') . 'btn-mini">' . t($item->published ? 'Edit' : 'Draft', 'Post') . '</a>';
+                $title->edit = '<a class="post-edit sh" data-id="' . $item->id . '" href="' . $item->getLink('edit') . '"><i class="icon-pencil"></i></a>';
             }
         }
         echo $title->render();
         ?>
     </div>
     <div class="post-body">
-        <?php echo $item->body ?>
+        <?php echo nl2br($item->body); ?>
     </div>
     <div class="post-info">
         <?php
-        $info = new Stack(array('name'=>'post.info'));
+        $info = new Stack(array('name' => 'post.info'));
+        $info->attach($item);
         $info->time = icon('time') . ' ' . df($item->created_date);
-        $info->author = $user->getAvatarImage('avatar.post');
-        $info->author_link = $user->getProfileLink();
-        $item->allow_comments && $info->comments = icon('comment').' <a href="'.$item->getLink().'#comments">'.$item->comments.'</a>';
+        $info->author = $user->getLink('avatar','avatar.post');
+        $info->author_link = $user->getLink('profile');
         echo $info->render();
         ?>
     </div>
 </div>
 <?php
-if (!$item->teaser) {
+if (!($item->teaser OR $item->preview)) {
     $after = new Stack(array('name' => 'post.show.full.after'));
     $after->attach($item);
     echo $after->render();

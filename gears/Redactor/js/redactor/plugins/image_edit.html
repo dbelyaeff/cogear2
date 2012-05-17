@@ -1,11 +1,12 @@
-<form id="redactorInsertImageForm" method="post" action="" enctype="multipart/form-data">
+
 <table class="redactor_ruler">
 	<tr>
-		<td colspan="2" style="padding-bottom: 15px;"><a href="" target="_blank" id="redactor_image_edit_src">%RLANG.image_view%</a></td>
+		<td nowrap>%RLANG.title%</td>
+		<td><input id="redactor_file_alt" style="width: 99%;" /></td>
 	</tr>
 	<tr>
-		<td nowrap class="small">%RLANG.title%</td>
-		<td><input id="redactor_file_alt" size="20" /></td>
+		<td nowrap>%RLANG.link%</td>
+		<td><input id="redactor_file_link" style="width: 99%;" /></td>
 	</tr>
 	<tr>
 		<td nowrap class="small">%RLANG.image_position%</td>
@@ -17,12 +18,18 @@
 			</select>
 		</td>
 	</tr>
+	<tr>
+		<td><a href="javascript:void(null);" id="redactor_image_delete_btn" style="color: #000;">%RLANG._delete%</a></td>
+		<td>
+
+			<span class="redactor_btns_box">
+				<input type="button" name="save" id="redactorSaveBtn" value="%RLANG.save%" />&nbsp;&nbsp;
+				<a href="javascript:void(null);" style="color: #777; font-size: 12px;" id="redactor_btn_modal_close">%RLANG.cancel%</a>
+			</span>
+			<div style="clear: both;"></div>		
+		
+		</td>
+	</tr>
 </table>
 
 
-<p>
-<input type="button" class="btn btn-primary" name="save" id="redactorSaveBtn" value="%RLANG.save%" />&nbsp;&nbsp;
-<input type="button" class="btn btn-danger" name=""  id="redactor_image_edit_delete" value="%RLANG._delete%"  />&nbsp;&nbsp;
-<input type="button" class="btn" name="" onclick="redactorActive.modalClose();" value="%RLANG.cancel%"  />
-</p>
-</form>

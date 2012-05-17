@@ -41,7 +41,7 @@ class User_Navbar extends Object {
         $navbar->avatar = $user->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
         if (access('user.edit.all') OR $user->id == cogear()->user->id) {
-            $navbar->edit = '<a href="' . $user->getEditLink() . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
+            $navbar->edit = '<a href="' . $user->getLink('edit') . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
         }
         $tpl->navbar = $navbar;
         $tabs = new Menu_Auto(array(

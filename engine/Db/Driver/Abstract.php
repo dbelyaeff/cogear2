@@ -435,7 +435,7 @@ abstract class Db_Driver_Abstract {
     public function count($table, $field = '*', $reset = FALSE) {
         $this->swap('select');
         $this->qr_flag = $reset;
-        $this->select('COUNT(' . $field . ') as count');
+        $this->_query['select'] = array('COUNT(' . $field . ') as count');
         $row = $this->get($table)->row();
         $this->swap('select');
         $this->qr_flag = TRUE;
@@ -554,7 +554,7 @@ abstract class Db_Driver_Abstract {
      * @param string $table
      * @return array
      */
-    public function getFields($table = '') {
+    public function getFields($table) {
         $table OR $table = reset($this->_query['from']);
         if (!$this->fields[$table] = cogear()->system_cache->read('database/' . $table, TRUE)) {
             if ($fields = $this->getFieldsQuery($table)) {

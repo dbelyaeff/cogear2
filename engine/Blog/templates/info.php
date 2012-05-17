@@ -7,7 +7,7 @@
     $user->find();
     $fields->append(array(
         'label' => t('Author', 'Blog'),
-        'value' => $user->getAvatarLinked().' '.$user->getProfileLink(),
+        'value' => $user->getLink('avatar').' '.$user->getLink('profile'),
     ));
     $blog->body && $fields->append(array(
         'label' => t('Description', 'Blog'),

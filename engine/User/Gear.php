@@ -17,6 +17,11 @@ class User_Gear extends Gear {
     protected $description = 'Manage users.';
     protected $order = -10;
     protected $current;
+    protected $hooks = array(
+        'comment.insert' => 'hookUserRecalculateComments',
+        'comment.update' => 'hookUserRecalculateComments',
+        'comment.delete' => 'hookUserRecalculateComments',
+    );
 
     /**
      * Init
@@ -29,6 +34,25 @@ class User_Gear extends Gear {
                     'name' => 'navbar',
                     'render' => 'before',
                 ));
+    }
+
+    /**
+     * Recalulate user comments
+     *
+     * @param type $Commment
+     */
+    public function hookUserRecalculateComments($Commment) {
+        if ($Comment->aid == $this->user->id) {
+            $User = $this->user->current;
+        }
+        else {
+            $User = new User();
+            $User->id = $comment->aid;
+            if(!$User->find()){
+                return;
+            }
+        }
+        $User->recalculate('comments');
     }
 
     /**
@@ -232,7 +256,7 @@ class User_Gear extends Gear {
                 $user->save();
                 $user->login();
                 flash_success(t('You have been logged in be temporary link. Now you can change your password.', 'User.lostpassword'));
-                redirect($user->getEditLink());
+                redirect($user->getLink('edit'));
             } else {
                 error(t('Password recovery code has been already used.', 'User.lostpassword'));
             }

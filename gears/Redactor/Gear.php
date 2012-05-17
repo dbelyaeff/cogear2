@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Redactor gear
  *
@@ -22,250 +23,176 @@ class Redactor_Gear extends Gear {
      *
      * @param type $type
      */
-    public function upload_action($type = 'image'){
-        switch($type){
+    public function upload_action($type = 'image') {
+        switch ($type) {
             default:
-               $img = new Image_Upload(array(
-                   'name' => 'file',
-                   'min' => array(
-                       'width' => 50,
-                       'height' => 50,
-                   ),
-                   'max' => array(
-                       'width' => 1280,
-                       'height' => 800,
-                   ),
-                   'preset' => 'post',
-                   'path' => UPLOADS.DS.'images'.DS.date('Y/m/d'),
-                   'rename' => substr(md5(time().cogear()->session->get('ip')),0,5).substr(time(),5,10),
-               ));
-                if($result = $img->upload()){
+                $img = new Image_Upload(array(
+                            'name' => 'file',
+                            'min' => array(
+                                'width' => 50,
+                                'height' => 50,
+                            ),
+                            'max' => array(
+                                'width' => 1280,
+                                'height' => 800,
+                            ),
+                            'preset' => 'post',
+                            'path' => UPLOADS . DS . 'images' . DS . date('Y/m/d'),
+                            'rename' => substr(md5(time() . cogear()->session->get('ip')), 0, 5) . substr(time(), 5, 10),
+                        ));
+                if ($result = $img->upload()) {
                     $ajax = new Ajax();
                     $info = $img->getInfo();
-                    $ajax->append('<img src="'.File::pathToUri(UPLOADS.$result).'" width="'.$info->width.'" height="'.$info->height.'" alt=""/>');
+                    $ajax->append('<img src="' . File::pathToUri(UPLOADS . $result) . '" width="' . $info->width . '" height="' . $info->height . '" alt=""/>');
                     $ajax->send();
                 }
-                else exit(implode('<br/>',$img->errors));
+                else
+                    exit(implode('<br/>', $img->errors));
         }
     }
 
-    public function index_action(){
-        debug(json_decode("
-{
-	html:
-	{
-		title: RLANG.html,
-		func: 'toggle',
-		separator: true
-	},
-	styles:
-	{
-		title: RLANG.styles,
-		func: 'show',
-		dropdown:
-	    {
-			 p:
-			 {
-			 	title: RLANG.paragraph,
-			 	exec: 'formatblock',
-			 	param: '<p>'
-			 },
-			 blockquote:
-			 {
-			 	title: RLANG.quote,
-			 	exec: 'formatblock',
-			 	param: '<blockquote>',
-			 	style: 'font-style: italic; color: #666; padding-left: 10px;'
-			 },
-			 pre:
-			 {
-			 	title: RLANG.code,
-			 	exec: 'formatblock',
-			 	param: '<pre>',
-			 	style: 'font-family: monospace, sans-serif;'
-			 },
-			 h1:
-			 {
-			 	title: RLANG.header1,
-			 	exec: 'formatblock',
-			 	param: '<h1>',
-			 	style: 'font-size: 30px; line-height: 36px; font-weight: bold;'
-			 },
-			 h2:
-			 {
-			 	title: RLANG.header2,
-			 	exec: 'formatblock',
-			 	param: '<h2>',
-			 	style: 'font-size: 24px; line-height: 36px; font-weight: bold;'
-			 },
-			 h3:
-			 {
-			 	title: RLANG.header3,
-			 	exec: 'formatblock',
-			 	param: '<h3>',
-			 	style: 'font-size: 20px; line-height: 30px;  font-weight: bold;'
-			 },
-			 h4:
-			 {
-			 	title: RLANG.header4,
-			 	exec: 'formatblock',
-			 	param: '<h3>',
-			 	style: 'font-size: 16px; line-height: 26px;  font-weight: bold;'
-			 }
-		},
-		separator: true
-	},
-	bold:
-	{
-		title: RLANG.bold,
-		exec: 'bold',
-	 	param: null
-	},
-	italic:
-	{
-		title: RLANG.italic,
-		exec: 'italic',
-	 	param: null
-	},
-	deleted:
-	{
-		title: RLANG.deleted,
-		exec: 'strikethrough',
-	 	param: null,
-		separator: true
-	},
-	insertunorderedlist:
-	{
-		title: '&bull; ' + RLANG.unorderedlist,
-		exec: 'insertunorderedlist',
-	 	param: null
-	},
-	insertorderedlist:
-	{
-		title: '1. ' + RLANG.orderedlist,
-		exec: 'insertorderedlist',
-	 	param: null
-	},
-	outdent:
-	{
-		title: '< ' + RLANG.outdent,
-		exec: 'outdent',
-	 	param: null
-	},
-	indent:
-	{
-		title: '> ' + RLANG.indent,
-		exec: 'indent',
-	 	param: null,
-		separator: true
-	},
-	image:
-	{
-		title: RLANG.image,
-		func: 'showImage'
-	},
-	video:
-	{
-		title: RLANG.video,
-		func: 'showVideo'
-	},
-	pcode:
-	{
-		title: RLANG.pcode,
-                href: '/code/editor/',
-                data: {
-                    source: 'form-code',
-                    width: 720,
-                    height: 480,
-                    type: 'popup'
-                }
-	},
-	table:
-	{
-		title: RLANG.table,
-		func: 'show',
-		dropdown:
-		{
-			insert_table: { name: 'insert_table', title: RLANG.insert_table, func: 'showTable' },
-			separator_drop1: { name: 'separator' },
-			insert_row_above: { name: 'insert_row_above', title: RLANG.insert_row_above, func: 'insertRowAbove' },
-			insert_row_below: { name: 'insert_row_below', title: RLANG.insert_row_below, func: 'insertRowBelow' },
-			insert_column_left: { name: 'insert_column_left', title: RLANG.insert_column_left, func: 'insertColumnLeft' },
-			insert_column_right: { name: 'insert_column_right', title: RLANG.insert_column_right, func: 'insertColumnRight' },
-			separator_drop2: { name: 'separator' },
-			add_head: { name: 'add_head', title: RLANG.add_head, func: 'addHead' },
-			delete_head: { name: 'delete_head', title: RLANG.delete_head, func: 'deleteHead' },
-			separator_drop3: { name: 'separator' },
-			delete_column: { name: 'insert_table', title: RLANG.delete_column, func: 'deleteColumn' },
-			delete_row: { name: 'delete_row', title: RLANG.delete_row, func: 'deleteRow' },
-			delete_table: { name: 'delete_table', title: RLANG.delete_table, func: 'deleteTable' }
-		}
-	},
-	link:
-	{
-		title: RLANG.link,
-		func: 'show',
-		dropdown:
-		{
-			link:
-			{
-				title: RLANG.link_insert,
-				func: 'showLink'
-			},
-			unlink:
-			{
-				title: RLANG.unlink,
-				exec: 'unlink',
-			 	param: null
-			}
-		},
-		separator: true
-	},
-	fontcolor:
-	{
-		title: RLANG.fontcolor,
-		func: 'show'
-	},
-	backcolor:
-	{
-		title: RLANG.backcolor,
-		func: 'show',
-		separator: true
-	},
-	justifyleft:
-	{
-		exec: 'JustifyLeft',
-		name: 'JustifyLeft',
-		title: RLANG.align_left
-	},
-	justifycenter:
-	{
-		exec: 'JustifyCenter',
-		name: 'JustifyCenter',
-		title: RLANG.align_center
-	},
-	justifyright:
-	{
-		exec: 'JustifyRight',
-		name: 'JustifyRight',
-		title: RLANG.align_right
-	},
-	justify:
-	{
-		exec: 'justifyfull',
-		name: 'justifyfull',
-		title: RLANG.align_justify, separator: true
-	},
-	horizontalrule:
-	{
-		exec: 'inserthorizontalrule',
-		name: 'horizontalrule',
-		title: RLANG.horizontalrule
-	},
-	fullscreen:
-	{
-		title: RLANG.fullscreen,
-		func: 'fullscreen'
-	}}",TRUE));
+    /**
+     * Link
+     */
+    public function link_action(){
+        $form = new Form('Redactor.link');
+        $form->show();
     }
+    /**
+     * Toolbar
+     *
+     * @param type $type
+     */
+    public function toolbar_action($type = 'post') {
+        $ajax = new Ajax();
+        d('Redactor');
+        $toolbar = array(
+            'html' => array(
+                'title' => t('HTML'),
+                'func' => 'toggle',
+                'separator' => TRUE,
+            ),
+            'styles' => array(
+                'title' => t('Styles'),
+                'func' => 'show',
+                'separator' => TRUE,
+                'dropdown' => array(
+                    'p' => array(
+                        'title' => t('Paragraph'),
+                        'exec' => 'formatblock',
+                        'param' => '<p>',
+                    ),
+                    'blockquote' => array(
+                        'title' => t('Quote'),
+                        'exec' => 'formatblock',
+                        'param' => '<blockquote>',
+                    ),
+                    'pre' => array(
+                        'title' => t('Preformatted'),
+                        'exec' => 'formatblock',
+                        'param' => '<pre>',
+                    ),
+                    'h1' => array(
+                        'title' => t('Header1'),
+                        'exec' => 'formatblock',
+                        'param' => '<h1>',
+                    ),
+                    'h2' => array(
+                        'title' => t('Header2'),
+                        'exec' => 'formatblock',
+                        'param' => '<h2>',
+                    ),
+                    'h3' => array(
+                        'title' => t('Header3'),
+                        'exec' => 'formatblock',
+                        'param' => '<h3>',
+                    ),
+                    'h4' => array(
+                        'title' => t('Header4'),
+                        'exec' => 'formatblock',
+                        'param' => '<h4>',
+                    ),
+                ),
+            ),
+            'bold' => array(
+                'title' => t('Bold'),
+                'exec' => 'Bold',
+                'param' => FALSE,
+            ),
+            'italic' => array(
+                'title' => t('Italic'),
+                'exec' => 'italic',
+                'param' => FALSE,
+            ),
+            'underline' => array(
+                'title' => t('Underline'),
+                'exec' => 'underline',
+                'param' => FALSE,
+            ),
+            'deleted' => array(
+                'title' => t('Deleted'),
+                'exec' => 'strikethrough',
+                'param' => NULL,
+            ),
+            'bold' => array(
+                'title' => t('Bold'),
+                'exec' => 'Bold',
+                'param' => NULL,
+            ),
+            'insertunorderedlist' => array(
+                'title' => '&bull; ' . t('List'),
+                'exec' => 'insertunorderedlist',
+                'param' => null,
+            ),
+            'insertorderedlist' => array(
+                'title' => '1. ' . t('List'),
+                'exec' => 'insertorderedlist',
+                'param' => null,
+            ),
+            'outdent' => array(
+                'title' => '< ' . t('Outdent'),
+                'exec' => 'outdent',
+                'param' => null,
+            ),
+            'indent' => array(
+                'title' => '< ' . t('indent'),
+                'exec' => 'indent',
+                'param' => null,
+                'separator' => true,
+            ),
+            'link' => array(
+                'title' => t('Insert link'),
+                'dataType' => 'modal',
+                'dataSource' => 'form-redactor-link',
+                'href' => '/redactor/link',
+                'separator' => TRUE,
+            ),
+            'justifyleft' => array(
+                'exec' => 'JustifyLeft',
+                'name' => 'JustifyLeft',
+                'title' => t('Left'),
+            ),
+            'justifycenter' => array(
+                'exec' => 'JustifyCenter',
+                'name' => 'JustifyCenter',
+                'title' => t('Center'),
+            ),
+            'justifyright' => array(
+                'exec' => 'JustifyRight',
+                'name' => 'JustifyRight',
+                'title' => t('Right'),
+                'separator' => TRUE,
+            ),
+            'fullscreen' => array(
+                'title' => t('Fullscreen'),
+                'func' => 'fullscreen',
+            ),
+        );
+        event('toolbar.'.$type,$toolbar);
+        $ajax->append("if (typeof RTOOLBAR == 'undefined') var RTOOLBAR = {};
+
+RTOOLBAR['default'] = " . json_encode($toolbar));
+        $ajax->send();
+    }
+
 }

@@ -11,30 +11,37 @@
  * @subpackage
  */
 class Post_Object extends Db_Item {
+
     protected $table = 'posts';
     protected $primary = 'id';
     protected $template = 'Post.post';
-    /**
-     * Get post Uri
-     *
-     * @return string
-     */
-    public function getLink() {
-        $uri = new Stack(array('name' => 'post.link'));
-        $uri->append('post');
-        $uri->append($this->id);
-        return '/' . $uri->render('/');
-    }
 
     /**
      * Get post Uri
      *
      * @return string
      */
-    public function getEditLink() {
-        $uri = new Stack(array('name' => 'post.edit.link'));
-        $uri->append('post');
-        $uri->append('edit');
+    public function getLink($type = 'default') {
+        switch ($type) {
+            case 'edit':
+                $uri = new Stack(array('name' => 'post.link.edit'));
+                $uri->append('post');
+                $uri->append('edit');
+                break;
+            case 'delete':
+                $uri = new Stack(array('name' => 'post.link.edit'));
+                $uri->append('post');
+                $uri->append('delete');
+                break;
+            case 'hide':
+                $uri = new Stack(array('name' => 'post.link.hide'));
+                $uri->append('post');
+                $uri->append('hide');
+                break;
+            default:
+                $uri = new Stack(array('name' => 'post.link'));
+                $uri->append('post');
+        }
         $uri->append($this->id);
         return '/' . $uri->render('/');
     }
@@ -47,11 +54,12 @@ class Post_Object extends Db_Item {
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
         $data['created_date'] = time();
-        $this->ip = cogear('session')->get('ip');
+        $data['ip']= cogear()->session->get('ip');
         $data['last_update'] = time();
         $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
-            cogear()->post->recalculateUserPostCount();
+            event('post.insert', $data);
+            cogear()->user->recalculate('posts');
         }
         return $result;
     }
@@ -63,10 +71,11 @@ class Post_Object extends Db_Item {
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
-        $data['ip'] = cogear('session')->get('ip');
+        $data['ip'] = cogear()->session->get('ip');
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
-            cogear()->post->recalculateUserPostCount();
+            event('post.update', $data);
+            cogear()->user->recalculate('posts');
         }
         return $result;
     }
@@ -77,7 +86,8 @@ class Post_Object extends Db_Item {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-            cogear()->post->recalculateUserPostCount($uid);
+            event('post.delete', array(), $uid);
+            cogear()->user->recalculate('posts');
         }
         return $result;
     }
@@ -87,9 +97,9 @@ class Post_Object extends Db_Item {
      */
     public function render($template = NULL) {
         event('post.render', $this);
-        if(!$this->teaser){
+        if (!$this->teaser) {
             $this->views++;
-            $this->update(array('views'=>$this->views));
+            $this->update(array('views' => $this->views));
         }
         return parent::render($template);
     }
@@ -99,12 +109,8 @@ class Post_Object extends Db_Item {
      *
      * @param type $type
      */
-    public function recalculate($type){
-        switch ($type){
-            case 'comments':
-                $this->comments = cogear()->db->where('pid',$this->id)->count('comments_posts',TRUE);
-                break;
-        }
-        $this->update();
+    public function recalculate($type) {
+        event('post.recalculate', $this, $type);
     }
+
 }

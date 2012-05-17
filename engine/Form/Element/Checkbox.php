@@ -13,8 +13,8 @@
 class Form_Element_Checkbox extends Form_Element_Abstract{
     /**
      * Constructor
-     * 
-     * @param type $options 
+     *
+     * @param type $options
      */
     public function __construct($options) {
         $options['template'] = 'Form.checkbox';
@@ -33,10 +33,10 @@ class Form_Element_Checkbox extends Form_Element_Abstract{
     }
     /**
      * Prepare options
-     * @return type 
+     * @return type
      */
     public function prepareOptions() {
-        $this->value && $this->options->checked = 'checked';
+        $this->options->checked = $this->value ? 'checked' : '';
         parent::prepareOptions();
         return $this->options;
     }

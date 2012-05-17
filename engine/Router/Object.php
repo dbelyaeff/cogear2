@@ -130,7 +130,7 @@ class Router_Object extends Options {
      * @param string $route
      * @param callback $callback
      */
-    public function addRoute($route, $callback, $rewrite = FALSE) {
+    public function bind($route, $callback, $rewrite = FALSE) {
         if ($rewrite OR !isset($this->routes[$route])) {
             $this->routes[$route] = $callback;
         }
@@ -265,7 +265,7 @@ class Router_Object extends Options {
  * @param type $callback
  */
 function route($route, $callback) {
-    cogear()->router->addRoute($route, $callback);
+    cogear()->router->bind($route, $callback);
 }
 
 /**
