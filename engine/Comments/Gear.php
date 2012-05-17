@@ -15,16 +15,35 @@ class Comments_Gear extends Gear {
 
     protected $name = 'Comments';
     protected $description = 'Comments description';
+    protected $order = 15;
     protected $hooks = array(
         'post.show.full.after' => 'hookPostComments',
         'form.init.post' => 'hookPostForm',
+        'user.recalculate' => 'hookUserRecalculate',
+        'post.recalculate' => 'hookPostRecalculate',
+        'comment.render' => 'hookFormatComment',
+        'post.info' => 'hookRenderPostCommentsCount',
     );
 
     /**
-     * Init
+     * Add comments count to post
+     *
+     * @param type $info
      */
-    public function init() {
-        parent::init();
+    public function hookRenderPostCommentsCount($info) {
+        $post = $info->object;
+        if ($post->allow_comments) {
+            $info->comments = icon('comment') . ' <a class="post-comments" data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
+        }
+    }
+
+    /**
+     * Hook comment format
+     *
+     * @param type $Comment
+     */
+    public function hookFormatComment($Comment) {
+        $Comment->body = nl2br($Comment->body);
     }
 
     /**
@@ -32,29 +51,85 @@ class Comments_Gear extends Gear {
      */
     public function hookPostComments($after) {
         if ($after->object->allow_comments) {
-            $after->append('<div class="page-header"><h2>' . t('Comments', 'Comments') . '</h2></div>');
-            $comments = new Comments_List(array(
-                        'name' => 'comments.post',
-                        'join' => array(
-                            'table' => 'comments_posts',
-                            'on' => array('comments_posts.pid' => $after->object->id, 'comments_posts.cid' => 'comments.id'),
-                        ),
-                        'render' => FALSE,
-                    ));
-            $after->append($comments->render());
-            if (access('comments.create')) {
-                $after->append(template('Comments.add-button', array('post_id' => $after->object->id))->render());
-            }
+            $after->append('<div class="comments-handler" data-type="post" data-id="' . $after->object->id . '"></div>');
         }
     }
 
-    public function hookPostForm($Form){
-        $Form->addElement('allow_comments',array(
+    /**
+     * Recalcuate user comments
+     *
+     * @param type $User
+     * @param type $type
+     */
+    public function hookUserRecalculate($User, $type) {
+        if ($type == 'comments') {
+            $User->comments = $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->count('comments', 'id', TRUE);
+            $User->update();
+            $User->id == $this->user->id && $this->user->store();
+        }
+    }
+
+    /**
+     * Recalcuate post comments
+     *
+     * @param type $Post
+     * @param type $type
+     */
+    public function hookPostRecalculate($Post, $type) {
+        if ($type == 'comments') {
+            $Post->comments = $this->db->where(array('post_id' => $Post->id, 'published' => 1))->count('comments', 'id', TRUE);
+            $Post->update();
+        }
+    }
+
+    /**
+     * Extend post form
+     *
+     * @param type $Form
+     */
+    public function hookPostForm($Form) {
+        $Form->addElement('allow_comments', array(
             'type' => 'checkbox',
-            'text' => t('Allow comments','Comments'),
+            'text' => t('Allow comments', 'Comments'),
             'value' => 1,
             'order' => 3.4,
         ));
+    }
+
+    /**
+     * Load comments
+     *
+     * @param string $type
+     * @param int $id
+     */
+    public function load_action($type = NULL, $id = NULL) {
+        if (!$type OR !in_array($type, array('post', 'page')) OR !$id) {
+            return event('403');
+        }
+        $post = new Post();
+        $post->id = $id;
+        if(!$post->find()){
+            return event('404');
+        }
+        $where = array('post_id' => $post->id);
+        if(!access('comments.hidden')){
+            $where['published'] = 1;
+        }
+        $comments = new Comments_List(array(
+                    'name' => 'comments.' . $type,
+                    'where' => $where,
+                    'render' => FALSE,
+                    'pager' => FALSE,
+                    'post_author_id' => $post->aid,
+                ));
+        $handler = new Stack(array('name' => 'comments'));
+        $handler->append('<div id="comments">');
+        $handler->append('<div class="page-header" id="comment-form-placer"><h2>' . t('Comments', 'Comments') . '</h2></div>');
+        $form = $this->post($id, 0, FALSE);
+        $handler->append($form->render());
+        $handler->append($comments->render());
+        $handler->append('</div>');
+        $handler->show();
     }
 
     /**
@@ -71,7 +146,7 @@ class Comments_Gear extends Gear {
      * @param type $pid
      * @return type
      */
-    protected function post($post_id, $pid = 0) {
+    protected function post($post_id, $pid = 0, $render = TRUE) {
         $form = new Form('Comments.form');
         $post = new Post();
         $post->id = $post_id;
@@ -81,7 +156,9 @@ class Comments_Gear extends Gear {
                 return error(t('Comments are disabled for this post.', 'Comment'));
             }
             $form->init();
+            $pid = $this->input->post('pid', $pid);
             if ($pid) {
+                $form->pid->setValue($pid);
                 $parent = new Comment();
                 $parent->id = $pid;
                 if ($parent->find()) {
@@ -89,7 +166,7 @@ class Comments_Gear extends Gear {
                     $user = new User();
                     $user->id = $parent->aid;
                     if ($user->find()) {
-                        $form->title->options->label = t('Reply to %s comment', 'Comments', $user->getAvatarLinked() . ' ' . $user->getProfileLink()) . ' ' . t('to <a class="modal-close" href="%s">%s</a>', 'Comment', $post->getLink() . '#comment-' . $parent->id, $post->name);
+                        $form->title->options->label = t('Reply to %s comment', 'Comments', $user->getLink('avatar') . ' ' . $user->getLink('profile')) . ' ' . t('to <a class="modal-close" href="%s">%s</a>', 'Comment', $post->getLink() . '#comment-' . $parent->id, $post->name);
                     }
                 }
             } else {
@@ -98,30 +175,63 @@ class Comments_Gear extends Gear {
             if ($result = $form->result()) {
                 $comment = new Comment();
                 $comment->attach($result);
+                $comment->post_id = $post->id;
+                $comment->aid = $this->user->id;
+                $comment->created_date = time();
+                $comment->last_update = time();
                 if ($result->preview) {
                     append('info', '<div class="page-header"><h2>' . t('Preview') . '</h2></div>');
                     $comment->id = 'preview';
-                    $comment->aid = $this->user->id;
-                    $comment->created_date = time();
                     $comment->preview = TRUE;
-                    $comment->show();
+                    if ($form->ajaxed) {
+                        $ajax = new Ajax();
+                        $data['success'] = TRUE;
+                        $data['action'] = 'preview';
+                        $data['code'] = $comment->render();
+                        $ajax->json($data);
+                    } else {
+                        $comment->show();
+                    }
                 } else {
-                    $comment->pid = $pid;
+                    $comment->pid = $pid ? $pid : 0;
+                    $comment->published = 1;
                     if ($comment->save()) {
-                        flash_success(t('Your comment has been posted!'), '', 'growl');
-                        $link = new Comments_Link('comments_posts');
-                        $link->cid = $comment->id;
-                        $link->pid = $post->id;
-                        $link->save();
-                        $post = new Post();
-                        $post->id = $link->pid;
                         $post->recalculate('comments');
-                        redirect($post->getLink() . '#comment-' . $comment->id);
+                        if ($form->ajaxed) {
+                            $ajax = new Ajax();
+                            $comment->class = 'new';
+                            $post = new Post();
+                            $post->id = $comment->post_id;
+                            $post->find();
+                            $ajax->json(array(
+                                'success' => TRUE,
+                                'messages' => array(array(
+                                        'type' => 'success',
+                                        'body' => t('Your comment has been posted!'),
+                                )),
+                                'action' => 'publish',
+                                'pid' => $comment->pid,
+                                'code' => $comment->render(),
+                                'post_id' => $post->id,
+                                'counter' => $post->comments,
+                            ));
+                        } else {
+                            flash_success(t('Your comment has been posted!'), '', 'growl');
+                            redirect($post->getLink() . '#comment-' . $comment->id);
+                        }
                     }
                 }
             }
             $form->elements->offsetUnset('delete');
-            $form->show();
+            if (Ajax::is()) {
+                $form->elements->offsetUnset('title');
+            }
+            if ($render) {
+                $form->show();
+            } else {
+                $form->elements->offsetUnset('title');
+                return $form;
+            }
         } else {
             return event('403');
         }
@@ -136,11 +246,7 @@ class Comments_Gear extends Gear {
         $comment = new Comment();
         $comment->id = $cid;
         if ($comment->find() && !$comment->frozen) {
-            $link = new Comments_Link('comments_posts');
-            $link->cid = $comment->id;
-            if ($link->find()) {
-                $this->post($link->pid, $comment->id);
-            }
+            $this->post($comment->post_id, $comment->id);
         } else {
             return event('403');
         }
@@ -159,11 +265,8 @@ class Comments_Gear extends Gear {
             if (!access('comments.edit.all') OR !(access('comments.edit') && $comment->aid == $this->user->id)) {
                 return event('403');
             }
-            $link = new Comments_Link('comments_posts');
-            $link->cid = $comment->id;
-            $link->find();
             $post = new Post();
-            $post->id = $link->pid;
+            $post->id = $comment->post_id;
             $user = new User();
             $user->id = $comment->aid;
             $user->find();
@@ -171,18 +274,28 @@ class Comments_Gear extends Gear {
             $form->options->action = l('/comments/edit/' . $comment->id);
             $form->attach($comment);
             if ($post->find()) {
-                $form->title->options->label = t('Edit %s comment', 'Comments', $user->getAvatarLinked() . ' ' . $user->getProfileLink()) . ' ' . t('to <a href="%s">%s</a>', 'Comment', $post->getLink(), $post->name);
+                $form->title->options->label = t('Edit %s comment', 'Comments', $user->getLink('avatar') . ' ' . $user->getLink('profile')) . ' ' . t('to <a href="%s">%s</a>', 'Comment', $post->getLink(), $post->name);
             }
             $form->publish->options->label = t('Update');
             $form->init();
             if ($result = $form->result()) {
                 if ($result->preview) {
                     append('info', '<div class="page-header"><h2>' . t('Preview') . '</h2></div>');
+                    $comment->mix($result);
                     $comment->id = 'preview';
                     $comment->aid = $this->user->id;
                     $comment->created_date = time();
                     $comment->preview = TRUE;
-                    $comment->show();
+                    if ($form->ajaxed) {
+                        $ajax = new Ajax();
+                        $data['success'] = TRUE;
+                        $data['action'] = 'preview';
+                        event('comment.render', $comment);
+                        $data['code'] = $comment->body;
+                        $ajax->json($data);
+                    } else {
+                        $comment->show();
+                    }
                 } elseif ($result->delete) {
                     if ($comment->delete()) {
                         flash_error(t('Your comment has been deleted!'), '', 'growl');
@@ -191,10 +304,28 @@ class Comments_Gear extends Gear {
                 } else {
                     $comment->object->mix($result);
                     if ($comment->save()) {
-                        flash_success(t('Your comment has been updated!'), '', 'growl');
-                        redirect($post->getLink() . '#comment-' . $comment->id);
+                        if ($form->ajaxed) {
+                            event('comment.render', $comment);
+                            $ajax = new Ajax();
+                            $ajax->json(array(
+                                'success' => TRUE,
+                                'messages' => array(array(
+                                        'type' => 'success',
+                                        'body' => t('Your comment has been updated!'),
+                                )),
+                                'action' => 'update',
+                                'code' => $comment->body,
+                            ));
+                        } else {
+                            flash_success(t('Your comment has been updated!'), '', 'growl');
+                            redirect($post->getLink() . '#comment-' . $comment->id);
+                        }
                     }
                 }
+            }
+            if (Ajax::is()) {
+                $form->elements->offsetUnset('title');
+                $form->elements->offsetUnset('delete');
             }
             $form->show();
         } else {
@@ -203,13 +334,87 @@ class Comments_Gear extends Gear {
     }
 
     /**
-     * Default dispatcher
+     * Hide or show comment
      *
-     * @param string $action
-     * @param string $subaction
+     * @param type $cid
      */
-    public function index_action($action = '', $subaction = NULL) {
+    public function hide_action($cid) {
+        $comment = new Comment();
+        $comment->id = $cid;
+        if ($comment->find() && access('comments.hide.all')) {
+            $data = array();
+            if ($comment->published) {
+                $comment->published = 0;
+                $data['action'] = 'hide';
+            } else {
+                $comment->published = 1;
+                $data['action'] = 'show';
+            }
+            if ($comment->save()) {
+                if ($childs = $comment->getChilds()) {
+                    foreach ($childs as $child) {
+                        $child->published = $comment->published;
+                        $child->save();
+                    }
+                }
+                $data['success'] = TRUE;
+            }
+            $post = new Post();
+            $post->id = $comment->post_id;
+            $post->find();
+            $data['post_id'] = $post->id;
+            $data['counter'] = $post->comments;
+            if (Ajax::is()) {
+                $ajax = new Ajax();
+                $ajax->json($data);
+            } else {
+                $post = new Post();
+                $post->id = $comment->post_id;
+                $post->find();
+                redirect($post->getLink() . '#comment-' . $comment->id);
+            }
+        }
+    }
 
+    /**
+     * Delete comment
+     *
+     * @param type $cid
+     */
+    public function delete_action($cid) {
+        $comment = new Comment();
+        $comment->id = $cid;
+        if ($comment->find() && access('comments.delete.all')) {
+            if ($comment->delete()) {
+                if ($childs = $comment->getChilds()) {
+                    foreach ($childs as $child) {
+                        $child->published = $comment->published;
+                        $child->delete();
+                    }
+                }
+                $message = t('Comments has been deleted', 'Comments');
+                if (Ajax::is()) {
+                    $data['success'] = TRUE;
+                    $data['messages'] = array(
+                        array(
+                            'type' => 'success',
+                            'body' => $message,
+                        )
+                    );
+                    $post = new Post();
+                    $post->id = $comment->post_id;
+                    $post->find();
+                    $data['counter'] = $post->comments;
+                    $data['post_id'] = $post->id;
+                    $ajax = new Ajax();
+                    $ajax->json($data);
+                }
+                $post = new Post();
+                $post->id = $comment->post_id;
+                flash_success($message);
+                redirect($post->getLink() . '#comments');
+            }
+        }
     }
 
 }

@@ -22,22 +22,27 @@ class Comments_Object extends Db_Tree {
      *
      * @return string
      */
-    public function getLink() {
-        $uri = new Stack(array('name' => 'comments.link'));
-        $uri->append('comment');
-        $uri->append($this->id);
-        return '/' . $uri->render('/');
-    }
-
-    /**
-     * Get blog Uri
-     *
-     * @return string
-     */
-    public function getEditLink() {
-        $uri = new Stack(array('name' => 'comment.edit.link'));
-        $uri->append('comments');
-        $uri->append('edit');
+    public function getLink($type = 'default') {
+        switch ($type) {
+            case 'edit':
+                $uri = new Stack(array('name' => 'comment.link.edit'));
+                $uri->append('comments');
+                $uri->append('edit');
+                break;
+            case 'hide':
+                $uri = new Stack(array('name' => 'comment.hide.link'));
+                $uri->append('comments');
+                $uri->append('hide');
+                break;
+            case 'delete':
+                $uri = new Stack(array('name' => 'comment.delete.link'));
+                $uri->append('comments');
+                $uri->append('delete');
+                break;
+            default:
+                $uri = new Stack(array('name' => 'comments.link'));
+                $uri->append('comment');
+        }
         $uri->append($this->id);
         return '/' . $uri->render('/');
     }
@@ -51,15 +56,9 @@ class Comments_Object extends Db_Tree {
         $data OR $data = $this->object->toArray();
         $data['created_date'] = time();
         $this->aid OR $data['aid'] = cogear()->user->id;
-        $data['ip'] = cogear('session')->get('ip');
+        $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::insert($data)) {
-            event('comments.insert', $this);
-            $user = new User();
-            $user->id = $data['aid'];
-            if ($user->find()) {
-                $user->comments++;
-                $user->save();
-            }
+            event('comment.insert', $this);
         }
         return $result;
     }
@@ -72,16 +71,9 @@ class Comments_Object extends Db_Tree {
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
         isset($data['body']) && $data['last_update'] = time();
+        $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::update($data)) {
-            event('comments.update', $this, $data);
-            if ($this->published != $data['published']) {
-                $user = new User();
-                $user->id = $this->aid;
-                if ($user->find()) {
-                    $this->published ? $user->comment++ : $user->comments--;
-                    $user->save();
-                }
-            }
+            event('comment.update', $this, $data);
         }
         return $result;
     }
@@ -92,12 +84,13 @@ class Comments_Object extends Db_Tree {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-            $user = new User();
-            $user->id = $this->aid;
-            if ($user->find()) {
-                $user->comments--;
-                $user->save();
+            if ($childs = $this->getChilds()) {
+                foreach ($childs as $child) {
+                    $child->published = $comment->published;
+                    $child->delete();
+                }
             }
+            event('comment.delete',$this);
         }
         return $result;
     }

@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Comments_List extends Options {
+class Comments_List extends Object {
 
     public $options = array(
         'page' => 0,
@@ -21,6 +21,8 @@ class Comments_List extends Options {
         'where' => array(
         ),
         'render' => 'content',
+        'pager' => TRUE,
+        'post_author_id' => 0,
     );
 
     /**
@@ -39,27 +41,26 @@ class Comments_List extends Options {
     public function render() {
         $comments = new Comment();
         $this->where && cogear()->db->where($this->where->toArray());
-        if ($this->join) {
-            cogear()->db->join($this->join->table, $this->join->on, 'INNER');
+        if ($this->options->pager) {
+            $pager = new Pager(array(
+                        'current' => $this->page ? $this->page : NULL,
+                        'count' => $comments->count(),
+                        'per_page' => $this->per_page,
+                        'base' => '/' . cogear()->router->getUri(),
+                        'prefix' => 'comments-page',
+                        'method' => Pager::GET,
+                    ));
         }
-        $pager = new Pager(array(
-                    'current' => $this->page ? $this->page : NULL,
-                    'count' => $comments->count(),
-                    'per_page' => $this->per_page,
-                    'base' => '/'.cogear()->router->getUri(),
-                    'prefix' => 'comments-page',
-                    'method' => Pager::GET,
-                ));
-        $comments->select('comments.*');
         if ($result = $comments->findAll(TRUE)) {
             $output = new Core_ArrayObject();
             foreach ($result as $comment) {
+                $comment->post_author_id = $this->options->post_author_id;
                 $output->append($comment->render());
             }
-            $output->append($pager->render());
+            $this->options->pager && $output->append($pager->render());
             return $output->toString();
         } else {
-           $this->render && event('empty');
+            $this->render && event('empty');
         }
     }
 
