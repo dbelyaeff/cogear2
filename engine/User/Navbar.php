@@ -2,32 +2,32 @@
 
 /**
  * User navbar
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class User_Navbar extends Object {
     public $options = array(
         'render' => 'info',
     );
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param type $options
-     * @param type $place 
+     * @param type $place
      */
     public function __construct($options = NULL, $place = NULL) {
         parent::__construct($options, $place);
     }
     /**
      * Render
-     * 
+     *
      * @return type
      */
     public function render() {

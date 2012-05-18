@@ -2,13 +2,13 @@
 
 /**
  * File Object
- * 
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class File_Object extends Adapter {
@@ -23,26 +23,32 @@ class File_Object extends Adapter {
 
     /**
      * Path to files
-     * 
+     *
      * @var string
      */
     protected $path;
 
     /**
      * Constructor
-     *  
+     *
      * @param type $path
-     * @param type $options 
+     * @param type $options
      */
     public function __construct($path, $options = array()) {
         $this->adapter = new SplFileInfo($path);
         parent::__construct($options);
     }
-
+    /**
+     * Render file
+     */
+    public function render(){
+        $ext = self::extension($this->getBasename());
+        return '<a href="'.$this->options->uri_full.'" class="icon-file-'.$ext.'">'.$this->getBasename().'</a>';
+    }
     /**
      * Make nice uri for file
-     * 
-     * @param string $file 
+     *
+     * @param string $file
      * @param string
      */
     public static function pathToUri($file,$replace = ROOT) {
@@ -55,7 +61,7 @@ class File_Object extends Adapter {
      * @param  string $path
      * @return string
      */
-    public static function getExtension($path) {
+    public static function extension($path) {
         return pathinfo($path, PATHINFO_EXTENSION);
     }
 
@@ -145,8 +151,8 @@ class File_Object extends Adapter {
 
     /**
      * Delete file
-     * 
-     * @param string $file 
+     *
+     * @param string $file
      */
     public static function delete($file) {
         @unlink($file);
@@ -154,9 +160,9 @@ class File_Object extends Adapter {
 
     /**
      * Read file
-     *  
+     *
      * @param string $path
-     * @return string 
+     * @return string
      */
     public static function read($path) {
         return file_get_contents($path);

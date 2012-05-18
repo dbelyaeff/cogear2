@@ -22,8 +22,8 @@ class Assets_Harvester {
 
     /**
      * Groups of scripts that must be rendered
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public static $scriptsRenderGroups = array('default');
 
@@ -36,7 +36,7 @@ class Assets_Harvester {
 
     /**
      * Group of stypes that must be rendered
-     * 
+     *
      * @var array
      */
     public static $stylesRenderGroups = array('screen');
@@ -62,9 +62,9 @@ class Assets_Harvester {
 
     /**
      * Add script or style
-     * 
+     *
      * @param string $path
-     * @param string $type 
+     * @param string $type
      */
     private function add($path, $type) {
         if (is_array($path)) {
@@ -72,7 +72,7 @@ class Assets_Harvester {
                 $this->add($item, $type);
             }
         } else {
-            $ext = File::getExtension($path);
+            $ext = File::extension($path);
             switch ($ext) {
                 case 'js':
                     $method = 'attachScript';
@@ -107,9 +107,9 @@ class Assets_Harvester {
 
     /**
      * Attach script to some group
-     * 
+     *
      * @param string $path
-     * @param string $group 
+     * @param string $group
      */
     private function attachScript($path, $group) {
         isset($this->scripts->$group) OR $this->scripts->$group = new Core_ArrayObject();
@@ -118,10 +118,10 @@ class Assets_Harvester {
 
     /**
      * This method simple look througth the file name and find snippets for groups
-     * 
+     *
      * Example: style@screen.css, style@print.css, style@screen+print.css
-     * 
-     * @param string $path 
+     *
+     * @param string $path
      * @return  boolean|array
      */
     public static function defineGroupFromFilename($path) {
@@ -134,11 +134,11 @@ class Assets_Harvester {
 
     /**
      * Check adding file for special contidions
-     * 
+     *
      * main[firefox7,ie9].js, super_stype[windows+ie9,android,linux+firefox]
-     * 
+     *
      * @param type $path
-     * @return type 
+     * @return type
      */
     public static function checkConditions($path) {
         $filename = pathinfo($path, PATHINFO_FILENAME);
@@ -196,9 +196,9 @@ class Assets_Harvester {
 
     /**
      * Attach style
-     * 
+     *
      * @param string $path
-     * @param string $media 
+     * @param string $media
      */
     private function attachStyle($path, $media) {
         isset($this->styles->$media) OR $this->styles->$media = new Core_ArrayObject();
@@ -284,8 +284,8 @@ class Assets_Harvester {
     }
 
     /**
-     * Output 
-     * 
+     * Output
+     *
      * @param   string  $type
      */
     public function output($type = 'all') {

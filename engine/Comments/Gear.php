@@ -33,7 +33,7 @@ class Comments_Gear extends Gear {
     public function hookRenderPostCommentsCount($info) {
         $post = $info->object;
         if ($post->allow_comments) {
-            $info->comments = icon('comment') . ' <a class="post-comments" data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
+            $info->comments = icon('comment') . ' <a class="post-comments scrollTo" data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
         }
     }
 

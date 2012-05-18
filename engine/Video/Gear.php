@@ -32,7 +32,7 @@ class Video_Gear extends Gear {
         $toolbar->markupSet->offsetSet('video', array(
             'name' => 'Video',
             'key' => 'O',
-            'replaceWith' => "\n[video][![" . t('Link to video') . "]!][/video]\n",
+            'replaceWith' => "\n<video>[![" . t('Link to video') . "]!]</video>\n",
             'className' => 'markItUpVideo',
         ));
     }
@@ -43,7 +43,7 @@ class Video_Gear extends Gear {
      * @param type $post
      */
     public function hookPostRender($post) {
-        preg_match_all('#\[video\](.*?)\[\/video\]#', $post->body, $video);
+        preg_match_all('#(?:\[|<)video(?:\]|>)(.*?)(?:\[|<)\/video(?:\]|>)#', $post->body, $video);
         preg_match_all('#\[media\](.*?)\[\/media]#', $post->body, $media);
         preg_match_all('#httpv:\/\/([^\s]+?)#imsU', $post->body, $httpv);
         if (!count($video[1]) && !count($media[1]) && !count($httpv[1])) {

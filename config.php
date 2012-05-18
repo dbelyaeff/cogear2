@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1337292382,
+    'last_run' => 1337359499,
   ),
   'user' => 
   array (
@@ -45,10 +45,13 @@ return array (
       ),
       'post' => 
       array (
-        'size' => '500x500',
-        'actions' => 
+        'large' => 
         array (
-          0 => 'resize',
+          'size' => '700x500',
+          'actions' => 
+          array (
+            0 => 'resize',
+          ),
         ),
       ),
       'avatar' => 

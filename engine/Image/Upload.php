@@ -29,17 +29,24 @@ class Image_Upload extends File_Upload {
         'crop' => '',
         'sizecrop' => '',
         'watermark' => '',
+        'overwrite' => TRUE,
+        'name' => 'image',
+        'maxsize' => '100Kb',
+        'path' => UPLOADS,
     );
+
     /**
      * Image width
      * @var int
      */
     protected $width;
+
     /**
      * Image height
      * @var int
      */
     protected $height;
+
     /**
      * Image type
      *
@@ -48,12 +55,14 @@ class Image_Upload extends File_Upload {
      * @var string
      */
     protected $type;
+
     /**
      * Image mime
      *
      * @var string
      */
     protected $mime;
+
     /**
      * Preset name
      *
@@ -67,31 +76,45 @@ class Image_Upload extends File_Upload {
      * @return  boolean
      */
     public function upload() {
-        if($this->options->preset && $preset = config('image.presets.'.$this->options->preset)){
+        if ($this->options->preset && $preset = config('image.presets.' . $this->options->preset)) {
             $preset->options && $this->options->mix($preset->options);
         }
         if ($result = parent::upload()) {
-            $this->getInfo();
-            $image = new Image($this->file->path);
-            if ($this->options->preset) {
-                $preset = new Image_Preset($this->options->preset);
-                if ($preset->load()) {
-                    $preset->image($image)->process();
+            if (is_array($result)) {
+                foreach ($result as $file) {
+                    $this->postProcess($file);
                 }
             } else {
-                // Resize
-                $this->options->resize && $image->resize($this->options->resize);
-                // Crop
-                $this->options->crop && $image->crop($this->options->crop);
-                // Size & Crop
-                $this->options->sizecrop && $image->sizecrop($this->options->sizecrop);
-                // Watermark
-                $this->options->watermark && $image->watermark($this->options->watermark);
+                $this->postProcess($file);
             }
-            $image->save();
-            return $result;
         }
-        return FALSE;
+        return $result;
+    }
+
+    /**
+     * Post process
+     *
+     * @param type $file
+     */
+    public function postProcess($file) {
+//        $this->getInfo($file);
+        $image = new Image($file->path);
+        if ($this->options->preset) {
+            $preset = new Image_Preset($this->options->preset);
+            if ($preset->load()) {
+                $preset->image($image)->process();
+            }
+        } else {
+            // Resize
+            $this->options->resize && $image->resize($this->options->resize);
+            // Crop
+            $this->options->crop && $image->crop($this->options->crop);
+            // Size & Crop
+            $this->options->sizecrop && $image->sizecrop($this->options->sizecrop);
+            // Watermark
+            $this->options->watermark && $image->watermark($this->options->watermark);
+        }
+        $image->save();
     }
 
     /**
@@ -99,13 +122,15 @@ class Image_Upload extends File_Upload {
      *
      * @return boolean|string
      */
-    protected function processUpload() {
-        $this->getInfo($this->file->tmp_name);
-        if ($this->options->max && !$this->checkMax($this->options->max->width, $this->options->max->height)
-                OR $this->options->min && !$this->checkMin($this->options->max->width, $this->options->max->height)) {
-            return FALSE;
+    protected function process($file) {
+        if ($file = parent::process($file)) {
+            $this->getInfo($this->file->tmp_name);
+            if ($this->options->max && !$this->checkMax($this->options->max->width, $this->options->max->height)
+                    OR $this->options->min && !$this->checkMin($this->options->max->width, $this->options->max->height)) {
+                return FALSE;
+            }
         }
-        return parent::processUpload();
+        return $file;
     }
 
     /**
@@ -120,10 +145,10 @@ class Image_Upload extends File_Upload {
         $this->height = $info[1];
         $this->type = $info[2];
         return new Core_ArrayObject(array(
-            'width' => $this->width,
-            'height' => $this->height,
-            'type' => $this->type,
-        ));
+                    'width' => $this->width,
+                    'height' => $this->height,
+                    'type' => $this->type,
+                ));
     }
 
     /**
@@ -159,4 +184,5 @@ class Image_Upload extends File_Upload {
         }
         return TRUE;
     }
+
 }

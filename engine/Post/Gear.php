@@ -268,7 +268,8 @@ class Post_Gear extends Gear {
                             'body' => $message,
                         )
                     );
-                    $data['redirect'] = $this->response->get('referer');
+                    $ref = $this->response->get('referer');
+                    $data['redirect'] = $blog->getLink();
                     $ajax = new Ajax();
                     $ajax->json($data);
                 }

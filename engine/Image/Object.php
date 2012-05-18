@@ -14,8 +14,8 @@ class Image_Object extends Adapter {
     protected $file;
     /**
      * Constructor
-     * 
-     * @param string $file 
+     *
+     * @param string $file
      */
     public function __construct($file) {
         $this->file = file_exists($file) ? $file : NULL;
@@ -24,19 +24,20 @@ class Image_Object extends Adapter {
     }
     /**
      * Get image file
-     * 
+     *
      * @return string
      */
     public function getFile(){
         return $this->file;
     }
     /**
-     * Get image info by path 
+     * Get image info by path
      *
      * @param string $path
-     * @return Core_ArrayObject 
+     * @return Core_ArrayObject
      */
-    public static function getInfo($path) {
+    public static function getInfo($path = NULL) {
+        $path OR $path = $this->file->path;
         if(!file_exists($path)) return NULL;
         $info = getimagesize($path);
         return new Core_ArrayObject(array(

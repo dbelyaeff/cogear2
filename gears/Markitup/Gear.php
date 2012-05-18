@@ -16,7 +16,7 @@ class Markitup_Gear extends Gear {
     protected $name = 'Markitup';
     protected $description = 'Markitup editor';
     protected $package = 'Wysiwyg';
-    protected $order = 0;
+    protected $order = 10;
     public $toolbar = array(
         'nameSpace' => 'html',
         'onCtrlEnter' => array(
@@ -135,13 +135,15 @@ class Markitup_Gear extends Gear {
         css($folder . 'sets/default/style.css');
         js($folder . 'js/jquery.markitup.js', 'after');
         event('markitup.toolbar', $this->toolbar);
+//            $(document).ready(function(){
         inline_js("
 			$('body').on('focus','textarea',function(){
-                        if($(this).parents('.markItUp').length == 0){
-                            $(this).markItUp(" . json_encode($this->toolbar) . ");
-                        }
-                          });
+                              if($(this).parents('.markItUp').length == 0){
+                                   $(this).markItUp(" . json_encode($this->toolbar) . ");
+                              }
+            });
 	", 'after');
+//                        }
     }
 
     /**

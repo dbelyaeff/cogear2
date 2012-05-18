@@ -9,5 +9,4 @@ $(document).ready(function(){
         e.preventDefault();
     });
     $(window).hashchange();
-
 })

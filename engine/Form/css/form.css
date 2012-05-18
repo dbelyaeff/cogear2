@@ -14,7 +14,7 @@ form .btn{
     display: none;
 }
 input[type=text],input[type=password]{
-    width: 100%;
+    width: 98%;
 }
 textarea{
     width: 100%;

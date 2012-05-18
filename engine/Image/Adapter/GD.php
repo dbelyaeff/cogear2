@@ -2,7 +2,7 @@
 
 /**
  * Image Adapter Abstract
- * 
+ *
  * @todo    Fix watermark alpha blending on Denwer
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
@@ -46,7 +46,7 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Create new Image
-     * 
+     *
      * @param   int $width
      * @param   int $height
      */
@@ -56,22 +56,25 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Resize
-     * 
-     * @param string    $size 
+     *
+     * @param string    $size
      */
     public function resize($size) {
         $size = $this->prepare($size);
-        imagecopyresized($this->destination, $this->source, 0, 0, 0, 0, $size->width, $size->height, $this->info->width, $this->info->height);
-        $this->info->width = $size->width;
-        $this->info->height = $size->height;
-        $this->exchange();
+        if ($this->info->width >= $size->width &&
+            $this->info->height >= $size->height) {
+            imagecopyresized($this->destination, $this->source, 0, 0, 0, 0, $size->width, $size->height, $this->info->width, $this->info->height);
+            $this->info->width = $size->width;
+            $this->info->height = $size->height;
+            $this->exchange();
+        }
         return $this;
     }
 
     /**
      * Crop
-     * 
-     * @param string $crop 
+     *
+     * @param string $crop
      * @param double    $x  If it's < 1, than it is a percent. 0.5 = 50%. When it's > 1, it's exact pixel.
      * @param double     $y Likely as $x.
      * @param boolean $maintain_ratio
@@ -98,10 +101,10 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Resize to fit size and than crop
-     * 
+     *
      * @param string $size
      * @param float $x
-     * @param float $y 
+     * @param float $y
      */
     public function sizecrop($size, $x=0.5, $y=0.5) {
         $resize = $this->prepare($size);
@@ -113,7 +116,7 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Rotate image
-     * 
+     *
      * @param type $angle
      */
     public function rotate($angle) {
@@ -124,9 +127,9 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Watermark
-     * 
+     *
      * You can place watermark at one of 9 zones
-     * 
+     *
      * --------------------------
      * |    1   |   2   |   3   |
      * --------------------------
@@ -134,7 +137,7 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
      * --------------------------
      * |    7   |   8   |   9   |
      * --------------------------
-     * 
+     *
      * @param   mixed   $watermark
      * @param   int     $zone
      */
@@ -190,8 +193,8 @@ class Image_Adapter_GD extends Image_Adapter_Abstract {
 
     /**
      * Save to file
-     * 
-     * @param string $file 
+     *
+     * @param string $file
      */
     public function save($file = NULL) {
         $this->prepare();

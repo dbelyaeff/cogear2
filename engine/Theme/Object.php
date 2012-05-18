@@ -19,7 +19,7 @@ abstract class Theme_Object extends Gear {
     protected $package = 'Themes';
     protected $screenshot = '/img/screenshot.png';
     private static $is_rendered = FALSE;
-    protected $layout = 'index';
+    public static $layout = 'index';
     public $theme;
     protected $template;
 
@@ -76,8 +76,8 @@ abstract class Theme_Object extends Gear {
      * Render theme
      */
     public function render() {
-        defined('LAYOUT') && $this->layout(LAYOUT);
-        $this->template = new Template($this->theme . '.' . $this->layout);
+        $this->input->get('splash') !== NULL && self::$layout = 'splash';
+        $this->template = new Template($this->theme . '.' . self::$layout);
         $this->template->theme = $this;
         cogear()->response->adapter->append($this->template->render());
     }

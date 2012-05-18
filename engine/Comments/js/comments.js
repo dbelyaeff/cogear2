@@ -27,13 +27,15 @@ $(document).ready(function(){
                             if(data.messages){
                                 renderMessages(data.messages);
                             }
+                            $el = $(data.code);
                             if(data.pid > 0){
-                                $(data.code).insertAfter($('#comment-'+data.pid));
+                                $el.insertAfter($('#comment-'+data.pid));
                             }
                             else {
-                                console.log($form);
-                                $(data.code).insertAfter($form);
+                                $el.insertAfter($form);
+
                             }
+                            $el.scrollTo({highlight: true});
                             $('#comment-form-placer').after($form);
                             if(data.counter){
                                 commentsUpdatePostCounter($id,data.counter);

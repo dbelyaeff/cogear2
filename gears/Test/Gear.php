@@ -17,7 +17,6 @@ class Test_Gear extends Gear {
     protected $description = '';
     protected $package = '';
     protected $order = 0;
-
     /**
      * Init
      */

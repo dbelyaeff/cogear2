@@ -1,5 +1,9 @@
 <?php 
 return array (
+  '#100Kb' => 
+  array (
+    'Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.' => '',
+  ),
   '#Admin.site' => 
   array (
     'Site settings' => '',
@@ -109,6 +113,12 @@ return array (
   array (
     'Error in file <b>%s</b> was found at line <b>%d</b>: <p><i>%s</i>' => '',
   ),
+  '#File' => 
+  array (
+    'Only following types of files are allowed: <b>%s</b>.' => '',
+    'File you are trying to upload has unusual MIME-type. It is like <b>%s</b>, but it was expected to be <b>%s</b>' => '',
+    'Error' => '',
+  ),
   '#Form_Validate' => 
   array (
     'Value must be longer that %d.' => '',
@@ -134,6 +144,15 @@ return array (
   array (
     'Messages (%s)' => '',
     'New message' => '',
+  ),
+  '#Image' => 
+  array (
+    'Upload image' => '',
+    'Choose from disk' => '',
+    'Enter url' => '',
+    'Upload' => '',
+    'or<br/>Drag and drop your images here' => '',
+    'or<p><b>Drag and drop your images here</b>' => '',
   ),
   '#Mail.registration' => 
   array (
@@ -218,18 +237,25 @@ return array (
     'Follow %s blog?' => '',
     'Unfollow %s blog?' => '',
   ),
+  '#elFinder' => 
+  array (
+    'Files' => '',
+  ),
   'Add comment' => '',
+  'Attached files' => '',
   'Blog is updated!' => '',
   'Close' => '',
   'Code Editor' => '',
   'Create' => '',
   'Delete' => '',
+  'Drag and drop your images here' => '',
   'Edit' => '',
   'Edit comment' => '',
   'Edit post' => '',
   'Error' => '',
   'Hide' => '',
   'Image preset <b>%s</b> doesn\'t exists.' => '',
+  'Insert' => '',
   'Link' => '',
   'Link to video' => '',
   'List' => '',
@@ -237,6 +263,7 @@ return array (
   'Login name already in use!' => '',
   'Lost password' => '',
   'No' => '',
+  'OR' => '',
   'Post published!' => '',
   'Post saved to drafts!' => '',
   'Preview' => '',
@@ -251,6 +278,7 @@ return array (
   'This field is required.' => '',
   'Unlink' => '',
   'Update' => '',
+  'Upload images' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
   'View' => '',

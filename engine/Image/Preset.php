@@ -10,15 +10,15 @@ class Image_Preset extends Core_ArrayObject {
      * Constructor
      *
      * @param string $name
-     * @return boolean 
+     * @return boolean
      */
     public function __construct($name) {
         $this->name = $name;
     }
-    
+
     /**
      * Apply preset to image
-     * 
+     *
      */
     public function process() {
         if ($this->actions) {
@@ -29,14 +29,17 @@ class Image_Preset extends Core_ArrayObject {
                 } else {
                     $params = array($this->size);
                 }
-                call_user_func_array(array($this->image, $action), $params);
+                $callback = new Callback(array($this->image, $action));
+                if($callback->check()){
+                    $callback->run($params);
+                }
             }
         }
         return $this;
     }
 
     /**
-     * Build path 
+     * Build path
      */
     public function buildPath() {
         $file = $this->image->getFile();
@@ -45,12 +48,12 @@ class Image_Preset extends Core_ArrayObject {
         $path = $dir . DS . self::DIR . DS . $this->name. DS . $filename;
         return $path;
     }
-    
+
     /**
      * Set image
-     *  
+     *
      * @param Image_Object $image
-     * @return Image_Preset 
+     * @return Image_Preset
      */
     public function image($image){
         if($image instanceof Image_Object){
@@ -63,7 +66,7 @@ class Image_Preset extends Core_ArrayObject {
     }
     /**
      * Load preset
-     * 
+     *
      * @return  boolean
      */
     public function load() {
@@ -77,17 +80,17 @@ class Image_Preset extends Core_ArrayObject {
         }
         return FALSE;
     }
-    
+
     /**
      * Save preset
      */
     public function save() {
         cogear()->set('image.presets.' . $this->name, $this->toArray());
     }
-    
+
     /**
      * Render image with current preset
-     * 
+     *
      * @return  string
      */
     public function render(){

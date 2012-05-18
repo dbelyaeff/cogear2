@@ -2,6 +2,14 @@
 return array (
   'value' => 
   array (
+    'files' => 
+    array (
+      'manager' => true,
+    ),
+    'image' => 
+    array (
+      'upload' => true,
+    ),
     'admin' => true,
     'post' => 
     array (

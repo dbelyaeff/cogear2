@@ -12,6 +12,7 @@
  * @version		$Id$
  */
 class File_Upload extends Adapter {
+
     /**
      * Info about uploaded file
      * @var string
@@ -24,6 +25,12 @@ class File_Upload extends Adapter {
      * @var string
      */
     protected $uri;
+    /**
+     * If one file has been uploaded
+     *
+     * @var type
+     */
+    protected $uploaded;
     /**
      * Configuration parameters
      *
@@ -44,13 +51,6 @@ class File_Upload extends Adapter {
     );
 
     /**
-     * Errors
-     *
-     * @var array
-     */
-    protected $errors = array();
-
-    /**
      * Upload file
      *
      * @param string $name
@@ -60,27 +60,53 @@ class File_Upload extends Adapter {
     public function upload() {
         if (!isset($_FILES[$this->name]))
             return FALSE;
-        $file = $_FILES[$this->name];
-        $cogear = getInstance();
+        $files = $_FILES[$this->name];
+        if(is_array($files['name'])){
+            $files_upload = array();
+            for($i = 0; $i < sizeof($files['name']);$i++){
+                foreach($files as $key=>$value){
+                    $files_upload[$i][$key] = $files[$key][$i];
+                }
+            }
+            $result = array();
+            foreach($files_upload as $file){
+                $result[] = $this->uploadOne($file);
+            }
+            return $result;
+        }
+        else{
+            return $this->uploadOne($files);
+        }
+    }
+
+    /**
+     * Upload one Files
+     *
+     * @param array $file
+     * @return type
+     */
+    private function uploadOne($file) {
         d('File');
+        $file = new Core_ArrayObject($file);
         event('file.preupload', $file);
+        $file['errors'] = array();
         switch ($file['error']) {
             case UPLOAD_ERR_CANT_WRITE:
-                $this->errors[] = t('Can\'t upload file. Check write permission for temporary folder.');
+                $file['errors'][] = t('Can\'t upload file. Check write permission for temporary folder.');
                 break;
             case UPLOAD_ERR_INI_SIZE:
-                $this->errors[] = t('File size is bigger that it\'s allowed in <b>php.ini</b> (%s).', NULL, ini_get('upload_max_filesize'));
+                $file['errors'][] = t('File size is bigger that it\'s allowed in <b>php.ini</b> (%s).', NULL, ini_get('upload_max_filesize'));
                 break;
             case UPLOAD_ERR_NO_FILE:
-                if($this->options->validators->findByValue('Required') OR $this->options->required){
-                    $this->errors[] = t('You didn\'t choose file to upload.');
+                if ($this->options->validators->findByValue('Required') OR $this->options->required) {
+                    $file['errors'][] = t('You didn\'t choose file to upload.');
                 }
                 break;
             case UPLOAD_ERR_PARTIAL:
-                $this->errors[] = t('Please, upload file once again.');
+                $file['errors'][] = t('Please, upload file once again.');
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                $this->errors[] = t('Temporary directory is not corrected.');
+                $file['errors'][] = t('Temporary directory is not corrected.');
                 break;
         }
         if ($file['error'] == UPLOAD_ERR_OK) {
@@ -92,30 +118,28 @@ class File_Upload extends Adapter {
                 foreach ($types as $type) {
                     $type == $ext && $result = TRUE;
                 }
-                !$result && $this->errors[] = t('Only following types of files are allowed: <b>%s</b>.', NULL, $types->toString('</b>, <b>'));
+                !$result && $file['errors'][] = t('Only following types of files are allowed: <b>%s</b>.', NULL, $types->toString('</b>, <b>'));
             }
             $result = File_Mime::check($file['name'], $file['type']);
             if ($result !== TRUE) {
-                $this->errors[] = t('File you are trying to upload has unusual MIME-type. It is like <b>%s</b>, but it was expected to be <b>%s</b>', NULL, $file['type'], $result);
+                $file['errors'][] = t('File you are trying to upload has unusual MIME-type. It is like <b>%s</b>, but it was expected to be <b>%s</b>', NULL, $file['type'], $result);
             }
             $this->options->maxsize && $this->checkMaxSize($file['size'], $this->options->maxsize);
             if (!$this->options->path) {
-                $this->errors[] = t('Upload path is not defined.');
+                $file['errors'][] = t('Upload path is not defined.');
             }
             strpos($this->options->path, ROOT) !== FALSE OR $this->options->path = UPLOADS . DS . $this->options->path;
             File::mkdir($this->options->path);
             if (!is_dir($this->options->path)) {
-                $this->errors[] = t('Upload path <b>%s</b> doesn\'t exist.', NULL, $this->options->path);
+                $file['errors'][] = t('Upload path <b>%s</b> doesn\'t exist.', NULL, $this->options->path);
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
-            $this->file = new Core_ArrayObject($file);
             d();
-            if($this->errors){
-                return FALSE;
-            }
-            else {
-                return $this->process();
+            if ($file['errors']) {
+                return $file;
+            } else {
+                return $this->process($file);
             }
         }
         d();
@@ -127,14 +151,16 @@ class File_Upload extends Adapter {
      *
      * @return string
      */
-    protected function process() {
-        if (file_exists($this->file->path) && !$this->options->overwrite) {
-            $filename = pathinfo($this->file->name, PATHINFO_FILENAME);
-            $this->file->path = str_replace($filename, $filename . '_' . time(), $this->file->path);
+    protected function process($file) {
+        if (file_exists($file->path) && $this->options->overwrite == FALSE) {
+            $filename = pathinfo($file->name, PATHINFO_FILENAME);
+            $file->path = str_replace($filename, time().'_'.$filename, $file->path);
         }
-        move_uploaded_file($this->file->tmp_name, $this->file->path);
-        $this->uri = File::pathToUri($this->file->path,UPLOADS);
-        return $this->uri;
+        move_uploaded_file($file->tmp_name, $file->path);
+        $this->uploaded = TRUE;
+        $file->uri_full = File::pathToUri($file->path, ROOT);
+        $file->uri = File::pathToUri($file->path, UPLOADS);
+        return $file;
     }
 
     /**
@@ -146,7 +172,7 @@ class File_Upload extends Adapter {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $this->errors[] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
+            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
             return FALSE;
         }
         return TRUE;

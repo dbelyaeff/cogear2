@@ -209,7 +209,7 @@ class User_Object extends Db_Item {
     /**
      * Get user profile link
      */
-    public function getLink($type = 'default',$param = NULL) {
+    public function getLink($type = 'default',$param = 'avatar.small') {
         switch ($type) {
             case 'profile':
                 $uri = new Stack(array('name' => 'user.link.profile'));
@@ -282,7 +282,7 @@ class User_Object extends Db_Item {
      * Get user upload directory
      */
     public function dir() {
-        return UPLOADS . DS . 'users' . DS . $this->id;
+        return File::mkdir(UPLOADS . DS . 'users' . DS . $this->id);
     }
     /**
      * Recalculate data

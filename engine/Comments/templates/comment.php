@@ -21,10 +21,10 @@ if ($item->class) {
         $info = new Stack(array('name' => 'comment.info'));
         $info->author = '<span class="comment-author">' . $user->getAvatarImage() . ' ' . $user->getLink('profile') . '</span>';
         $info->ip = '<span class="comment-ip">' . $item->ip . '</span>';
-        $info->anchor = icon('time') . '<a class="ms5" data-highlight="#comment-' . $item->id . '" href="#comment-' . $item->id . '">' . df($item->created_date) . '</a>';
+        $info->anchor = icon('time') . '<a class="ms5 scrollTo hltr" href="#comment-' . $item->id . '">' . df($item->created_date) . '</a>';
         if (!$item->preview) {
             if ($item->pid) {
-                $info->parent = '<a class="ms5" data-highlight="#comment-' . $item->pid . '" href="#comment-' . $item->pid . '">&uarr;</a>';
+                $info->parent = '<a class="ms5 scrollTo hltr" href="#comment-' . $item->pid . '">&uarr;</a>';
             }
             if (access('comments.delete.all')) {
                 $info->delete = '<a class="comment-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';

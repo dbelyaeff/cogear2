@@ -51,3 +51,9 @@
 .markItUp .markItUpCut a {
 	background:url(images/toolbar.png) no-repeat -240px 0;
 }
+.markItUp .markItUpImageUpload a {
+	background:url(images/toolbar.png) no-repeat -256px 0;
+}
+.markItUp .markItUpFileManager a {
+	background:url(images/toolbar.png) no-repeat -272px 0;
+}

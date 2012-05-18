@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ajax object
  *
@@ -52,9 +51,11 @@ class Ajax_Object extends Core_ArrayObject{
      *
      * @param array $data
      */
-    public function json($data = array()){
+    public function json($data = array(),$escape = FALSE){
         $data && $this->mix($data);
-        echo json_encode($this);
+        $response = json_encode($this);
+        $escape && $response = $this->escape($response);
+        echo $response;
         event('done');
         event('ajax');
         exit();

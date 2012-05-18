@@ -17,7 +17,7 @@ class Session_Gear extends Gear {
     protected $description = 'Handle sessions.';
     protected $order = -1000;
     protected $hooks = array(
-        'dev.info' => 'trace',
+//        'dev.info' => 'trace',
     );
 
     /**
