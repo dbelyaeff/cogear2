@@ -50,7 +50,7 @@ class Modal_Gear extends Gear {
             if($this->user->id == 0){
                 $menu[0]->options->link = '#'.$menu[0]->link.'?'.Ajax::query(array(
                     'modal' => 'form-user-login',
-                    'header' => t('Login','User'),
+                    'header' => t('Enter','User'),
                     'name' => 'login',
                 ));
                 $menu[1]->options->link = '#'.$menu[1]->link.'?'.Ajax::query(array(

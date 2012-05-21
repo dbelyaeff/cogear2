@@ -9,6 +9,7 @@ return array (
     'email' => 'varchar(255)',
     'name' => 'varchar(255)',
     'avatar' => 'varchar(255)',
+    'role' => 'smallint(3)',
     'posts' => 'int(11) unsigned',
     'drafts' => 'int(11) unsigned',
     'friends' => 'int(11) unsigned',

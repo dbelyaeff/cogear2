@@ -14,7 +14,7 @@ echo $before->render();
         $title = new Stack('blog.title');
         $title->avatar = $item->getAvatar();
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
-        if (access('blog.edit.all') OR access('blog.edit') && cogear()->user->id == $item->aid) {
+        if (access('Blog.edit.all') OR access('Blog.edit') && cogear()->user->id == $item->aid) {
             $title->edit = '<a href="' . $item->getLink('edit') . '"><i class="icon-pencil"></i></a>';
         }
         $status = cogear()->blog->status();

@@ -7,14 +7,14 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Input_Gear extends Gear {
 
     protected $name = 'Input';
     protected $description = 'Catch user input';
-    protected $order = -1000;
+    protected $order = -998;
     protected $get = array();
     protected $post = array();
     protected $cookies = array();
@@ -29,13 +29,13 @@ class Input_Gear extends Gear {
         $this->post = $_POST;
         $this->cookies = $_COOKIE;
     }
-    
+
     /**
      * Get method
      *
      * @param string $name
      * @param mixed $default
-     * @return mixed 
+     * @return mixed
      */
     public function get($name = '',$default = NULL){
         if(!$name) return $this->get;
@@ -46,7 +46,7 @@ class Input_Gear extends Gear {
      *
      * @param string $name
      * @param mixed $default
-     * @return mixed 
+     * @return mixed
      */
     public function post($name = '',$default = NULL){
         if(!$name) return $this->post;
@@ -57,7 +57,7 @@ class Input_Gear extends Gear {
      *
      * @param string $name
      * @param mixed $default
-     * @return mixed 
+     * @return mixed
      */
     public function cookie($name = '',$default = NULL){
         if(!$name) return $this->cookie;

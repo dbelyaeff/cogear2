@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1337359499,
+    'last_run' => 1337594362,
   ),
   'user' => 
   array (
@@ -27,6 +27,7 @@ return array (
     array (
       'default' => 'avatars/0/avatar.jpg',
     ),
+    'last_visit' => 1337543993,
   ),
   'image' => 
   array (
@@ -106,5 +107,15 @@ return array (
         ),
       ),
     ),
+  ),
+  'ReCaptcha' => 
+  array (
+    'public' => '6Lc2s9ESAAAAACmHbFjk5VUf_IUd7Srum4K2KTRo',
+    'private' => '6Lc2s9ESAAAAALSiny44S4M3Q0tWH-WxnKrvQQrd',
+    'api_server' => 'http://www.google.com/recaptcha/api',
+    'api_secure_server' => 'https://www.google.com/recaptcha/api',
+    'verify_server' => 'www.google.com',
+    'signup_url' => 'https://www.google.com/recaptcha/admin/create',
+    'theme' => 'clean',
   ),
 );

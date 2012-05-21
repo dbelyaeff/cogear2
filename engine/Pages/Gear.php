@@ -14,17 +14,29 @@
 class Pages_Gear extends Gear {
 
     protected $name = 'Pages';
-    protected $description = 'Pagess manager';
+    protected $description = 'Pages manager';
     protected $order = 0;
     protected $routes = array(
         'page/:digit/?' => 'showPage',
     );
+    protected $hooks = array(
+        'router.run' => 'hookRouter',
+    );
 
     /**
-     * Init
+     * Hook router
+     *
+     * @param type $Router
      */
-    public function init() {
-        parent::init();
+    public function hookRouter($Router) {
+        if (config('Pages.root_link', FALSE)) {
+            $page = new Pages();
+            $page->link = $Router->uri;
+            if ($page->find()) {
+                $Router->exec(array($this, 'showPage'), array($page));
+                return TRUE;
+            }
+        }
     }
 
     /**
@@ -46,6 +58,40 @@ class Pages_Gear extends Gear {
     }
 
     /**
+     * Show page
+     *
+     * @param int|object $page
+     */
+    public function showPage($page) {
+        if (!($page instanceof Pages)) {
+            $page = new Pages();
+            $page->id = $page;
+            if ($page->find()) {
+                return event('404');
+            }
+        }
+        $bc = new Breadcrumb_Object(
+                        array(
+                            'name' => 'page.breadcrumb'
+                        )
+        );
+        if ($parents = $page->getParents()) {
+            foreach ($parents as $parent) {
+                $bc->register(array(
+                    'label' => $parent->name,
+                    'link' => $parent->getLink(),
+                ));
+            }
+        } else {
+            $bc->register(array(
+                'label' => $page->name,
+                'link' => $page->getLink(),
+            ));
+        }
+        $page->show();
+    }
+
+    /**
      * Admin dispatcher
      *
      * @param type $action
@@ -58,13 +104,13 @@ class Pages_Gear extends Gear {
                         'list' => array(
                             'label' => t('List'),
                             'link' => l('/admin/pages'),
-                            'active' => !check_route('admin/pages/create') && !check_route('admin/pages/edit',Router::STARTS),
+                            'active' => !check_route('admin/pages/create') && !check_route('admin/pages/edit', Router::STARTS),
                         ),
                         'edit' => array(
                             'label' => icon('edit') . ' ' . t('Edit'),
                             'link' => l('/admin/pages/edit'),
                             'class' => 'fl_r',
-                            'access' => check_route('admin/pages/edit',  Router::STARTS),
+                            'access' => check_route('admin/pages/edit', Router::STARTS),
                         ),
                         'create' => array(
                             'label' => icon('pencil') . ' ' . t('Create'),
@@ -93,7 +139,11 @@ class Pages_Gear extends Gear {
         $pages = new Pages();
         $tpl = new Template('Pages.list');
         $tpl->pages = $pages->findAll();
-        $tpl->show();
+        if ($tpl->pages) {
+            $tpl->show();
+        } else {
+            return event('empty');
+        }
     }
 
     /**
@@ -174,35 +224,20 @@ class Pages_Gear extends Gear {
     }
 
     /**
-     * Show page by id
-     *
-     * @param string $id
-     */
-    public function showPage($id) {
-        $page = new Pages();
-        $page->id = $id;
-        if ($page->find()) {
-            $page->show();
-        } else {
-            return FALSE;
-        }
-    }
-
-    /**
      * Get values for form select
      */
-    public function getFormSelect($Form){
-       $data[] = '';
-       $pages = new Pages();
-       if($Form->object->count()){
-           $this->db->not_like('path',$Form->object->path,'after');
-       }
-       if($result = $pages->findAll()){
-           foreach($result as $page){
-               $data[$page->id] = str_repeat('--',$page->level).$page->name;
-           }
-       }
-       return $data;
+    public function getFormSelect($Form) {
+        $data[] = '';
+        $pages = new Pages();
+        if ($Form->object->object && $Form->object->object->count()) {
+            $this->db->not_like('thread', str_replace('/', '', $Form->object->thread), 'after');
+        }
+        if ($result = $pages->findAll()) {
+            foreach ($result as $page) {
+                $data[$page->id] = str_repeat('--', $page->level) . $page->name;
+            }
+        }
+        return $data;
     }
 
     /**

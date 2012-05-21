@@ -130,9 +130,13 @@ class Router_Object extends Options {
      * @param string $route
      * @param callback $callback
      */
-    public function bind($route, $callback, $rewrite = FALSE) {
-        if ($rewrite OR !isset($this->routes[$route])) {
-            $this->routes[$route] = $callback;
+    public function bind($route, $callback, $prepend = FALSE) {
+        if (!$this->routes->$route) {
+            if ($prepend) {
+                $this->routes->prepend($callback,$route);
+            } else {
+                $this->routes[$route] = $callback;
+            }
         }
     }
 
@@ -213,6 +217,9 @@ class Router_Object extends Options {
      */
     public function run() {
         $cogear = getInstance();
+        if (event('router.run', $this)->count()) {
+            return;
+        }
         foreach ($this->routes as $route => $callback) {
             $route = str_replace(
                     $this->rules['from'], $this->rules['to'], $route);
@@ -230,7 +237,7 @@ class Router_Object extends Options {
                 $exclude = strpos($root, self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
                 $this->args = array_merge($args, array_diff_assoc($this->segments, $exclude));
                 // We have a nice method in hooks to prepare callback
-                if($this->exec($callback, $this->args)){
+                if ($this->exec($callback, $this->args)) {
                     return;
                 }
             }
@@ -245,6 +252,9 @@ class Router_Object extends Options {
      */
     public function exec($callback, $args = array()) {
         if ($callback = Callback::prepare($callback)) {
+            if (event('router.exec', $callback)->count()) {
+                return;
+            }
             $this->callback = new Callback($callback);
             event('callback.before', $this);
             method_exists($callback[0], 'request') && $callback[0]->request();
@@ -264,8 +274,8 @@ class Router_Object extends Options {
  * @param type $route
  * @param type $callback
  */
-function route($route, $callback) {
-    cogear()->router->bind($route, $callback);
+function route($route, $callback, $prepend = FALSE) {
+    cogear()->router->bind($route, $callback, $prepend);
 }
 
 /**

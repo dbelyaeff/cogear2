@@ -30,8 +30,9 @@ class Image_Gear extends Gear {
     public function hookFormRender($Form) {
         switch ($Form->options->name) {
             case 'post':
+            case 'page':
             case 'comment':
-                if (access('image.upload')) {
+                if (access('images.upload')) {
                     $tpl = new Template('Image.upload');
                     $tpl->show('after');
                     js($this->folder . '/js/markitup.js');
@@ -45,7 +46,7 @@ class Image_Gear extends Gear {
      */
     public function hookPostComments($after) {
         if ($after->object->allow_comments) {
-            if (access('image.upload')) {
+            if (access('images.upload')) {
                 $tpl = new Template('Image.upload');
                 $tpl->show('after');
                 js($this->folder . '/js/markitup.js');
@@ -59,7 +60,7 @@ class Image_Gear extends Gear {
      * @param type $toolbar
      */
     public function hookMarkItUp($toolbar) {
-        if (access('image.upload')) {
+        if (access('images.upload')) {
             $toolbar->markupSet->append(array(
                 'name' => t('Upload images'),
                 'key' => 'G',

@@ -10,16 +10,17 @@ if (!$item->teaser) {
     echo $before->render();
 }
 ?>
-<div class="page">
+<div class="page shd">
     <div class="page-title">
         <?php
         $title = new Stack('page.title');
-        $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
+        $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) ;
         if (!$item->preview) {
             if (access('page.edit.all') OR access('page.edit') && cogear()->user->id == $item->aid) {
-                $title->edit = '<a href="' . $item->getLink('edit') . '" class="btn ' . ($item->published ? 'btn-primary ' : ' ') . 'btn-mini">' . t($item->published ? 'Edit' : 'Draft', 'Post') . '</a>';
+                $title->name .= '<a href="' . $item->getLink('edit') . '" class="sh no_fl" title="'.t('Edit').'"><i class="icon-pencil"></i></a>';
             }
         }
+        $title->name .= '</h2>';
         echo $title->render();
         ?>
     </div>

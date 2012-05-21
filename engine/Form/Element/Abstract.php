@@ -25,7 +25,7 @@ class Form_Element_Abstract extends Options {
         'disabled' => FALSE,
         'filters' => array(),
         'validators' => array(),
-        'class' => '',
+        'class' => 'form-element',
     );
 
     /**

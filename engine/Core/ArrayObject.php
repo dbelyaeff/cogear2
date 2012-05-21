@@ -89,6 +89,7 @@ class Core_ArrayObject extends ArrayObject {
                 $this->offsetSet($key, $value);
             }
         }
+        return $this;
     }
 
     /**
@@ -153,9 +154,13 @@ class Core_ArrayObject extends ArrayObject {
      *
      * @param  mixed   $value
      */
-    public function prepend($value) {
+    public function prepend($value, $key = NULL) {
         $temp_array = $this->getArrayCopy();
-        array_unshift($temp_array, $value);
+        if ($key) {
+            $temp_array = array_merge(array($key=>$value),$temp_array);
+        } else {
+            array_unshift($temp_array, $value);
+        }
         $this->exchangeArray($temp_array);
     }
 
@@ -297,7 +302,7 @@ class Core_ArrayObject extends ArrayObject {
      *
      * @param int $position
      */
-    public function show($region = 'content',$position = 0, $where = 0) {
+    public function show($region = 'content', $position = 0, $where = 0) {
         $position ? inject($region, $this->render(), $position, $where) : append($region, $this->render());
     }
 
@@ -309,8 +314,9 @@ class Core_ArrayObject extends ArrayObject {
      * @return	int
      */
     public static function sortByOrder($a, $b) {
-        return self::sortBy('order',$a,$b);
+        return self::sortBy('order', $a, $b);
     }
+
     /**
      * Sort by param
      *
@@ -319,12 +325,13 @@ class Core_ArrayObject extends ArrayObject {
      * @param object $b
      * @return int
      */
-    public static function sortBy($param,$a, $b) {
+    public static function sortBy($param, $a, $b) {
         if ($a->order == $b->order) {
             return 0;
         }
         return floatval($a->order) < floatval($b->order) ? -1 : 1;
     }
+
 }
 
 /**
@@ -335,16 +342,14 @@ class Core_ArrayObject extends ArrayObject {
  * @return array
  */
 function array_diff_key_recursive($a, $b) {
-    foreach($a as $key=>$value){
-        if(is_array($value) && isset($b[$key])){
-            if($result  = array_diff_key_recursive($value, $b[$key])){
+    foreach ($a as $key => $value) {
+        if (is_array($value) && isset($b[$key])) {
+            if ($result = array_diff_key_recursive($value, $b[$key])) {
                 $a[$key] = $result;
-            }
-            else{
+            } else {
                 unset($a[$key]);
             }
-        }
-        elseif(isset($b[$key])){
+        } elseif (isset($b[$key])) {
             unset($a[$key]);
         }
     }

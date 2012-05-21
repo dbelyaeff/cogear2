@@ -8,9 +8,16 @@ $(document).ready(function(){
     });
     $(window).hashchange();
 })
+$(document).ajaxComplete(function(){
+    smoothScroll();
+});
 function smoothScroll(){
-    if($(location.hash).length > 0){
-        $(location.hash).ScrollTo();
+    if(location.hash.search('/') != -1){
+        return;
+    }
+    else if($(location.hash).length > 0){
+        $(location.hash).scrollTo({highlight:true});
+        location.hash = '';
     }
 }
 

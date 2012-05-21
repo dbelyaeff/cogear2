@@ -36,8 +36,8 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Flag to update config file
-     * 
-     * @var boolean 
+     *
+     * @var boolean
      */
     private $write_config = FALSE;
 
@@ -45,6 +45,11 @@ final class Cogear implements Interface_Singleton {
      * Stop current event execution flag
      */
     public $stop_event = FALSE;
+    /**
+     * Settings and config
+     */
+    public $site;
+    public $config;
 
     const GEAR = 'Gear';
 
@@ -70,7 +75,7 @@ final class Cogear implements Interface_Singleton {
      * Clone
      */
     private function __clone() {
-        
+
     }
 
     /**
@@ -144,7 +149,7 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     *  Load gears 
+     *  Load gears
      */
     public function loadGears() {
         $engine = $this->findGears(ENGINE);
@@ -163,9 +168,9 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Get config
-     * 
+     *
      * @param type $name
-     * @param type $default 
+     * @param type $default
      * @return  mixed
      */
     public function get($name, $default = NULL) {
@@ -182,9 +187,9 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Set config
-     * 
+     *
      * @param type $name
-     * @param type $value 
+     * @param type $value
      * @return  mixed
      */
     public function set($name, $value) {
@@ -193,8 +198,8 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Find gears in direcotry
-     * 
-     * @param string $dir 
+     *
+     * @param string $dir
      */
     public function findGears($dir) {
         $gears = glob($dir . DS . '*' . DS . self::GEAR . EXT);
@@ -206,8 +211,8 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Simple method that turn gears on during loading process.
-     * 
-     * @param   string $path 
+     *
+     * @param   string $path
      * @return boolean
      */
     public function chargeGear($path) {
@@ -220,7 +225,7 @@ final class Cogear implements Interface_Singleton {
 
     /**
      * Extract gear name from path
-     * 
+     *
      * @param string $path
      * @return string
      */

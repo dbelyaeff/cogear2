@@ -178,6 +178,7 @@ abstract class Gear extends Adapter {
         $this->getFolder();
         $this->getGear();
         $this->getBase();
+        $this->getSettings();
         $this->file = new SplFileInfo($this->path);
     }
 
@@ -186,9 +187,9 @@ abstract class Gear extends Adapter {
      */
     public function init() {
         $this->routes[$this->base . ':maybe'] = 'index';
+        $this->loadAssets();
         $this->hooks();
         $this->routes();
-        $this->loadAssets();
         event('gear.init', $this);
     }
 
@@ -340,6 +341,15 @@ abstract class Gear extends Adapter {
     }
 
     /**
+     * Get default settings
+     */
+    public function getSettings(){
+        $path = $this->dir.DS.'settings'.EXT;
+        if(file_exists($path) && !config($this->gear)){
+            $this->config->load($path,$this->gear);
+        }
+    }
+    /**
      * Normalize relative path
      *
      * For example, under windows it look like \cogear\Theme\Default\, but wee need good uri to load css, js or anything else.
@@ -423,6 +433,9 @@ abstract class Gear extends Adapter {
     public function index() {
         if (!$args = func_get_args()) {
             $args[] = 'index';
+        }
+        if(event('gear.dispatch',$this,$args)->count()){
+            return;
         }
         if(method_exists($this, $args[0] . '_action')){
             call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));

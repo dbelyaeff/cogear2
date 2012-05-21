@@ -40,8 +40,8 @@ class User_Navbar extends Object {
         $navbar->attach($user);
         $navbar->avatar = $user->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
-        if (access('user.edit.all') OR $user->id == cogear()->user->id) {
-            $navbar->edit = '<a href="' . $user->getLink('edit') . '" class="btn btn-primary btn-mini">' . t('Edit') . '</a>';
+        if (access('User.edit',$user)) {
+            $navbar->edit = '<a href="' . $user->getLink('edit') . '" class="sh no_fl" title="'.t('Edit').'"><i class="icon-pencil"></i></a>';
         }
         $tpl->navbar = $navbar;
         $tabs = new Menu_Auto(array(

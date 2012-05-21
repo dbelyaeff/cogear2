@@ -13,11 +13,6 @@ return array(
             'label' => t('Email', 'User'),
             'disabled' => TRUE,
         ),
-        'realname' => array(
-            'label' => t('Real name', 'User'),
-            'type' => 'text',
-            'validators' => array('Required',array('Length', 3), 'Name'),
-        ),
         'login' => array(
             'label' => t('Login', 'User'),
             'type' => 'text',

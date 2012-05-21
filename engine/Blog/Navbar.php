@@ -32,10 +32,10 @@ class Blog_Navbar extends Object {
         $navbar->attach($blog);
         $navbar->avatar = $blog->getAvatarImage('avatar.profile');
         $navbar->name = '<strong><a href="' . $blog->getLink() . '">' . $blog->name . '</a></strong>';
-        if (access('blog.edit.all') OR $blog->id == cogear()->blog->id) {
-            $navbar->edit = '<a class="blog-edit" href="' . $blog->getLink('edit') . '"><i class="icon-pencil"></i></a>';
+        if (access('Blog.edit',$blog)) {
+            $navbar->edit = '<a class="blog-edit" href="' . $blog->getLink('edit') . '"><i class="icon-cog"></i></a>';
         }
-        if (access('blog') && $this->user->id != $blog->aid) {
+        if (access('Blog.status',$blog) && $this->user->id != $blog->aid) {
             $status = cogear()->blog->check($blog->id);
             switch ($status) {
                 case 0:
@@ -59,7 +59,7 @@ class Blog_Navbar extends Object {
                         'profile' => array(
                             'label' => t('Posts', 'Blog').' <sup>'.$blog->posts.'</sup>',
                             'link' => $blog->getLink(),
-                            'active' => check_route('blog', Router::STARTS) && !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
+                            'active' =>  !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
                         ),
                         'edit' => array(
                             'label' => t('Edit'),

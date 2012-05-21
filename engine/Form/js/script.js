@@ -32,13 +32,15 @@ function validateForm($id,data){
         })
     });
 }
-
 $(document).ready(function(){
-    $('body').on('click','form .controls',function(){
-        $group  = $(this).parent('.control-group');
-        if($group.hasClass('error')){
-            $group.removeClass('error');
-            $group.find('.help-inline').remove();
-        }
+    $('body').on('click','form .error',function(){
+        $group  = $(this);
+        $element = $('.form-element',$group);
+        $element.off('change.error').one('change.error',function(){
+            if($group.hasClass('error')){
+                $group.removeClass('error');
+                $group.find('.help-inline').remove();
+            }
+        });
     });
-})
+});

@@ -73,3 +73,31 @@
 .comment.hidden{
     border: 1px solid pink;
 }
+.comments-new{
+}
+#comments-updater{
+    position: fixed;
+    right: 0;
+    top: 50%;
+    height: 100px;
+    margin-top: -50px;
+    width: 40px;
+}
+#comments-updater a{
+    cursor: pointer;
+    text-align: center;
+    display: block;
+}
+#comments-updater #comments-updater-director{
+
+}
+#comments-updater #comments-updater-handler{
+    background: #EBEBEB url(../img/update.gif) no-repeat center center;
+    height: 40px;
+}
+#comments-updater #comments-updater-handler.active{
+    background: #EBEBEB url(../img/update.active.gif) no-repeat center center;
+}
+#comments-updater #comments-updater-counter{
+
+}

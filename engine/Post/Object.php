@@ -71,7 +71,6 @@ class Post_Object extends Db_Item {
      */
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
-        $data['ip'] = cogear()->session->get('ip');
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
             event('post.update', $data);

@@ -26,6 +26,13 @@ class Blog_Gear extends Gear {
         'post.insert' => 'hookBlogPostCount',
         'post.update' => 'hookBlogPostCount',
         'post.delete' => 'hookBlogPostCount',
+        'user.delete' => 'hookUserDelete',
+    );
+    protected $access = array(
+        'create' => 'access',
+        'edit' => 'access',
+        'status' => 'access',
+        'delete' => 'access',
     );
     public $current;
     const LEFT = 0;
@@ -33,6 +40,39 @@ class Blog_Gear extends Gear {
     const APPROVED = 2;
     const MODER = 3;
     const ADMIN = 4;
+
+    /**
+     * Acccess
+     *
+     * @param string $rule
+     * @param object $data
+     */
+    public function access($rule, $data = NULL) {
+        switch ($rule) {
+            case 'create':
+
+                break;
+            case 'edit':
+                if ($data instanceof Blog_Object) {
+                    return $data->aid == $this->user->id;
+                }
+                else {
+                    if($blog = blog($data[0])){
+                        if($blog->aid == $this->user->id){
+                            return TRUE;
+                        }
+                    }
+                }
+                break;
+            case 'status':
+
+                break;
+            case 'delete':
+
+                break;
+        }
+        return FALSE;
+    }
 
     /**
      * Constructor
@@ -58,15 +98,14 @@ class Blog_Gear extends Gear {
      */
     public function hookBlogPostCount($data = array(), $uid = NULL) {
         $blog = new Blog();
-        if($data && isset($data['bid'])){
+        if ($data && isset($data['bid'])) {
             $blog->id = $data['bid'];
-        }
-        elseif($uid){
+        } elseif ($uid) {
             $blog->aid = $uid;
             $blog->type = 0; // Personal blog
         }
-        if($blog->find()){
-            $blog->posts = $this->db->where(array('bid'=>$blog->id,'published'=>1))->count('posts','id',TRUE);
+        if ($blog->find()) {
+            $blog->posts = $this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE);
         }
         $blog->save();
     }
@@ -77,15 +116,15 @@ class Blog_Gear extends Gear {
      * @param type $title
      */
     public function hookPostTitle($title) {
-        if($title->object->preview){
+        if ($title->object->preview) {
             return;
         }
         $blog = new Blog();
         $blog->id = $title->object->bid;
-        if($this->blog->current && $blog->id != $this->blog->current->id){
+        if ($this->blog->current && $blog->id != $this->blog->current->id) {
             return;
         }
-        if ($blog->find() &&$title->object->teaser) {
+        if ($blog->find() && $title->object->teaser) {
             $title->inject(' &larr; ' . $blog->getAvatarImage() . ' ' . $blog->getLink('profile'), 1);
         }
     }
@@ -156,6 +195,20 @@ class Blog_Gear extends Gear {
             'values' => $values,
             'order' => 3,
         ));
+    }
+
+    /**
+     * Hook user delete
+     *
+     * @param object $User
+     */
+    public function hookUserDelete($User) {
+        $blog = new Blog();
+        $blog->aid = $User->id;
+        $blog->type = Blog::$types['personal'];
+        if ($blog->find()) {
+            $blog->delete();
+        }
     }
 
     /**
@@ -246,10 +299,10 @@ class Blog_Gear extends Gear {
      * @param   string  $subaction
      */
     public function create_action() {
-        if (!access('blog.create')) {
+        if (!access('Blog.create')) {
             return event('403');
         }
-        $form = new Form('Blog.blog');
+        $form = new Form('Blog.create');
         if ($result = $form->result()) {
             $blog = new blog();
             $blog->attach($result);
@@ -260,31 +313,25 @@ class Blog_Gear extends Gear {
             }
         }
         // Remove 'delete' button from create blog form
-        $form->elements->offsetUnset('avatar');
-        $form->elements->offsetUnset('delete');
         $form->show();
     }
 
     /**
      * Custom dispatcher
      *
-     * @param   string  $subaction
+     * @param   int  $id
      */
-    public function edit_action($login = 0) {
-        if (!access('blog.edit')) {
-            return event('403');
-        }
+    public function edit_action($id = 0) {
         $blog = new Blog();
-        $blog->login = $login;
-        if (!$blog->find() OR !access('blog.edit.all') OR !access('blog.edit') && $this->user->id != $blog->aid) {
+        $blog->id = $id;
+        if (!$blog->find()) {
             return event('404');
         }
-        $form = new Form('Blog.blog');
+        $form = new Form('Blog.edit');
         $form->init();
         $form->avatar->options->rename = $blog->login;
         $form->attach($blog);
-        access('blog.edit.login') OR $form->login->options->disabled = TRUE;
-        access('blog.delete.all') OR $form->elements->offsetUnset('delete');
+        access('Blog.edit.login') OR $form->login->options->disabled = TRUE;
         $form->title->options->label = t('Edit blog %s', 'Blog', $blog->getLink('profile'));
         $form->create->options->label = t('Save');
         if ($result = $form->result()) {
@@ -294,7 +341,6 @@ class Blog_Gear extends Gear {
                 redirect($blog->getLink('edit'));
             }
         }
-        // Remove 'delete' button from create blog form
         $form->show();
     }
 
@@ -405,4 +451,22 @@ class Blog_Gear extends Gear {
         }
     }
 
+}
+
+
+/**
+ * Shortcut for blog
+ *
+ * @param int $id
+ * @param string    $param
+ */
+function blog($id = NULL,$param = 'id'){
+    if($id){
+        $blog = new Blog();
+        $blog->$param = $id;
+        if($blog->find()){
+            return $blog;
+        }
+    }
+    return new Blog();
 }

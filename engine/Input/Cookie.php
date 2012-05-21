@@ -19,11 +19,12 @@ class Input_Cookie {
      * @param int $expire
      * @param string $path
      */
-    public static function set($name,$value,$expire = NULL,$path = NULL){
+    public static function set($name,$value,$expire = NULL,$path = NULL,$domain = NULL){
         // By default cookie lifetime is month
         $expire OR $expire = 2592000;
         $path OR $path = '/';
-        setcookie($name, $value, time()+$expire, $path, '.'.config('site.url'));
+        $domain OR $domain =  '.'.config('site.url');
+        setcookie($name, $value, time()+$expire, $path, $domain);
     }
     /**
      * Get cookie

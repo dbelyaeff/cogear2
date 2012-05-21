@@ -49,6 +49,6 @@ class Response_Gear extends Gear {
      */
     public function showEmpty(){
         $this->request();
-        warning(t('Nothing found','Response'));
+        warning(t('Nothing found','Response'),NULL,'content');
     }
 }

@@ -84,12 +84,6 @@ class Comments_Object extends Db_Tree {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-            if ($childs = $this->getChilds()) {
-                foreach ($childs as $child) {
-                    $child->published = $comment->published;
-                    $child->delete();
-                }
-            }
             event('comment.delete',$this);
         }
         return $result;

@@ -28,6 +28,7 @@ class Form_Object extends Object {
     protected $counter = 0;
     public $ajaxed;
     public $result;
+    protected $defaults;
 
     /**
      * Rendered form code
@@ -96,6 +97,7 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct($options);
+        $this->defaults = new Config(cogear()->form->dir.DS.'defaults.php');
         event('form.load', $this);
         event('form.load.' . $this->name, $this);
     }
@@ -108,6 +110,13 @@ class Form_Object extends Object {
      */
     public function addElement($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
+        if($this->defaults->$name){
+            $this->defaults->$name->mix($config);
+            $config = $this->defaults->$name;
+        }
+        if($config->label && !$config->placeholder && in_array($config->type,array('text','input','textarea','password','editor'))){
+            $config->placeholder = t('Enter %s…','Form.placeholder',  strtolower($config->label));
+        }
         $config->name = $name;
         $config->form = $this;
         if (!$config->order) {

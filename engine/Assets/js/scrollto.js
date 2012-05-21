@@ -11,7 +11,7 @@
         $.extend(options,config);
         $target = $(this);
         $('html,body').animate({
-            scrollTop:($target.offset().top-($target.height()))
+            scrollTop:($target.offset().top-(($(window).height()/2)-($target.height()/2)))
         }, options.duration,$.proxy(options.callback,$target));
     }
     $(document).on('click.scrollTo','a.scrollTo',function(event){

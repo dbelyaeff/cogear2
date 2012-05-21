@@ -22,23 +22,22 @@ class Pages_Object extends Db_Tree {
      *
      * @return string
      */
-    public function getLink() {
-        $uri = new Stack(array('name' => 'page.link'));
-        $uri->append('page');
-        $uri->append($this->id);
-        return '/' . $uri->render('/');
-    }
-    /**
-     * Get page Uri
-     *
-     * @return string
-     */
     public function getLink($type = 'default') {
-        $uri = new Stack(array('name' => 'page.link.edit'));
-        $uri->append('admin');
-        $uri->append('pages');
-        $uri->append('edit');
-        $uri->append($this->id);
+        switch ($type) {
+            case 'edit':
+                $uri = new Stack(array('name' => 'page.link.edit'));
+                $uri->append('admin');
+                $uri->append('pages');
+                $uri->append('edit');
+                $uri->append($this->id);
+                break;
+            default:
+                $uri = new Stack(array('name' => 'page.link'));
+                if(!config('Pages.root_link',FALSE)){
+                    $uri->append('pages');
+                }
+                $uri->append($this->link);
+        }
         return '/' . $uri->render('/');
     }
 
@@ -53,7 +52,7 @@ class Pages_Object extends Db_Tree {
         $data['last_update'] = time();
         $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
-
+            event('page.insert',$this,$data);
         }
         return $result;
     }
@@ -67,7 +66,7 @@ class Pages_Object extends Db_Tree {
         $data OR $data = $this->object->toArray();
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
-
+            event('page.update',$this,$data);
         }
         return $result;
     }
@@ -78,7 +77,7 @@ class Pages_Object extends Db_Tree {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-
+            event('page.delete',$this);
         }
         return $result;
     }

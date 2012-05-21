@@ -11,6 +11,6 @@
  * @subpackage
  * @version		$Id$
  */
-class Comment extends Comments_Object {
+class Comments extends Comments_Object {
 
 }

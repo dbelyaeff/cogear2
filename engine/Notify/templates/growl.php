@@ -3,7 +3,7 @@
         $options = array();
         if($title) $options['header'] = addslashes ($title);
         if($class) $options['theme'] = $class;
-        $options['position'] = config('notify.growl.position','bottom-right');
+        $options['position'] = config('notify.growl.position','top-right');
     ?>
     $.jGrowl("<?php echo addslashes($body)?>"<?php if($options){ echo ', '.json_encode($options);}?>)
 </script>

@@ -1,8 +1,8 @@
-function showElFinder(){
+function showFilesManager(){
     $('<div id="markitup-elfinder"/>').appendTo('body');
     $('#markitup-elfinder').elfinder({
         lang: 'ru',
-        url : l('/files/connector'), 
+        url : l('/files/connector'),
         getFileCallback:function(file){
             $.markItUp({ replaceWith:getFileCodeFromLink(file)});
             $.fancybox.close();

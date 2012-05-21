@@ -4,6 +4,12 @@ return array (
   array (
     'Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.' => '',
   ),
+  '#Access' => 
+  array (
+    'Access denied' => '',
+    'You don\'t have permission for this page.' => '',
+    'You don\'t have permission to view this page.' => '',
+  ),
   '#Admin.site' => 
   array (
     'Site settings' => '',
@@ -66,6 +72,7 @@ return array (
     'Post comment %s' => '',
     'Post comment text here…' => '',
     'Comments has been deleted' => '',
+    'to the post' => '',
   ),
   '#Database' => 
   array (
@@ -113,11 +120,54 @@ return array (
   array (
     'Error in file <b>%s</b> was found at line <b>%d</b>: <p><i>%s</i>' => '',
   ),
+  '#Fave' => 
+  array (
+    'Favorite' => '',
+    'Favorites' => '',
+    'Posts' => '',
+    'Comments' => '',
+    'Post has been added to favorites!' => '',
+    'Post has been removed from favorites!' => '',
+    'Comment has been added to favorites!' => '',
+  ),
   '#File' => 
   array (
     'Only following types of files are allowed: <b>%s</b>.' => '',
     'File you are trying to upload has unusual MIME-type. It is like <b>%s</b>, but it was expected to be <b>%s</b>' => '',
     'Error' => '',
+  ),
+  '#Files' => 
+  array (
+    'Files' => '',
+  ),
+  '#Form' => 
+  array (
+    'This string will be used to form object uri.' => '',
+    'This string will be used to form object link.' => '',
+  ),
+  '#Form.descriptions' => 
+  array (
+    'This string will be used to form link. If empty field will be filled automatically.' => '',
+  ),
+  '#Form.elements' => 
+  array (
+    'Title' => '',
+    'Link' => '',
+    'Content' => '',
+    'Preview' => '',
+    'Draft' => '',
+    'Publish' => '',
+    'Text' => '',
+  ),
+  '#Form.placeholder' => 
+  array (
+    'Enter %s…' => '',
+  ),
+  '#Form.placeholders' => 
+  array (
+    'Title…' => '',
+    'Link snippet…' => '',
+    'Enter text…' => '',
   ),
   '#Form_Validate' => 
   array (
@@ -154,6 +204,11 @@ return array (
     'or<br/>Drag and drop your images here' => '',
     'or<p><b>Drag and drop your images here</b>' => '',
   ),
+  '#Mail.lostpassword' => 
+  array (
+    'Password recovery on %s' => '',
+    'Follow the instructions that were send to your email.' => '',
+  ),
   '#Mail.registration' => 
   array (
     'Registraion on %s' => '',
@@ -161,6 +216,37 @@ return array (
                             Please, click following link to procceed email verification:<p>
                             <a href="%s">%s</a>' => '',
     'Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.' => '',
+    'You password recovery has been requeset on http://%s from IP-address <b>%s</b>.
+                                    <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
+                                    <p>To recover password, click following link:<p>
+                            <a href="%s">%s</a>' => '',
+  ),
+  '#Mail.templates' => 
+  array (
+    'New comment to your post' => '',
+    'Reply for your comment' => '',
+    'User <a href="%user_link%">%user_name%</a> has answered for you comment to post <a href="%post_link%">"%post_name%"</a>:
+                            <p><i>%comment%</i></p>
+                            <p><a href="%reply_link%">Reply &rarr;</a></p>' => '',
+  ),
+  '#Pages' => 
+  array (
+    'Create page' => '',
+    'Title' => '',
+    'Parent page' => '',
+    'Content' => '',
+    'Preview' => '',
+    'Draft' => '',
+    'Publish' => '',
+    'Slug' => '',
+    'Uri' => '',
+    'Page is published! %s' => '',
+    'Enter page title…' => '',
+    'Enter page uri address…' => '',
+    'Page title…' => '',
+    'Page uri address…' => '',
+    'Link' => '',
+    'Page link snippet…' => '',
   ),
   '#Popup' => 
   array (
@@ -180,6 +266,14 @@ return array (
     'Post is published! %s' => '',
     'Post has been deleted' => '',
     'Save' => '',
+  ),
+  '#ReCaptcha' => 
+  array (
+    'Captcha' => '',
+    'The reCAPTCHA wasn\'t entered correctly. Go back and try it again.(reCAPTCHA said: %s)' => '',
+    'Security code' => '',
+    'In order to identify your humanity, enter the displayed code.' => '',
+    'You\'ve tried to submit this form for already %d times. <br/>In order to identify your humanity, enter the displayed code.' => '',
   ),
   '#Redactor' => 
   array (
@@ -227,10 +321,21 @@ return array (
     'OR' => '',
     'Wrong credentials.' => '',
     'Authentification error' => '',
+    'Personal' => '',
+    'Avatar' => '',
+    'Email or Login' => '',
+    'Login or e-mail' => '',
+    'Enter' => '',
+    'User data saved!' => '',
+  ),
+  '#User.lostpassword' => 
+  array (
+    'You have been logged in be temporary link. Now you can change your password.' => '',
   ),
   '#User.register' => 
   array (
     'Registration is complete!' => '',
+    'Registration code was not found.' => '',
   ),
   '#blog' => 
   array (
@@ -251,7 +356,9 @@ return array (
   'Drag and drop your images here' => '',
   'Edit' => '',
   'Edit comment' => '',
+  'Edit page' => '',
   'Edit post' => '',
+  'Email is already taken!' => '',
   'Error' => '',
   'Hide' => '',
   'Image preset <b>%s</b> doesn\'t exists.' => '',
@@ -264,6 +371,9 @@ return array (
   'Lost password' => '',
   'No' => '',
   'OR' => '',
+  'Page published!' => '',
+  'Please, provide correct e-mail address.' => '',
+  'Post comment' => '',
   'Post published!' => '',
   'Post saved to drafts!' => '',
   'Preview' => '',
@@ -274,11 +384,15 @@ return array (
   'Renew password' => '',
   'Save' => '',
   'Session' => '',
+  'Success' => '',
   'The page you are looking for is not found.' => '',
   'This field is required.' => '',
   'Unlink' => '',
   'Update' => '',
   'Upload images' => '',
+  'User <a href="%user_link%">%user_name%</a> has published a comment to your post <a href="%post_link%">"%post_name%"</a>:
+                            <p><i>%comment%</i></p>
+                            <p><a href="%reply_link%">Reply &rarr;</a></p>' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
   'View' => '',

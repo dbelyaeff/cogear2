@@ -8,23 +8,9 @@ return array(
             'label' => t('Create Blog', 'Blog'),
             'elements' => array(
                 'name' => array(
-                    'type' => 'text',
-                    'label' => t('Title', 'Blog'),
-                    'validators' => array('Required', array('Length', 5)),
                 ),
                 'login' => array(
-                    'type' => 'text',
                     'label' => t('Login', 'Blog'),
-                    'validators' => array('Required', array('Length', 3)),
-                ),
-                'type' => array(
-                    'type' => 'select',
-                    'label' => t('Type', 'Blog'),
-                    'value' => 1,
-                    'values' => array(
-                        1 => t('Public', 'Blog'),
-                        2 => t('Private', 'Blog'),
-                    ),
                 ),
                 'avatar' => array(
                     'label' => t('Avatar', 'Blog'),
@@ -34,13 +20,9 @@ return array(
                     'overwrite' => TRUE,
                 ),
                 'body' => array(
-                    'type' => 'editor',
-                    'label' => t('Content', 'Blog'),
-                    'validators' => array(array('Length', 5)),
+                    'label' => t('Description', 'Blog'),
                 ),
                 'actions' => array(
-                    'type' => 'group',
-                    'class' => 'form-actions',
                     'elements' => array(
                         'buttons' => array(
                             'type' => 'group',
@@ -52,11 +34,6 @@ return array(
                                     'label' => t('Create', 'Blog'),
                                 ),
                             ),
-                        ),
-                        'delete' => array(
-                            'type' => 'delete',
-                            'class' => 'fl_r',
-                            'label' => t('Delete'),
                         ),
                     )
                 ),

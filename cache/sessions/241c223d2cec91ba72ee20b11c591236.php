@@ -1,0 +1,5 @@
+<?php 
+return array (
+  'value' => 'user_agent|a:5:{s:7:"browser";s:6:"chrome";s:7:"version";i:19;s:2:"os";s:7:"windows";s:9:"is_mobile";N;s:6:"locale";s:2:"en";}ip|s:9:"127.0.0.1";session_id|s:32:"241c223d2cec91ba72ee20b11c591236";faves|a:2:{s:5:"posts";a:1:{i:28;i:1;}s:8:"comments";a:10:{i:1;i:1;i:9;i:1;i:10;i:1;i:3;i:1;i:8;i:1;i:7;i:1;i:6;i:1;i:5;i:1;i:4;i:1;i:11;i:1;}}comments_views|a:1:{i:28;a:2:{s:4:"last";s:2:"21";s:5:"count";s:2:"19";}}user|C:16:"Core_ArrayObject":521:{x:i:0;a:17:{s:2:"id";s:1:"1";s:5:"login";s:5:"admin";s:8:"password";s:32:"742e2d9fc498b910a74846da5384a7dd";s:4:"hash";s:32:"c535ef8cb9b02af1b3907c5ab8d4009e";s:5:"email";s:15:"admin@cogear.ru";s:4:"name";s:27:"Беляев Дмитрий";s:6:"avatar";s:16:"/avatars/1/1.jpg";s:4:"role";s:1:"1";s:5:"posts";s:1:"1";s:6:"drafts";s:1:"0";s:7:"friends";s:1:"2";s:11:"subscribers";s:1:"0";s:2:"pm";s:1:"0";s:6:"pm_new";s:1:"0";s:8:"comments";s:1:"0";s:8:"reg_date";s:10:"1333104704";s:10:"last_visit";i:1337594362;};m:a:0:{}}blogs|C:16:"Core_ArrayObject":57:{x:i:0;a:3:{i:1;s:1:"4";i:2;s:1:"4";i:3;s:1:"1";};m:a:0:{}}',
+  'ttl' => NULL,
+);

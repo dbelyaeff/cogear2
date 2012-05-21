@@ -15,13 +15,46 @@ class User_Gear extends Gear {
 
     protected $name = 'User';
     protected $description = 'Manage users.';
-    protected $order = -10;
+    protected $order = -999;
     protected $current;
     protected $hooks = array(
         'comment.insert' => 'hookUserRecalculateComments',
         'comment.update' => 'hookUserRecalculateComments',
         'comment.delete' => 'hookUserRecalculateComments',
+        'assets.js.global' => 'hookGlobalScripts',
     );
+    protected $access = array(
+        'edit' => 'access',
+        'delete' => 'access',
+        'login' => array(0),
+        'logout' => array(100),
+    );
+
+    /**
+     * Access
+     *
+     * @param string $rule
+     * @param object $data
+     */
+    public function access($rule, $data = NULL) {
+        switch ($rule) {
+            case 'edit':
+                if ($data instanceof User_Object) {
+                    if ($data->id == $this->user->id) {
+                        return TRUE;
+                    }
+                }
+                // Catch user_id from uri and compare it with current user
+                elseif ($this->user->id == $data[0]) {
+                    return TRUE;
+                }
+                break;
+            case 'delete':
+
+                break;
+        }
+        return FALSE;
+    }
 
     /**
      * Init
@@ -44,15 +77,36 @@ class User_Gear extends Gear {
     public function hookUserRecalculateComments($Commment) {
         if ($Comment->aid == $this->user->id) {
             $User = $this->user->current;
-        }
-        else {
+        } else {
             $User = new User();
             $User->id = $comment->aid;
-            if(!$User->find()){
+            if (!$User->find()) {
                 return;
             }
         }
         $User->recalculate('comments');
+    }
+
+    /**
+     * Hook global javascript
+     *
+     * @param object $cogear
+     */
+    public function hookGlobalScripts($cogear) {
+        if ($this->isLogged()) {
+            $user = array(
+                'id' => $this->adapter->id,
+                'role' => $this->adapter->role,
+                'login' => $this->adapter->login,
+                'name' => $this->adapter->name,
+            );
+        } else {
+            $user = array(
+                'id' => 0,
+                'role' => 0,
+            );
+        }
+        $cogear->user = new Core_ArrayObject($user);
     }
 
     /**
@@ -81,6 +135,7 @@ class User_Gear extends Gear {
                         'label' => t('Logout'),
                         'link' => s('/user/logout'),
                         'place' => 'right',
+                        'order' => 1000,
                     ));
                 } else {
                     $menu->register(array(
@@ -116,7 +171,7 @@ class User_Gear extends Gear {
                     'template' => 'Twitter_Bootstrap.tabs',
                     'elements' => array(
                         'login' => array(
-                            'label' => t('Login'),
+                            'label' => t('Enter'),
                             'link' => l('/user/login'),
                         ),
                         'lostpassword' => array(
@@ -172,12 +227,9 @@ class User_Gear extends Gear {
     public function edit_action($id = NULL) {
         $id OR $id = $this->user->id;
         $user = new User_Object();
-        $this->db->where('id', $id);
+        $user->id = $id;
         if (!$user->find()) {
             return event('404');
-        }
-        if (!access('user.edit.all') && $this->id != $user->id) {
-            return event('403');
         }
         $user->navbar()->show();
         $form = new Form('User.profile');
@@ -186,11 +238,15 @@ class User_Gear extends Gear {
         if ($user->id == 1) {
             $form->elements->delete->options->render = FALSE;
         }
+        $form->init();
+        if (!access('User.delete')) {
+            $form->elements->offsetUnset('delete');
+        }
         if ($result = $form->result()) {
             if ($user->login != $result['login']) {
                 $redirect = Url::gear('user') . $result['login'];
             }
-            if ($result->delete && access('user.delete.all')) {
+            if ($result->delete && access('User.delete', $user)) {
                 if ($user->delete()) {
                     flash_success(t('User <b>%s</b> was deleted!', 'User', $user->login));
                     redirect(l());
@@ -217,9 +273,6 @@ class User_Gear extends Gear {
      * Login form show
      */
     public function login_action() {
-        if ($this->isLogged()) {
-            return warning('You are already logged in!', 'Authorization');
-        }
         $this->showMenu();
         $form = new Form('User.login');
         if ($data = $form->result()) {
@@ -229,8 +282,14 @@ class User_Gear extends Gear {
                 $data->saveme && $this->remember();
                 redirect($this->getLink());
             } else {
-                error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
+                $this->object->email = $this->object->login;
+                $this->object->offsetUnset('login');
+                if ($this->find() && $this->login()) {
+                    $data->saveme && $this->remember();
+                    redirect($this->getLink());
+                }
             }
+            error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
         }
         $form->show();
     }
@@ -285,7 +344,8 @@ class User_Gear extends Gear {
                         success(t('Follow the instructions that were send to your email.', 'Mail.lostpassword', $user->email));
                     }
                 } else {
-                    error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
+                    error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'), 'growl');
+                    $form->show();
                 }
             }
             else
@@ -348,6 +408,7 @@ class User_Gear extends Gear {
                     $mail->to($user->email);
                     if ($mail->send()) {
                         $user->save();
+                        event('user.confirmation', $user);
                         success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.', 'Mail.registration', $user->email));
                     }
                 } else {
@@ -360,4 +421,23 @@ class User_Gear extends Gear {
         }
     }
 
+}
+
+/**
+ * Shortcut for user
+ *
+ * @param int $id
+ * @param string    $param
+ */
+function user($id = NULL, $param = 'id') {
+    if ($id) {
+        $user = new User();
+        $user->$param = $id;
+        if ($user->find()) {
+            return $user;
+        }
+        return NULL;
+    } else {
+        return cogear()->user;
+    }
 }

@@ -8,15 +8,29 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Assets_Gear extends Gear {
 
     protected $name = 'Assets';
     protected $description = 'Manage assets';
-    protected $order = -1000;
-
+    protected $order = -999;
+    protected $hooks = array(
+        'done' => 'hookDone',
+    );
+    /**
+     * Load javascript variables
+     */
+    public function hookDone(){
+        $cogear = new Core_ArrayObject();
+        $cogear->settings = new Core_ArrayObject();
+        $cogear->settings->site = config('site.url');
+        event('assets.js.global', $cogear);
+        inline_js("
+            var cogear = cogear || " . json_encode($cogear) . ";
+", 'head');
+    }
     /**
      * Constructor
      */
@@ -25,19 +39,4 @@ class Assets_Gear extends Gear {
         $this->adapter = new Assets_Harvester();
         cogear()->assets = $this;
     }
-
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-        $cogear = new Core_ArrayObject();
-        $cogear->settings = new Core_ArrayObject();
-        $cogear->settings->site = config('site.url');
-        event('Assets.js.global', $cogear);
-        inline_js("
-            var cogear = cogear || " . json_encode($cogear) . ";               
-", 'head');
-    }
-
 }

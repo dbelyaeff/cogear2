@@ -63,6 +63,7 @@ class Db_ORM extends Object {
      */
     protected $filters_out = array();
     protected $reflection;
+    protected $class;
     public static $skipClear = FALSE;
 
     const FILTER_IN = 0;
@@ -77,16 +78,24 @@ class Db_ORM extends Object {
     public function __construct($table = NULL, $primary = NULL) {
         parent::__construct();
         if (self::$skipClear) {
-            self::$skipClear = FALSE;
+            self::skipClear(FALSE);
         } else {
             $this->clear();
         }
         $table && $this->table = $table;
         $this->fields = cogear()->db->getFields($this->table);
         $this->reflection = new ReflectionClass($this);
+        $this->class = $this->reflection->getName();
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
         $this->primary = $primary ? $primary : $first;
+    }
+
+    /**
+     * Set skip db reset before object init
+     */
+    public static function skipClear($set = TRUE){
+         self::$skipClear = $set;
     }
 
     /**

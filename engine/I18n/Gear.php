@@ -40,9 +40,9 @@ class I18n_Gear extends Gear {
 
     /**
      * Menu
-     * 
+     *
      * @param string $name
-     * @param object $menu 
+     * @param object $menu
      */
     public function menu($name, &$menu) {
         switch ($name) {
@@ -63,15 +63,15 @@ class I18n_Gear extends Gear {
      * @return   string
      */
     public function transliterate($text) {
-        if (function_exists('transliterate_' . $this->lang)) {
-            $text = call_user_func_array('transliterate_' . $this->lang, array($text));
-        }
-        return $text;
+        $data = new Core_ArrayObject();
+        $data->text = $text;
+        event('i18n.transliterate',$data);
+        return $data->text;
     }
 
     /**
      * Translate
-     * 
+     *
      * @param string $text
      * @param string $domain
      * @return string
@@ -83,7 +83,7 @@ class I18n_Gear extends Gear {
 
     /**
      * Set domain
-     * 
+     *
      * @param   string  $domain If empty — return to previous domain
      */
     public function setDomain($domain = '') {
@@ -144,8 +144,8 @@ function t($text, $domain = '') {
 
 /**
  * Set domain
- * 
- * @param string $domain 
+ *
+ * @param string $domain
  */
 function d($domain = '') {
     $cogear = getInstance();
@@ -154,7 +154,7 @@ function d($domain = '') {
 
 /**
  * Transliterate text to machine readable (simplty to latin chars)
- * 
+ *
  * @param string $text
  * @return string
  */
@@ -184,28 +184,4 @@ function declOfNum($number, $titles) {
     }
     $offset = ($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)];
     return isset($titles[$offset]) ? $titles[$offset] : array_shift($offset);
-}
-
-/**
- * Transliteration from Russian language
- *
- * @param   string  $text
- * @return   string
- */
-function transliterate_ru($text) {
-    $LettersFrom = explode(",", "а,б,в,г,д,е,з,и,к,л,м,н,о,п,р,с,т,у,ф,ц,ы");
-    $separator = config('i18n.machine_name.separator', '-');
-    $LettersTo = explode(",", "a,b,v,g,d,e,z,i,k,l,m,n,o,p,r,s,t,u,f,c,y");
-    $BiLetters = array(
-        "й" => "jj", "ё" => "jo", "ж" => "zh", "х" => "kh", "ч" => "ch",
-        "ш" => "sh", "щ" => "shh", "э" => "je", "ю" => "ju", "я" => "ja",
-        "ъ" => "", "ь" => "",
-    );
-    $Caps = explode(",", "А,Б,В,Г,Д,Е,Ё,Ж,З,И,Й,К,Л,М,Н,О,П,Р,С,Т,У,Ф,Х,Ц,Ч,Ш,Щ,Ь,Ъ,Ы,Э,Ю,Я");
-    $Small = explode(",", "а,б,в,г,д,е,ё,ж,з,и,й,к,л,м,н,о,п,р,с,т,у,ф,х,ц,ч,ш,щ,ь,ъ,ы,э,ю,я");
-    $text = preg_replace("/\s+/ms", $separator, $text);
-    $text = str_replace($Caps, $Small, $text);
-    $text = str_replace($LettersFrom, $LettersTo, $text);
-    $text = strtr($text, $BiLetters);
-    return $text;
 }

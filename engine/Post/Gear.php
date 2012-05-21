@@ -22,6 +22,14 @@ class Post_Gear extends Gear {
         'comment.update' => 'hookPostCommentsCount',
         'comment.delete' => 'hookPostCommentsCount',
     );
+    protected $access = array(
+        'edit' => array(100),
+        'edit.all' => array(1),
+        'delete' => array(1),
+        'delete.all' => array(1),
+        'hide' => array(1),
+        'menu' => array(100),
+    );
 
     /**
      * Recalculate user posts count and store it to database
@@ -42,13 +50,14 @@ class Post_Gear extends Gear {
      *
      * @param type $Comment
      */
-    public function hookPostCommentsCount($Comment){
+    public function hookPostCommentsCount($Comment) {
         $post = new Post();
         $post->id = $Comment->post_id;
-        if($post->find()){
+        if ($post->find()) {
             $post->recalculate('comments');
         }
     }
+
     /**
      * Menu hook
      *
@@ -63,15 +72,16 @@ class Post_Gear extends Gear {
                     'label' => icon('pencil icon-white'),
                     'link' => l('/post/create/'),
                     'place' => 'left',
-                    'access' => access('post.create'),
+                    'access' => access('Post.create'),
                 ));
                 break;
-            case 'blog.tabs':
-                if ($menu->object->aid == $this->user->id && $menu->object->type == 0) {
+            case 'user.profile.tabs':
+                if ($menu->object->id == $this->user->id) {
                     $menu->register(array(
                         'label' => t('Drafts') . ' <sup>' . $this->user->drafts . '</sup>',
                         'link' => l('/post/drafts/'),
                         'active' => check_route('post/drafts'),
+                        'order' => 2.1,
                     ));
                 }
                 break;
@@ -109,7 +119,7 @@ class Post_Gear extends Gear {
         $blog->aid = $this->user->id;
         $blog->type = Blog::$types['personal'];
         if ($blog->find()) {
-            $blog->navbar()->show();
+            $this->user->navbar()->show();
             $blog->where['published'] = 0;
             $blog->show();
 
@@ -183,7 +193,7 @@ class Post_Gear extends Gear {
         $form->elements->title->options->label = t('Edit post');
         if ($result = $form->result()) {
             $post->object->mix($result);
-            if ($result->delete && (access('post.delete.all') OR access('post.delete') && $this->user->id == $post->aid)) {
+            if ($result->delete && (access('Post.delete.all') OR access('Post.delete') && $this->user->id == $post->aid)) {
                 $blog = new Blog();
                 $blog->id = $post->bid;
                 $blog->find();
@@ -225,7 +235,7 @@ class Post_Gear extends Gear {
     public function hide_action($post_id) {
         $post = new Post();
         $post->id = $post_id;
-        if ($post->find() && (access('post.hide.all') OR $post->aid == $this->user->id)) {
+        if ($post->find() && (access('Post.hide.all') OR $post->aid == $this->user->id)) {
             $data = array();
             if ($post->published) {
                 $post->published = 0;
@@ -254,7 +264,7 @@ class Post_Gear extends Gear {
     public function delete_action($post_id) {
         $post = new Post();
         $post->id = $post_id;
-        if ($post->find() && access('post.delete.all')) {
+        if ($post->find() && access('Post.delete.all')) {
             $blog = new Blog();
             $blog->id = $post->bid;
             $blog->find();
@@ -281,4 +291,21 @@ class Post_Gear extends Gear {
         }
     }
 
+}
+
+/**
+ * Shortcut for post
+ *
+ * @param int $id
+ * @param string    $param
+ */
+function post($id = NULL,$param = 'id'){
+    if($id){
+        $post = new Post();
+        $post->$param = $id;
+        if($post->find()){
+            return $post;
+        }
+    }
+    return new Post();
 }

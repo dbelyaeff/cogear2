@@ -60,11 +60,20 @@ class Menu_Object extends Object {
      * Set menu items active
      */
     public function setActive() {
-        foreach ($this as &$item) {
-           NULL === $item->options->active && cogear()->router->check(trim($item->link, ' /')) && $item->options->active = TRUE;
+        $last_active = NULL;
+        foreach ($this as $key=>$item) {
+           if(NULL === $item->options->active && cogear()->router->check(trim($item->link, ' /'))){
+               $item->options->active = TRUE;
+               $last_active = $key;
+           }
+        }
+        foreach($this as $key=>$item){
+            if($last_active && $key != $last_active && $item->options->active){
+                $item->options->active = FALSE;
+            }
         }
     }
-    
+
     /**
      * Filter menu elements with conditions
      *

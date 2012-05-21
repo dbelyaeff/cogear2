@@ -18,6 +18,9 @@ class Dev_Gear extends Gear {
     protected $name = 'Developer';
     protected $description = 'Calculate cogear performance at current system configuration.';
     protected $order = 0;
+    protected $access = array(
+        'index' => array(1),
+    );
 
     /**
      * Benchmark points
@@ -26,42 +29,30 @@ class Dev_Gear extends Gear {
      */
     protected $points = array();
 
-    /**
-     * Initialization
-     */
-    public function init() {
-        parent::init();
+    public function __construct() {
+        parent::__construct();
         $this->addPoint('system.begin');
-        hook('done', array($this, 'finalPoint'), 0);
     }
 
     /**
-     * Add benchmark info to user panel
-     * 
-     * @param   string  $name 
-     * @param object $cp 
+     * Init
      */
-    public function menu($name, &$cp) {
-//        if($this->user->id != 1) return;
-//        switch ($name) {
-//            case 'user':
-//                $cp->{Url::gear('dev')} =  t('Developer');
-//                $cp->{Url::gear('dev')}->order = 98;
-//                break;
+    public function init() {
+        parent::init();
+//        if (access('Dev')) {
+            hook('done', array($this, 'finish'));
 //        }
     }
 
     /**
      * Add final point and show calculations for system benchmark
      */
-    public function finalPoint() {
+    public function finish() {
         $this->addPoint('system.end');
-//        if (access('development')) {
-            $cogear = getInstance();
-            $template = new Template('Dev.results');
-            $template->data = Dev_Gear::humanize($cogear->dev->measurePoint('system'));
-            append('footer', $template->render());
-//        }
+        $cogear = getInstance();
+        $template = new Template('Dev.results');
+        $template->data = Dev_Gear::humanize($cogear->dev->calc('system'));
+        append('footer', $template->render());
     }
 
     /**
@@ -79,24 +70,12 @@ class Dev_Gear extends Gear {
     }
 
     /**
-     * Get points
-     */
-    public function getPoints($name = '') {
-        if (!$name) {
-            $this->addPoint('system.end');
-            return $this->points;
-        }
-        else
-            return isset($this->points[$name]) ? $this->points[$name] : NULL;
-    }
-
-    /**
      * Measure points
      * There should be two point. One with '.being' suffix, other with '.end'
      *
      * @param	string	$point
      */
-    public function measurePoint($point) {
+    public function calc($point) {
         $result = array();
         if (isset($this->points[$point . '.begin']) && isset($this->points[$point . '.end'])) {
             $result = array(
@@ -139,13 +118,12 @@ class Dev_Gear extends Gear {
 
 }
 
-
 /**
  * Temp debug
- * 
- * @param type $data 
+ *
+ * @param type $data
  */
-function debug($data){
+function debug($data) {
     echo '<pre class="debug">';
     $data ? print_r($data) : var_export($data);
     echo '</pre>';

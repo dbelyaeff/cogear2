@@ -6,16 +6,13 @@ return array(
     'ajax' => TRUE,
     'elements' => array(
         'title' => array(
-            'type' => 'title',
             'label' => t('Post comment %s','Comments',cogear()->user->getLink('avatar').' '.cogear()->user->getLink('profile')),
         ),
         'pid' => array(
             'type' => 'hidden',
         ),
         'body' => array(
-            'type' => 'editor',
-//            'validators' => array('Required',array('Length',5)),
-            'filters' => array('Jevix'),
+            'label' => '',
             'placeholder' => t('Post comment text here…','Comments'),
         ),
         'actions' => array(

@@ -31,9 +31,11 @@ ul.dd-list li{
     padding: 10px;
 }
 .dd-name{
-    width:350px;
     float: left;
+    width: 300px;
 }
 .dd-controls{
-    float: left;
+}
+.dd-item .dd-handler{
+    cursor: move;
 }

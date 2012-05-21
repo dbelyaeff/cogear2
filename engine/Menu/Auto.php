@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Menu 
+ * Menu
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Menu_Auto extends Menu_Object {
@@ -17,7 +17,7 @@ class Menu_Auto extends Menu_Object {
 
     /**
      * Render
-     * 
+     *
      * @return string
      */
     public function render() {
@@ -31,9 +31,8 @@ class Menu_Auto extends Menu_Object {
     public function init() {
         if ($this->is_init)
             return;
-        $cogear = getInstance();
-        foreach ($cogear->gears as $gear) {
-            if (method_exists($gear, 'menu')) {
+        foreach (cogear()->gears as $gear) {
+            if (method_exists($gear, 'menu') && !event('menu.auto.init',$gear,$this)->count()) {
                 call_user_func_array(array($gear, 'menu'), array($this->options->name, &$this));
             }
         }

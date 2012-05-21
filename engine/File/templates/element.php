@@ -18,12 +18,9 @@ if ($element->options->multiple) {
             dataType: 'json',
             done: function (e, response) {
                 data = response.result;
-                if(data.messages){
-                    renderMessages(data.messages);
-                }
                 if(data.success){
                     $new = $(data.code);
-                    $new.appendTo($('#<?php echo $element->getId();?> .attached-files').last());
+                    $new.appendTo($('#<?php echo $element->getId(); ?> .attached-files').last());
                 }
             }
         });

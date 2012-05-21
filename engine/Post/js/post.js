@@ -6,9 +6,6 @@ $(document).on('click','.post .post-hide',function(event){
         if(confirmed){
             $.getJSON($link.attr('href'),function(data){
                 if(data.success){
-                    if(data.messages){
-                        renderMessages(data.messages);
-                    }
                     if(data.action == 'hide'){
                         $post.addClass('draft');
                         $link.find('i').first().removeClass('icon-eye-open').addClass('icon-eye-close');
@@ -30,9 +27,6 @@ $(document).on('click','.post .post-delete',function(event){
         if(confirmed){
             $.getJSON($link.attr('href'),function(data){
                 if(data.success){
-                    if(data.messages){
-                        renderMessages(data.messages);
-                    }
                     $post.slideUp().fadeOut('slow',function(){
                         $(this).remove();
                         if(data.redirect){

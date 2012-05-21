@@ -36,7 +36,7 @@ class Post_List extends Options {
     public function render() {
         $post = new Post();
         $this->where && cogear()->db->where($this->where->toArray());
-        cogear()->db->order('created_date', 'DESC');
+        cogear()->db->order('posts.created_date', 'DESC');
         $pager = new Pager(array(
                     'current' => $this->page ? $this->page : NULL,
                     'count' => $post->count(),
@@ -52,7 +52,7 @@ class Post_List extends Options {
             $output->append($pager->render());
             return $output->toString();
         } else {
-            event('empty');
+            return FALSE;
         }
     }
 

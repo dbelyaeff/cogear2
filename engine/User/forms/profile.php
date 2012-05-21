@@ -45,8 +45,6 @@ return array(
             'class' => 'btn btn-primary',
         ),
         'delete' => array(
-            'type' => 'delete',
-            'label' => t('Delete'),
         )
     )
 );

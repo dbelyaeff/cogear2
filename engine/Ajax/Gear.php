@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ajax gear
  *
@@ -27,7 +28,28 @@ class Ajax_Gear extends Gear {
         if (Ajax::is()) {
             event('ajax.hashchange');
         }
-        append('footer','<div id="ajax-loader"><p>'.t('Loading…','Ajax').'</p></div>');
+        append('footer', '<div id="ajax-loader"><p>' . t('Loading…', 'Ajax') . '</p></div>');
     }
 
+}
+
+/**
+ * Shortcut for ajax
+ */
+function ajax($data = NULL) {
+    $ajax = new Ajax();
+    if ($data) {
+        $ajax->append($data);
+        $ajax->send();
+    }
+    return $ajax;
+}
+
+/**
+ * Send json response
+ *
+ * @param type $data
+ */
+function json($data){
+    ajax()->json($data);
 }

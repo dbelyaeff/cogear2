@@ -17,6 +17,9 @@ class Admin_Gear extends Gear {
     protected $description = 'Site control panel';
     protected $required = array('Access');
     protected $order = -100;
+    protected $access = array(
+        'index' => array(1),
+    );
 
     /**
      * Initializer

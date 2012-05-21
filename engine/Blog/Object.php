@@ -43,7 +43,7 @@ class Blog_Object extends Db_Item {
                 $uri = new Stack(array('name' => 'blog.link.edit'));
                 $uri->append('blog');
                 $uri->append('edit');
-                $uri->append($this->login);
+                $uri->append($this->id);
                 break;
             default:
                 $uri = new Stack(array('name' => 'blog.link'));

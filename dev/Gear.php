@@ -17,6 +17,27 @@ class Dev_Gear extends Gear {
     protected $description = 'Dev description';
     protected $package = '';
     protected $order = 0;
+    protected $hooks = array(
+    );
+    protected $routes = array(
+    );
+    protected $access = array(
+    );
+
+    /**
+     * Acccess
+     *
+     * @param string $rule
+     * @param object $Item
+     */
+    public function access($rule, $Item = NULL) {
+        switch ($rule) {
+            case 'create':
+                return TRUE;
+                break;
+        }
+        return FALSE;
+    }
 
     /**
      * Init

@@ -20,6 +20,10 @@ class Files_Gear extends Gear {
     protected $hooks = array(
         'user.profile.fields' => 'hookUserProfile',
         'markitup.toolbar' => 'hookMarkItUp',
+        'form.render' => 'hookFormRender',
+    );
+    protected $access = array(
+        'index' => array(100),
     );
 
     /**
@@ -28,13 +32,32 @@ class Files_Gear extends Gear {
      * @param type $toolbar
      */
     public function hookMarkItUp($toolbar) {
-        if (access('files.manager')) {
+        if (access('Files.manager')) {
             $toolbar->markupSet->append(array(
                 'name' => 'Files manager',
                 'key' => 'M',
                 'className' => 'markItUpFileManager',
-                'call' => 'showElFinder',
+                'call' => 'showFilesManager',
             ));
+        }
+    }
+
+    /**
+     * Hook form render
+     *
+     * @param type $Form
+     */
+    public function hookFormRender($Form) {
+        switch ($Form->options->name) {
+            case 'post':
+            case 'page':
+            case 'comment':
+                if (access('Files.manager')) {
+                    $Files = new Files_Manager();
+                    $Files->load();
+                    js($this->folder . '/js/markitup.js');
+                }
+                break;
         }
     }
 
@@ -45,10 +68,10 @@ class Files_Gear extends Gear {
      * @param type $menu
      */
     public function menu($name, $menu) {
-        if (access('files.manager')) {
+        if (access('Files.manager')) {
             if ($name == 'user.profile.tabs') {
                 $menu->register(array(
-                    'label' => t('Files', 'elFinder'),
+                    'label' => t('Files', 'Files'),
                     'link' => l('/files'),
                 ));
             } else if ($name == 'navbar') {
@@ -70,17 +93,6 @@ class Files_Gear extends Gear {
     }
 
     /**
-     * Init
-     */
-    public function init() {
-        if (access('files.manager')) {
-            $elFinder = new Files_Manager();
-            $elFinder->load();
-            js($this->folder.'/js/markitup.js');
-        }
-        parent::init();
-    }
-    /**
      * Index action
      */
     public function index_action() {
@@ -97,7 +109,7 @@ class Files_Gear extends Gear {
      * Connector action
      */
     public function connector_action() {
-        if (access('files.manager')) {
+        if (access('Files.manager')) {
             $options = array(
                 'debug' => true,
                 'roots' => array(
@@ -110,7 +122,7 @@ class Files_Gear extends Gear {
                         'uploadDeny' => array('All'),
                         'uploadAllow' => array('image/jpg', 'image/jpeg', 'image/png'),
                         'uploadOrder' => array('deny', 'allow'),
-                        'uploadMaxSize' => config('elFinder.uploadMaxSize', '100K'),
+                        'uploadMaxSize' => config('Files.uploadMaxSize', '100K'),
                         'acceptedName' => array($this, 'checkFilename'),
                         'accessControl' => array($this, 'access'),
                 ))

@@ -48,6 +48,9 @@
     cursor: pointer;
     margin-left: 5px;
 }
+.sh.no_fl{
+   float: none;
+}
 .sh i{
     opacity: 0.2;
     visibility: hidden;

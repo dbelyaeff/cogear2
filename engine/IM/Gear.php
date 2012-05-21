@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class IM_Gear extends Gear {
@@ -16,6 +16,9 @@ class IM_Gear extends Gear {
     protected $name = 'IM';
     protected $description = 'Instant messenger';
     protected $order = 20;
+    protected $access = array(
+        'index' => array(100),
+    );
 
     /**
      * Init
@@ -60,9 +63,9 @@ class IM_Gear extends Gear {
 
     /**
      * Default dispatcher
-     * 
+     *
      * @param string $action
-     * @param string $subaction 
+     * @param string $subaction
      */
     public function index_action($page = NULL) {
         $this->showMenu();
@@ -70,7 +73,7 @@ class IM_Gear extends Gear {
 
     /**
      * Custom dispatcher
-     * 
+     *
      * @param   string  $subaction
      */
     public function create_action() {

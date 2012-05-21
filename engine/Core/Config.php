@@ -21,9 +21,9 @@ class Config extends Core_ArrayObject {
 
     /**
      * Constructor
-     * 
+     *
      * @param string $path
-     * @param string $section 
+     * @param string $section
      */
     public function __construct($path = '', $section = '') {
         if ($path) {
@@ -35,12 +35,21 @@ class Config extends Core_ArrayObject {
 
     /**
      * Load file into internal config
-     * 
+     *
      * @param   string  $path
      * @param   string  $section
      */
     public function load($path, $section = '') {
-        file_exists($path) && ($section && $this->$section->mix(self::read($path))) OR $this->mix(self::read($path));
+        if(!file_exists($path)){
+            return;
+        }
+        if($section){
+            $this->$section OR $this->$section = new Core_ArrayObject();
+            $this->$section->mix(self::read($path));
+        }
+        else {
+             $this->mix(self::read($path));
+        }
     }
 
     /**
@@ -75,9 +84,9 @@ class Config extends Core_ArrayObject {
 
     /**
      * Set config value
-     *  
+     *
      * @param type $name
-     * @param type $value 
+     * @param type $value
      * @return  boolean
      */
     public function set($name, $value) {
@@ -121,7 +130,7 @@ class Config extends Core_ArrayObject {
 
     /**
      * Save config to file
-     * 
+     *
      * @param string $file
      * @param array $data
      */
@@ -142,10 +151,10 @@ class Config extends Core_ArrayObject {
 
     /**
      * Write data
-     * 
+     *
      * @param string $file
      * @param mixed $data
-     * @return  mixed 
+     * @return  mixed
      */
     public static function write($file, $data) {
         File::mkdir(dirname($file));

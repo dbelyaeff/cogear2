@@ -1,15 +1,16 @@
 <?php
 /**
- * Access rule
- *  
+ * Recaptcha response
+ *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
-class Access_Rule extends Db_Item {
-    protected $table = 'access'; 
+class ReCaptcha_Response {
+        var $is_valid;
+        var $error;
 }

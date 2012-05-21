@@ -15,9 +15,6 @@ function showImageUpload(){
                 dataType: 'json',
                 done: function (e, response) {
                     data = response.result;
-                    if(data.messages){
-                        renderMessages(data.messages);
-                    }
                     if(data.success){
                         $.markItUp({
                             replaceWith:data.code

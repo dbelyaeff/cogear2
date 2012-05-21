@@ -22,7 +22,8 @@ class Comments_List extends Object {
         ),
         'render' => 'content',
         'pager' => TRUE,
-        'post_author_id' => 0,
+        'post' => NULL,
+        'flat' => FALSE,
     );
 
     /**
@@ -39,7 +40,7 @@ class Comments_List extends Object {
      * Render list of posts
      */
     public function render() {
-        $comments = new Comment();
+        $comments = new Comments();
         $this->where && cogear()->db->where($this->where->toArray());
         if ($this->options->pager) {
             $pager = new Pager(array(
@@ -51,10 +52,34 @@ class Comments_List extends Object {
                         'method' => Pager::GET,
                     ));
         }
+        $this->flat && $comments->order('comments.id','DESC');
         if ($result = $comments->findAll(TRUE)) {
             $output = new Core_ArrayObject();
+            event('comments.list', $this, $result);
+            if ($this->flat) {
+                $ids = array();
+                foreach($result as $comment){
+                    if(!in_array($comment->post_id, $ids)){
+                        $ids[] = $comment->post_id;
+                    }
+                }
+                $post = new Post();
+                $this->db->where_in('posts.id',$ids);
+                if($presult = $post->findAll()){
+                    $posts = array();
+                    foreach($presult as $post){
+                        $posts[$post->id] = $post;
+                    }
+                }
+            }
             foreach ($result as $comment) {
-                $comment->post_author_id = $this->options->post_author_id;
+                if ($this->object->aid == $comment->aid) {
+                    $comment->by_post_author = TRUE;
+                }
+                $comment->flat = $this->flat;
+                if($this->flat){
+                    $comment->post = $posts[$comment->post_id];
+                }
                 $output->append($comment->render());
             }
             $this->options->pager && $output->append($pager->render());

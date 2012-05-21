@@ -1,0 +1,7 @@
+.sh.faved i{
+    visibility: visible;
+    opacity: 1;
+}
+.sh.faved:hover i{
+    opacity: 0.2;
+}

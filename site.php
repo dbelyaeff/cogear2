@@ -1,22 +1,22 @@
-<?php 
+<?php
 return array (
-  'database' => 
+  'database' =>
   array (
     'dsn' => 'mysql://root@localhost/cogear',
   ),
-  'permitted_uri_chars' => 'а-яa-z0-9\s_\.',
+  'permitted_uri_chars' => 'а-яa-z0-9\s_\.\-',
   'key' => 'ba96917974845ff8a6f178c9551c17c7',
-  'site' => 
+  'site' =>
   array (
     'name' => 'cogear',
     'development' => 1,
     'url' => 'cogear.new',
   ),
-  'date' => 
+  'date' =>
   array (
     'format' => 'H:i ← d M Y',
   ),
-  'mail' => 
+  'mail' =>
   array (
     'from' => 'admin@cogear.ru',
     'from_name' => 'cogear',

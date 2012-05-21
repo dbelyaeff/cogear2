@@ -3,10 +3,10 @@
 return array(
     'name' => 'user-login',
     'elements' => array(
-        'email' => array(
-            'label' => t('Email', 'User'),
+        'login' => array(
+            'label' => t('Login or e-mail', 'User'),
             'type' => 'text',
-            'validators' => array('Email','Required'),
+            'validators' => array('Required'),
         ),
         'password' => array(
             'label' => t('Password', 'User'),

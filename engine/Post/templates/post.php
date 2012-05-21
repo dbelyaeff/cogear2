@@ -21,13 +21,13 @@ if(!$item->published && !$item->preview){
         $title->attach($item);
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
-            if (access('post.delete.all')) {
+            if (access('Post.delete.all')) {
                 $title->delete = '<a class="post-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';
             }
-            if (access('post.hide')) {
+            if (access('Post.hide')) {
                 $title->hide = '<a class="post-hide sh" data-id="' . $item->id . '" href="' . $item->getLink('hide') . '"><i class="icon-eye-' . ($item->published ? 'open' : 'close') . '"></i></a>';
             }
-            if (access('post.edit.all') OR access('post.edit') && cogear()->user->id == $item->aid) {
+            if (access('Post.edit.all') OR access('Post.edit') && cogear()->user->id == $item->aid) {
                 $title->edit = '<a class="post-edit sh" data-id="' . $item->id . '" href="' . $item->getLink('edit') . '"><i class="icon-pencil"></i></a>';
             }
         }

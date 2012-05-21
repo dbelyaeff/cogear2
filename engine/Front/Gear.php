@@ -26,6 +26,9 @@ class Front_Gear extends Gear {
         'form.init.post' => 'hookPostForm',
         'post.title' => 'hookPostTitle',
     );
+    protected $access = array(
+        'promote' => array(1),
+    );
 
     /**
      * Hook post title
@@ -34,7 +37,7 @@ class Front_Gear extends Gear {
      */
     public function hookPostTitle($title) {
         $post = $title->object;
-        if (access('front.promote')) {
+        if (access('Front.promote') && !$title->object->preview) {
             $title->append('<a class="post-promote' . ($post->front ? ' promoted' : '') . ' sh" data-id="' . $post->id . '" href="/front/promote/' . $post->id . '"><i class="icon-ok"></i></a>');
         }
     }
@@ -98,34 +101,30 @@ class Front_Gear extends Gear {
      * @param   string  $subaction
      */
     public function promote_action($post_id) {
-        if (access('front.promote')) {
-            $post = new Post();
-            $post->id = $post_id;
-            $post->find();
-            if ($post->front) {
-                $data['action'] = 'unpromote';
-                $post->front = 0;
-                $message = t('Post has been removed from front page!', 'Front');
-            } else {
-                $data['action'] = 'promote';
-                $post->front = 1;
-                $message = t('Post has been promoted to front page!', 'Front');
-            }
-            if ($post->save()) {
-                if (Ajax::is()) {
-                    $data['messages'] = array(array(
-                            'type' => 'success',
-                            'body' => $message,
-                            ));
-                    $ajax = new Ajax();
-                    $ajax->json($data);
-                } else {
-                    flash_success($message);
-                    redirect(l('/'));
-                }
-            }
+        $post = new Post();
+        $post->id = $post_id;
+        $post->find();
+        if ($post->front) {
+            $data['action'] = 'unpromote';
+            $post->front = 0;
+            $message = t('Post has been removed from front page!', 'Front');
         } else {
-            return event('403');
+            $data['action'] = 'promote';
+            $post->front = 1;
+            $message = t('Post has been promoted to front page!', 'Front');
+        }
+        if ($post->save()) {
+            if (Ajax::is()) {
+                $data['messages'] = array(array(
+                        'type' => 'success',
+                        'body' => $message,
+                        ));
+                $ajax = new Ajax();
+                $ajax->json($data);
+            } else {
+                flash_success($message);
+                redirect(l('/'));
+            }
         }
     }
 
