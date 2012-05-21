@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Request_Gear extends Gear {
@@ -21,7 +21,7 @@ class Request_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
-        $this->adapter = new Request_Object();
+        $this->attach(new Request_Object());
         cogear()->request = $this;
     }
 }

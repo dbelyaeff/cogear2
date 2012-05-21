@@ -12,11 +12,41 @@
  * @version		$Id$
  */
 class Stack extends Object {
+
+    /**
+     * Constructor
+     *
+     * @param type $options
+     */
+    public function __construct($options = NULL) {
+        parent::__construct($options);
+    }
+
     /**
      * Init
      */
     public function init() {
-        event($this->name, $this);
+        event($this->options->name, $this);
+    }
+
+    /**
+     * Magic __get method
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name) {
+        return $this->offsetExists($name) ? $this->offsetGet($name) : NULL;
+    }
+
+    /**
+     * Magic __set method
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set($name, $value) {
+        $this->offsetSet($name, $value);
     }
 
     /**

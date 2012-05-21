@@ -245,7 +245,7 @@ class Assets_Harvester {
         }
         $output = '';
         foreach (self::$scriptsRenderGroups as $group) {
-            $output .= $this->scripts->$group->__toString() . "\n";
+            $this->scripts->$group && $output .= $this->scripts->$group->__toString() . "\n";
         }
         return $output;
     }
@@ -261,7 +261,7 @@ class Assets_Harvester {
         } else {
             $styles = array();
             foreach (self::$stylesRenderGroups as $group) {
-                $styles = array_merge($styles, $this->styles->$group->toArray());
+                $this->styles->$group && $styles = array_merge($styles, $this->styles->$group->toArray());
             }
         }
         $theme_styles = array();

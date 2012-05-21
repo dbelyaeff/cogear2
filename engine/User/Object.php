@@ -96,7 +96,7 @@ class User_Object extends Db_Item {
      */
     public function insert($data = NULL) {
         if ($result = parent::insert($data)) {
-            event('user.insert', $this);
+            event('user.insert', $this,$data,$result);
         }
         return $result;
     }
@@ -109,7 +109,7 @@ class User_Object extends Db_Item {
     public function update($data = NULL) {
         $data OR $data = $this->object->toArray();
         if ($result = parent::update($data)) {
-            event('user.update',$this,$data);
+            event('user.update',$this,$data,$result);
         }
         return $result;
     }
@@ -121,7 +121,7 @@ class User_Object extends Db_Item {
      */
     public function find() {
         if ($result = parent::find()) {
-            event('user.find', $this);
+            event('user.find', $this,array(),$result);
         }
         return $result;
     }
@@ -283,13 +283,5 @@ class User_Object extends Db_Item {
      */
     public function dir() {
         return File::mkdir(UPLOADS . DS . 'users' . DS . $this->id);
-    }
-    /**
-     * Recalculate data
-     *
-     * @param type $type
-     */
-    public function recalculate($type){
-        event('user.recalculate',$this,$type);
     }
 }

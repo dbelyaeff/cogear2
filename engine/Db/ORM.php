@@ -89,6 +89,7 @@ class Db_ORM extends Object {
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
         $this->primary = $primary ? $primary : $first;
+        $this->attach(new Core_ArrayObject());
     }
 
     /**
@@ -281,12 +282,10 @@ class Db_ORM extends Object {
             return FALSE;
         } elseif (isset($data[$this->primary])) {
             if ($this->update($data)) {
-                event('Db_ORM.update', $this);
                 return TRUE;
             }
         } else {
             if ($this->insert($data)) {
-                event('Db_ORM.insert', $this);
                 return $this->object->{$this->primary};
             }
         }
@@ -302,7 +301,7 @@ class Db_ORM extends Object {
         $data OR $data = $this->getData();
         if (!$data)
             return;
-        event('Db_ORM.insert', $data);
+        event('Db_ORM.insert', $this,$data);
         return $this->object->{$this->primary} = cogear()->db->insert($this->table, $data);
     }
 
@@ -314,7 +313,7 @@ class Db_ORM extends Object {
      */
     public function update($data = NULL) {
         $data OR $data = $this->getData();
-        event('Db_ORM.update', $data);
+        event('Db_ORM.update', $this,$data);
         $primary = $this->primary;
         return cogear()->db->update($this->table, $data, array($this->primary => $this->$primary));
     }
@@ -332,11 +331,11 @@ class Db_ORM extends Object {
         if (!$data) {
             return FALSE;
         } elseif (!isset($data[$primary])) {
-            event('Db_ORM.delete.before', $this);
             $result = $cogear->db->delete($this->table, $data) ? TRUE : FALSE;
+            event('Db_ORM.delete', $this,$data,$result);
         } else {
-            event('Db_ORM.delete.before', $this);
             $result = $cogear->db->delete($this->table, array($primary => $data[$primary])) ? TRUE : FALSE;
+            event('Db_ORM.delete', $this,$data,$result);
         }
         return $result;
     }

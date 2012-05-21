@@ -17,7 +17,9 @@ class Post_Gear extends Gear {
     protected $description = 'Manage posts';
     protected $order = 10;
     protected $hooks = array(
-        'user.recalculate' => 'hookUserPostCount',
+        'post.insert' => 'hookUserPostCount',
+        'post.update' => 'hookUserPostCount',
+        'post.delete' => 'hookUserPostCount',
         'comment.insert' => 'hookPostCommentsCount',
         'comment.update' => 'hookPostCommentsCount',
         'comment.delete' => 'hookPostCommentsCount',
@@ -36,13 +38,12 @@ class Post_Gear extends Gear {
      *
      * @param type $uid
      */
-    public function hookUserPostCount($User, $type) {
-        if ($type == 'posts') {
-            $User->posts = $this->db->where(array('aid' => $User->id, 'published' => 1))->count('posts', 'id', TRUE);
-            $User->drafts = $this->db->where(array('aid' => $User->id, 'published' => 0))->count('posts', 'id', TRUE);
-            $User->update();
+    public function hookUserPostCount() {
+            $this->posts = $this->db->where(array('aid' => $this->user->id, 'published' => 1))->count('posts', 'id', TRUE);
+            $this->drafts = $this->db->where(array('aid' => $this->user->id, 'published' => 0))->count('posts', 'id', TRUE);
+            $this->user->update(array('posts'=>$this->posts,'drafts'=>$this->drafts));
+//            debug($this->db->getLastQuery());
             $this->user->store();
-        }
     }
 
     /**
@@ -54,7 +55,7 @@ class Post_Gear extends Gear {
         $post = new Post();
         $post->id = $Comment->post_id;
         if ($post->find()) {
-            $post->recalculate('comments');
+            $post->update(array('comments'=>$this->db->where(array('post_id' => $Post->id, 'published' => 1))->count('comments', 'id', TRUE)));
         }
     }
 
@@ -299,11 +300,11 @@ class Post_Gear extends Gear {
  * @param int $id
  * @param string    $param
  */
-function post($id = NULL,$param = 'id'){
-    if($id){
+function post($id = NULL, $param = 'id') {
+    if ($id) {
         $post = new Post();
         $post->$param = $id;
-        if($post->find()){
+        if ($post->find()) {
             return $post;
         }
     }

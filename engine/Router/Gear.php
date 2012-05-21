@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Router_Gear extends Gear {
@@ -22,6 +22,6 @@ class Router_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
-        $this->adapter = new Router_Object();
+        $this->attach(new Router_Object());
     }
 }

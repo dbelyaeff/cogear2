@@ -49,12 +49,13 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
                 return FALSE;
             }
         }
-        self::start($query);
+        $start = microtime();
         if (!$this->result = @mysql_query($query, $this->connection)) {
             $this->silent OR $this->errors[] = mysql_error() . ' (' . mysql_errno() . ')';
         }
+        $this->bench($query,  microtime() - $start);
         $this->clear();
-        self::stop($query);
+        event('database.query',$query);
         return $this->errors ? FALSE : $this;
     }
 

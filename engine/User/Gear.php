@@ -61,8 +61,8 @@ class User_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        $this->adapter = new User_Object();
-        $this->adapter->init();
+        $this->attach(new User_Object());
+        $this->object->init();
         new Twitter_Bootstrap_Navbar(array(
                     'name' => 'navbar',
                     'render' => 'before',
@@ -84,7 +84,8 @@ class User_Gear extends Gear {
                 return;
             }
         }
-        $User->recalculate('comments');
+        $User->update(array('comments' => $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->count('comments', 'id', TRUE)));
+        $User->id == $this->user->id && $this->user->store();
     }
 
     /**
@@ -95,10 +96,10 @@ class User_Gear extends Gear {
     public function hookGlobalScripts($cogear) {
         if ($this->isLogged()) {
             $user = array(
-                'id' => $this->adapter->id,
-                'role' => $this->adapter->role,
-                'login' => $this->adapter->login,
-                'name' => $this->adapter->name,
+                'id' => $this->object->id,
+                'role' => $this->object->role,
+                'login' => $this->object->login,
+                'name' => $this->object->name,
             );
         } else {
             $user = array(

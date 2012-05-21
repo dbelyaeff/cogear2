@@ -18,6 +18,8 @@ class Dev_Gear extends Gear {
     protected $name = 'Developer';
     protected $description = 'Calculate cogear performance at current system configuration.';
     protected $order = 0;
+    protected $hooks = array(
+    );
     protected $access = array(
         'index' => array(1),
     );
@@ -39,9 +41,9 @@ class Dev_Gear extends Gear {
      */
     public function init() {
         parent::init();
-//        if (access('Dev')) {
+        if (access('Dev') && config('site.development')) {
             hook('done', array($this, 'finish'));
-//        }
+        }
     }
 
     /**

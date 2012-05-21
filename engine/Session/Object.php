@@ -72,7 +72,7 @@ class Session_Object extends Cache_Object {
             }
         }
         session_set_save_handler(
-                array($this->adapter, 'open'), array($this->adapter, 'close'), array($this->adapter, 'read'), array($this->adapter, 'write'), array($this->adapter, 'destroy'), array($this->adapter, 'gc')
+                array($this->object, 'open'), array($this->object, 'close'), array($this->object, 'read'), array($this->object, 'write'), array($this->object, 'destroy'), array($this->object, 'gc')
         );
         $this->init();
     }
@@ -125,8 +125,8 @@ class Session_Object extends Cache_Object {
 
     /**
      * __isset magic method
-     * 
-     * @param type $name 
+     *
+     * @param type $name
      */
     public function __isset($name) {
         return isset($_SESSION[$name]);

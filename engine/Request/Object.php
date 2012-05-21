@@ -15,7 +15,7 @@ class Request_Object {
 
     /**
      * Server info
-     * 
+     *
      * @var array
      */
     protected $server = array();
@@ -49,7 +49,7 @@ class Request_Object {
     private $referrer = '';
     /**
      * If request is ajaxed
-     * 
+     *
      * @var boolean
      */
     private $is_ajax = FALSE;
@@ -108,7 +108,7 @@ class Request_Object {
     }
     /**
      * Check if request is ajax
-     * 
+     *
      * @return boolean
      */
     public function isAjax(){
@@ -116,13 +116,30 @@ class Request_Object {
     }
     /**
      * Get request info
-     * 
+     *
      * @param string $name
      * @param string $default
      * @return mixed
      */
     public function get($name,$default = '') {
-        return isset($this->$name) ? $this->$name : (isset($this->server[$name]) ? $this->server[$name] : ($default ? $default : NULL));
+        switch($name){
+            case 'uri':
+                if($result = $this->get('PATH_INFO')){
+                    return $result;
+                }
+                elseif($result = $this->get('QUERY_STRING')){
+                    return $result;
+                }
+                elseif($result = $this->get('REQUEST_URI')){
+                    return $result;
+                }
+                elseif($result = $this->get('ORIG_PATH_INFO')){
+                    return $result;
+                }
+                break;
+            default:
+            return isset($this->$name) ? $this->$name : (isset($this->server[$name]) ? $this->server[$name] : ($default ? $default : NULL));
+        }
     }
 
     /**

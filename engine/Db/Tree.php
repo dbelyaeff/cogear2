@@ -49,23 +49,9 @@ class Db_Tree extends Db_Item {
     public function insert($data = NULL) {
         if ($id = parent::insert($data)) {
             $this->branching();
-            $this->update();
-            event('page.insert');
+            parent::update(array($this->thread_field => $this->{$this->thread_field},$this->level_field => $this->{$this->level_field}));
         }
         return $id;
-    }
-
-    /**
-     * Insert data
-     *
-     * @param type $data
-     * @return  int
-     */
-    public function update($data = NULL) {
-        if ($result = parent::update($data)) {
-            event('page.update');
-        }
-        return $result;
     }
 
     /**

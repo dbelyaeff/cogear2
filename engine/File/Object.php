@@ -35,8 +35,8 @@ class File_Object extends Adapter {
      * @param type $options
      */
     public function __construct($path, $options = array()) {
-        $this->adapter = new SplFileInfo($path);
         parent::__construct($options);
+        $this->attach(new SplFileInfo($path));
     }
     /**
      * Render file

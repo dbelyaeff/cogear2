@@ -18,7 +18,7 @@ class Adapter extends Cogearable {
      *
      * @var object
      */
-    protected $adapter;
+    protected $object;
 
     /**
      * Magic __get method
@@ -27,7 +27,7 @@ class Adapter extends Cogearable {
      * @return mixed
      */
     public function __get($name) {
-        return isset($this->adapter->$name) ? $this->adapter->$name : parent::__get($name);
+        return is_object($this->object) && isset($this->object->$name) ? $this->object->$name : parent::__get($name);
     }
 
     /**
@@ -37,8 +37,8 @@ class Adapter extends Cogearable {
      * @param mixed $value
      */
     public function __set($name, $value) {
-        if ($this->adapter) {
-            $this->adapter->$name = $value;
+        if ($this->object) {
+            $this->object->$name = $value;
         } else {
             $this->offsetSet($name, $value);
         }
@@ -47,10 +47,10 @@ class Adapter extends Cogearable {
     /**
      * __isset magic method
      *
-     * @param string $name 
+     * @param string $name
      */
     public function __isset($name) {
-        return isset($this->adapter->$name);
+        return is_object($this->object) && isset($this->object->$name);
     }
 
     /**
@@ -61,8 +61,8 @@ class Adapter extends Cogearable {
      * @return mixed
      */
     public function __call($name, $args) {
-        if ($this->adapter) {
-            $callback = new Callback(array($this->adapter, $name));
+        if (is_object($this->object)) {
+            $callback = new Callback(array($this->object, $name));
             if ($callback->check()) {
                 return $callback->run($args);
             }

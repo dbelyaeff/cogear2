@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-abstract class Gear extends Adapter {
+abstract class Gear extends Object {
 
     /**
      * Gear name

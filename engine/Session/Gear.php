@@ -25,7 +25,7 @@ class Session_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        $this->adapter = new Session_Object(array('name' => 'session'));
+        $this->attach(new Session_Object(array('name' => 'session')));
     }
 
     /**
@@ -33,15 +33,6 @@ class Session_Gear extends Gear {
      */
     public function trace($Stack){
         $Stack->append(template('Session.trace')->render());
-    }
-
-    /**
-     * Overload Cogearable __get
-     *
-     * @param type $name
-     */
-    public function __get($name){
-        return $this->adapter->__get($name);
     }
 
 }

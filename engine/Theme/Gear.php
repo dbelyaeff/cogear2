@@ -46,8 +46,8 @@ class Theme_Gear extends Gear {
 
     /**
      * Catch output
-     * 
-     * @param string $mode 
+     *
+     * @param string $mode
      */
     public function catchOutput($Router, $mode) {
         switch ($mode) {
@@ -61,12 +61,12 @@ class Theme_Gear extends Gear {
                 break;
         }
     }
-    
+
     /**
      * Handle gear request
-     * 
+     *
      * Set theme, initialize it.
-     * 
+     *
      * @param   object  $Gear
      */
     public function handleGearRequest($Gear) {
@@ -75,8 +75,8 @@ class Theme_Gear extends Gear {
 
     /**
      * Init current theme
-     *  
-     * @param string $theme 
+     *
+     * @param string $theme
      * @param boolean $final
      */
     public function choose($theme = NULL) {
@@ -87,15 +87,15 @@ class Theme_Gear extends Gear {
             error(t('Theme <b>%s</b> doesn\'t exist.', 'Theme', $theme));
             $class = 'Default_Theme';
         }
-        $this->current = new $class();
-        $this->current->init();
-        $this->current->activate();
-        cogear()->gears->$theme = $this->current;
+        $this->attach(new $class());
+        $this->object->init();
+        $this->object->activate();
+        cogear()->gears->$theme = $this->object;
     }
 
     /**
      *
-     * @param type $theme 
+     * @param type $theme
      */
     public function set($theme) {
         cogear()->set('theme.current', $theme);
@@ -103,7 +103,7 @@ class Theme_Gear extends Gear {
 
     /**
      * Transform theme name to class name
-     * 
+     *
      * @param   string  $theme
      */
     public static function themeToClass($theme) {
@@ -112,7 +112,7 @@ class Theme_Gear extends Gear {
 
     /**
      * Transform class name to theme name
-     * 
+     *
      * @param   string  $theme
      */
     public static function classToTheme($class) {
@@ -128,10 +128,10 @@ class Theme_Gear extends Gear {
 
     /**
      * Render region
-     * 
+     *
      * Split it with echos output for the hooks system
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
     public function renderRegion($name) {
         $this->regions->$name OR $this->regions->$name = new Theme_Region();
@@ -143,22 +143,22 @@ class Theme_Gear extends Gear {
     }
 
     /**
-     * Show region 
-     * 
+     * Show region
+     *
      * Simply echoes regions output
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      */
     public function showRegion($name) {
         $this->regions->$name === NULL && $this->regions->$name = new Theme_Region();
         echo $this->regions->$name->render();
     }
-    
+
     /**
      * Output
      */
     public function output(){
-        $this->current && $this->current->render();
+        $this->object && $this->object->render();
     }
 }
 

@@ -98,6 +98,10 @@ return array (
     'Jan' => '',
     'May' => '',
   ),
+  '#Db.Debug' => 
+  array (
+    'Database queries' => '',
+  ),
   '#Dev' => 
   array (
     '<b>Generated in:</b> %.3f (second|seconds)' => '',
@@ -331,6 +335,7 @@ return array (
   '#User.lostpassword' => 
   array (
     'You have been logged in be temporary link. Now you can change your password.' => '',
+    'Password recovery code has been already used.' => '',
   ),
   '#User.register' => 
   array (

@@ -22,7 +22,6 @@ class Comments_List extends Object {
         ),
         'render' => 'content',
         'pager' => TRUE,
-        'post' => NULL,
         'flat' => FALSE,
     );
 

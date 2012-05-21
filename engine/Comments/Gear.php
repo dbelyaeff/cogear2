@@ -19,8 +19,6 @@ class Comments_Gear extends Gear {
     protected $hooks = array(
         'post.show.full.after' => 'hookPostComments',
         'form.init.post' => 'hookPostForm',
-        'user.recalculate' => 'hookUserRecalculate',
-        'post.recalculate' => 'hookPostRecalculate',
         'comment.render' => 'hookFormatComment',
         'post.info' => 'hookRenderPostCommentsCount',
         'comments.list' => 'hookUpdateCommentsViews',
@@ -57,7 +55,15 @@ class Comments_Gear extends Gear {
                 }
                 break;
             case 'edit':
-
+                if (is_numeric($Comment)) {
+                    if (!$Comment = comment($Comment)) {
+                        return FALSE;
+                    }
+                }
+                // User can edit comment only if its been posted x seconds ago
+                if (time() - $Comment->created_date > config('Comments.edit.timer', 180) && $Comment->aid == $this->user->id) {
+                    return TRUE;
+                }
                 break;
             case 'delete':
 
@@ -76,7 +82,7 @@ class Comments_Gear extends Gear {
         if ($post->allow_comments) {
             $info->comments = icon('comment') . ' <a class="post-comments scrollTo" data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
             $new = '';
-            if ($this->session->comments_views && $this->session->comments_views[$post->id]) {
+            if ($this->session->comments_views && isset($this->session->comments_views[$post->id])) {
                 $views = $this->session->comments_views[$post->id];
                 $anchor = 'comment-' . $views['last'];
                 if ($post->comments > $views['count']) {
@@ -108,32 +114,6 @@ class Comments_Gear extends Gear {
         }
     }
 
-    /**
-     * Recalcuate user comments
-     *
-     * @param type $User
-     * @param type $type
-     */
-    public function hookUserRecalculate($User, $type) {
-        if ($type == 'comments') {
-            $User->comments = $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->count('comments', 'id', TRUE);
-            $User->update();
-            $User->id == $this->user->id && $this->user->store();
-        }
-    }
-
-    /**
-     * Recalcuate post comments
-     *
-     * @param type $Post
-     * @param type $type
-     */
-    public function hookPostRecalculate($Post, $type) {
-        if ($type == 'comments') {
-            $Post->comments = $this->db->where(array('post_id' => $Post->id, 'published' => 1))->count('comments', 'id', TRUE);
-            $Post->update();
-        }
-    }
 
     /**
      * Extend post form
@@ -184,9 +164,29 @@ class Comments_Gear extends Gear {
     }
 
     /**
+     * Hook menu
+     *
+     * @param string $name
+     * @param object $menu
+     */
+    public function menu($name, $menu) {
+        switch ($name) {
+            case 'user.profile.tabs':
+                $menu->register(array(
+                    'label' => t('Comments', 'Comments') . ' <sup>' . $menu->object->comments . '</sup>',
+                    'link' => $menu->object->getLink() . '/comments/',
+                    'order' => 2.2,
+                ));
+                break;
+        }
+    }
+
+    /**
      * Init
      */
     public function init() {
+        // Force prepend route
+        route('user/([^/]+)/comments:maybe', array($this, 'index_action'), TRUE);
         parent::init();
         // Only for authorized users
         if (!role()) {
@@ -209,6 +209,23 @@ class Comments_Gear extends Gear {
                 $this->session->set('comments_views', FALSE);
             }
         }
+    }
+
+    /**
+     * Main dispatcher
+     */
+    public function index_action($login = NULL, $page = NULL) {
+        $comments = new Comments();
+        $where = array();
+        if ($login && $user = user($login, 'login')) {
+            $where['aid'] = $user->id;
+            $user->navbar()->show();
+        }
+        $comments = new Comments_List(array(
+                    'name' => 'comments.list',
+                    'where' => $where,
+                    'flat' => TRUE,
+                ));
     }
 
     /**
@@ -369,7 +386,7 @@ class Comments_Gear extends Gear {
         if ($comment->find() && !$comment->frozen) {
             $this->post($comment->post_id, $comment->id);
         } else {
-            return event('403');
+            return event('404');
         }
     }
 
@@ -383,9 +400,6 @@ class Comments_Gear extends Gear {
         $comment = new Comments();
         $comment->id = $comment_id;
         if ($comment->find()) {
-            if (!access('Comments.edit.all') OR !(access('Comments.edit') && $comment->aid == $this->user->id)) {
-                return event('403');
-            }
             $post = new Post();
             $post->id = $comment->post_id;
             $user = new User();
@@ -505,7 +519,7 @@ class Comments_Gear extends Gear {
     public function delete_action($cid) {
         $comment = new Comments();
         $comment->id = $cid;
-        if ($comment->find() && access('Comments.delete.all')) {
+        if ($comment->find() && access('Comments.delete', $comment)) {
             if ($comment->delete()) {
                 $message = t('Comments has been deleted', 'Comments');
                 if (Ajax::is()) {
@@ -581,8 +595,7 @@ class Comments_Gear extends Gear {
                     if ($views->object) {
                         $updated_views->pid = $views->pid;
                         $updated_views->delete();
-                    }
-                    else {
+                    } else {
                         $update_views->pid = $post->id;
                     }
                     $updated_views->uid = $this->user->id;
@@ -603,27 +616,28 @@ class Comments_Gear extends Gear {
  * @param int $id
  * @param string    $param
  */
-function comments($id = NULL,$param = 'id'){
-    if($id){
+function comments($id = NULL, $param = 'id') {
+    if ($id) {
         $comments = new Comments();
         $comments->$param = $id;
-        if($comments->findAll()){
+        if ($comments->findAll()) {
             return $comments;
         }
     }
     return new Comments();
 }
+
 /**
  * Shortcut for comment
  *
  * @param int $id
  * @param string    $param
  */
-function comment($id = NULL,$param = 'id'){
-    if($id){
+function comment($id = NULL, $param = 'id') {
+    if ($id) {
         $comment = new Comments();
         $comment->$param = $id;
-        if($comment->find()){
+        if ($comment->find()) {
             return $comment;
         }
     }

@@ -14,12 +14,12 @@ abstract class Object extends Adapter {
     public $object;
     /**
      * Constructor
-     * 
+     *
      * @param array $data
      */
     public function __construct($options = NULL,$place = NULL) {
+        $this->detach();
         parent::__construct($options, $place);
-        $this->object = new Core_ArrayObject();
     }
     /**
      * Set current object
@@ -29,11 +29,11 @@ abstract class Object extends Adapter {
     public function attach($data){
         $this->object = is_object($data) ? $data : Core_ArrayObject::transform($data);
     }
-    
+
     /**
      * Detach object
      */
     public function detach(){
-        $this->object = new Core_ArrayObject();
+        return $this->object = new Core_ArrayObject();
     }
 }

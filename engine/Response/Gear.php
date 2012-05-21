@@ -26,14 +26,7 @@ class Response_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
-        $this->adapter = new Response_Object();
-    }
-
-    /**
-     * Send output to user
-     */
-    public function send(){
-        $this->adapter->send();
+        $this->attach(new Response_Object());
     }
 
     /**

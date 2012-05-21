@@ -16,7 +16,6 @@ class Db_Gear extends Gear {
     protected $name = 'Database';
     protected $description = 'Database operations management';
     protected $order = 0;
-    protected $adapter;
     public static $error_codes = array(
         100 => 'Driver not found.',
         101 => 'Couldn\'t connect to the database.',
@@ -29,11 +28,11 @@ class Db_Gear extends Gear {
         parent::__construct();
         if ($dsn = config('database.dsn')) {
             if (!$this->checkDSN($dsn)) {
-                $this->adapter->error(t('Couldn\'t establish database connection.', 'Db.errors'));
-                fatal_error($this->adapter->errors());
+                $this->object->error(t('Couldn\'t establish database connection.', 'Db.errors'));
+                fatal_error($this->object->errors());
             } else {
                 hook('done', array($this, 'showErrors'));
-                hook('dev.info', array($this, 'trace'));
+                hook('footer', array($this, 'trace'));
             }
         } else {
             error(t('Database connection string is not defined.', 'Db.errors'));
@@ -65,11 +64,11 @@ class Db_Gear extends Gear {
             error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
             return FALSE;
         }
-        $this->adapter = new $adapter($config);
-        if (!$this->adapter->init()){
+        $this->attach(new $adapter($config));
+        if (!$this->object->init()){
             return FALSE;
         }
-        cogear()->db = $this->adapter;
+        cogear()->db = $this->object;
         return TRUE;
     }
 
@@ -77,7 +76,7 @@ class Db_Gear extends Gear {
      * Show errors
      */
     public function showErrors() {
-        $errors = $this->adapter->getErrors();
+        $errors = $this->object->getErrors();
         if (config('site.development') && $errors) {
             error(implode('<br/>', $errors), t('Database error', 'Database'));
         }
@@ -99,10 +98,10 @@ class Db_Gear extends Gear {
     /**
      * Output all queries
      */
-    public function trace($Stack) {
+    public function trace() {
         $tpl = new Template('Db.debug');
-        $tpl->queries = $this->adapter->getBenchmark();
-        $Stack->append($tpl->render());
+        $tpl->data = $this->getBenchmark();
+        $tpl->show('footer');
     }
 
 }

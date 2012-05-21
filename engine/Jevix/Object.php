@@ -942,8 +942,13 @@ class Jevix_Object {
                             continue(2);
                         }
                         // HTTP в начале если нет
-                        if (!preg_match('/^http:\/\//ui', $value) && !preg_match('/^\//ui', $value))
-                            $value = 'http://' . $value;
+//                        if (!preg_match('/^http:\/\//ui', $value) && !preg_match('/^\//ui', $value))
+//                            $value = 'http://' . $value;
+                        if (!preg_match('/\.(jpg|jpeg|png|gif)$/ui', $value)){
+
+                            $this->eror('Попытка вставить JavaScript в пути к изображению');
+                            continue(2);
+                        }
                         break;
 
                     default:

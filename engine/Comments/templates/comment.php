@@ -24,11 +24,8 @@ if ($item->class) {
         $info->author = '<span class="comment-author">' . $user->getAvatarImage() . ' ' . $user->getLink('profile') . '</span>';
         access('Comments.ip') && $info->ip = '<span class="comment-ip">' . $item->ip . '</span>';
         $info->anchor = icon('time') . '<a class="ms5 scrollTo hltr" href="#comment-' . $item->id . '">' . df($item->created_date) . '</a>';
-        if($item->post){
-            $info->post = '<i class="icon-edit"></i> <a href="'.$item->post->getLink().'#comment-'.$item->id.'">'.$item->post->name.'</a>';
-        }
         if (!$item->preview) {
-            if ($item->pid) {
+            if ($item->pid && !$item->flat) {
                 $info->parent = '<a class="ms5 scrollTo hltr" href="#comment-' . $item->pid . '">&uarr;</a>';
             }
             if (access('Comments.delete', $item)) {
@@ -41,6 +38,9 @@ if ($item->class) {
                 $info->edit = '<a class="comment-edit sh" data-id="' . $item->id . '" href="' . $item->getLink('edit') . '"><i class="icon-pencil"></i></a>';
             }
         }
+        if($item->post){
+            $info->post = '<i class="icon-edit"></i> <a href="'.$item->post->getLink().'#comment-'.$item->id.'">'.$item->post->name.'</a>';
+        }
         echo $info->render();
         ?>
     </div>
@@ -52,7 +52,7 @@ if ($item->class) {
         if (!$item->preview) {
             $action = new Stack(array('name' => 'comment.action'));
 
-            if (access('Comments.reply')) {
+            if (access('Comments.reply',$item) && !$item->flat) {
                 $action->reply = '<a class="btn btn-mini" data-type="reply" data-target="comment-' . $item->id . '" href="' . l('/comments/reply/' . $item->id) . '">' . t('Reply', 'Comment') . '</a>';
             }
             echo $action->render();

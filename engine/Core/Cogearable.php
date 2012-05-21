@@ -14,9 +14,9 @@
 abstract class Cogearable extends Options{
     /**
      * Magic __get method
-     * 
+     *
      * @param string $name
-     * @return mixed 
+     * @return mixed
      */
     public function __get($name){
         $parent = parent::__get($name);
@@ -24,14 +24,14 @@ abstract class Cogearable extends Options{
     }
     /**
      * Magic __call method
-     * 
+     *
      * @param   string  $name
      * @param   array   $array
      */
     public function __call($name,$args = array()){
-        $cogear = getInstance();
-        if(method_exists($cogear,$name)){
-            return call_user_func_array(array($cogear,$name), $args);
+        $callback = new Callback(array(cogear(),$name));
+        if($callback->check()){
+            return $callback->run($args);
         }
         return NULL;
     }

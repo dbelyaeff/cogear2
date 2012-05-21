@@ -36,7 +36,7 @@ class Assets_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
-        $this->adapter = new Assets_Harvester();
+        $this->attach(new Assets_Harvester());
         cogear()->assets = $this;
     }
 }

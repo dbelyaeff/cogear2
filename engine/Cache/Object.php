@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Cache_Object extends Adapter {
+class Cache_Object extends Object {
 
     /**
      * Initiate cache
@@ -24,10 +24,10 @@ class Cache_Object extends Adapter {
             'path' => CACHE . DS
         );
         $options = array_merge($defaults, $options);
-        if (class_exists($options['adapter'])) {
-            $this->adapter = new $options['adapter']($options);
-        }
         parent::__construct($options);
+        if (class_exists($options['adapter'])) {
+            $this->attach(new $options['adapter']($options));
+        }
     }
 
 }

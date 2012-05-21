@@ -53,7 +53,13 @@ abstract class Db_Driver_Abstract {
      *
      * @var array
      */
-    public static $queries = array();
+    protected $queries;
+    /**
+     * Benchmark
+     *
+     * @var array
+     */
+    protected $benchmark;
 
     /**
      * Result
@@ -121,6 +127,8 @@ abstract class Db_Driver_Abstract {
     public function __construct(array $config) {
         $this->config = array_merge($this->config, $config);
         $this->_swap = $this->_query;
+        $this->queries = new Core_ArrayObject();
+        $this->benchmark = new Core_ArrayObject();
     }
 
     /**
@@ -692,17 +700,9 @@ abstract class Db_Driver_Abstract {
      *
      * @param string $query
      */
-    public static function start($query) {
-        self::$queries[$query]['start'] = microtime();
-    }
-
-    /**
-     * Query time benchmark stop
-     *
-     * @param string $query
-     */
-    public static function stop($query) {
-        self::$queries[$query]['stop'] = microtime();
+    public function bench($query,$time) {
+        $this->benchmark->append(new Core_ArrayObject(array('query'=>$query,'time'=>$time)));
+        $this->queries->append($query);
     }
 
     /**
@@ -711,7 +711,14 @@ abstract class Db_Driver_Abstract {
     public function getErrors() {
         return $this->errors;
     }
-
+    /**
+     * Get queries
+     *
+     * @return type
+     */
+    public function getQueries(){
+        return $this->queries;
+    }
     /**
      * Get last query
      *
@@ -719,16 +726,7 @@ abstract class Db_Driver_Abstract {
      */
     public function getLastQuery() {
         $queries = $this->getQueries();
-        return array_pop($queries);
-    }
-
-    /**
-     * Get all executed queries
-     *
-     * @return array
-     */
-    public function getQueries() {
-        return array_keys(self::$queries);
+        return array_pop($queries->toArray());
     }
 
     /**
@@ -737,11 +735,7 @@ abstract class Db_Driver_Abstract {
      * @return array
      */
     public function getBenchmark() {
-        $queries = array();
-        foreach (self::$queries as $query => $time) {
-            $queries[$query] = $time['stop'] - $time['start'];
-        }
-        return $queries;
+        return $this->benchmark;
     }
 
     public function createTable($table, $fields) {

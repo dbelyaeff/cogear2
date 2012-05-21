@@ -58,8 +58,7 @@ class Post_Object extends Db_Item {
         $data['last_update'] = time();
         $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
-            event('post.insert', $data);
-            cogear()->user->recalculate('posts');
+            event('post.insert', $this,$data,$result);
         }
         return $result;
     }
@@ -73,8 +72,7 @@ class Post_Object extends Db_Item {
         $data OR $data = $this->object->toArray();
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
-            event('post.update', $data);
-            cogear()->user->recalculate('posts');
+            event('post.update', $this,$data,$result);
         }
         return $result;
     }
@@ -85,8 +83,7 @@ class Post_Object extends Db_Item {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-            event('post.delete', array(), $uid);
-            cogear()->user->recalculate('posts');
+            event('post.delete',$this,array(),$result);
         }
         return $result;
     }
@@ -102,14 +99,4 @@ class Post_Object extends Db_Item {
         }
         return parent::render($template);
     }
-
-    /**
-     * Recalculate params
-     *
-     * @param type $type
-     */
-    public function recalculate($type) {
-        event('post.recalculate', $this, $type);
-    }
-
 }

@@ -31,10 +31,10 @@ class I18n_Gear extends Gear {
         $adapter = config('i18n.adapter', 'I18n_Adapter_File');
         $options = config('i18n');
         $options->path OR $options->path = ROOT . DS . 'lang';
-        $this->adapter = new $adapter($options);
-        $this->adapter->load();
+        $this->attach(new $adapter($options));
+        $this->load();
         setlocale(LC_ALL, $this->locale);
-        hook('done', array($this->adapter, 'save'));
+        hook('done', array($this->object, 'save'));
         parent::__construct();
     }
 
@@ -78,7 +78,7 @@ class I18n_Gear extends Gear {
      */
     public function translate($text, $domain = '') {
         $domain OR $this->domains && $domain = reset($this->domains);
-        return $this->adapter->get($text, $domain);
+        return $this->get($text, $domain);
     }
 
     /**

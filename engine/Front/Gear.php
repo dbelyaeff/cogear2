@@ -59,13 +59,15 @@ class Front_Gear extends Gear {
      * @param object $Form
      */
     public function hookPostForm($Form) {
-        $Form->addElement('front', array(
-            'type' => 'checkbox',
-            'access' => access('Blog.front'),
-            'text' => t('Promote to front page'),
-            'value' => 0,
-            'order' => 3.5,
-        ));
+        if (access('Front.promote')) {
+            $Form->addElement('front', array(
+                'type' => 'checkbox',
+                'access' => access('Blog.front'),
+                'text' => t('Promote to front page'),
+                'value' => 0,
+                'order' => 3.5,
+            ));
+        }
     }
 
     /**
@@ -75,24 +77,17 @@ class Front_Gear extends Gear {
      * @param string $subaction
      */
     public function index_action($page = 'page1') {
-        $post = new Post();
-        $post->where('published')->where('front');
-        $pager = new Pager(array(
-                    'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
-                    'count' => $post->count(),
-                    'per_page' => config('Front.per_page', 5),
-                    'base' => l('/page')
+        $this->db->order('front_time', 'DESC');
+        Db_ORM::skipClear();
+        $posts = new Post_List(array(
+                    'name' => 'front',
+                    'base' => '/',
+                    'per_page' => config('Front.per_page',5),
+                    'where' => array(
+                        'published' => 1,
+                        'front' => 1,
+                    ),
                 ));
-        $post->order('front_time', 'DESC');
-        if ($posts = $post->findAll()) {
-            foreach ($posts as $post) {
-                $post->teaser = TRUE;
-                $post->show();
-            }
-            $pager->show();
-        } else {
-            event('empty');
-        }
     }
 
     /**

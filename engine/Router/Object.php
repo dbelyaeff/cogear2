@@ -93,7 +93,7 @@ class Router_Object extends Options {
      * Constructor
      */
     public function __construct() {
-        $this->uri = $this->sanitizePath(cogear()->request->get('PATH_INFO'));
+        $this->uri = $this->sanitizePath(cogear()->request->get('uri'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
         hook('ignite', array($this, 'run'));
