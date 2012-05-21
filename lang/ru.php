@@ -270,6 +270,7 @@ return array (
     'Post is published! %s' => '',
     'Post has been deleted' => '',
     'Save' => '',
+    'Posts' => '',
   ),
   '#ReCaptcha' => 
   array (

@@ -17,12 +17,9 @@ class Post_Gear extends Gear {
     protected $description = 'Manage posts';
     protected $order = 10;
     protected $hooks = array(
-        'post.insert' => 'hookUserPostCount',
-        'post.update' => 'hookUserPostCount',
-        'post.delete' => 'hookUserPostCount',
-        'comment.insert' => 'hookPostCommentsCount',
-        'comment.update' => 'hookPostCommentsCount',
-        'comment.delete' => 'hookPostCommentsCount',
+        'comment.insert' => 'hookCommentsRecount',
+        'comment.update' => 'hookCommentsRecount',
+        'comment.delete' => 'hookCommentsRecount',
     );
     protected $access = array(
         'edit' => array(100),
@@ -34,29 +31,25 @@ class Post_Gear extends Gear {
     );
 
     /**
-     * Recalculate user posts count and store it to database
-     *
-     * @param type $uid
-     */
-    public function hookUserPostCount() {
-            $this->posts = $this->db->where(array('aid' => $this->user->id, 'published' => 1))->count('posts', 'id', TRUE);
-            $this->drafts = $this->db->where(array('aid' => $this->user->id, 'published' => 0))->count('posts', 'id', TRUE);
-            $this->user->update(array('posts'=>$this->posts,'drafts'=>$this->drafts));
-//            debug($this->db->getLastQuery());
-            $this->user->store();
-    }
-
-    /**
      * Recalculate post comments count
      *
      * @param type $Comment
      */
-    public function hookPostCommentsCount($Comment) {
+    public function hookCommentsRecount($Comment) {
         $post = new Post();
         $post->id = $Comment->post_id;
         if ($post->find()) {
-            $post->update(array('comments'=>$this->db->where(array('post_id' => $Post->id, 'published' => 1))->count('comments', 'id', TRUE)));
+            $post->update(array('comments' => $this->db->where(array('post_id' => $post->id, 'published' => 1))->count('comments', 'id', TRUE)));
         }
+    }
+
+    /**
+     * Constructor
+     */
+    public function init() {
+        parent::init();
+        route('user/([^/]+)/posts:maybe', array($this, 'list_action'), TRUE);
+        route('user/([^/]+)/drafts:maybe', array($this, 'drafts_action'), TRUE);
     }
 
     /**
@@ -77,11 +70,15 @@ class Post_Gear extends Gear {
                 ));
                 break;
             case 'user.profile.tabs':
+                $menu->register(array(
+                    'label' => t('Posts') . ' <sup>' . $menu->object->posts . '</sup>',
+                    'link' => $menu->object->getLink() . '/posts/',
+                    'order' => 2.1,
+                ));
                 if ($menu->object->id == $this->user->id) {
                     $menu->register(array(
                         'label' => t('Drafts') . ' <sup>' . $this->user->drafts . '</sup>',
-                        'link' => l('/post/drafts/'),
-                        'active' => check_route('post/drafts'),
+                        'link' => $menu->object->getLink() . '/drafts/',
                         'order' => 2.1,
                     ));
                 }
@@ -109,39 +106,47 @@ class Post_Gear extends Gear {
             }
         }
     }
+    /**
+     * List posts
+     *
+     * @param type $login
+     */
+    public function list_action($login = NULL) {
+        if ($login && $user = user($login, 'login')) {
+            $uid = $user->id;
+        } else {
+            $uid = $this->user->id;
+        }
+        $blog = new Blog();
+        $blog->aid = $uid;
+        $blog->type = Blog::$types['personal'];
+        if ($blog->find()) {
+            $this->user->navbar()->show();
+            $blog->where['published'] = 1;
+            $blog->show();
+        } else {
+            event('empty');
+        }
+    }
 
     /**
      * Show drafts
      *
      * @param type $page
      */
-    public function drafts_action($page = NULL) {
+    public function drafts_action($login = NULL) {
+        if ($login && $user = user($login, 'login')) {
+            $uid = $user->id;
+        } else {
+            $uid = $this->user->id;
+        }
         $blog = new Blog();
-        $blog->aid = $this->user->id;
+        $blog->aid = $uid;
         $blog->type = Blog::$types['personal'];
         if ($blog->find()) {
             $this->user->navbar()->show();
             $blog->where['published'] = 0;
             $blog->show();
-
-//        $post = new Post();
-//        $post->aid = $this->user->id;
-//        $this->db->where(array(
-//            'published' => 0
-//        ));
-//        $this->db->order('created_date', 'DESC');
-//        $pager = new Pager(array(
-//                    'current' => $page ? intval(str_replace('page', '', $page)) : NULL,
-//                    'count' => $post->count(),
-//                    'per_page' => config('Post.drafts.per_page', 5),
-//                    'base' => l('/post/drafts/')
-//                ));
-//        if ($posts = $post->findAll()) {
-//            foreach ($posts as $post) {
-//                $post->teaser = TRUE;
-//                $post->show();
-//            }
-//            $pager->show();
         } else {
             event('empty');
         }

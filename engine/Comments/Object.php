@@ -58,7 +58,7 @@ class Comments_Object extends Db_Tree {
         $this->aid OR $data['aid'] = cogear()->user->id;
         $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::insert($data)) {
-            event('comment.insert', $this);
+            event('comment.insert', $this,$data,$result);
         }
         return $result;
     }
@@ -73,7 +73,7 @@ class Comments_Object extends Db_Tree {
         isset($data['body']) && $data['last_update'] = time();
         $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::update($data)) {
-            event('comment.update', $this, $data);
+            event('comment.update', $this, $data,$result);
         }
         return $result;
     }

@@ -96,18 +96,11 @@ class Blog_Gear extends Gear {
      *
      * @param type $uid
      */
-    public function hookBlogPostCount($data = array(), $uid = NULL) {
-        $blog = new Blog();
-        if ($data && isset($data['bid'])) {
-            $blog->id = $data['bid'];
-        } elseif ($uid) {
-            $blog->aid = $uid;
-            $blog->type = 0; // Personal blog
+    public function hookBlogPostCount($post,$data = array(), $result) {
+        if ($blog = blog($post->bid)) {
+            $blog->update(array('posts'=>$this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE)));
+            $this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE);
         }
-        if ($blog->find()) {
-            $blog->posts = $this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE);
-        }
-        $blog->save();
     }
 
     /**
@@ -232,25 +225,6 @@ class Blog_Gear extends Gear {
             }
         }
         return $data;
-    }
-
-    /**
-     * Menu hook
-     *
-     * @param   string  $name
-     * @param   object  $menu
-     */
-    public function menu($name, $menu) {
-        d('Blog');
-        switch ($name) {
-            case 'user.profile.tabs':
-                $menu->register(array(
-                    'label' => t('Blog') . ' <sup>' . $menu->object->posts . '</sup>',
-                    'link' => l('/blog/' . $menu->object->login . '/'),
-                ));
-                break;
-        }
-        d();
     }
 
     /**
@@ -466,6 +440,9 @@ function blog($id = NULL,$param = 'id'){
         $blog->$param = $id;
         if($blog->find()){
             return $blog;
+        }
+        else {
+            return FALSE;
         }
     }
     return new Blog();

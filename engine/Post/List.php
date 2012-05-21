@@ -52,7 +52,7 @@ class Post_List extends Options {
             $output->append($pager->render());
             return $output->toString();
         } else {
-            return FALSE;
+            return event('empty');
         }
     }
 

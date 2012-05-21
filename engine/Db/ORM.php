@@ -73,7 +73,7 @@ class Db_ORM extends Object {
      * Constructir
      *
      * @param string $table
-     * @param string $primary
+     * @param string {$this->primary}
      */
     public function __construct($table = NULL, $primary = NULL) {
         parent::__construct();
@@ -81,6 +81,9 @@ class Db_ORM extends Object {
             self::skipClear(FALSE);
         } else {
             $this->clear();
+        }
+        if (!self::$loaded_items) {
+            self::$loaded_items = new Core_ArrayObject();
         }
         $table && $this->table = $table;
         $this->fields = cogear()->db->getFields($this->table);
@@ -95,8 +98,8 @@ class Db_ORM extends Object {
     /**
      * Set skip db reset before object init
      */
-    public static function skipClear($set = TRUE){
-         self::$skipClear = $set;
+    public static function skipClear($set = TRUE) {
+        self::$skipClear = $set;
     }
 
     /**
@@ -191,10 +194,10 @@ class Db_ORM extends Object {
     public function find() {
         $cogear = getInstance();
         $primary = $this->primary;
-//        if ($this->object->$primary && isset(self::$loaded_items[$this->object->$primary])) {
-//            $this->object = self::$loaded_items[$this->object->$primary];
-//            return TRUE;
-//        }
+        if ($this->object->$primary && isset(self::$loaded_items[$this->table]) && isset(self::$loaded_items[$this->table][$this->object->$primary])) {
+            $this->object = self::$loaded_items[$this->table][$this->object->$primary];
+            return TRUE;
+        }
         if ($this->object->count()) {
             if ($data = $this->getData()) {
                 $cogear->db->where($data);
@@ -202,7 +205,7 @@ class Db_ORM extends Object {
             if ($result = $cogear->db->get($this->table)->row()) {
                 event('Db_ORM.find', $this, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
-//                self::$loaded_items[$result->$primary] = $this->object;
+                self::$loaded_items[$this->table][$result->{$this->primary}] = $this->object;
                 return TRUE;
             }
         }
@@ -222,9 +225,8 @@ class Db_ORM extends Object {
             foreach ($result as &$element) {
                 event('Db_ORM.findAll', $this, $result);
                 $element = $this->filterData($element, self::FILTER_OUT);
+                self::$loaded_items[$this->table][$element->{$this->primary}] = $element;
             }
-            $primary = $this->primary;
-//            self::$loaded_items[$result->$primary] = $result;
         }
         return $result;
     }
@@ -298,10 +300,12 @@ class Db_ORM extends Object {
      * @return
      */
     public function insert($data = NULL) {
-        $data OR $data = $this->getData();
-        if (!$data)
-            return;
-        event('Db_ORM.insert', $this,$data);
+        if ($data) {
+            $this->object->adopt($data);
+        } else {
+            $data = $this->getData();
+        }
+        event('Db_ORM.insert', $this, $data);
         return $this->object->{$this->primary} = cogear()->db->insert($this->table, $data);
     }
 
@@ -312,10 +316,13 @@ class Db_ORM extends Object {
      *
      */
     public function update($data = NULL) {
-        $data OR $data = $this->getData();
-        event('Db_ORM.update', $this,$data);
-        $primary = $this->primary;
-        return cogear()->db->update($this->table, $data, array($this->primary => $this->$primary));
+                if ($data) {
+            $this->object->adopt($data);
+        } else {
+            $data = $this->getData();
+        }
+        event('Db_ORM.update', $this, $data);
+        return cogear()->db->update($this->table, $data, array($this->primary => $this->{$this->primary}));
     }
 
     /**
@@ -325,17 +332,16 @@ class Db_ORM extends Object {
      */
     public function delete() {
         $cogear = getInstance();
-        $primary = $this->primary;
         $data = $this->getData();
         $result = FALSE;
         if (!$data) {
             return FALSE;
-        } elseif (!isset($data[$primary])) {
+        } elseif (!isset($data[$this->primary])) {
             $result = $cogear->db->delete($this->table, $data) ? TRUE : FALSE;
-            event('Db_ORM.delete', $this,$data,$result);
+            event('Db_ORM.delete', $this, $data, $result);
         } else {
-            $result = $cogear->db->delete($this->table, array($primary => $data[$primary])) ? TRUE : FALSE;
-            event('Db_ORM.delete', $this,$data,$result);
+            $result = $cogear->db->delete($this->table, array($this->primary => $data[$this->primary])) ? TRUE : FALSE;
+            event('Db_ORM.delete', $this, $data, $result);
         }
         return $result;
     }

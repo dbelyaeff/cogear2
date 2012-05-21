@@ -18,9 +18,12 @@ class User_Gear extends Gear {
     protected $order = -999;
     protected $current;
     protected $hooks = array(
-        'comment.insert' => 'hookUserRecalculateComments',
-        'comment.update' => 'hookUserRecalculateComments',
-        'comment.delete' => 'hookUserRecalculateComments',
+        'post.insert' => 'hookPostCount',
+        'post.update' => 'hookPostCount',
+        'post.delete' => 'hookPostCount',
+        'comment.insert' => 'hookCommentsRecount',
+        'comment.update' => 'hookCommentsRecount',
+        'comment.delete' => 'hookCommentsRecount',
         'assets.js.global' => 'hookGlobalScripts',
     );
     protected $access = array(
@@ -70,13 +73,27 @@ class User_Gear extends Gear {
     }
 
     /**
+     * Recalculate user posts count and store it to database
+     *
+     * @param type $uid
+     */
+    public function hookPostCount() {
+        $this->user->object->update(
+                array(
+                    'drafts' => $this->db->where(array('aid' => $this->user->id, 'published' => 0))->count('posts', 'id', TRUE),
+                    'posts' => $this->db->where(array('aid' => $this->user->id, 'published' => 1))->count('posts', 'id', TRUE),
+        ));
+        $this->user->store();
+    }
+
+    /**
      * Recalulate user comments
      *
      * @param type $Commment
      */
-    public function hookUserRecalculateComments($Commment) {
+    public function hookCommentsRecount($Comment) {
         if ($Comment->aid == $this->user->id) {
-            $User = $this->user->current;
+            $User = $this->user->object;
         } else {
             $User = new User();
             $User->id = $comment->aid;

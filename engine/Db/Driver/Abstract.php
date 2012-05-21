@@ -724,9 +724,8 @@ abstract class Db_Driver_Abstract {
      *
      * @return string
      */
-    public function getLastQuery() {
-        $queries = $this->getQueries();
-        return array_pop($queries->toArray());
+    public function last() {
+        return $this->queries->offsetGet($this->queries->count() - 1);
     }
 
     /**
@@ -758,4 +757,8 @@ abstract class Db_Driver_Abstract {
 
     }
 
+}
+
+function dlq(){
+    return cogear()->db->last();
 }

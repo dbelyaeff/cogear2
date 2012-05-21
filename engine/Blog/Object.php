@@ -152,12 +152,11 @@ class Blog_Object extends Db_Item {
      * Render blog
      */
     public function render() {
-        $this->where['bid'] = $this->id;
         $posts = new Post_List(array(
                     'name' => 'blog',
                     'base' => $this->getLink() . '/',
                     'per_page' => $this->per_page,
-                    'where' => $this->where,
+                    'where' => $this->where ? $this->where : array('bid'=>$this->id),
                     'render' => FALSE,
                 ));
         return $posts->render();

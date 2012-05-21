@@ -28,8 +28,8 @@ class User_Object extends Db_Item {
             $this->avatar = $this->getAvatar();
             if ($this->last_visit < time() - config('user.refresh', 86400)) {
                 $this->last_visit = time();
-                $this->update();
                 event('user.refresh', $this);
+                $this->update(array('last_visit'=>$this->last_visit));
                 $this->store();
             }
         }

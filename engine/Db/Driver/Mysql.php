@@ -56,7 +56,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         $this->bench($query,  microtime() - $start);
         $this->clear();
         event('database.query',$query);
-        return $this->errors ? FALSE : $this;
+        return $this->errors ? FALSE : TRUE;
     }
 
     /**

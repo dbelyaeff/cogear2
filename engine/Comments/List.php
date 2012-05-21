@@ -52,7 +52,7 @@ class Comments_List extends Object {
                     ));
         }
         $this->flat && $comments->order('comments.id','DESC');
-        if ($result = $comments->findAll(TRUE)) {
+        if ($result = $comments->findAll()) {
             $output = new Core_ArrayObject();
             event('comments.list', $this, $result);
             if ($this->flat) {
@@ -84,7 +84,7 @@ class Comments_List extends Object {
             $this->options->pager && $output->append($pager->render());
             return $output->toString();
         } else {
-            $this->render && event('empty');
+            return FALSE;
         }
     }
 
