@@ -175,6 +175,8 @@ class Form_Element_Abstract extends Options {
         $tpl = new Template($this->options->template);
         $tpl->assign($this->options);
         $this->code = $tpl->render();
+        event('form.element.render',$this);
+        event('form.element.'.$this->options->type.'.render',$this);
         $this->decorate();
         return $this->code;
     }
@@ -184,6 +186,8 @@ class Form_Element_Abstract extends Options {
      */
     protected function decorate() {
         if ($this->options->wrapper) {
+            event('form.element.decorate',$this);
+            event('form.element.'.$this->options->type.'.decorate',$this);
             $tpl = new Template($this->options->wrapper);
             $tpl->assign($this->options);
             $tpl->code = $this->code;

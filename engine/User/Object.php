@@ -29,7 +29,7 @@ class User_Object extends Db_Item {
             if ($this->last_visit < time() - config('user.refresh', 86400)) {
                 $this->last_visit = time();
                 event('user.refresh', $this);
-                $this->update(array('last_visit'=>$this->last_visit));
+                $this->update(array('last_visit' => $this->last_visit));
                 $this->store();
             }
         }
@@ -96,7 +96,7 @@ class User_Object extends Db_Item {
      */
     public function insert($data = NULL) {
         if ($result = parent::insert($data)) {
-            event('user.insert', $this,$data,$result);
+            event('user.insert', $this, $data, $result);
         }
         return $result;
     }
@@ -107,9 +107,12 @@ class User_Object extends Db_Item {
      * @param type $data
      */
     public function update($data = NULL) {
-        $data OR $data = $this->object->toArray();
         if ($result = parent::update($data)) {
-            event('user.update',$this,$data,$result);
+            // Automatically store new data to session
+            if ($this->id == user()->id) {
+                $this->store();
+            }
+            event('user.update', $this, $data, $result);
         }
         return $result;
     }
@@ -121,7 +124,7 @@ class User_Object extends Db_Item {
      */
     public function find() {
         if ($result = parent::find()) {
-            event('user.find', $this,array(),$result);
+            event('user.find', $this, array(), $result);
         }
         return $result;
     }
@@ -171,6 +174,25 @@ class User_Object extends Db_Item {
     }
 
     /**
+     * Show user
+     */
+    public function render($type = NULL, $param = NULL) {
+        switch ($type) {
+            case 'list':
+                $navbar = new Stack(array('name' => 'user.navbar'));
+                $navbar->attach($this);
+                $navbar->avatar = $this->getAvatarImage('avatar.profile');
+                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName($param). '</a></strong>';
+                if (access('User.edit', $this)) {
+                    $navbar->edit = '<a href="' . $this->getLink('edit') . '" class="sh" title="' . t('Edit') . '"><i class="icon-pencil"></i></a>';
+                }
+                return $navbar->render();
+                break;
+            default:
+        }
+    }
+
+    /**
      * Remember user
      */
     public function forget() {
@@ -198,27 +220,28 @@ class User_Object extends Db_Item {
      *
      * @return string
      */
-    public function getName() {
-        if ($this->id) {
-            return $this->name ? $this->name : $this->login;
-        }
-        return NULL;
+    public function getName($showName = TRUE) {
+        return $showName && $this->name ? $this->name : $this->login;
     }
-
 
     /**
      * Get user profile link
      */
-    public function getLink($type = 'default',$param = 'avatar.small') {
+    public function getLink($type = 'default', $param = NULL) {
         switch ($type) {
             case 'profile':
                 $uri = new Stack(array('name' => 'user.link.profile'));
                 $uri->append($this->getLink());
-                return HTML::a($uri->render('/'), $this->getName());
+                $name = $this->getName($param);
+                if ($param) {
+                    $name = '<b>' . $name . '</b>';
+                }
+                return HTML::a($uri->render('/'), $name);
                 break;
             case 'avatar':
                 $uri = new Stack(array('name' => 'user.link.avatar'));
                 $uri->append($this->getLink());
+                $param OR $param = 'avatar.small';
                 return HTML::a($uri->render('/'), $this->getAvatarImage($param));
                 break;
             case 'edit':
@@ -284,4 +307,5 @@ class User_Object extends Db_Item {
     public function dir() {
         return File::mkdir(UPLOADS . DS . 'users' . DS . $this->id);
     }
+
 }

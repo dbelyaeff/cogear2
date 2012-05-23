@@ -31,13 +31,16 @@ class Db_Gear extends Gear {
                 $this->object->error(t('Couldn\'t establish database connection.', 'Db.errors'));
                 fatal_error($this->object->errors());
             } else {
-                hook('done', array($this, 'showErrors'));
-                hook('footer', array($this, 'trace'));
+                if (access('Dev') && config('site.development')) {
+                    hook('done', array($this, 'showErrors'));
+                    hook('footer', array($this, 'trace'));
+                }
             }
         } else {
             error(t('Database connection string is not defined.', 'Db.errors'));
         }
     }
+
     /**
      * Check data source name
      *
@@ -48,7 +51,7 @@ class Db_Gear extends Gear {
         $config = parse_url($dsn);
         if (isset($config['query'])) {
             parse_str($config['query'], $query);
-            $config = array_merge($config,$query);
+            $config = array_merge($config, $query);
         }
         if (!isset($config['host']))
             $config['host'] = 'localhost';
@@ -65,7 +68,7 @@ class Db_Gear extends Gear {
             return FALSE;
         }
         $this->attach(new $adapter($config));
-        if (!$this->object->init()){
+        if (!$this->object->init()) {
             return FALSE;
         }
         cogear()->db = $this->object;

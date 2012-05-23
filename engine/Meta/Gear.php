@@ -21,6 +21,13 @@ class Meta_Gear extends Gear {
         'keywords' => array(),
         'description' => array(),
     );
+    protected $hooks = array(
+        'menu.active' => 'menuTitleHook',
+        'post.full.after' => 'showObjectTitle',
+        'blog.navbar.render' => 'showObjectTitle',
+        'user.navbar.render' => 'showObjectTitle',
+        'form.element.title.render' => 'showObjectTitle',
+    );
 
     /**
      * Constructor
@@ -37,9 +44,6 @@ class Meta_Gear extends Gear {
         parent::init();
         title(t(config('site.name', config('site.url'))));
         hook('head', array($this, 'head'), 0);
-        hook('menu.setActive', array($this, 'menuTitleHook'));
-        hook('Pages.showPage.before', array($this, 'showObjectTitle'));
-        hook('admin.gear.request', array($this, 'showObjectTitle'));
     }
 
     /**
@@ -48,7 +52,18 @@ class Meta_Gear extends Gear {
      * @param object $object
      */
     public function showObjectTitle($object) {
-        $object->name && title(t($object->name));
+        if($object->label){
+            title($object->label);
+        }
+        elseif($object->getName()){
+            title($object->getName(FALSE));
+        }
+        elseif($object->name){
+            title($object->name);
+        }
+        else if($object->object && $object->object->name){
+            title($object->object->name);
+        }
     }
 
     /**
@@ -56,8 +71,11 @@ class Meta_Gear extends Gear {
      *
      * @param string $element
      */
-    public function menuTitleHook($element) {
-        $this->info->title->inject(trim(strip_tags($element->value)), $this->info->title->count() - 1);
+    public function menuTitleHook($item, $menu) {
+        if (!$menu->autotitle) {
+            title($item->label);
+        }
+//        $this->info->title->inject(trim(strip_tags($element->value)), $this->info->title->count() - 1);
     }
 
     /**
@@ -74,7 +92,9 @@ class Meta_Gear extends Gear {
 
 function title($text) {
     $cogear = getInstance();
+    $text = preg_replace('#\<.*?\>#imsU','',$text);
     $cogear->meta->info->title->prepend($text);
+    return TRUE;
 }
 
 function keywords($text) {

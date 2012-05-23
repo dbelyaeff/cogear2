@@ -24,7 +24,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
             $this->error(t('Database <b>%s</b> doesn\'t exists.', 'Db.errors', $this->config['database']));
             return FALSE;
         }
-        $this->query('SET NAMES utf8;');
+        $this->query('SET NAMES utf8;',FALSE);
         return $this->connection ? TRUE : FALSE;
     }
 
@@ -41,9 +41,10 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * Execute query
      *
      * @param string $query
-     * @return Db_Driver_Mysql
+     * @param boolean $bench
+     * @return boolean
      */
-    public function query($query = '') {
+    public function query($query = '',$bench = TRUE) {
         if (!$query) {
             if (!$query = $this->buildQuery()) {
                 return FALSE;
@@ -53,7 +54,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         if (!$this->result = @mysql_query($query, $this->connection)) {
             $this->silent OR $this->errors[] = mysql_error() . ' (' . mysql_errno() . ')';
         }
-        $this->bench($query,  microtime() - $start);
+        $bench && $this->bench($query,  microtime() - $start);
         $this->clear();
         event('database.query',$query);
         return $this->errors ? FALSE : TRUE;
@@ -108,7 +109,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
 //            $where = $this->filterFields($from, $where, TRUE);
             if ($where) {
                 foreach ($where as $field => $value) {
-                    if ($i > 0) {
+                    if ($i > 0 OR $where_in) {
                         $query[] = ' AND ';
                     } else {
                         $query[] = ' WHERE ';

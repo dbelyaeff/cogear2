@@ -1,7 +1,16 @@
 var Notify = function(){
+    this.init();
 }
 
 Notify.prototype = {
+    init: function(){
+        $notify = this;
+        $(document).bind('ajax.json',function(event,$data){
+            if($data.messages){
+                $notify.show($data.messages);
+            }
+        })
+    },
     growl: function($body,$config){
         $options = {
             header: '',
@@ -23,13 +32,4 @@ Notify.prototype = {
 
 $(document).ready(function(){
     cogear.notify = new Notify();
-});
-
-$(document).ajaxComplete(function(event,$xhr,$settings){
-   if($settings.dataType == 'json'){
-       $data = $.parseJSON($xhr.responseText);
-       if($data.messages){
-           cogear.notify.show($data.messages);
-       }
-   }
 });

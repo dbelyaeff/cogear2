@@ -35,7 +35,8 @@ class Date_Gear extends Gear {
      * @return string
      */
     public function get($time, $format = NULL) {
-        $date = date($format ? $format : $this->format, $time);
+        $format OR $format = $this->format;
+        $date = date($format, $time);
         event('date.format',$date);
         $month = date('F',$time);
         $date = str_replace($month, t($month,'Date.Month.Full'), $date);

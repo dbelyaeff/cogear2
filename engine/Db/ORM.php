@@ -62,7 +62,7 @@ class Db_ORM extends Object {
      * @var array
      */
     protected $filters_out = array();
-    protected $reflection;
+    public $reflection;
     protected $class;
     public static $skipClear = FALSE;
 
@@ -316,7 +316,7 @@ class Db_ORM extends Object {
      *
      */
     public function update($data = NULL) {
-                if ($data) {
+        if ($data) {
             $this->object->adopt($data);
         } else {
             $data = $this->getData();

@@ -217,7 +217,7 @@ class Router_Object extends Options {
      */
     public function run() {
         $cogear = getInstance();
-        if (event('router.run', $this)->count()) {
+        if (!event('router.run', $this)->check()) {
             return;
         }
         foreach ($this->routes as $route => $callback) {
@@ -252,7 +252,7 @@ class Router_Object extends Options {
      */
     public function exec($callback, $args = array()) {
         if ($callback = Callback::prepare($callback)) {
-            if (event('router.exec', $callback)->count()) {
+            if (!event('router.exec', $callback)->check()) {
                 return;
             }
             $this->callback = new Callback($callback);

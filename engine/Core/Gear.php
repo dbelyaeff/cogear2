@@ -434,7 +434,7 @@ abstract class Gear extends Object {
         if (!$args = func_get_args()) {
             $args[] = 'index';
         }
-        if(event('gear.dispatch',$this,$args)->count()){
+        if(!event('gear.dispatch',$this,$args)->check()){
             return;
         }
         if(method_exists($this, $args[0] . '_action')){

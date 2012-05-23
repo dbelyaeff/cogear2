@@ -11,6 +11,7 @@ return array (
     'body' => 'text',
     'published' => 'tinyint(1)',
     'fronzen' => 'tinyint(1)',
+    'rating' => 'float',
     'ip' => 'varchar(15)',
     'created_date' => 'int(11)',
     'last_update' => 'int(11)',

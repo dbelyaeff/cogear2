@@ -77,8 +77,6 @@ class Front_Gear extends Gear {
      * @param string $subaction
      */
     public function index_action($page = 'page1') {
-        $this->db->order('front_time', 'DESC');
-        Db_ORM::skipClear();
         $posts = new Post_List(array(
                     'name' => 'front',
                     'base' => '/',
@@ -87,6 +85,7 @@ class Front_Gear extends Gear {
                         'published' => 1,
                         'front' => 1,
                     ),
+                    'order' => array('front_time','DESC'),
                 ));
     }
 
@@ -96,9 +95,9 @@ class Front_Gear extends Gear {
      * @param   string  $subaction
      */
     public function promote_action($post_id) {
-        $post = new Post();
-        $post->id = $post_id;
-        $post->find();
+        if(!$post = post($post_id)){
+            return event('404');
+        }
         if ($post->front) {
             $data['action'] = 'unpromote';
             $post->front = 0;
@@ -107,6 +106,9 @@ class Front_Gear extends Gear {
             $data['action'] = 'promote';
             $post->front = 1;
             $message = t('Post has been promoted to front page!', 'Front');
+            if(!$post->front_time){
+                $post->front_time = time();
+            }
         }
         if ($post->save()) {
             if (Ajax::is()) {

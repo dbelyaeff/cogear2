@@ -38,7 +38,9 @@ class Admin_Gear extends Gear {
     /**
      * Load assets - do not load everytime
      */
-    public function loadAssets() {}
+    public function loadAssets() {
+
+    }
 
     /**
      * Load assets only if requested
@@ -46,6 +48,7 @@ class Admin_Gear extends Gear {
     public function request() {
         parent::request();
         parent::loadAssets();
+        title(t('Control Panel', 'Admin'));
     }
 
     /**
@@ -64,12 +67,12 @@ class Admin_Gear extends Gear {
             case 'admin':
                 $menu->register(array(
                     'link' => l('/admin'),
-                    'label' => icon('home') .' '. t('Dashboard', 'Admin'),
+                    'label' => icon('home') . ' ' . t('Dashboard', 'Admin'),
                     'active' => check_route('admin', Router::ENDS) OR check_route('admin/dashboard', Router::STARTS),
                 ));
                 $menu->register(array(
                     'link' => l('/admin/site'),
-                    'label' => icon('inbox') .' '. t('Site', 'Admin'),
+                    'label' => icon('inbox') . ' ' . t('Site', 'Admin'),
                     'order' => 1000,
                 ));
                 break;
@@ -80,12 +83,11 @@ class Admin_Gear extends Gear {
      * Dispatch request
      */
     public function index_action() {
-        if (!access('admin'))
-            return event('403');
         if ($args = $this->router->getArgs()) {
             $gear = ucfirst($args[0]);
             $args = array_slice($args, 1);
             $callback = array(cogear()->$gear, 'admin');
+            title(t(cogear()->$gear->gear, 'Gears'));
             $this->router->exec($callback, $args);
         }
     }
@@ -93,7 +95,7 @@ class Admin_Gear extends Gear {
     /**
      * Site config
      */
-    public function site_action(){
+    public function site_action() {
         $form = new Form('Admin.site');
         $form->setValues(array(
             'name' => config('site.name'),
@@ -101,12 +103,12 @@ class Admin_Gear extends Gear {
             'dev' => config('site.development'),
             'date_format' => config('date.format'),
         ));
-        if($result = $form->result()){
-            $result->name && cogear()->site->set('site.name',$result->name);
-            $result->url && cogear()->site->set('site.url',$result->url);
-            $result->dev && cogear()->site->set('site.development',$result->dev);
-            $result->date_format && cogear()->site->set('date.format',$result->date_format);
-            success(t('Data is saved!','Form'));
+        if ($result = $form->result()) {
+            $result->name && cogear()->site->set('site.name', $result->name);
+            $result->url && cogear()->site->set('site.url', $result->url);
+            $result->dev && cogear()->site->set('site.development', $result->dev);
+            $result->date_format && cogear()->site->set('date.format', $result->date_format);
+            success(t('Data is saved!', 'Form'));
         }
         $form->show();
     }

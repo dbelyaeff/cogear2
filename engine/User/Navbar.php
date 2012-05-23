@@ -17,15 +17,6 @@ class User_Navbar extends Object {
     );
 
     /**
-     * Constructor
-     *
-     * @param type $options
-     * @param type $place
-     */
-    public function __construct($options = NULL, $place = NULL) {
-        parent::__construct($options, $place);
-    }
-    /**
      * Render
      *
      * @return type
@@ -36,17 +27,9 @@ class User_Navbar extends Object {
             return;
         }
         $user = $this->object;
-        $navbar = new Stack(array('name' => 'user.navbar'));
-        $navbar->attach($user);
-        $navbar->avatar = $user->getAvatarImage('avatar.profile');
-        $navbar->name = '<strong><a href="' . $user->getLink() . '">'.$user->login.'</a></strong>';
-        if (access('User.edit',$user)) {
-            $navbar->edit = '<a href="' . $user->getLink('edit') . '" class="sh no_fl" title="'.t('Edit').'"><i class="icon-pencil"></i></a>';
-        }
-        $tpl->navbar = $navbar;
-        $tabs = new Menu_Auto(array(
+        $tpl->navbar = $user->render('list');
+        $tabs = new Menu_Tabs(array(
                     'name' => 'user.profile.tabs',
-                    'template' => 'Twitter_Bootstrap.tabs',
                     'render' => FALSE,
                     'elements' => array(
                         'profile' => array(
@@ -62,6 +45,7 @@ class User_Navbar extends Object {
                 ));
         $tabs->attach($user);
         $tpl->tabs = $tabs;
+        event('user.navbar.render',$user,$this);
         return $tpl->render();
     }
 

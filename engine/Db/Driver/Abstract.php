@@ -760,5 +760,5 @@ abstract class Db_Driver_Abstract {
 }
 
 function dlq(){
-    return cogear()->db->last();
+    return debug(cogear()->db->last());
 }

@@ -94,7 +94,7 @@ final class Cogear implements Interface_Singleton {
      * @param   callback  $callback
      */
     public function hook($event, $callback, $position = NULL) {
-        $this->events->$event OR $this->events->$event = new Event();
+        $this->events->$event OR $this->events->$event = new Event($event);
         $callback = new Callback($callback);
         $args = func_get_args();
         if (sizeof($args) > 3) {
@@ -116,19 +116,9 @@ final class Cogear implements Interface_Singleton {
      * @return  boolean
      */
     public function event($name) {
-        $result = new Core_ArrayObject();
         $args = func_get_args();
         $args = array_slice($args, 1);
-        if ($this->events->$name) {
-            foreach ($this->events->$name as $callback) {
-                if ($this->events->$name->is_stopped())
-                    continue;
-                if ($data = $callback->run($args)) {
-                    $result->append($data);
-                }
-            }
-        }
-        return $result;
+        return $this->events->$name ? $this->events->$name->run($args) : new Event($name);
     }
 
     /**

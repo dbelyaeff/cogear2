@@ -23,7 +23,9 @@ class Files_Gear extends Gear {
         'form.render' => 'hookFormRender',
     );
     protected $access = array(
-        'index' => array(100),
+        'index' => array(1,100),
+        'manager' => array(1,100),
+        'menu' => array(1,100),
     );
 
     /**
@@ -73,11 +75,13 @@ class Files_Gear extends Gear {
                 $menu->register(array(
                     'label' => t('Files', 'Files'),
                     'link' => l('/files'),
+                    'order' => 200,
                 ));
             } else if ($name == 'navbar') {
                 $menu->register(array(
                     'label' => icon('folder-open icon-white'),
                     'link' => l('/files/'),
+                    'title' => t('Files manager','Files'),
                     'place' => 'left',
                     'order' => 10,
                 ));

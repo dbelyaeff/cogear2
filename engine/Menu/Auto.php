@@ -32,7 +32,7 @@ class Menu_Auto extends Menu_Object {
         if ($this->is_init)
             return;
         foreach (cogear()->gears as $gear) {
-            if (method_exists($gear, 'menu') && !event('menu.auto.init',$gear,$this)->count()) {
+            if (method_exists($gear, 'menu') && (access($gear->gear) && access($gear->gear.'.menu'))){
                 call_user_func_array(array($gear, 'menu'), array($this->options->name, &$this));
             }
         }

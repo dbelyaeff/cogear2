@@ -1,7 +1,7 @@
 <?php
 
 /**
- * IM gear
+ * Chat gear
  *
  * @author		Dmitriy Belyaev <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Dmitriy Belyaev
@@ -11,13 +11,13 @@
  * @subpackage
  * @version		$Id$
  */
-class IM_Gear extends Gear {
+class Chat_Gear extends Gear {
 
-    protected $name = 'IM';
+    protected $name = 'Chat';
     protected $description = 'Instant messenger';
     protected $order = 20;
     protected $access = array(
-        'index' => array(100),
+        'index' => array(1,100),
     );
 
     /**
@@ -26,15 +26,22 @@ class IM_Gear extends Gear {
     public function init() {
         parent::init();
     }
-
+    /**
+     * Request catcher
+     */
+    public function request() {
+        parent::request();
+        title(t('Chats','Chat'));
+    }
     public function menu($name, $menu) {
         switch ($name) {
             case 'navbar':
                 $menu->register(array(
                     'label' => icon('envelope icon-white') . ' ' . (cogear()->user->pm_new ? badge(cogear()->user->pm_new, 'info') : ''),
-                    'link' => l('/im/'),
+                    'link' => l('/chat/'),
+                    'title' => t('Chats','Chat'),
                     'place' => 'left',
-                    'access' => access('im'),
+                    'access' => access('Chat'),
                 ));
                 break;
         }
@@ -45,16 +52,16 @@ class IM_Gear extends Gear {
      */
     public function showMenu() {
         $menu = new Menu_Tabs(array(
-                    'name' => 'im.tabs',
+                    'name' => 'chat.tabs',
                     'elements' => array(
                         'inbox' => array(
-                            'label' => t('Messages (%s)', 'IM', $this->user->pm),
-                            'link' => l('/im'),
-                            'active' => check_route('im/create', Router::ENDS) ? FALSE : TRUE,
+                            'label' => t('Chats', 'Chat').' <sup>'.$this->user->pm.'</sup>',
+                            'link' => l('/chat'),
+                            'active' => check_route('Chat/create', Router::ENDS) ? FALSE : TRUE,
                         ),
                         'create' => array(
-                            'label' => t('New message', 'IM'),
-                            'link' => l('/im/create'),
+                            'label' => t('Create', 'Chat'),
+                            'link' => l('/chat/create'),
                             'class' => 'fl_r',
                         ),
                     ),
@@ -78,7 +85,7 @@ class IM_Gear extends Gear {
      */
     public function create_action() {
         $this->showMenu();
-        $form = new Form('IM.create');
+        $form = new Form('Chat.create');
         $form->show();
     }
 

@@ -1,9 +1,7 @@
-<div class="blog profile">
-    <div class="profile_navbar">
+<div class="blog profile shd">
         <?php
-        echo $navbar->render();
+        echo $navbar;
         ?>
-    </div>
     <?php
     echo $tabs->render();
     ?>

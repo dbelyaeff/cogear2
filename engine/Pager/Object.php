@@ -54,7 +54,7 @@ class Pager_Object extends Pager_Abstract {
         if ($this->current == 0 && $uri = cogear()->router->getUri()) {
             switch ($this->method) {
                 case self::PATH:
-                    if (preg_match('#' . preg_quote($this->prefix) . '([\d+])#', $uri, $matches)) {
+                    if (preg_match('#' . preg_quote($this->prefix) . '([\d+])/?$#', $uri, $matches)) {
                         $this->options->current = $matches[1];
                     }
                     break;

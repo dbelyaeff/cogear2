@@ -31,3 +31,9 @@
 .post:hover .sh i{
     visibility: visible;
 }
+.post-time{
+    font-size: 0.8em;
+}
+.post-title .sh{
+    float: right;
+}

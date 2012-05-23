@@ -12,6 +12,7 @@
  * @version		$Id$
  */
 class Post_List extends Options {
+
     public $options = array(
         'page' => 0,
         'per_page' => 5,
@@ -19,8 +20,10 @@ class Post_List extends Options {
         'page_suffix' => 'page',
         'where' => array(
         ),
+        'order' => array('posts.created_date', 'DESC'),
         'render' => 'content',
     );
+
     /**
      * Constructor
      *
@@ -28,15 +31,16 @@ class Post_List extends Options {
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        $this->render && hook($this->render,array($this,'show'));
+        $this->render && hook($this->render, array($this, 'show'));
     }
+
     /**
      * Render list of posts
      */
     public function render() {
         $post = new Post();
         $this->where && cogear()->db->where($this->where->toArray());
-        cogear()->db->order('posts.created_date', 'DESC');
+        $this->order && cogear()->db->order($this->order[0], $this->order[1]);
         $pager = new Pager(array(
                     'current' => $this->page ? $this->page : NULL,
                     'count' => $post->count(),
@@ -52,7 +56,8 @@ class Post_List extends Options {
             $output->append($pager->render());
             return $output->toString();
         } else {
-            return event('empty');
+            event('empty');
+            return FALSE;
         }
     }
 

@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1337634843,
+    'last_run' => 1337789130,
   ),
   'user' => 
   array (
@@ -117,5 +117,8 @@ return array (
     'verify_server' => 'www.google.com',
     'signup_url' => 'https://www.google.com/recaptcha/admin/create',
     'theme' => 'clean',
+  ),
+  'friends' => 
+  array (
   ),
 );

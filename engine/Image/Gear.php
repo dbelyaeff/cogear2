@@ -19,7 +19,7 @@ class Image_Gear extends Gear {
     protected $hooks = array(
         'markitup.toolbar' => 'hookMarkItUp',
         'form.render' => 'hookFormRender',
-        'post.show.full.after' => 'hookPostComments',
+        'post.full.after' => 'hookPostComments',
     );
 
     /**

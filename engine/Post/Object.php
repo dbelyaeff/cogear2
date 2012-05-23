@@ -81,7 +81,6 @@ class Post_Object extends Db_Item {
      * Delete post
      */
     public function delete() {
-        $uid = $this->aid;
         if ($result = parent::delete()) {
             event('post.delete',$this,array(),$result);
         }

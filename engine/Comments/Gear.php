@@ -17,10 +17,11 @@ class Comments_Gear extends Gear {
     protected $description = 'Comments description';
     protected $order = 15;
     protected $hooks = array(
-        'post.show.full.after' => 'hookPostComments',
-        'form.init.post' => 'hookPostForm',
+        'post.full.after' => 'hookPostComments',
+        'form.init.post' => 'hookFormPost',
         'comment.render' => 'hookFormatComment',
         'post.info' => 'hookRenderPostCommentsCount',
+        'post.delete' => 'hookPostDelete',
         'comments.list' => 'hookUpdateCommentsViews',
     );
     protected $access = array(
@@ -28,7 +29,7 @@ class Comments_Gear extends Gear {
         'reply' => 'access',
         'edit' => 'access',
         'delete' => 'access',
-        'update' => array(100),
+        'update' => array(1, 100),
         'hide' => array(1),
         'ip' => array(1),
         'load' => array(0, 1, 100),
@@ -43,33 +44,81 @@ class Comments_Gear extends Gear {
     public function access($rule, $Comment = NULL) {
         switch ($rule) {
             case 'reply':
-                if (role()) {
-                    if (!$item->fronzen OR $item->level < config('comments.max_level', 2)) {
+                $event = event('access.comments.reply');
+                if ($event->check()) {
+                    if (role()) {
+                        if (!$item->fronzen OR $item->level < config('comments.max_level', 2)) {
+                            return TRUE;
+                        }
+                    }
+                } else {
+                    return $event->result();
+                }
+            case 'post':
+                $event = event('access.comments.post');
+                if ($event->check()) {
+                    if (role()) {
                         return TRUE;
                     }
+                } else {
+                    return $event->result();
                 }
                 break;
-            case 'post':
-                if (role()) {
-                    return TRUE;
+            case 'hide':
+                $event = event('access.comments.hide');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result();
                 }
                 break;
             case 'edit':
-                if (is_numeric($Comment)) {
-                    if (!$Comment = comment($Comment)) {
-                        return FALSE;
+                $event = event('access.comments.edit');
+                if ($event->check()) {
+                    if (is_numeric($Comment)) {
+                        if (!$Comment = comment($Comment)) {
+                            return FALSE;
+                        }
                     }
-                }
-                // User can edit comment only if its been posted x seconds ago
-                if (time() - $Comment->created_date > config('Comments.edit.timer', 180) && $Comment->aid == $this->user->id) {
-                    return TRUE;
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                    // User can edit comment only if its been posted x seconds ago
+                    if (time() - $Comment->created_date > config('Comments.edit.timer', 180) && $Comment->aid == $this->user->id) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result();
                 }
                 break;
             case 'delete':
-
+                $event = event('access.comments.delete');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result();
+                }
                 break;
         }
         return FALSE;
+    }
+
+    /**
+     * Delete post
+     *
+     * @param type $Post
+     */
+    public function hookPostDelete($Post) {
+        if ($comments = comments($Post->id, 'post_id')) {
+            foreach ($comments as $comment) {
+                // Delete only root comments — all other will be deleted automatically
+                $comment->delete();
+            }
+        }
     }
 
     /**
@@ -80,7 +129,7 @@ class Comments_Gear extends Gear {
     public function hookRenderPostCommentsCount($info) {
         $post = $info->object;
         if ($post->allow_comments) {
-            $info->comments = icon('comment') . ' <a class="post-comments scrollTo" data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
+            $output = icon('comment') . ' <a class="post-comments-count scrollTo " data-id="' . $post->id . '" href="' . $post->getLink() . '#comments">' . $post->comments . '</a>';
             $new = '';
             if ($this->session->comments_views && isset($this->session->comments_views[$post->id])) {
                 $views = $this->session->comments_views[$post->id];
@@ -91,7 +140,9 @@ class Comments_Gear extends Gear {
             } else {
                 $anchor = 'comments';
             }
-            $info->comments_new = ' <a class="comments-new scrollTo" data-id="' . $post->id . '" href="' . $post->getLink() . '#' . $anchor . '">' . $new . '</a>';
+            $output .= ' <a class="comments-new scrollTo" data-id="' . $post->id . '" href="' . $post->getLink() . '#' . $anchor . '">' . $new . '</a>';
+            $output = '<span class="post-comments">' . $output . '</span>';
+            $info->comments = $output;
         }
     }
 
@@ -114,13 +165,12 @@ class Comments_Gear extends Gear {
         }
     }
 
-
     /**
      * Extend post form
      *
      * @param type $Form
      */
-    public function hookPostForm($Form) {
+    public function hookFormPost($Form) {
         $Form->addElement('allow_comments', array(
             'type' => 'checkbox',
             'text' => t('Allow comments', 'Comments'),
@@ -224,6 +274,7 @@ class Comments_Gear extends Gear {
         $comments = new Comments_List(array(
                     'name' => 'comments.list',
                     'where' => $where,
+                    'per_page' => config('User.comments.per_page', 10),
                     'flat' => TRUE,
                 ));
     }
@@ -620,8 +671,10 @@ function comments($id = NULL, $param = 'id') {
     if ($id) {
         $comments = new Comments();
         $comments->$param = $id;
-        if ($comments->findAll()) {
-            return $comments;
+        if ($result = $comments->findAll()) {
+            return $result;
+        } else {
+            return FALSE;
         }
     }
     return new Comments();
@@ -639,7 +692,9 @@ function comment($id = NULL, $param = 'id') {
         $comment->$param = $id;
         if ($comment->find()) {
             return $comment;
+        } else {
+            return FALSE;
         }
     }
-    return new FALSE;
+    return FALSE;
 }

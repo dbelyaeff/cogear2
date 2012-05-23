@@ -21,7 +21,7 @@ Comments_Updater.prototype = {
         $('body').append(this.el);
         this.director = $('#comments-updater-director',this.el);
         this.director.click(function(){
-            
+
         })
         this.handler = $('#comments-updater-handler',this.el);
         this.handler.click($.proxy(function(){
@@ -272,7 +272,7 @@ Comments.prototype = {
                         }
                     })
                 });
-                $form.attr('id','form-edit-'+$id);
+                $comments.form.attr('id','form-edit-'+$id);
             }
             else {
                 $comment.find('form').first().parent().remove();
@@ -305,7 +305,7 @@ Comments.prototype = {
                                 $link.find('i').first().removeClass('icon-eye-open').addClass('icon-eye-close');
                             }
                             if(data.counter){
-                                this.update('counter',{
+                                $comments.update('counter',{
                                     post_id: data.post_id,
                                     counter: data.counter
                                 });

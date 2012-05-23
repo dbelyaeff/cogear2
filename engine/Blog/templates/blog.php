@@ -4,7 +4,7 @@ $user->id = $item->aid;
 $user->find();
 $item->author = $user;
 
-$before = new Stack(array('name' => 'blog.show.full.before'));
+$before = new Stack(array('name' => 'blog.before'));
 $before->attach($item);
 echo $before->render();
 ?>
@@ -34,6 +34,6 @@ echo $before->render();
     </div>
 </div>
 <?php
-$after = new Stack(array('name' => 'blog.show.full.after'));
+$after = new Stack(array('name' => 'blog.after'));
 $after->attach($item);
 echo $after->render();

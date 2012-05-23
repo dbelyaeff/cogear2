@@ -10,6 +10,7 @@ return array (
     'comments' => 'int(11) unsigned',
     'allow_comments' => 'tinyint(1)',
     'views' => 'int(11) unsigned',
+    'rating' => 'float',
     'created_date' => 'int(11)',
     'last_update' => 'int(11)',
     'published' => 'tinyint(1)',

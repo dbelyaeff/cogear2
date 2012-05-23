@@ -19,11 +19,11 @@ class Fave_Gear extends Gear {
     protected $order = 0;
     protected $hooks = array(
         'post.title' => 'hookPostTitle',
-        'comment.info' => 'hookCommentInfo',
+        'comment.action' => 'hookCommentInfo',
     );
     protected $access = array(
-        'status' => array(100),
-        'menu' => array(100),
+        'status' => array(1,100),
+        'menu' => array(1,100),
     );
 
     /**
@@ -99,6 +99,7 @@ class Fave_Gear extends Gear {
                 $menu->register(array(
                     'label' => icon('star icon-white'),
                     'link' => l($this->user->getLink() . '/fave/'),
+                    'title' => t('Favorites','Fave'),
                     'place' => 'left',
                     'order' => 20,
                 ));
@@ -157,14 +158,7 @@ class Fave_Gear extends Gear {
                             'name' => 'fave',
                             'base' => l($user->getLink() . '/' . $fave . '/posts/'),
                             'per_page' => config('Fave.posts.per_page', 5),
-                            'render' => FALSE,
                         ));
-                if ($output = $posts->render()) {
-                    append('content', $output);
-                } else {
-                    event('empty');
-                }
-
                 break;
             case 'comments':
                 Db_ORM::skipClear();
@@ -176,14 +170,8 @@ class Fave_Gear extends Gear {
                             'name' => 'fave',
                             'base' => l($user->getLink() . '/' . $fave . '/comments/'),
                             'per_page' => config('Fave.comments.per_page', 5),
-                            'render' => FALSE,
                             'flat' => TRUE,
                         ));
-                if ($output = $comments->render()) {
-                    append('content', $output);
-                } else {
-                    event('empty');
-                }
                 break;
         }
     }

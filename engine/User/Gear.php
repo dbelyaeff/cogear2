@@ -21,6 +21,8 @@ class User_Gear extends Gear {
         'post.insert' => 'hookPostCount',
         'post.update' => 'hookPostCount',
         'post.delete' => 'hookPostCount',
+        'friends.insert' => 'hookFriends',
+        'friends.delete' => 'hookFriends',
         'comment.insert' => 'hookCommentsRecount',
         'comment.update' => 'hookCommentsRecount',
         'comment.delete' => 'hookCommentsRecount',
@@ -28,9 +30,11 @@ class User_Gear extends Gear {
     );
     protected $access = array(
         'edit' => 'access',
+        'edit.login' => 'access',
+        'edit.email' => 'access',
         'delete' => 'access',
         'login' => array(0),
-        'logout' => array(100),
+        'logout' => array(1, 100),
     );
 
     /**
@@ -42,6 +46,9 @@ class User_Gear extends Gear {
     public function access($rule, $data = NULL) {
         switch ($rule) {
             case 'edit':
+                if (role() == 1) {
+                    return TRUE;
+                }
                 if ($data instanceof User_Object) {
                     if ($data->id == $this->user->id) {
                         return TRUE;
@@ -49,6 +56,12 @@ class User_Gear extends Gear {
                 }
                 // Catch user_id from uri and compare it with current user
                 elseif ($this->user->id == $data[0]) {
+                    return TRUE;
+                }
+                break;
+            case 'edit.login':
+            case 'edit.email':
+                if (role() == 1) {
                     return TRUE;
                 }
                 break;
@@ -73,6 +86,19 @@ class User_Gear extends Gear {
     }
 
     /**
+     * Hook blog reader
+     *
+     * @param Blog_Followers $Friends
+     */
+    public function hookFriends($Friends) {
+        foreach (array($Friends->u1, $Friends->u2) as $uid) {
+            if ($user = user($uid)) {
+                $user->update(array('friends' => sizeof(cogear()->friends->getFriends($user->id))));
+            }
+        }
+    }
+
+    /**
      * Recalculate user posts count and store it to database
      *
      * @param type $uid
@@ -83,7 +109,6 @@ class User_Gear extends Gear {
                     'drafts' => $this->db->where(array('aid' => $this->user->id, 'published' => 0))->count('posts', 'id', TRUE),
                     'posts' => $this->db->where(array('aid' => $this->user->id, 'published' => 1))->count('posts', 'id', TRUE),
         ));
-        $this->user->store();
     }
 
     /**
@@ -102,7 +127,6 @@ class User_Gear extends Gear {
             }
         }
         $User->update(array('comments' => $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->count('comments', 'id', TRUE)));
-        $User->id == $this->user->id && $this->user->store();
     }
 
     /**
@@ -146,6 +170,7 @@ class User_Gear extends Gear {
                     $menu->register(array(
                         'label' => $this->getName(),
                         'link' => $this->getLink(),
+                        'title' => t('Profile', 'User'),
                         'place' => 'left',
                         'active' => TRUE,
                     ));
@@ -208,6 +233,21 @@ class User_Gear extends Gear {
     }
 
     /**
+     * Show admin page
+     */
+    public function admin() {
+        $list = new User_List(array(
+                    'name' => 'admin.users',
+                    'base' => l('/admin/user/'),
+                    'per_page' => config('Admin.user.per_page', 5),
+                    'render' => FALSE,
+                ));
+        $fields = $list->getFields();
+        $list->setFields($fields);
+        $list->show();
+    }
+
+    /**
      * Dispatcher
      * @param string $action
      */
@@ -257,9 +297,6 @@ class User_Gear extends Gear {
             $form->elements->delete->options->render = FALSE;
         }
         $form->init();
-        if (!access('User.delete')) {
-            $form->elements->offsetUnset('delete');
-        }
         if ($result = $form->result()) {
             if ($user->login != $result['login']) {
                 $redirect = Url::gear('user') . $result['login'];
@@ -278,9 +315,6 @@ class User_Gear extends Gear {
             }
             if ($user->update()) {
                 flash_success(t('User data saved!', 'User'), t('Success'));
-                if ($user->id == $this->id) {
-                    $this->store($user->object->toArray());
-                }
                 redirect(l('/user/edit/' . $id));
             }
         }
@@ -294,17 +328,18 @@ class User_Gear extends Gear {
         $this->showMenu();
         $form = new Form('User.login');
         if ($data = $form->result()) {
-            $this->attach($data);
-            $this->hashPassword();
-            if ($this->find() && $this->login()) {
-                $data->saveme && $this->remember();
-                redirect($this->getLink());
+            $user = new User();
+            $user->attach($data);
+            $user->hashPassword();
+            if ($user->find() && $user->login()) {
+                $data->saveme && $user->remember();
+                redirect($user->getLink());
             } else {
-                $this->object->email = $this->object->login;
-                $this->object->offsetUnset('login');
-                if ($this->find() && $this->login()) {
-                    $data->saveme && $this->remember();
-                    redirect($this->getLink());
+                $user->email = $user->login;
+                $user->object->offsetUnset('login');
+                if ($user->find() && $user->login()) {
+                    $data->saveme && $user->remember();
+                    redirect($user->getLink());
                 }
             }
             error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
@@ -456,6 +491,6 @@ function user($id = NULL, $param = 'id') {
         }
         return NULL;
     } else {
-        return cogear()->user;
+        return cogear()->user->object;
     }
 }

@@ -4,7 +4,6 @@ return array(
     'name' => 'post',
     'elements' => array(
         'title' => array(
-            'type' => 'title',
             'label' => t('Create post', 'Post'),
         ),
         'name' => array(

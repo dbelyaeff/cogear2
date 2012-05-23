@@ -17,7 +17,7 @@ class Access_Gear extends Gear {
     protected $description = 'Access control gear';
     protected $rights;
     protected $refresh_flag;
-    protected $order = -9;
+    protected $order = -998;
     protected $hooks = array(
         'exit' => 'save',
         'gear.dispatch' => 'hookGearAccess',
@@ -33,10 +33,12 @@ class Access_Gear extends Gear {
     public function hookGearAccess($Gear, $args) {
         $gear = $Gear->gear;
         $args && $method = array_shift($args);
-        if (!access($gear,$args)) {
-            return event('403');
-        } elseif (!access($gear . '.' . $method,$args)) {
-            return event('403');
+        if (!access($gear, $args)) {
+            event('403');
+            return FALSE;
+        } elseif (!access($gear . '.' . $method, $args)) {
+            event('403');
+            return FALSE;
         }
     }
 
@@ -48,18 +50,27 @@ class Access_Gear extends Gear {
      */
     public function hookMenuAuto($Gear, $Menu) {
         if (!access($Gear->gear)) {
-            return TRUE;
+            return FALSE;
         } elseif (!access($Gear->gear . '.menu')) {
-            return TRUE;
+            return FALSE;
         }
+        return TRUE;
     }
 
     /**
      * Show access denied page
      */
-    public function hookAccessDenied(){
+    public function hookAccessDenied() {
         $tpl = new Template('Access.denied');
         $tpl->show();
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct();
+        $this->rights = new Core_ArrayObject();
     }
 
     /**
@@ -67,7 +78,6 @@ class Access_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        $this->rights = new Core_ArrayObject();
         foreach (cogear()->gears as $gear) {
             if (is_array($gear->access)) {
                 foreach ($gear->access as $rule => $rights) {
@@ -81,7 +91,7 @@ class Access_Gear extends Gear {
                     }
                     // Array of user roles
                     if (is_array($rights)) {
-                        if (in_array($this->user->role, $rights)) {
+                        if (in_array(role(), $rights)) {
                             $this->rights->$name = TRUE;
                         } else {
                             $this->rights->$name = FALSE;
@@ -93,6 +103,8 @@ class Access_Gear extends Gear {
                         if ($callback->check()) {
                             $this->rights->$name = $callback;
                         }
+                    } elseif (is_bool($rights)) {
+                        $this->rights->$name = $rights;
                     }
                 }
             }
@@ -106,22 +118,22 @@ class Access_Gear extends Gear {
      * @return boolean
      */
     public function check($rule) {
-        if ($this->user->id == 1) {
-            return TRUE;
-        }
-        if($this->rights->$rule instanceof Callback){
+//        if ($this->user->id == 1) {
+//            return TRUE;
+//        }
+        if ($this->rights->$rule instanceof Callback) {
             $args = func_get_args();
             // Remove gear name from arg
-            $args[0] = substr($args[0],strpos($args[0],'.')+1);
+            $args[0] = substr($args[0], strpos($args[0], '.') + 1);
             return $this->rights->$rule->run($args);
+        } elseif ($this->rights->$rule === FALSE) {
+            return FALSE;
         }
-        elseif ($this->rights->$rule !== FALSE) {
-            return TRUE;
-        }
-        return FALSE;
+        return TRUE;
     }
 
 }
+
 /**
  * Shortcut for access rule check
  *
@@ -131,6 +143,6 @@ class Access_Gear extends Gear {
  */
 function access() {
     $args = func_get_args();
-    $callback = new Callback(array(cogear()->access,'check'));
+    $callback = new Callback(array(cogear()->access, 'check'));
     return $callback->run($args);
 }

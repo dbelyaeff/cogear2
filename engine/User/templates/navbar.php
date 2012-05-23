@@ -1,7 +1,7 @@
 <div class="profile shd">
-    <div class="profile_navbar">
+    <div class="user_navbar">
         <?php
-        echo $navbar->render();
+        echo $navbar;
         ?>
     </div>
     <?php

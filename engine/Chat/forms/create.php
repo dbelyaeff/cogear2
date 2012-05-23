@@ -1,30 +1,32 @@
 <?php
 
 return array(
-    'name' => 'im-create',
+    'name' => 'chat-create',
     'elements' => array(
+        'title' => array(
+            'label'=>t('Create chat','Chat'),
+        ),
         'to' => array(
             'type' => 'text',
-            'label' => t('Recipients', 'IM'),
+            'label' => t('Recipients', 'Chat'),
             'validators' => array('Required'),
         ),
         'subject' => array(
             'type' => 'text',
-            'label' => t('Subject', 'IM'),
+            'label' => t('Subject', 'Chat'),
             'validators' => array('Required', array('Length', 4)),
         ),
         'body' => array(
             'type' => 'editor',
+            'label' => t('First message','Chat'),
             'validators' => array('Required', array('Length', 4)),
         ),
         'actions' => array(
-            'type' => 'group',
-            'class' => 'form-actions',
             'elements' => array(
                 'send' => array(
                     'type' => 'submit',
-                    'class' => 'btn btn-primary span2',
-                    'label' => t('Send', 'IM'),
+                    'class' => 'btn btn-primary',
+                    'label' => t('Send', 'Chat'),
                 ),
             ),
         ),

@@ -22,13 +22,16 @@
     border-top: 1px solid #CFCFCF;
     padding: 5px 10px;
 }
-.blog .blog-edit{
-    visibility: hidden;
-    opacity: 0.2;
+.blog .blog-navbar strong{
+    font-size: 2em;
+    vertical-align: middle;
 }
 .blog:hover .blog-edit{
     visibility: visible;
 }
 .blog .blog-edit:hover{
     opacity: 1;
+}
+.post-title .blog-navbar .sh{
+    float: none;
 }

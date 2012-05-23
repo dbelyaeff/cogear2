@@ -125,8 +125,8 @@ class Dev_Gear extends Gear {
  *
  * @param type $data
  */
-function debug($data) {
-    echo '<pre class="debug">';
-    $data ? print_r($data) : var_export($data);
+function debug($data, $type = FALSE) {
+    echo '<pre class="well">';
+    $type ? var_export($data) : print_r($data);
     echo '</pre>';
 }

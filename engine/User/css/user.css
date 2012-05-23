@@ -16,10 +16,10 @@ img.avatar{
 .navbar .badge{
     padding: 1px 5px 2px;
 }
-.profile_navbar .avatar{
+.user_navbar .avatar{
     vertical-align: middle;
 }
-.profile_navbar strong a{
+.user_navbar strong a{
     font-size: 1.5em;
 }
 .profile .nav{

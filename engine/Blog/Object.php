@@ -23,6 +23,7 @@ class Blog_Object extends Db_Item {
     public $where = array(
         'published' => 1,
     );
+    public $followers = array();
 
     /**
      * Get blog link
@@ -31,8 +32,12 @@ class Blog_Object extends Db_Item {
         switch ($type) {
             case 'profile':
                 $uri = new Stack(array('name' => 'blog.link.profile'));
+                $name = $this->name;
+                if (cogear()->blog->check_status($this->id) >= Blog_Gear::APPROVED) {
+                    $name = '<b>' . $this->name . '</b>';
+                }
                 $uri->append($this->getLink());
-                return HTML::a($uri->render('/'), $this->name);
+                return HTML::a($uri->render('/'), $name);
                 break;
             case 'avatar':
                 $uri = new Stack(array('name' => 'blog.link.avatar'));
@@ -64,11 +69,6 @@ class Blog_Object extends Db_Item {
         $this->aid OR $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
             event('blog.insert', $this);
-            $role = new Blog_Role();
-            $role->uid = $data['aid'];
-            $role->bid = $result;
-            $role->role = Blog_Gear::ADMIN;
-            $role->save();
         }
         return $result;
     }
@@ -109,15 +109,6 @@ class Blog_Object extends Db_Item {
     }
 
     /**
-     * Get view snippet
-     *
-     * @return string
-     */
-    public function getListView() {
-        return $this->getAvatarImage() . ' ' . $this->getLink('profile');
-    }
-
-    /**
      * Get user avatar
      *
      * @return  Blog_Avatar
@@ -151,25 +142,71 @@ class Blog_Object extends Db_Item {
     /**
      * Render blog
      */
-    public function render() {
-        $posts = new Post_List(array(
-                    'name' => 'blog',
-                    'base' => $this->getLink() . '/',
-                    'per_page' => $this->per_page,
-                    'where' => $this->where ? $this->where : array('bid'=>$this->id),
-                    'render' => FALSE,
-                ));
-        return $posts->render();
+    public function render($type = NULL, $param = NULL) {
+        switch ($type) {
+            case 'list':
+                $name = 'blog.navbar';
+                if ($param) {
+                    $name .= '.' . $param;
+                }
+                $navbar = new Stack(array('name' => $name));
+                $navbar->attach($this);
+                $navbar->avatar = $this->getAvatarImage('avatar.profile');
+                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->name . '</a></strong>';
+                if (access('Blog.edit', $this)) {
+                    $navbar->edit = '<a class="blog-edit" title="' . t('Settings') . '" href="' . $this->getLink('edit') . '"><i class="icon-cog"></i></a>';
+                }
+                if (access('Blog.status', $this) && user()->id != $this->aid) {
+                    $status = cogear()->blog->check_status($this->id);
+                    switch ($status) {
+                        case 0:
+                        default :
+                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh ajax" title="' . t('Follow', 'Blog') . '">' . icon('check') . '</a>';
+                            break;
+                        case 1:
+                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active fl_r ajax" title="' . t('You\'ve already send a request. Wait for moderation.', 'Blog') . '">' . icon('check') . '</a>';
+                            break;
+                        case 2:
+                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active fl_r ajax" title="' . t('Unfollow', 'Blog') . '">' . icon('check') . '</a>';
+                            break;
+                    }
+                }
+                return '<span class="blog-navbar">' . $navbar->render() . '</span>';
+                break;
+            default:
+                event('blog.render', $this);
+                $this->where['bid'] = $this->id;
+                $posts = new Post_List(array(
+                            'name' => 'blog',
+                            'base' => $this->getLink() . '/',
+                            'per_page' => $this->per_page,
+                            'where' => $this->where,
+                            'render' => FALSE,
+                        ));
+                return $posts->render();
+        }
     }
 
     /**
-     * Update counters
+     * Get blog followers
+     *
+     * @param   int $role
+     * @return  array
      */
-    public function recalculate() {
-        $users = new Blog_Role();
-        $users->bid = $this->id;
-        $this->users = $users->count();
-        $this->save();
+    public function getFollowers($role = NULL) {
+        $followers = new Blog_Followers();
+        $followers->bid = $this->id;
+        $this->order('blogs_followers.role', 'DESC');
+        $role && $this->where('role',$role);
+        if ($result = $followers->findAll()) {
+            $followers = array();
+            foreach ($result as $follower) {
+                $followers[$follower->uid] = $follower->role;
+            }
+        } else {
+            $followers = array();
+        }
+        return $this->followers = $followers;
     }
 
 }

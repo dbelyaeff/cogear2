@@ -49,5 +49,10 @@ return array(
     ),
     'title' => array(
         'type' => 'title',
-    )
+    ),
+    'submit' => array(
+        'type' => 'submit',
+        'label' => t('Send'),
+        'class' => 'btn btn-primary',
+    ),
 );

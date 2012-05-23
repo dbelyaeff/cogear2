@@ -14,7 +14,9 @@ class Modal_Gear extends Gear {
 
     protected $name = 'Modal';
     protected $description = 'Modal windows manager';
-
+    protected $access = array(
+        'menu' => TRUE,
+    );
     /**
      * Init
      */

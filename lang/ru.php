@@ -10,6 +10,10 @@ return array (
     'You don\'t have permission for this page.' => '',
     'You don\'t have permission to view this page.' => '',
   ),
+  '#Admin' => 
+  array (
+    'Control Panel' => '',
+  ),
   '#Admin.site' => 
   array (
     'Site settings' => '',
@@ -47,12 +51,40 @@ return array (
     'Avatar' => '',
     'Unfollow' => '',
     'Description' => '',
+    'You can\'t post to others personal blogs.' => '',
+    'Feed' => '',
+    'You start following this blog.' => '',
+    'You stopped following this blog.' => '',
+    'Followers' => '',
+    'Role' => '',
+    'Admins' => '',
+    'Moders' => '',
+    'Newbies' => '',
+  ),
+  '#Blogs' => 
+  array (
+    'You start following this blog.' => '',
+    'You stopped following this blog.' => '',
   ),
   '#Blogs.profile' => 
   array (
     'Blogs' => '',
     'Follows' => '',
     'Follow blogs' => '',
+    'Reads' => '',
+    'Created' => '',
+  ),
+  '#Chat' => 
+  array (
+    'Messages (%s)' => '',
+    'New message' => '',
+    'Chats' => '',
+    'Create' => '',
+    'Create chat' => '',
+    'Recipients' => '',
+    'Subject' => '',
+    'Send' => '',
+    'First message' => '',
   ),
   '#Comment' => 
   array (
@@ -133,6 +165,7 @@ return array (
     'Post has been added to favorites!' => '',
     'Post has been removed from favorites!' => '',
     'Comment has been added to favorites!' => '',
+    'Comment has been removed from favorites!' => '',
   ),
   '#File' => 
   array (
@@ -148,6 +181,7 @@ return array (
   array (
     'This string will be used to form object uri.' => '',
     'This string will be used to form object link.' => '',
+    'Data is saved!' => '',
   ),
   '#Form.descriptions' => 
   array (
@@ -162,6 +196,7 @@ return array (
     'Draft' => '',
     'Publish' => '',
     'Text' => '',
+    'Write title' => '',
   ),
   '#Form.placeholder' => 
   array (
@@ -176,6 +211,23 @@ return array (
   '#Form_Validate' => 
   array (
     'Value must be longer that %d.' => '',
+    'Value must be between %d and %d symbols length.' => '',
+  ),
+  '#Friends' => 
+  array (
+    'You read users blog.' => '',
+    'You read users blog' => '',
+    'Start to read user' => '',
+    'Make friendship' => '',
+    'User reads your blog' => '',
+    'Follow user' => '',
+    'You follow this user' => '',
+    'You\'ve start to follow this user.' => '',
+    'You\'ve stop to follow this user.' => '',
+    'You follow each other' => '',
+    'Follow' => '',
+    'Unfollow' => '',
+    'Friends' => '',
   ),
   '#Friends.profile' => 
   array (
@@ -185,6 +237,13 @@ return array (
   array (
     'Post has been removed from front page!' => '',
     'Post has been promoted to front page!' => '',
+  ),
+  '#Gears' => 
+  array (
+    'Pages' => '',
+    'I18n' => '',
+    'User' => '',
+    'Gears' => '',
   ),
   '#I18n' => 
   array (
@@ -198,6 +257,9 @@ return array (
   array (
     'Messages (%s)' => '',
     'New message' => '',
+    'Recipients' => '',
+    'Subject' => '',
+    'Send' => '',
   ),
   '#Image' => 
   array (
@@ -271,6 +333,10 @@ return array (
     'Post has been deleted' => '',
     'Save' => '',
     'Posts' => '',
+    'Post is published!' => '',
+    'Post is saved to drafts! %s' => '',
+    'Error' => '',
+    'Friends' => '',
   ),
   '#ReCaptcha' => 
   array (
@@ -332,6 +398,8 @@ return array (
     'Login or e-mail' => '',
     'Enter' => '',
     'User data saved!' => '',
+    'Posts' => '',
+    'Comments' => '',
   ),
   '#User.lostpassword' => 
   array (
@@ -342,6 +410,19 @@ return array (
   array (
     'Registration is complete!' => '',
     'Registration code was not found.' => '',
+  ),
+  '#Vote' => 
+  array (
+    'You\ve already voted!' => '',
+    'You\'ve just voted!' => '',
+    'You don\'t have any votes!' => '',
+    'You can\'t vote for yourself!' => '',
+    'You can\'t vote twice for the same item!' => '',
+    'Posts' => '',
+    'Comments' => '',
+    'Users' => '',
+    'Votes' => '',
+    'Rating' => '',
   ),
   '#blog' => 
   array (
@@ -359,6 +440,8 @@ return array (
   'Code Editor' => '',
   'Create' => '',
   'Delete' => '',
+  'Dmitriy blog' => '',
+  'Drafts' => '',
   'Drag and drop your images here' => '',
   'Edit' => '',
   'Edit comment' => '',
@@ -366,6 +449,7 @@ return array (
   'Edit post' => '',
   'Email is already taken!' => '',
   'Error' => '',
+  'Follow user' => '',
   'Hide' => '',
   'Image preset <b>%s</b> doesn\'t exists.' => '',
   'Insert' => '',
@@ -382,6 +466,7 @@ return array (
   'Post comment' => '',
   'Post published!' => '',
   'Post saved to drafts!' => '',
+  'Posts' => '',
   'Preview' => '',
   'Promote to front page' => '',
   'Publish' => '',
@@ -389,7 +474,9 @@ return array (
   'Registration' => '',
   'Renew password' => '',
   'Save' => '',
+  'Send' => '',
   'Session' => '',
+  'Settings' => '',
   'Success' => '',
   'The page you are looking for is not found.' => '',
   'This field is required.' => '',
@@ -409,6 +496,7 @@ return array (
   'Your comment has been posted!' => '',
   'Your comment has been update!' => '',
   'Your comment has been updated!' => '',
+  'asdasdasd' => '',
   'cogear' => '',
   'remember me' => '',
 );

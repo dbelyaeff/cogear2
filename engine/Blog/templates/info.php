@@ -18,8 +18,8 @@
         'value' => $blog->posts,
     ));
     $fields->append(array(
-        'label' => t('Subscribers', 'Blog'),
-        'value' => $blog->users.' <a href="'.$blog->getLink().'/users/'.'" class="btn btn-primary btn-mini">'.t('View').'</a>',
+        'label' => t('Followers', 'Blog'),
+        'value' => $blog->followers,
     ));
     $fields->append(array(
         'label' => t('Created', 'Blog'),

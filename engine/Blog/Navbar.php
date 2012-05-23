@@ -28,38 +28,17 @@ class Blog_Navbar extends Object {
             return;
         }
         $blog = $this->object;
-        $navbar = new Stack(array('name' => 'blog.navbar'));
-        $navbar->attach($blog);
-        $navbar->avatar = $blog->getAvatarImage('avatar.profile');
-        $navbar->name = '<strong><a href="' . $blog->getLink() . '">' . $blog->name . '</a></strong>';
-        if (access('Blog.edit',$blog)) {
-            $navbar->edit = '<a class="blog-edit" href="' . $blog->getLink('edit') . '"><i class="icon-cog"></i></a>';
-        }
-        if (access('Blog.status',$blog) && $this->user->id != $blog->aid) {
-            $status = cogear()->blog->check($blog->id);
-            switch ($status) {
-                case 0:
-                default :
-                    $navbar->join = '<a data-type="modal" data-source="form-blog-status" href="' . l('/blog/status/' . $blog->id) . '" class="btn btn-success btn-mini">' . t('Follow', 'Blog') . '</a>';
-                    break;
-                case 1:
-                    $navbar->join = '<a data-type="modal" data-source="form-blog-status" href="' . l('/blog/status/' . $blog->id) . '" class="btn btn-warning btn-mini">' . t('Unfollow', 'Blog') . '</a>';
-                    break;
-                case 2:
-                    $navbar->join = '<a data-type="modal" data-source="form-blog-status" href="' . l('/blog/status/' . $blog->id) . '" class="btn btn-danger btn-mini">' . t('Unfollow', 'Blog') . '</a>';
-                    break;
-            }
-        }
-        $tpl->navbar = $navbar;
+
+        $tpl->navbar = $blog->render('list');
         $tabs = new Menu_Auto(array(
                     'name' => 'blog.tabs',
                     'template' => 'Twitter_Bootstrap.tabs',
                     'render' => FALSE,
                     'elements' => array(
                         'profile' => array(
-                            'label' => t('Posts', 'Blog').' <sup>'.$blog->posts.'</sup>',
+                            'label' => t('Posts', 'Blog') . ' <sup>' . $blog->posts . '</sup>',
                             'link' => $blog->getLink(),
-                            'active' =>  !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
+                            'active' => !check_route('info', Router::ENDS) && !check_route('users', Router::ENDS),
                         ),
                         'edit' => array(
                             'label' => t('Edit'),
@@ -78,6 +57,7 @@ class Blog_Navbar extends Object {
                 ));
         $tabs->attach($blog);
         $tpl->tabs = $tabs;
+        event('blog.navbar.render', $blog,$this);
         return $tpl->render();
     }
 

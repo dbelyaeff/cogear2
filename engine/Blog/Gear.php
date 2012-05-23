@@ -16,23 +16,30 @@ class Blog_Gear extends Gear {
     protected $name = 'Blog';
     protected $description = 'Allow users to have their own blogs';
     protected $package = '';
-    protected $order = -100;
+    protected $order = 0;
     protected $hooks = array(
         'user.profile.fields' => 'hookUserProfile',
         'form.load.post' => 'hookPostForm',
-        'post.show.full.before' => 'hookShowUserNavbar',
+        'form.result.post' => 'hookFormResult',
+        'post.full.before' => 'hookShowUserNavbar',
         'user.verified' => 'hookAutoRegUserBlog',
         'post.title' => 'hookPostTitle',
         'post.insert' => 'hookBlogPostCount',
         'post.update' => 'hookBlogPostCount',
         'post.delete' => 'hookBlogPostCount',
         'user.delete' => 'hookUserDelete',
+        'blog.insert' => 'hookBlogInsert',
+        'blog.follower.insert' => 'hookBlogReadersInsert',
+        'blog.follower.update' => 'hookBlogReadersInsert',
+        'blog.follower.delete' => 'hookBlogReadersInsert',
     );
     protected $access = array(
         'create' => 'access',
         'edit' => 'access',
         'status' => 'access',
         'delete' => 'access',
+        'moderate' => 'access',
+        'menu' => array(1, 100),
     );
     public $current;
     const LEFT = 0;
@@ -50,45 +57,113 @@ class Blog_Gear extends Gear {
     public function access($rule, $data = NULL) {
         switch ($rule) {
             case 'create':
-
+                $event = event('access.blog.create');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result;
+                }
                 break;
             case 'edit':
-                if ($data instanceof Blog_Object) {
-                    return $data->aid == $this->user->id;
-                }
-                else {
-                    if($blog = blog($data[0])){
-                        if($blog->aid == $this->user->id){
-                            return TRUE;
+                $event = event('access.blog.edit');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                    if ($data instanceof Blog_Object) {
+                        return $data->aid == $this->user->id;
+                    } else {
+                        if ($blog = blog($data[0])) {
+                            if ($blog->aid == $this->user->id) {
+                                return TRUE;
+                            }
                         }
                     }
+                } else {
+                    return $event->result;
                 }
                 break;
             case 'status':
-
+                if (role()) {
+                    return TRUE;
+                }
                 break;
             case 'delete':
-
+                $event = event('access.blog.delete');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result;
+                }
+                break;
+            case 'moderate':
+                $event = event('access.blog.moderate');
+                if ($event->check()) {
+                    if (role() == 1) {
+                        return TRUE;
+                    }
+                } else {
+                    return $event->result;
+                }
                 break;
         }
         return FALSE;
     }
 
     /**
-     * Constructor
+     * Menu hook
+     *
+     * @param   string  $name
+     * @param   object  $menu
      */
-    public function __construct() {
-        parent::__construct();
-        // This hook must be placed earlier, because it deals with User init method which loads before Friends gear init
-        hook('user.refresh', array($this, 'clear'));
+    public function menu($name, $menu) {
+        switch ($name) {
+            case 'navbar':
+                $menu->register(array(
+                    'label' => icon('inbox icon-white', t('Feed', 'Blog')),
+                    'link' => $this->user->getLink() . '/feed',
+                    'title' => t('Feed', 'Blog'),
+                    'place' => 'left',
+                    'order' => 100,
+                ));
+                break;
+            case 'user.profile.tabs':
+                $menu->register(array(
+                    'label' => t('Feed', 'Blog'),
+                    'link' => $menu->object->getLink() . '/feed',
+                    'order' => 100,
+                ));
+                break;
+        }
     }
 
     /**
-     * Init
+     * Hook blog insert
+     *
+     * @param type $Blog
      */
-    public function init() {
-        parent::init();
-        $this->session->get('blogs') !== NULL OR $this->setBlogs();
+    public function hookBlogInsert($Blog) {
+        $reader = new Blog_Followers();
+        $reader->uid = $this->user->id;
+        $reader->bid = $Blog->id;
+        $reader->role = Blog_Gear::ADMIN;
+        $reader->save();
+    }
+
+    /**
+     *
+     *
+     * @param type $Blog_Followers
+     */
+    public function hookBlogReadersInsert($Blog_Followers) {
+        if ($blog = blog($Blog_Followers->bid)) {
+            $blog->update(array('readers' => $this->db->where('bid', $blog->id)->count('blogs_readers')));
+        }
+        $this->clear();
     }
 
     /**
@@ -96,10 +171,9 @@ class Blog_Gear extends Gear {
      *
      * @param type $uid
      */
-    public function hookBlogPostCount($post,$data = array(), $result) {
+    public function hookBlogPostCount($post, $data = array(), $result) {
         if ($blog = blog($post->bid)) {
-            $blog->update(array('posts'=>$this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE)));
-            $this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE);
+            $blog->update(array('posts' => $this->db->where(array('bid' => $blog->id, 'published' => 1))->count('posts', 'id', TRUE)));
         }
     }
 
@@ -114,11 +188,11 @@ class Blog_Gear extends Gear {
         }
         $blog = new Blog();
         $blog->id = $title->object->bid;
-        if ($this->blog->current && $blog->id != $this->blog->current->id) {
+        if ($this->blog->current && $blog->id == $this->blog->current->id) {
             return;
         }
         if ($blog->find() && $title->object->teaser) {
-            $title->inject(' &larr; ' . $blog->getAvatarImage() . ' ' . $blog->getLink('profile'), 1);
+            $title->inject(' &larr; ' . $blog->render('list'), 1);
         }
     }
 
@@ -152,26 +226,45 @@ class Blog_Gear extends Gear {
     }
 
     /**
-     * Add friends list to user profile
+     * Add blog list to user profile
      *
      * @param type $Profile
      */
     public function hookUserProfile($Profile) {
-        $blog = $Profile->object;
-        $blogs = $this->getBlogs($blog->id);
-        $data = new Core_ArrayObject();
+        $user = $Profile->object;
+        $blogs = $this->getBlogs($user->id);
+        $admins = new Core_ArrayObject();
+        $moderates = new Core_ArrayObject();
+        $reads = new Core_ArrayObject();
         foreach ($blogs as $id => $status) {
-            if ($status) {
-                $blog = new Blog();
-                $blog->id = $id;
-                if ($blog->find()) {
-                    $data->append($blog->getListView());
+            if ($blog = blog($id)) {
+                switch ($status) {
+                    case self::APPROVED:
+                        $reads->append($blog->render('list'));
+                        break;
+                    case self::MODER:
+                        $moderates->append($blog->render('list'));
+                        break;
+                    case self::ADMIN:
+                        $admins->append($blog->render('list'));
+                        break;
                 }
             }
         }
-        $data->count() && $Profile->append(array(
-                    'label' => t('Follow blogs', 'Blogs.profile'),
-                    'value' => implode(' ', $data->toArray()),
+        $admins->count() && $Profile->append(array(
+                    'label' => t('Created', 'Blogs.profile'),
+                    'value' => implode(' ', $admins->toArray()),
+                    'order' => 3,
+                ));
+        $moderates->count() && $Profile->append(array(
+                    'label' => t('Moderate', 'Blogs.profile'),
+                    'value' => implode(' ', $moderates->toArray()),
+                    'order' => 4,
+                ));
+        $reads->count() && $Profile->append(array(
+                    'label' => t('Reads', 'Blogs.profile'),
+                    'value' => implode(' ', $reads->toArray()),
+                    'order' => 5,
                 ));
     }
 
@@ -205,6 +298,40 @@ class Blog_Gear extends Gear {
     }
 
     /**
+     * Hook form "post" result
+     *
+     * @param object $Form
+     * @param boolean $is_valid
+     * @param array $result
+     */
+    public function hookFormResult($Form, $is_valid, $result) {
+        if (isset($result['bid']) && $blog = blog($result['bid'])) {
+            if ($blog->aid != $this->user->id && $blog->type == Blog::$types['personal']) {
+                warning(t('You can\'t post to others personal blogs.', 'Blog'));
+                return TRUE;
+            }
+        }
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct();
+        // This hook must be placed earlier, because it deals with User init method which loads before Friends gear init
+        hook('user.refresh', array($this, 'clear'));
+    }
+
+    /**
+     * Init
+     */
+    public function init() {
+        parent::init();
+        route('user/([^/]+)/feed:maybe', array($this, 'feed_action'), TRUE);
+        $this->session->get('blogs') !== NULL OR $this->setBlogs();
+    }
+
+    /**
      * Get avaliable blogs for user
      */
     public function getAvailableBlogs() {
@@ -212,14 +339,18 @@ class Blog_Gear extends Gear {
         if ($blogs = $this->session->get('blogs')) {
             $keys = array();
             foreach ($blogs as $key => $blog) {
-                if ($blog > 1) {
+                if ($blog > self::APPROVED) {
                     $keys[] = $key;
                 }
             }
-            $this->db->where_in('id', $keys)->order('id', 'ASC');
             $blog = new Blog();
+            $keys && $this->db->where_in('id', $keys)->order('id', 'ASC');
             if ($result = $blog->findAll()) {
                 foreach ($result as $blog) {
+                    // You can't write to other personal blogs
+                    if ($blog->type == Blog::$types['personal'] && $blog->aid != $this->user->id) {
+                        continue;
+                    }
                     $data[$blog->id] = $blog->name;
                 }
             }
@@ -233,7 +364,7 @@ class Blog_Gear extends Gear {
      * @param string $action
      * @param string $subaction
      */
-    public function index_action($login = '', $action = NULL) {
+    public function index_action($login = '', $action = NULL, $type = 'admin') {
         $blog = new Blog();
         $blog->login = $login;
         if ($blog->find()) {
@@ -246,24 +377,82 @@ class Blog_Gear extends Gear {
                     $tpl->show();
                     break;
                 case 'users':
-                    cogear()->db->join('blogs_users', array('blogs_users.uid' => 'users.id'), 'INNER');
-                    cogear()->db->group('users.id');
-                    $list = new User_List(array(
-                                'name' => 'blog.list',
-                                'per_page' => config('blog.users.per_page', 20),
-                                'base' => $blog->getLink() . '/info/users/',
-                                'page_suffix' => 'page',
-                                'where' => array(
-                                    'login !=' => '',
-                                    'bid' => $blog->id,
-                                ),
+                    new Menu_Pills(array(
+                                'name' => 'blog.users.types',
+                                'elements' => array(
+                                    'admin' => array(
+                                        'label' => t('Admins', 'Blog'),
+                                        'link' => $blog->getLink() . '/users/admins/',
+                                    ),
+                                    'moders' => array(
+                                        'label' => t('Moders', 'Blog'),
+                                        'link' => $blog->getLink() . '/users/moders/',
+                                    ),
+                                    'followers' => array(
+                                        'label' => t('Followers', 'Blog'),
+                                        'link' => $blog->getLink() . '/users/followers/',
+                                    ),
+                                    'newbies' => array(
+                                        'label' => t('Newbies', 'Blog'),
+                                        'link' => $blog->getLink() . '/users/newbies/',
+                                        'access' => access('Blog.moderate', $blog),
+                                    ),
+                                )
                             ));
+                    switch($type){
+                        case 'admins':
+                            $type = self::ADMIN;
+                            break;
+                        case 'moders':
+                            $type = self::MODER;
+                            break;
+                        case 'followers':
+                            $type = self::APPROVED;
+                            break;
+                        case 'newbies':
+                            $type = self::JOINED;
+                            break;
+                    }
+                    if ($followers = $blog->getFollowers($type)) {
+                        Db_ORM::skipClear();
+                        $this->db->where_in('users.id', array_keys($followers));
+                        $list = new User_List(array(
+                                    'name' => 'blog.list',
+                                    'per_page' => config('Blog.users.per_page', 20),
+                                    'base' => $blog->getLink() . '/info/users/',
+                                    'render' => FALSE,
+                                ));
+                        $fields = $list->getFields();
+                        $fields->offsetSet('role', array(
+                            'label' => t('Role', 'Blog'),
+                            'callback' => new Callback(array($this, 'prepareFields')),
+                            'class' => 't_c',
+                        ));
+                        $list->setFields($fields);
+                        $list->show();
+                    } else {
+                        event('empty');
+                    }
                     break;
                 default:
                     $blog->show();
             }
         } else {
             event('404');
+        }
+    }
+
+    /**
+     * Prepare fields for table
+     *
+     * @param type $user
+     * @return type
+     */
+    public function prepareFields($user, $key) {
+        switch ($key) {
+            case 'role':
+                return $this->current->followers[$user->id];
+                break;
         }
     }
 
@@ -282,8 +471,8 @@ class Blog_Gear extends Gear {
             $blog->attach($result);
 
             if ($blog->save()) {
-                flash_success(t('Blog is created!') . ' <a class="btn btn-primary btn-mini" href="' . $blog->getLink() . '">' . t('View') . '</a>');
-                redirect($blog->getLink('edit'));
+                flash_success(t('Blog is created!'), '', 'growl');
+                redirect($blog->getLink());
             }
         }
         // Remove 'delete' button from create blog form
@@ -311,11 +500,53 @@ class Blog_Gear extends Gear {
         if ($result = $form->result()) {
             $blog->object->adopt($result);
             if ($blog->save()) {
-                flash_success(t('Blog is updated!') . ' <a class="btn btn-primary btn-mini" href="' . $blog->getLink() . '">' . t('View') . '</a>');
-                redirect($blog->getLink('edit'));
+                flash_success(t('Blog is updated!'), '', 'growl');
+                redirect($blog->getLink());
             }
         }
         $form->show();
+    }
+
+    /**
+     * Show user feed
+     *
+     * @param string $login
+     * @param string $action
+     * @param string $page
+     */
+    public function feed_action($login = NULL, $action='feed', $page = 'page0') {
+        if ($login) {
+            if (!$user = user($login, 'login')) {
+                return event('404');
+            }
+        } else {
+            $user = user()->object;
+        }
+        $user->navbar()->show();
+        $readers = new Blog_Followers();
+        $readers->uid = $user->id;
+        if ($result = $readers->findAll()) {
+            $user_blog = new Blog();
+            $user_blog->aid = $user->id;
+            $user_blog->type = Blog::$types['personal'];
+            $user_blog->find();
+            $where_in = array();
+            foreach ($result as $reader) {
+                if ($reader->bid != $user_blog->id) {
+                    $where_in[] = $reader->bid;
+                }
+            }
+            Db_ORM::skipClear();
+            $this->db->where_in('posts.bid', $where_in);
+            $posts = new Post_List(array(
+                        'name' => 'user.posts',
+                        'base' => $user->getLink() . '/feed/',
+                        'per_page' => config('User.posts.per_page', 5),
+                        'where' => array('published' => 1),
+                    ));
+        } else {
+            event('empty');
+        }
     }
 
     /**
@@ -333,10 +564,10 @@ class Blog_Gear extends Gear {
      */
     public function getBlogs($uid = 0) {
         $uid OR $uid = $this->user->id;
-        $role = new Blog_Role();
-        $role->uid = $uid;
+        $readers = new Blog_Followers();
+        $readers->uid = $uid;
         $data = new Core_ArrayObject();
-        if ($result = $role->findAll()) {
+        if ($result = $readers->findAll()) {
             foreach ($result as $item) {
                 $data[$item->bid] = $item->role;
             }
@@ -356,7 +587,7 @@ class Blog_Gear extends Gear {
      *
      * @return int // 0 - left, 1 - joined, 2 - approved
      */
-    public function check($bid) {
+    public function check_status($bid) {
         if ($blog = $this->session->get('blogs')) {
             return isset($blog[$bid]) ? $blog[$bid] : 0;
         }
@@ -368,65 +599,73 @@ class Blog_Gear extends Gear {
      * @param type $bid
       status */
     public function status_action($bid = 0) {
-        $blog = new Blog();
-        $blog->id = $bid;
-        if ($bid && $blog->find()) {
+        if ($blog = blog($bid)) {
             if ($blog->aid == $this->user->id) {
                 return event('403');
             }
-            $status = $this->check($bid);
-            $form = new Form('Blog.status');
-            $form->init();
+            $data = array();
+            $readers = new Blog_Followers();
+            $readers->uid = $this->user->id;
+            $readers->bid = $blog->id;
+            $status = $readers->find() ? $readers->role : 0;
+            $readers->aid = $blog->aid;
+            $readers->status_date = time();
             switch ($status) {
-                case 1:
-                case 2:
-                    $form->title->options->label = t('Unfollow %s blog?', 'blog', $blog->getListView());
-                    break;
                 case 0:
-                default:
-                    $form->title->options->label = t('Follow %s blog?', 'blog', $blog->getListView());
-            }
-            $form->body->options->label = $blog->body;
-            if ($result = $form->result()) {
-                if ($result->yes) {
-                    $role = new Blog_Role();
-                    $role->uid = $this->user->id;
-                    $role->bid = $blog->id;
-                    $role->find();
-                    switch ($status) {
-                        case 0:
-                            $role->created_date = time();
-                            switch ($blog->type) {
-                                case 1:
-                                    $role->role = 2;
-                                    break;
-                                case 0:
-                                case 2:
-                                    $role->role = 1;
-                                    break;
-                            }
-                            $role->save();
-                            flash_success(t('You have started to follow this blog.'));
+                    $data['action'] = array(
+                        'type' => 'class',
+                        'className' => 'active',
+                    );
+                    switch ($blog->type) {
+                        case Blog::$types['private']:
+                            $readers->role = self::JOINED;
+                            $data['messages'] = array(array(
+                                    'type' => 'info',
+                                    'body' => t('You send a request to join this blog. Wait for approve.', 'Blog'),
+                                    ));
+                            $data['action']['title'] = t('You\'ve already send a request. Wait for moderation.', 'Blog');
                             break;
-                        case 1:
-                        case 2:
-                            $role->role = 0;
-                            $role->save();
-                            flash_error($message = t('You stoped follow this blog.'));
+                        case Blog::$types['public']:
+                        case Blog::$types['personal']:
+                            $readers->role = self::APPROVED;
+                            $data['messages'] = array(array(
+                                    'type' => 'success',
+                                    'body' => t('You start following this blog.', 'Blog'),
+                                    ));
+                            $data['action']['title'] = t('Unfollow', 'Blog');
+                            break;
                     }
-                }
-                $blog->recalculate();
-                $this->clear();
+                    $readers->save();
+                    break;
+                case 1:
+                    $data['messages'] = array(array(
+                            'type' => 'info',
+                            'body' => t('You\'ve already send a request. Wait for moderation.', 'Blog'),
+                            ));
+                    break;
+                case 2:
+                    $data['action'] = array(
+                        'type' => 'class',
+                        'className' => 'active',
+                        'title' => t('Follow', 'Blog'),
+                    );
+                    $data['messages'] = array(array(
+                            'type' => 'warning',
+                            'body' => t('You stopped following this blog.', 'Blog'),
+                            ));
+                    $readers->delete();
+                    break;
+            }
+            if (Ajax::is()) {
+                ajax()->json($data);
+            } else {
+                flash_success($data['messages'][0]['body']);
                 redirect($blog->getLink());
             }
-            $form->show();
-        } else {
-            return event('404');
         }
     }
 
 }
-
 
 /**
  * Shortcut for blog
@@ -434,14 +673,13 @@ class Blog_Gear extends Gear {
  * @param int $id
  * @param string    $param
  */
-function blog($id = NULL,$param = 'id'){
-    if($id){
+function blog($id = NULL, $param = 'id') {
+    if ($id) {
         $blog = new Blog();
         $blog->$param = $id;
-        if($blog->find()){
+        if ($blog->find()) {
             return $blog;
-        }
-        else {
+        } else {
             return FALSE;
         }
     }

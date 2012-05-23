@@ -7,6 +7,9 @@ $(document).ready(function(){
         smoothScroll();
     });
     $(window).hashchange();
+    $('[title]').tooltip({
+        placement: 'bottom'
+    });
 })
 $(document).ajaxComplete(function(){
     smoothScroll();
@@ -33,3 +36,7 @@ $(document).on('mouseenter','i.icon-eye-open',function(){
 $(document).on('mouseleave','i.icon-eye-close',function(){
     $(this).removeClass('icon-eye-close').addClass('icon-eye-open');
 })
+$(document).on('click','a.disabled',function(event){
+    event.preventDefault();
+    event.stopImmediatePropagation();
+});

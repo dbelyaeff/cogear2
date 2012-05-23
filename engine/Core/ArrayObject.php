@@ -165,6 +165,25 @@ class Core_ArrayObject extends ArrayObject {
     }
 
     /**
+     * Prepend to some key
+     *
+     * @param type $value
+     * @param type $key
+     * @param type $to
+     */
+    public function prependTo($value,$key,$to){
+        $data = $this->getArrayCopy();
+        $new = array();
+        foreach($data as $k=>$item){
+            if($k == $to){
+                $new[$key] = $value;
+            }
+            $new[$k] = $item;
+        }
+        $this->exchangeArray(self::transform($new));
+    }
+
+    /**
      * Reverse object
      *
      * @return object

@@ -12,30 +12,75 @@
  * @version		$Id$
  */
 class Event extends Core_ArrayObject {
-    private $is_stopped;
+
+    private $name;
+    private $result;
+    private $results;
+    public static $current;
 
     /**
-     * Stop event execution
+     * Constructor
      */
-    public function stop() {
-        $this->is_stopped = TRUE;
-    }
-    
-    /**
-     * Continue event execution
-     */
-
-    public function start() {
-        $this->is_stopped = FALSE;
+    public function __construct($name) {
+        $this->name = $name;
+        parent::__construct();
+        $this->results = new Core_ArrayObject();
     }
 
     /**
-     * Check if event has been stopped
-     * 
-     * @return boolean|null
+     * Run event
+     *
+     * @param   $args
+     * @return  object
      */
-    public function is_stopped() {
-        return $this->is_stopped;
+    public function run($args) {
+        self::$current = $this;
+        foreach ($this as $callback) {
+            $result = $callback->run($args);
+            if (NULL !== $result) {
+                $this->results->append($result);
+            }
+        }
+        if($this->name =='menu.auto.init'){
+            debug($this->results);
+        }
+        return $this;
+    }
+
+    /**
+     * Get exec results
+     *
+     * @return Core_ArrayObject
+     */
+    public function getResults() {
+        return $this->results;
+    }
+
+    /**
+     * Set result
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    public function result($data = NULL) {
+        if ($data) {
+            return $this->result = $data;
+        }
+        return $this->result;
+    }
+
+    /**
+     * Check if event has result
+     *
+     * @return boolean
+     */
+    public function check() {
+        foreach ($this->results as $result) {
+            if ($result == FALSE) {
+                return FALSE;
+            }
+        }
+        return TRUE;
     }
 
 }

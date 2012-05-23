@@ -13,7 +13,6 @@
  */
 class Form_Element_Div extends Form_Element_Abstract {
 
-    protected $type = 'div';
     /**
      * Process elements value from request
      *

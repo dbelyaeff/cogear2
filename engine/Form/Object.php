@@ -97,7 +97,7 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct($options);
-        $this->defaults = new Config(cogear()->form->dir.DS.'defaults.php');
+        $this->defaults = new Config(cogear()->form->dir . DS . 'defaults.php');
         event('form.load', $this);
         event('form.load.' . $this->name, $this);
     }
@@ -110,18 +110,26 @@ class Form_Object extends Object {
      */
     public function addElement($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
-        if($this->defaults->$name){
+        if ($this->defaults->$name) {
             $this->defaults->$name->mix($config);
             $config = $this->defaults->$name;
         }
-        if($config->label && !$config->placeholder && in_array($config->type,array('text','input','textarea','password','editor'))){
-            $config->placeholder = t('Enter %s…','Form.placeholder',  strtolower($config->label));
+        if ($config->label && !$config->placeholder && in_array($config->type, array('text', 'input', 'textarea', 'password', 'editor'))) {
+            $config->placeholder = t('Enter %s…', 'Form.placeholder', strtolower($config->label));
         }
         $config->name = $name;
         $config->form = $this;
         if (!$config->order) {
             $this->counter++;
             $config->order = $this->counter;
+        }
+        if (is_string($config->access)) {
+            if($this->object){
+                $config->access = access($config->access,$this->object);
+            }
+            else {
+                $config->access = access($config->access);
+            }
         }
         if ($config->access !== FALSE) {
             if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
@@ -149,7 +157,7 @@ class Form_Object extends Object {
         if ($this->is_init)
             return;
         event('form.init', $this);
-        event('form.init.' . $this->name, $this);
+        event('form.init.' . $this->options->name, $this);
         foreach ($this->options->elements as $name => $config) {
             $this->addElement($name, $config);
         }
@@ -198,7 +206,6 @@ class Form_Object extends Object {
         $this->init();
         // Define if form is requested via ajaxed
         $this->ajaxed = $this->options->ajax && Ajax::is() && cogear()->input->post('ajaxed') === $this->getId();
-        event('form.result.before', $this);
         $method = strtolower($this->options->method);
         $result = array();
         $is_valid = TRUE;
@@ -212,7 +219,6 @@ class Form_Object extends Object {
                 }
             }
         }
-        event('form.result.after', $this, $is_valid, $result);
         if ($this->ajaxed) {
             $data = array();
             $data['success'] = $is_valid && $result;
@@ -225,6 +231,10 @@ class Form_Object extends Object {
                 $ajax = new Ajax();
                 $ajax->json($data);
             }
+        }
+        if (!event('form.result.' . $this->options->name, $this, $is_valid, $result)->check() OR
+                !event('form.result', $this, $is_valid, $result)->check()) {
+            return FALSE;
         }
         return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
     }

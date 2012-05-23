@@ -3,9 +3,7 @@ return array(
     'name' => 'admin-site',
     'elements'=> array(
         'title' => array(
-            'type' => 'div',
-            'class' => 'page-header',
-            'label' => '<h1>'.t('Site settings','Admin.site').'</h1>',
+            'label' => t('Site settings','Admin.site'),
         ),
         'name' => array(
             'type' => 'text',

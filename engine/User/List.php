@@ -13,6 +13,7 @@
  */
 class User_List extends Cogearable {
 
+    protected $fields;
     public $options = array(
         'name' => 'user.list',
         'page' => 0,
@@ -22,6 +23,8 @@ class User_List extends Cogearable {
         'where' => array(
             'login !=' => '',
         ),
+        'fields' => array(),
+        'order' => array('login', 'ASC'),
         'render' => 'content',
     );
 
@@ -36,12 +39,56 @@ class User_List extends Cogearable {
     }
 
     /**
+     * Get fields
+     *
+     * @return  Core_ArrayObject
+     */
+    public function getFields() {
+        if ($this->fields) {
+            return $this->fields;
+        } else {
+            return $this->setFields(array(
+                                'login' => array(
+                                    'label' => t('Login', 'User'),
+                                    'callback' => new Callback(array($this, 'prepareFields')),
+                                ),
+                                'posts' => array(
+                                    'label' => t('Posts', 'User'),
+                                    'callback' => new Callback(array($this, 'prepareFields')),
+                                    'class' => 't_c w10',
+                                ),
+                                'comments' => array(
+                                    'label' => t('Comments', 'User'),
+                                    'callback' => new Callback(array($this, 'prepareFields')),
+                                    'class' => 't_c w10',
+                                ),
+                                'reg_date' => array(
+                                    'label' => t('Registered', 'User'),
+                                    'callback' => new Callback(array($this, 'prepareFields')),
+                                ),
+                            ));
+        }
+    }
+
+    /**
+     * Set fields for table
+     *
+     * @param   mixed   $fields
+     * @return  Core_ArrayObject
+     */
+    public function setFields($fields){
+        if(is_array($fields)){
+            $fields = Core_ArrayObject::transform($fields);
+        }
+        return $this->fields = $fields;
+    }
+    /**
      * Render list of users
      */
     public function render() {
         $user = new User();
-        $this->where && $this->db->where((array)$this->where);
-        $this->db->order('login', 'ASC');
+        $this->where && $this->db->where((array) $this->where);
+        $this->order && $this->db->order($this->order[0], $this->order[1]);
         $pager = new Pager(array(
                     'current' => $this->page ? $this->page : NULL,
                     'count' => $user->count(),
@@ -50,26 +97,9 @@ class User_List extends Cogearable {
                 ));
         if ($users = $user->findAll()) {
             $table = new Table(array(
-                        'name' => $this->name,
-                        'class' => 'table table-bordered table-striped',
-                        'fields' => array(
-                            'login' => array(
-                                'label' => t('Login', 'User'),
-                                'callback' => new Callback(array($this,'prepareFields')),
-                            ),
-                            'posts' => array(
-                                'label' => t('Posts', 'User'),
-                                'callback' => new Callback(array($this,'prepareFields')),
-                            ),
-                            'comments' => array(
-                                'label' => t('Comments', 'User'),
-                                'callback' => new Callback(array($this,'prepareFields')),
-                            ),
-                            'reg_date' => array(
-                                'label' => t('Registered', 'User'),
-                                'callback' => new Callback(array($this,'prepareFields')),
-                            ),
-                        ),
+                        'name' => 'users',
+                        'class' => 'table table-bordered table-striped shd',
+                        'fields' => $this->getFields(),
                     ));
             $table->attach($users);
             return $table->render();
@@ -79,24 +109,24 @@ class User_List extends Cogearable {
     }
 
     /**
-     * Prepare login field for table
+     * Prepare fields for table
      *
      * @param type $user
      * @return type
      */
-    public function prepareFields($user,$key){
-        switch($key){
+    public function prepareFields($user, $key) {
+        switch ($key) {
             case 'login':
-                return $user->getLink('avatar').' '.$user->getLink('profile');
+                return $user->render('list');
                 break;
             case 'reg_date':
-                return df($user->reg_date,'d M Y');
+                return df($user->reg_date, 'd M Y');
                 break;
             case 'posts':
-                return '<a href="'.l('/blog/'.$user->login).'" class="badge'.($user->posts > 0 ? ' badge-info' : '').'">'.$user->posts.'</a>';
+                return '<a href="' . $user->getLink() . '/posts/" class="badge' . ($user->posts > 0 ? ' badge-info' : '') . '">' . $user->posts . '</a>';
                 break;
             case 'comments':
-                return '<a href="'.l('/comments/'.$user->login).'" class="badge'.($user->comments > 0 ? ' badge-warning' : '').'">'.$user->comments.'</a>';
+                return '<a href="' . $user->getLink() . '/comments/" class="badge' . ($user->comments > 0 ? ' badge-warning' : '') . '">' . $user->comments . '</a>';
                 break;
         }
     }

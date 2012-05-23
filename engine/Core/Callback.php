@@ -63,7 +63,7 @@ class Callback extends Cogearable {
      */
     public function run($args = array()) {
         $args = array_merge($args, $this->args);
-        return $args ? call_user_func_array($this->callback, $args) : call_user_func($this->callback);
+        return call_user_func_array($this->callback, $args);
     }
 
     /**

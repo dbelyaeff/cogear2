@@ -22,13 +22,64 @@ class Post_Gear extends Gear {
         'comment.delete' => 'hookCommentsRecount',
     );
     protected $access = array(
-        'edit' => array(100),
-        'edit.all' => array(1),
-        'delete' => array(1),
-        'delete.all' => array(1),
-        'hide' => array(1),
-        'menu' => array(100),
+        'create' => 'access',
+        'edit' => 'access',
+        'delete' => 'access',
+        'drafts' => 'access',
+        'hide' => 'access',
+        'menu' => 'access',
     );
+
+    /**
+     * Access
+     *
+     * @param type $rule
+     * @param type $data
+     */
+    public function access($rule, $data = NULL) {
+        switch ($rule) {
+            case 'create':
+                $event = event('access.post.create', $data);
+                if ($event->check()) {
+                    // Allow to write post to reg every user
+                    return role();
+                } else {
+                    return $event->result();
+                }
+                break;
+            case 'edit':
+                if(role() == 1){
+                    return TRUE;
+                }
+                if ($data) {
+                    if (event('access.post.edit', $data)->check()) {
+
+                    }
+                }
+                break;
+            case 'drafts':
+                if ($data && $user = user($data, 'login')) {
+                    if ($user->id == $this->user->id) {
+                        return TRUE;
+                    }
+                }
+                break;
+            case 'delete':
+                if(role() == 1){
+                    return TRUE;
+                }
+                break;
+            case 'hide':
+                if($data instanceof Post_Object && $data->aid == user()->id OR role() == 1){
+                    return TRUE;
+                }
+                break;
+            case 'menu':
+                return TRUE;
+                break;
+        }
+        return FALSE;
+    }
 
     /**
      * Recalculate post comments count
@@ -62,9 +113,10 @@ class Post_Gear extends Gear {
         d('Post');
         switch ($name) {
             case 'navbar':
-                $menu->register(array(
+                access('Post.create') && $menu->register(array(
                     'label' => icon('pencil icon-white'),
                     'link' => l('/post/create/'),
+                    'title' => t('Create post','Post'),
                     'place' => 'left',
                     'access' => access('Post.create'),
                 ));
@@ -73,7 +125,7 @@ class Post_Gear extends Gear {
                 $menu->register(array(
                     'label' => t('Posts') . ' <sup>' . $menu->object->posts . '</sup>',
                     'link' => $menu->object->getLink() . '/posts/',
-                    'order' => 2.1,
+                    'order' => 2,
                 ));
                 if ($menu->object->id == $this->user->id) {
                     $menu->register(array(
@@ -106,27 +158,25 @@ class Post_Gear extends Gear {
             }
         }
     }
+
     /**
      * List posts
      *
      * @param type $login
      */
     public function list_action($login = NULL) {
-        if ($login && $user = user($login, 'login')) {
-            $uid = $user->id;
-        } else {
-            $uid = $this->user->id;
+        if ($login == user()->login) {
+            $user = user();
+        } elseif (!$user = user($login, 'login')) {
+            return event('404');
         }
-        $blog = new Blog();
-        $blog->aid = $uid;
-        $blog->type = Blog::$types['personal'];
-        if ($blog->find()) {
-            $this->user->navbar()->show();
-            $blog->where['published'] = 1;
-            $blog->show();
-        } else {
-            event('empty');
-        }
+        $user->navbar()->show();
+        $posts = new Post_List(array(
+                    'name' => 'user.posts',
+                    'base' => user()->getLink() . '/posts/',
+                    'per_page' => config('User.posts.per_page', 5),
+                    'where' => array('aid' => $user->id, 'published' => 1),
+                ));
     }
 
     /**
@@ -135,21 +185,18 @@ class Post_Gear extends Gear {
      * @param type $page
      */
     public function drafts_action($login = NULL) {
-        if ($login && $user = user($login, 'login')) {
-            $uid = $user->id;
-        } else {
-            $uid = $this->user->id;
+        if ($login == user()->login) {
+            $user = user();
+        } elseif(!$user = user($login,'login')) {
+            return event('404');
         }
-        $blog = new Blog();
-        $blog->aid = $uid;
-        $blog->type = Blog::$types['personal'];
-        if ($blog->find()) {
-            $this->user->navbar()->show();
-            $blog->where['published'] = 0;
-            $blog->show();
-        } else {
-            event('empty');
-        }
+        $user->navbar()->show();
+        $posts = new Post_List(array(
+                    'name' => 'user.posts',
+                    'base' => user()->getLink() . '/posts/',
+                    'per_page' => config('User.posts.per_page', 5),
+                    'where' => array('aid' => $user->id, 'published' => 0),
+                ));
     }
 
     /**
@@ -172,8 +219,8 @@ class Post_Gear extends Gear {
                     $post->published = 1;
                 }
                 if ($post->save()) {
-                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!') . ' <a class="btn btn-primary btn-mini" href="' . $post->getLink() . '">' . t('View') . '</a>');
-                    redirect($post->getLink('edit'));
+                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!'), NULL, 'growl');
+                    redirect($post->getLink());
                 }
             }
         }
@@ -222,11 +269,12 @@ class Post_Gear extends Gear {
                 if ($post->save()) {
                     if ($post->published) {
                         $link = l($post->getLink());
-                        info(t('Post is published! %s', 'Post', '<a class="btn btn-primary btn-mini" href="' . $link . '">' . t('View') . '</a>'));
+                        flash_success(t('Post is published!', 'Post'), NULL, 'growl');
                     } else {
                         $link = l($post->getLink());
-                        success(t('Post is saved to drafts! %s', 'Post', '<a class="btn btn-primary btn-mini" href="' . $link . '">' . t('View') . '</a>'));
+                        flash_success(t('Post is saved to drafts! %s', 'Post'), NULL, 'growl');
                     }
+                    redirect($post->getLink());
                 }
             }
         }
