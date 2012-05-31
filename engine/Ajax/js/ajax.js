@@ -70,6 +70,11 @@ Ajax.prototype = {
                     $item.html(action.code);
                 }
                 break;
+            case 'value':
+                if(action.value){
+                    $item.val(action.value);
+                }
+                break;
             case 'append':
                 action.code && $item.append(action.code);
                 break;
@@ -77,6 +82,14 @@ Ajax.prototype = {
                 action.code && $item.prepend(action.code);
                 break;
 
+        }
+    },
+    loader: function(){
+        if(cogear.settings.ajax.showLoader){
+            return cogear.settings.ajax.showLoader = false;
+        }
+        else {
+            return cogear.settings.ajax.showLoader = true;
         }
     }
 }

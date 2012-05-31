@@ -19,8 +19,8 @@ function smoothScroll(){
         return;
     }
     else if($(location.hash).length > 0){
-        $(location.hash).scrollTo({highlight:true});
-        location.hash = '';
+        $(location.hash).scrollTo();
+        //location.hash = '';
     }
 }
 

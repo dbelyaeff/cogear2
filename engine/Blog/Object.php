@@ -164,10 +164,10 @@ class Blog_Object extends Db_Item {
                             $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh ajax" title="' . t('Follow', 'Blog') . '">' . icon('check') . '</a>';
                             break;
                         case 1:
-                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active fl_r ajax" title="' . t('You\'ve already send a request. Wait for moderation.', 'Blog') . '">' . icon('check') . '</a>';
+                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active ajax" title="' . t('You\'ve already send a request. Wait for moderation.', 'Blog') . '">' . icon('check') . '</a>';
                             break;
                         case 2:
-                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active fl_r ajax" title="' . t('Unfollow', 'Blog') . '">' . icon('check') . '</a>';
+                            $navbar->join = '<a href="' . l('/blog/status/' . $this->id) . '" class="sh active ajax" title="' . t('Unfollow', 'Blog') . '">' . icon('check') . '</a>';
                             break;
                     }
                 }

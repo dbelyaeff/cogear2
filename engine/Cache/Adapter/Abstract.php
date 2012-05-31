@@ -43,7 +43,7 @@ abstract class Cache_Adapter_Abstract extends Options {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = str_replace('/', '_', $name . EXT);
+        $name = str_replace('/', DS, $name . EXT);
         return $name;
     }
 

@@ -345,7 +345,13 @@ class Core_ArrayObject extends ArrayObject {
      * @return int
      */
     public static function sortBy($param, $a, $b) {
-        if ($a->order == $b->order) {
+        if(!is_object($a)){
+            return 1;
+        }
+        elseif(!is_object($b)){
+            return -1;
+        }
+        else if ($a->order == $b->order) {
             return 0;
         }
         return floatval($a->order) < floatval($b->order) ? -1 : 1;

@@ -328,7 +328,7 @@ class Blog_Gear extends Gear {
     public function init() {
         parent::init();
         route('user/([^/]+)/feed:maybe', array($this, 'feed_action'), TRUE);
-        $this->session->get('blogs') !== NULL OR $this->setBlogs();
+        role() && ($this->session->get('blogs') !== NULL OR $this->setBlogs());
     }
 
     /**
@@ -383,6 +383,7 @@ class Blog_Gear extends Gear {
                                     'admin' => array(
                                         'label' => t('Admins', 'Blog'),
                                         'link' => $blog->getLink() . '/users/admins/',
+                                        'active' => TRUE,
                                     ),
                                     'moders' => array(
                                         'label' => t('Moders', 'Blog'),
@@ -399,10 +400,7 @@ class Blog_Gear extends Gear {
                                     ),
                                 )
                             ));
-                    switch($type){
-                        case 'admins':
-                            $type = self::ADMIN;
-                            break;
+                    switch ($type) {
                         case 'moders':
                             $type = self::MODER;
                             break;
@@ -411,6 +409,10 @@ class Blog_Gear extends Gear {
                             break;
                         case 'newbies':
                             $type = self::JOINED;
+                            break;
+                        default:
+                        case 'admins':
+                            $type = self::ADMIN;
                             break;
                     }
                     if ($followers = $blog->getFollowers($type)) {

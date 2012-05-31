@@ -135,6 +135,7 @@ class Markitup_Gear extends Gear {
         css($folder . 'sets/default/style.css');
         js($folder . 'js/jquery.markitup.js', 'after');
         event('markitup.toolbar', $this->toolbar);
+//        $this->toolbar->markupSet->uasort('Core_ArrayObject::sortByOrder');
 //            $(document).ready(function(){
         inline_js("
 			$('body').on('focus','textarea',function(){

@@ -60,6 +60,7 @@ return array (
     'Admins' => '',
     'Moders' => '',
     'Newbies' => '',
+    'Choose blog to post…' => '',
   ),
   '#Blogs' => 
   array (
@@ -439,6 +440,7 @@ return array (
   'Close' => '',
   'Code Editor' => '',
   'Create' => '',
+  'Cut' => '',
   'Delete' => '',
   'Dmitriy blog' => '',
   'Drafts' => '',

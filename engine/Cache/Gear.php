@@ -7,11 +7,19 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Cache
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Cache_Gear extends Gear {
     protected $name = 'Cache';
     protected $description = 'Perform caching.';
     protected $package = 'Performance';
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct();
+        $this->attach(new Cache_Object());
+    }
 }

@@ -151,7 +151,7 @@ class Friends_Gear extends Gear {
     public function init() {
         parent::init();
         route('user/([^/]+)/friends:maybe', array($this, 'index_action'), TRUE);
-        if ($this->session->get('friends') == FALSE) {
+        if (role() && $this->session->get('friends') == FALSE) {
             $this->setFriends();
         }
     }

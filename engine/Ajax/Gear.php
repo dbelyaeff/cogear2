@@ -16,9 +16,20 @@ class Ajax_Gear extends Gear {
     protected $name = 'Ajax';
     protected $description = 'Handle ajax requests.';
     protected $order = 0;
-
+    protected $hooks = array(
+        'assets.js.global' => 'hookGlobalJS',
+    );
     const PARAMS = '?';
     const PATH = '/';
+
+    /**
+     * Hook global JS
+     */
+    public function hookGlobalJS($cogear) {
+        $cogear->settings->ajax = array(
+        'showLoader' => config('Ajax.show.loader', TRUE),
+        );
+    }
 
     /**
      * Init
@@ -50,6 +61,6 @@ function ajax($data = NULL) {
  *
  * @param type $data
  */
-function json($data){
+function json($data) {
     ajax()->json($data);
 }

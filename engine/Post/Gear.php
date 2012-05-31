@@ -28,6 +28,7 @@ class Post_Gear extends Gear {
         'drafts' => 'access',
         'hide' => 'access',
         'menu' => 'access',
+        'ajax' => 'access',
     );
 
     /**
@@ -76,6 +77,11 @@ class Post_Gear extends Gear {
                 break;
             case 'menu':
                 return TRUE;
+                break;
+            case 'ajax':
+                if(Ajax::is()){
+                    return TRUE;
+                }
                 break;
         }
         return FALSE;
@@ -138,7 +144,6 @@ class Post_Gear extends Gear {
         }
         d();
     }
-
     /**
      * Default dispatcher
      *

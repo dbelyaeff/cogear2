@@ -45,7 +45,13 @@ class User_Object extends Db_Item {
      */
     public function autologin() {
         $cogear = cogear();
-        if ($cogear->session->get('user')) {
+        $event = event('user.autologin',$this);
+        if(!$event->check()){
+            if($event->result()){
+                return TRUE;
+            }
+        }
+        elseif ($cogear->session->get('user')) {
             $this->attach($cogear->session->get('user'));
             $this->store();
             return TRUE;

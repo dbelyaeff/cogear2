@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1337789130,
+    'last_run' => 1338186339,
   ),
   'user' => 
   array (
@@ -120,5 +120,14 @@ return array (
   ),
   'friends' => 
   array (
+  ),
+  '/users/reset/9' => true,
+  '/users/reset/1' => true,
+  'users' => 
+  array (
+    'reset' => 
+    array (
+      1 => true,
+    ),
   ),
 );

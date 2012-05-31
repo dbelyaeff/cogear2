@@ -20,3 +20,11 @@
     text-align: center;
     width: 100%;
 }
+.ajax-loader{
+    width: 24px;
+    background: url(../img/inline.loader.gif) no-repeat center center;
+    height: 11px;
+    padding: 5px;
+    position: abosolute;
+    float: left;
+}

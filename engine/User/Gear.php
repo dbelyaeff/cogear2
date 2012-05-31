@@ -27,6 +27,8 @@ class User_Gear extends Gear {
         'comment.update' => 'hookCommentsRecount',
         'comment.delete' => 'hookCommentsRecount',
         'assets.js.global' => 'hookGlobalScripts',
+        'user.update' => 'hookUserUpdate',
+        'done' => 'hookDone',
     );
     protected $access = array(
         'edit' => 'access',
@@ -84,7 +86,33 @@ class User_Gear extends Gear {
                     'render' => 'before',
                 ));
     }
+    /**
+     * If you edit smbdy profile — you need him to be updated immedeately
+     *
+     * @param   object  $User
+     */
+    public function hookUserUpdate($User){
+        if($User->getLink('edit') == '/'.$this->router->getUri()){
+            if($User->id == user()->id){
+                $User->store();
+            }
+            else {
+                $this->cache->write('users/reset/'.$User->id,TRUE);
+            }
+        }
+    }
 
+    /**
+     * Hook done
+     *
+     * If there is a flag to reset user data — reset it
+     */
+    public function hookDone(){
+       if($this->cache->read('users/reset/'.$this->id,TRUE)){
+           $this->session->remove('user');
+           $this->cache->remove('users/reset/'.$this->id);
+       }
+    }
     /**
      * Hook blog reader
      *

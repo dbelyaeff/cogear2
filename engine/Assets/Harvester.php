@@ -247,7 +247,12 @@ class Assets_Harvester {
         foreach (self::$scriptsRenderGroups as $group) {
             $this->scripts->$group && $output .= $this->scripts->$group->__toString() . "\n";
         }
-        return $output;
+        $cogear = new Core_ArrayObject();
+        $cogear->settings = new Core_ArrayObject();
+        $cogear->settings->site = config('site.url');
+        event('assets.js.global', $cogear);
+        $code = "\n<script>var cogear = cogear || " . json_encode($cogear).'</script>';
+        return $code.$output;
     }
 
     /**

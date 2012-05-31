@@ -7,6 +7,7 @@ return array(
             'label' => t('Create post', 'Post'),
         ),
         'name' => array(
+            'data-source' => l('/post/ajax/name'),
         ),
         'body' => array(
         ),

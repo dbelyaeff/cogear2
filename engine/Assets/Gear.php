@@ -16,21 +16,7 @@ class Assets_Gear extends Gear {
     protected $name = 'Assets';
     protected $description = 'Manage assets';
     protected $order = -999;
-    protected $hooks = array(
-        'done' => 'hookDone',
-    );
-    /**
-     * Load javascript variables
-     */
-    public function hookDone(){
-        $cogear = new Core_ArrayObject();
-        $cogear->settings = new Core_ArrayObject();
-        $cogear->settings->site = config('site.url');
-        event('assets.js.global', $cogear);
-        inline_js("
-            var cogear = cogear || " . json_encode($cogear) . ";
-", 'head');
-    }
+
     /**
      * Constructor
      */
@@ -39,4 +25,5 @@ class Assets_Gear extends Gear {
         $this->attach(new Assets_Harvester());
         cogear()->assets = $this;
     }
+
 }

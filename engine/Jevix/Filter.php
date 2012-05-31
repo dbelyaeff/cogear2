@@ -23,7 +23,6 @@ class Jevix_Filter extends Form_Filter_Abstract {
 
 //Конфигурация
         $allowed_tags = array('a', 'img', 'i', 'b', 'u', 'em', 'strong', 'nobr', 'li', 'ol', 'ul', 'sup', 'abbr', 'pre', 'acronym', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'cut', 'user', 'br', 'code', 'p','video');
-        event('jevix.allowed_tags',$allowed_tags);
 // 1. Устанавливаем разрешённые теги. (Все не разрешенные теги считаются запрещенными.)
         $jevix->cfgAllowTags($allowed_tags);
 

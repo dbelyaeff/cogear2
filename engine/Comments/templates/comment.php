@@ -14,7 +14,7 @@ if ($item->by_post_author) {
 if ($item->class) {
     echo $item->class;
 }
-?> shd l<?php if (!$item->flat)
+?> shd hl l<?php if (!$item->flat)
          echo $item->level; ?>" data-level="<?php echo $item->level ?>" data-id="<?php echo $item->id ?>" id="comment-<?php echo $item->id ?>">
     <div class="comment-info">
         <?php
