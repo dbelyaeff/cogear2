@@ -27,9 +27,9 @@ class Form_Element_Checkbox extends Form_Element_Abstract{
      */
     public function result() {
         $method = $this->form->method;
-        $this->options->value = cogear()->input->$method($this->name,$this->options->value) ? 1 : 0;
+        $this->options->value = cogear()->input->$method($this->options->name) ? 1 : 0;
         $this->is_fetched = TRUE;
-        return $this->validate() ? $this->value : FALSE;
+        return $this->validate() ? $this->options->value : FALSE;
     }
     /**
      * Prepare options
