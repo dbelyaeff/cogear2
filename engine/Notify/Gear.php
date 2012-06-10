@@ -39,10 +39,8 @@ class Notify_Gear extends Gear {
         $tpl->body = $body;
         $tpl->title = $title;
         $tpl->class = $class;
-        if($region == 'return' OR $region === TRUE){
-            return $tpl->render();
-        }
-        append($region, $tpl->render());
+        $output = $tpl->render();
+        return $region ? append($region, $output) : $output;
     }
     /**
      * Show message
@@ -80,9 +78,10 @@ class Notify_Gear extends Gear {
  * @param string $body
  * @param string $title
  * @param string  $info
+ * @return
  */
 function info($body, $title = NULL, $region='info') {
-    cogear()->notify->showMessage($body, $title, 'alert-info', $region);
+    return cogear()->notify->showMessage($body, $title, 'alert-info', $region);
 }
 /**
  * Show notification "warning"
@@ -90,9 +89,10 @@ function info($body, $title = NULL, $region='info') {
  * @param string $body
  * @param string $title
  * @param string  $info
+ * @return
  */
 function warning($body, $title = NULL, $region='info') {
-    cogear()->notify->showMessage($body, $title, 'alert-warning', $region);
+    return cogear()->notify->showMessage($body, $title, 'alert-warning', $region);
 }
 
 /**
@@ -101,9 +101,10 @@ function warning($body, $title = NULL, $region='info') {
  * @param string $body
  * @param string $title
  * @param string  $info
+ * @return
  */
 function success($body, $title = NULL, $region='info') {
-    cogear()->notify->showMessage($body, $title, 'alert-success', $region);
+    return cogear()->notify->showMessage($body, $title, 'alert-success', $region);
 }
 
 /**
@@ -114,7 +115,7 @@ function success($body, $title = NULL, $region='info') {
  * @param string  $info
  */
 function error($body, $title = NULL, $region='info') {
-    cogear()->notify->showMessage($body, $title, 'alert-error', $region);
+    return cogear()->notify->showMessage($body, $title, 'alert-error', $region);
 }
 /**
  * Show flash  notification "info"
