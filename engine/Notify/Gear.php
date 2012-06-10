@@ -38,6 +38,9 @@ class Notify_Gear extends Gear {
         $tpl->body = $body;
         $tpl->title = $title;
         $tpl->class = $class;
+        if($region == 'return'){
+            return $tpl->render();
+        }
         append($region, $tpl->render());
     }
     /**
