@@ -106,6 +106,9 @@ class Router_Object extends Options {
      */
     public function sanitizePath($path) {
         $cogear = getInstance();
+        if(strpos($path,'?') !== -1){
+            $path = substr($path,0,strpos($path,'?'));
+        }
         // Sanitize unwanted data from the path
         $path = urldecode($path);
         $path = preg_replace('#[^' . config('permitted_uri_chars', '\w-_.') . self::DELIM . ']+#imsu', '', $path);
