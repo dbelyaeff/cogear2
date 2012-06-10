@@ -28,6 +28,7 @@ class Notify_Gear extends Gear {
      * @param type $body
      * @param type $title
      * @param type $class
+     * @param type $region
      */
     public function showMessage($body, $title=NULL, $class=NULL, $region = 'info') {
         if($region == 'growl'){
@@ -38,7 +39,7 @@ class Notify_Gear extends Gear {
         $tpl->body = $body;
         $tpl->title = $title;
         $tpl->class = $class;
-        if($region == 'return'){
+        if($region == 'return' OR $region === TRUE){
             return $tpl->render();
         }
         append($region, $tpl->render());
