@@ -10,24 +10,29 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage	
+ * @subpackage
  * @version		$Id$
  */
 class Url {
     const SECURE = 's';
+
     /**
      * Build link
      *
      * @param	string	$url
      * @param	boolean	$absolute_flag
      * @param	string	$protocol
-     * @return	string 
+     * @return	string
      */
     public static function link($url='', $absolute_flag = FALSE, $protocol = 'http') {
         $link = '';
         $cogear = getInstance();
-        if (!$url)
+        if (!$url) {
             return $protocol . '://' . config('site.url') . '/';
+        }
+        else if (TRUE === $url) {
+            return l() . cogear()->router->getUri();
+        }
         $url = parse_url($url);
         if ($absolute_flag) {
             $link .= $protocol . '://';
@@ -37,21 +42,21 @@ class Url {
         isset($url['path']) && $link .= '/' . ltrim($url['path'], '/');
         isset($url['query']) && $link .= '?' . $url['query'];
         isset($url['fragment']) && $link .= '#' . $url['fragment'];
-        event('link',$link);
+        event('link', $link);
         return $link;
     }
-    
+
     /**
      * Secure linke
-     * 
+     *
      * @param string $url
      * @param boolean $absolute_flag
      * @param string $protocol
-     * @return string 
+     * @return string
      */
-    public static function slink($url='', $absolute_flag = FALSE, $protocol = 'http'){
-        $link = self::link($url,$absolute_flag,$protocol);
-        $link .= '?'.self::SECURE.'='.cogear()->secure->salt();
+    public static function slink($url='', $absolute_flag = FALSE, $protocol = 'http') {
+        $link = self::link($url, $absolute_flag, $protocol);
+        $link .= '?' . self::SECURE . '=' . cogear()->secure->salt();
         return $link;
     }
 
@@ -59,7 +64,7 @@ class Url {
      * Standartize
      *
      * Transform text to url-compatible snippet
-     * 
+     *
      * @param   string  $text
      * @param   string  $separator
      * @param   int     $limit
@@ -95,35 +100,39 @@ class Url {
                 array($replace_path, DS), array('', '/'), $path);
         return $link ? self::link($path) : $path;
     }
+
     /**
      * Make link for gear
-     * 
+     *
      * @param string $gear
      * @param string $suffix
-     * @return string 
+     * @return string
      */
     public static function gear($gear, $suffix = '/') {
         $cogear = getInstance();
-        if(!$cogear->$gear) return self::link();
+        if (!$cogear->$gear)
+            return self::link();
         return self::link($cogear->$gear->base . '/' . trim($suffix, '/'));
     }
+
     /**
      * Extend existins $_GET query
-     * 
-     * @param array $data 
+     *
+     * @param array $data
      * @return  string
      */
-    public static function extendQuery($data){
-        $_GET = array_merge($_GET,$data);
+    public static function extendQuery($data) {
+        $_GET = array_merge($_GET, $data);
         return http_build_query($_GET);
     }
 
 }
 
-function l($url='', $absolute_flag = FALSE, $protocol = 'http'){
+function l($url='', $absolute_flag = FALSE, $protocol = 'http') {
     return Url::link($url, $absolute_flag, $protocol);
 }
-function s($url='', $absolute_flag = FALSE, $protocol = 'http'){
+
+function s($url='', $absolute_flag = FALSE, $protocol = 'http') {
     return Url::slink($url, $absolute_flag, $protocol);
 }
 
