@@ -128,13 +128,13 @@ class Request_Object {
                 if($result = $this->get('PATH_INFO')){
                     return $result;
                 }
-                elseif($result = $this->get('QUERY_STRING')){
-                    return $result;
-                }
                 elseif($result = $this->get('REQUEST_URI')){
                     return $result;
                 }
                 elseif($result = $this->get('ORIG_PATH_INFO')){
+                    return $result;
+                }
+                elseif($result = $this->get('QUERY_STRING')){
                     return $result;
                 }
                 break;
