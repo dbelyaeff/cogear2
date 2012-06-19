@@ -40,15 +40,14 @@ class Config extends Core_ArrayObject {
      * @param   string  $section
      */
     public function load($path, $section = '') {
-        if(!file_exists($path)){
+        if (!file_exists($path)) {
             return;
         }
-        if($section){
+        if ($section) {
             $this->$section OR $this->$section = new Core_ArrayObject();
             $this->$section->mix(self::read($path));
-        }
-        else {
-             $this->mix(self::read($path));
+        } else {
+            $this->mix(self::read($path));
         }
     }
 
@@ -135,7 +134,8 @@ class Config extends Core_ArrayObject {
      * @param array $data
      */
     public function store($force = FALSE) {
-        if(!$this->file) return FALSE;
+        if (!$this->file)
+            return FALSE;
         if ($this->write_flag OR $force) {
             if (self::write($this->file, $this->toArray())) {
                 return TRUE;
@@ -163,7 +163,7 @@ class Config extends Core_ArrayObject {
         $constants = get_defined_constants(true);
         $paths = array();
         foreach ($constants['user'] as $key => $value) {
-            if (is_string($value) && is_dir($value) && strlen($value) > 5) {
+            if (is_string($value) && strlen($value) > 5 && is_dir($value)) {
                 $paths["'" . $value] = $key . '.\'';
             }
         }
