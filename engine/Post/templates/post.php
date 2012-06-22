@@ -45,7 +45,7 @@ if (!$item->published && !$item->preview) {
     <?php
     $after = new Stack(array('name' => 'post.after'));
     $after->attach($item);
-    echo '<div class="post-before">' . $after->render() . '</div>';
+    echo '<div class="post-after">' . $after->render() . '</div>';
     ?>
     <div class="post-info">
         <?php
