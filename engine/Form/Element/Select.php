@@ -17,9 +17,24 @@ class Form_Element_Select extends Form_Element_Abstract{
      * @param array $data
      */
     public function setValues($data){
-        $this->values = $data;
+        $this->options->values = $data;
     }
-
+    /**
+     * Process elements value from request
+     *
+     * @return
+     */
+    public function result() {
+        if($this->options->disabled){
+            return $this->value ? $this->value : TRUE;
+        }
+        $method = strtolower($this->form->method);
+        $name = str_replace('[]','',$this->name);
+        $this->value = cogear()->input->$method($name, $this->options->value);
+        $this->filter();
+        $result = $this->validate() ? $this->value : FALSE;
+        return $result;
+    }
     /**
      *
      * @return type
@@ -35,7 +50,15 @@ class Form_Element_Select extends Form_Element_Abstract{
         $code[] = HTML::open_tag('select', $this->options);
         foreach($this->values as $key=>$value){
             $attributes = array();
-            if($key == $this->value){
+            if($this->value instanceof Core_ArrayObject){
+                $this->value = $this->value->toArray();
+            }
+            if(is_array($this->value)){
+                if(in_array($key, $this->value)){
+                    $attributes['selected'] = 'selected';
+                }
+            }
+            elseif($key == $this->value){
                 $attributes['selected'] = 'selected';
             }
             $attributes['value'] = $key;
