@@ -53,6 +53,7 @@ class Post_List extends Options {
                 $post->teaser = TRUE;
                 $output->append($post->render());
             }
+            event('post.list',$posts);
             $output->append($pager->render());
             return $output->toString();
         } else {

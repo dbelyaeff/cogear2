@@ -38,4 +38,3 @@ $(document).on('click','.post .post-delete',function(event){
         }
     });
 });
-

@@ -49,7 +49,7 @@ class Post_Gear extends Gear {
                 }
                 break;
             case 'edit':
-                if(role() == 1){
+                if (role() == 1) {
                     return TRUE;
                 }
                 if ($data) {
@@ -66,12 +66,12 @@ class Post_Gear extends Gear {
                 }
                 break;
             case 'delete':
-                if(role() == 1){
+                if (role() == 1) {
                     return TRUE;
                 }
                 break;
             case 'hide':
-                if($data instanceof Post_Object && $data->aid == user()->id OR role() == 1){
+                if ($data instanceof Post_Object && $data->aid == user()->id OR role() == 1) {
                     return TRUE;
                 }
                 break;
@@ -79,7 +79,7 @@ class Post_Gear extends Gear {
                 return TRUE;
                 break;
             case 'ajax':
-                if(Ajax::is()){
+                if (Ajax::is()) {
                     return TRUE;
                 }
                 break;
@@ -120,12 +120,12 @@ class Post_Gear extends Gear {
         switch ($name) {
             case 'navbar':
                 access('Post.create') && $menu->register(array(
-                    'label' => icon('pencil icon-white'),
-                    'link' => l('/post/create/'),
-                    'title' => t('Create post','Post'),
-                    'place' => 'left',
-                    'access' => access('Post.create'),
-                ));
+                            'label' => icon('pencil icon-white'),
+                            'link' => l('/post/create/'),
+                            'title' => t('Create post', 'Post'),
+                            'place' => 'left',
+                            'access' => access('Post.create'),
+                        ));
                 break;
             case 'user.profile.tabs':
                 $menu->register(array(
@@ -144,6 +144,7 @@ class Post_Gear extends Gear {
         }
         d();
     }
+
     /**
      * Default dispatcher
      *
@@ -192,7 +193,7 @@ class Post_Gear extends Gear {
     public function drafts_action($login = NULL) {
         if ($login == user()->login) {
             $user = user();
-        } elseif(!$user = user($login,'login')) {
+        } elseif (!$user = user($login, 'login')) {
             return event('404');
         }
         $user->navbar()->show();
@@ -208,22 +209,38 @@ class Post_Gear extends Gear {
      * Add action
      */
     public function create_action() {
+        $post = new Post();
+        if ($pid = $this->session->get('draft')) {
+            $post->id = $pid;
+            $post->find();
+        } else {
+            $post->aid = $this->user->id;
+            $post->created_date = time();
+            $post->insert();
+            $this->session->set('draft', $post->id);
+        }
         $form = new Form('Post.post');
+        $form->attach($post);
         if ($result = $form->result()) {
-            $post = new Post();
-            $post->attach($result);
+            $post->object->mix($result);
             if ($result->preview) {
-                $post->created_date = time();
-                $post->aid = $this->user->id;
                 $post->preview = TRUE;
                 $post->show();
             } else {
+                if (Ajax::is() && $this->input->get('autosave')) {
+                    $post->update();
+                    $ajax = new Ajax();
+                    $ajax->message(t('Post saved!', 'Post'));
+                    $ajax->send();
+                }
+                $post->last_update = time();
                 if ($result->draft) {
                     $post->published = 0;
                 } elseif ($result->publish) {
                     $post->published = 1;
                 }
                 if ($post->save()) {
+                    $this->session->remove('draft');
                     flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!'), NULL, 'growl');
                     redirect($post->getLink());
                 }
@@ -232,18 +249,14 @@ class Post_Gear extends Gear {
         // Remove 'delete' button from create post form
         $form->elements->offsetUnset('delete');
         $form->show();
+        js($this->folder . '/js/inline/autosave.js','footer');
     }
 
     /**
      * Edit action
      */
     public function edit_action($id = NULL) {
-        if (!$id) {
-            return event('404');
-        }
-        $post = new Post();
-        $post->id = $id;
-        if (!$post->find()) {
+        if (!$post = post($id)) {
             return event('404');
         }
         $form = new Form('Post.post');
@@ -251,7 +264,7 @@ class Post_Gear extends Gear {
         $form->elements->title->options->label = t('Edit post');
         if ($result = $form->result()) {
             $post->object->mix($result);
-            if ($result->delete && (access('Post.delete.all') OR access('Post.delete') && $this->user->id == $post->aid)) {
+            if ($result->delete && access('Post.delete',$post)) {
                 $blog = new Blog();
                 $blog->id = $post->bid;
                 $blog->find();
@@ -266,6 +279,12 @@ class Post_Gear extends Gear {
                 $post->preview = TRUE;
                 $post->show();
             } else {
+                if (Ajax::is() && $this->input->get('autosave')) {
+                    $post->update();
+                    $ajax = new Ajax();
+                    $ajax->message(t('Post saved!', 'Post'));
+                    $ajax->send();
+                }
                 if ($result->draft) {
                     $post->published = 0;
                 } elseif ($result->publish) {
