@@ -118,6 +118,7 @@ class Form_Object extends Object {
             $config->placeholder = t('Enter %s…', 'Form.placeholder', strtolower($config->label));
         }
         $config->name = $name;
+        $name = str_replace('[]','',$name);
         $config->form = $this;
         if (!$config->order) {
             $this->counter++;
@@ -232,11 +233,14 @@ class Form_Object extends Object {
                 $ajax->json($data);
             }
         }
-        if (!event('form.result.' . $this->options->name, $this, $is_valid, $result)->check() OR
+        if($is_valid && $result){
+            $result = Core_ArrayObject::transform($result);
+        }
+        if (!event('form.result.' . $this->options->name, $this, $is_valid,$result)->check() OR
                 !event('form.result', $this, $is_valid, $result)->check()) {
             return FALSE;
         }
-        return $is_valid && $result ? Core_ArrayObject::transform($result) : FALSE;
+        return $is_valid ? $result : FALSE;
     }
 
     /**
