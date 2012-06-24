@@ -4,7 +4,8 @@ return array(
     'name' => array(
         'label' => t('Title', 'Form.elements'),
         'type' => 'text',
-        'validators' => array('Required', array('Length', 5)),
+        'validators' => array('Required', array('Length', 3)),
+        'class' => 'ajaxed',
     ),
     'link' => array(
         'type' => 'text',
@@ -16,6 +17,12 @@ return array(
     'body' => array(
         'type' => 'editor',
         'label' => t('Text', 'Form.elements'),
+        'filters' => array('Jevix_Filter'),
+        'validators' => array('Required', array('Length', 1)),
+    ),
+    'description' => array(
+        'type' => 'editor',
+        'label' => t('Description', 'Form.elements'),
         'filters' => array('Jevix_Filter'),
         'validators' => array('Required', array('Length', 1)),
     ),

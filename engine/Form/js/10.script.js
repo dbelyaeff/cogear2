@@ -65,7 +65,7 @@ $(document).ready(function(){
         }
     });
 });
-$(document).on('keyup','form input[data-source],form textarea[data-source]',function(event){
+$(document).on('keyup','form input[data-source].ajaxed,form textarea[data-source].ajaxed',function(event){
     $el = $(this);
     $source = $el.attr('data-source');
     if($source){
