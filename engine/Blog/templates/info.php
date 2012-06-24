@@ -19,7 +19,7 @@
     ));
     $fields->append(array(
         'label' => t('Followers', 'Blog'),
-        'value' => $blog->followers,
+        'value' => '<a href="'.$blog->getLink().'/users/" class="badge">'.$blog->object->followers.'</a>',
     ));
     $fields->append(array(
         'label' => t('Created', 'Blog'),

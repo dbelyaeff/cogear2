@@ -28,6 +28,7 @@ abstract class Db_Driver_Abstract {
         'where' => array(),
         'or_where' => array(),
         'where_in' => array(),
+        'where_not_in' => array(),
         'group' => array(),
         'having' => array(),
         'order' => array(),
@@ -270,6 +271,9 @@ abstract class Db_Driver_Abstract {
      * @return object   Self intsance.
      */
     public function where($name, $value = 1, $condition = ' = ') {
+        if(is_object($name)){
+            $name = $name->toArray();
+        }
         if (is_array($name)) {
             $this->addQuery('where', $name, $condition);
         } else {
@@ -305,6 +309,17 @@ abstract class Db_Driver_Abstract {
      */
     public function where_in($name, $values) {
         $this->addQuery('where_in', array($name => $values));
+        return $this;
+    }
+    /**
+     * WHERE NOT IN subquery
+     *
+     * @param   string  $name
+     * @param   array   $values
+     * @return object   Self intsance.
+     */
+    public function where_not_in($name, $values) {
+        $this->addQuery('where_not_in', array($name => $values));
         return $this;
     }
 
@@ -687,6 +702,7 @@ abstract class Db_Driver_Abstract {
                 'where' => array(),
                 'or_where' => array(),
                 'where_in' => array(),
+                'where_not_in' => array(),
                 'group' => array(),
                 'having' => array(),
                 'order' => array(),

@@ -29,9 +29,9 @@ class Blog_Gear extends Gear {
         'post.delete' => 'hookBlogPostCount',
         'user.delete' => 'hookUserDelete',
         'blog.insert' => 'hookBlogInsert',
-        'blog.follower.insert' => 'hookBlogReadersInsert',
-        'blog.follower.update' => 'hookBlogReadersInsert',
-        'blog.follower.delete' => 'hookBlogReadersInsert',
+        'blog.follower.insert' => 'hookBlogFollowers',
+        'blog.follower.update' => 'hookBlogFollowers',
+        'blog.follower.delete' => 'hookBlogFollowers',
     );
     protected $access = array(
         'create' => 'access',
@@ -155,18 +155,6 @@ class Blog_Gear extends Gear {
     }
 
     /**
-     *
-     *
-     * @param type $Blog_Followers
-     */
-    public function hookBlogReadersInsert($Blog_Followers) {
-        if ($blog = blog($Blog_Followers->bid)) {
-            $blog->update(array('readers' => $this->db->where('bid', $blog->id)->count('blogs_readers')));
-        }
-        $this->clear();
-    }
-
-    /**
      * Recalculate user posts count and store it to database
      *
      * @param type $uid
@@ -192,7 +180,7 @@ class Blog_Gear extends Gear {
             return;
         }
         if ($blog->find() && $title->object->teaser) {
-            $title->inject(' &larr; ' . $blog->render('list'), 1);
+            $title->inject(' &larr; ' . $blog->render('navbar'), 1);
         }
     }
 
@@ -240,13 +228,13 @@ class Blog_Gear extends Gear {
             if ($blog = blog($id)) {
                 switch ($status) {
                     case self::APPROVED:
-                        $reads->append($blog->render('list'));
+                        $reads->append($blog->render('navbar'));
                         break;
                     case self::MODER:
-                        $moderates->append($blog->render('list'));
+                        $moderates->append($blog->render('navbar'));
                         break;
                     case self::ADMIN:
-                        $admins->append($blog->render('list'));
+                        $admins->append($blog->render('navbar'));
                         break;
                 }
             }
@@ -310,6 +298,14 @@ class Blog_Gear extends Gear {
                 warning(t('You can\'t post to others personal blogs.', 'Blog'));
                 return TRUE;
             }
+        }
+    }
+
+    public function hookBlogFollowers($Blog_Followers){
+        if($blog = blog($Blog_Followers->bid)){
+            $followers = new Blog_Followers();
+            $followers->bid = $blog->id;
+            $blog->update(array('followers' => $followers->count(TRUE)));
         }
     }
 
@@ -377,26 +373,34 @@ class Blog_Gear extends Gear {
                     $tpl->show();
                     break;
                 case 'users':
+                    $followers = new Blog_Followers();
+                    $followers->bid = $blog->id;
+                    $followers->role = 4;
+                    $admin_count = $followers->count();
+                    $followers->role = 3;
+                    $moders_count = $followers->count();
+                    $followers->role = 2;
+                    $followers_count = $followers->count();
                     new Menu_Pills(array(
                                 'name' => 'blog.users.types',
                                 'elements' => array(
                                     'admin' => array(
-                                        'label' => t('Admins', 'Blog'),
+                                        'label' => t('Admins', 'Blog.roles').' ('.$admin_count.')',
                                         'link' => $blog->getLink() . '/users/admins/',
                                         'active' => TRUE,
                                     ),
                                     'moders' => array(
-                                        'label' => t('Moders', 'Blog'),
+                                        'label' => t('Moders', 'Blog.roles').' ('.$moders_count.')',
                                         'link' => $blog->getLink() . '/users/moders/',
                                     ),
                                     'followers' => array(
-                                        'label' => t('Followers', 'Blog'),
+                                        'label' => t('Followers', 'Blog.roles').' ('.$followers_count.')',
                                         'link' => $blog->getLink() . '/users/followers/',
                                     ),
                                     'newbies' => array(
-                                        'label' => t('Newbies', 'Blog'),
+                                        'label' => t('Newbies', 'Blog.roles'),
                                         'link' => $blog->getLink() . '/users/newbies/',
-                                        'access' => access('Blog.moderate', $blog),
+                                        'access' => access('Blog.moderate', $blog) && $blog->type == Blog::$types['private'],
                                     ),
                                 )
                             ));
@@ -427,7 +431,7 @@ class Blog_Gear extends Gear {
                         $fields = $list->getFields();
                         $fields->offsetSet('role', array(
                             'label' => t('Role', 'Blog'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
+                            'callback' => new Callback(array($this, 'prepareFields'), array($blog)),
                             'class' => 't_c',
                         ));
                         $list->setFields($fields);
@@ -450,10 +454,25 @@ class Blog_Gear extends Gear {
      * @param type $user
      * @return type
      */
-    public function prepareFields($user, $key) {
+    public function prepareFields($user, $key, $blog = NULL) {
         switch ($key) {
             case 'role':
-                return $this->current->followers[$user->id];
+                $role = $this->current->followers[$user->id];
+                switch ($role) {
+                    case self::ADMIN:
+                        $label = t('Administrator', 'Blog.roles');
+                        break;
+                    case self::MODER:
+                        $label = t('Moderator', 'Blog.roles');
+                        break;
+                    case self::APPROVED:
+                        $label = t('Follower', 'Blog.roles');
+                        break;
+                    case self::JOINED:
+                        $label = t('Newbie', 'Blog.roles');
+                        break;
+                }
+                return '<a href="/blog/role/' . $blog->id . '/' . $user->id . '" data-type="modal" data-source="form-blog-role">' . $label . '</a>';
                 break;
         }
     }
@@ -665,6 +684,68 @@ class Blog_Gear extends Gear {
                 redirect($blog->getLink());
             }
         }
+    }
+
+    /**
+     * Change role for blog
+     *
+     * @param int $bid
+     * @param int $uid
+     */
+    public function role_action($bid, $uid) {
+        if (!$blog = blog($bid) OR !$user = user($uid)) {
+            return event('404');
+        } else if ($blog->aid == $user->id) {
+            $message = t('You can\'t change role for blog founder.', 'Blog.roles');
+            if (Ajax::is()) {
+                $error = error($message, NULL, FALSE);
+                append('content', '<div id="form-blog-role">' . $error . '</div>');
+            } else {
+                error($message);
+            }
+            return;
+        }
+        $form = new Form('Blog.role');
+        $form->init();
+        $values = array(
+            Blog_Gear::ADMIN => t('Administrator', 'Blog.roles'),
+            Blog_Gear::MODER => t('Moderator', 'Blog.roles'),
+            Blog_Gear::APPROVED => t('Follower', 'Blog.roles'),
+            Blog_Gear::JOINED => t('Newbie', 'Blog.roles'),
+            Blog_Gear::LEFT => t('Dismiss', 'Blog.roles'),
+        );
+        if($blog->type != Blog_Object::$types['private']){
+            unset($values[Blog_Gear::JOINED]);
+        }
+        $form->role->setValues($values);
+        $follower = new Blog_Followers();
+        $follower->bid = $blog->id;
+        $follower->uid = $user->id;
+        if (!$follower->find()) {
+            return event('404');
+        }
+        $form->role->setValue($follower->role);
+
+        if ($result = $form->result()) {
+            $follower = new Blog_Followers();
+            $follower->bid = $blog->id;
+            $follower->uid = $user->id;
+            switch ($result->role) {
+                case self::LEFT:
+                    if ($follower->find()) {
+                        $follower->delete();
+                        $user->refresh();
+                    }
+                    break;
+                default:
+                    if ($follower->find()) {
+                        $follower->update(array('role' => $result->role));
+                    }
+            }
+            flash_success(t('User role has been changed'));
+            redirect($blog->getLink() . '/users/');
+        }
+        $form->show();
     }
 
 }

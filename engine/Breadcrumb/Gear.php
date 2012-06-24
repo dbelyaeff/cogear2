@@ -17,43 +17,14 @@ class Breadcrumb_Gear extends Gear {
     protected $description = 'Breadcrumb gear';
     protected $package = '';
     protected $order = 0;
+}
 
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-    }
-
-    /**
-     * Hook menu
-     *
-     * @param string $name
-     * @param object $menu
-     */
-    public function menu($name, $menu) {
-        switch ($name) {
-
-        }
-    }
-
-    /**
-     * Default dispatcher
-     *
-     * @param string $action
-     * @param string $subaction
-     */
-    public function index_action($action = '', $subaction = NULL) {
-
-    }
-
-    /**
-     * Custom dispatcher
-     *
-     * @param   string  $subaction
-     */
-    public function some_action($subaction = NULL) {
-
-    }
-
+/**
+ * Breadcrumb alias
+ *
+ * @param type $options
+ * @return Breadcrumb_Object
+ */
+function breadcrumb($options = array()){
+    return new Breadcrumb_Object($options);
 }

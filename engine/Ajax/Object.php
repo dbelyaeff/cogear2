@@ -11,8 +11,6 @@
  * @version		$Id$
  */
 class Ajax_Object extends Core_ArrayObject{
-
-
     /**
      * Check if the ajax request has been caught
      *
@@ -61,6 +59,21 @@ class Ajax_Object extends Core_ArrayObject{
         exit();
     }
 
+    /**
+     * Show ajax message
+     *
+     * @param string $text
+     * @param string $type
+     * @param string $title
+     */
+    public function message($text,$type = 'success',$title = NULL){
+        $this->messages OR $this->messages = new Core_ArrayObject();
+        $this->messages->append(array(
+            'body' => $text,
+            'type' => $type,
+            'title' => $title,
+        ));
+    }
     /**
      * Escape string
      *

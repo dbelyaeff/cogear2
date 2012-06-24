@@ -45,13 +45,12 @@ class User_Object extends Db_Item {
      */
     public function autologin() {
         $cogear = cogear();
-        $event = event('user.autologin',$this);
-        if(!$event->check()){
-            if($event->result()){
+        $event = event('user.autologin', $this);
+        if (!$event->check()) {
+            if ($event->result()) {
                 return TRUE;
             }
-        }
-        elseif ($cogear->session->get('user')) {
+        } elseif ($cogear->session->get('user')) {
             $this->attach($cogear->session->get('user'));
             $this->store();
             return TRUE;
@@ -180,6 +179,18 @@ class User_Object extends Db_Item {
     }
 
     /**
+     * Make a cache mark to refresh user
+     */
+    public function refresh($set_flag = FALSE) {
+        if (cogear()->cache->read('users/reset/' . $this->id, TRUE)) {
+            cogear()->session->remove('user');
+            cogear()->cache->remove('users/reset/' . $this->id);
+        } elseif($set_flag) {
+            cogear()->cache->write('users/reset/' . $this->id, TRUE);
+        }
+    }
+
+    /**
      * Show user
      */
     public function render($type = NULL, $param = NULL) {
@@ -188,7 +199,7 @@ class User_Object extends Db_Item {
                 $navbar = new Stack(array('name' => 'user.navbar'));
                 $navbar->attach($this);
                 $navbar->avatar = $this->getAvatarImage('avatar.profile');
-                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName($param). '</a></strong>';
+                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName($param) . '</a></strong>';
                 if (access('User.edit', $this)) {
                     $navbar->edit = '<a href="' . $this->getLink('edit') . '" class="sh" title="' . t('Edit') . '"><i class="icon-pencil"></i></a>';
                 }
@@ -248,7 +259,7 @@ class User_Object extends Db_Item {
                 $uri = new Stack(array('name' => 'user.link.avatar'));
                 $uri->append($this->getLink());
                 $param OR $param = 'avatar.small';
-                return HTML::a($uri->render('/'), $this->getAvatarImage($param));
+                return HTML::a($uri->render('/'), $this->getAvatarImage($param), array('data-id' => $this->id));
                 break;
             case 'edit':
                 $uri = new Stack(array('name' => 'user.link.edit'));

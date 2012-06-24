@@ -61,6 +61,20 @@ return array (
     'Moders' => '',
     'Newbies' => '',
     'Choose blog to post…' => '',
+    'Change user role' => '',
+  ),
+  '#Blog.roles' => 
+  array (
+    'Admins' => '',
+    'Moders' => '',
+    'Followers' => '',
+    'Newbies' => '',
+    'Administrator' => '',
+    'Moderator' => '',
+    'Follower' => '',
+    'Newbie' => '',
+    'Dismiss' => '',
+    'You can\'t change role for blog founder.' => '',
   ),
   '#Blogs' => 
   array (
@@ -123,6 +137,7 @@ return array (
     'March' => '',
     'January' => '',
     'May' => '',
+    'June' => '',
   ),
   '#Date.Month.Short' => 
   array (
@@ -130,6 +145,7 @@ return array (
     'Mar' => '',
     'Jan' => '',
     'May' => '',
+    'Jun' => '',
   ),
   '#Db.Debug' => 
   array (
@@ -183,6 +199,7 @@ return array (
     'This string will be used to form object uri.' => '',
     'This string will be used to form object link.' => '',
     'Data is saved!' => '',
+    'Change' => '',
   ),
   '#Form.descriptions' => 
   array (
@@ -198,6 +215,7 @@ return array (
     'Publish' => '',
     'Text' => '',
     'Write title' => '',
+    'Description' => '',
   ),
   '#Form.placeholder' => 
   array (
@@ -245,6 +263,7 @@ return array (
     'I18n' => '',
     'User' => '',
     'Gears' => '',
+    'Taxonomy' => '',
   ),
   '#I18n' => 
   array (
@@ -338,6 +357,7 @@ return array (
     'Post is saved to drafts! %s' => '',
     'Error' => '',
     'Friends' => '',
+    'Post saved!' => '',
   ),
   '#ReCaptcha' => 
   array (
@@ -378,6 +398,30 @@ return array (
     'Not found' => '',
     'Nothing found' => '',
   ),
+  '#Tags' => 
+  array (
+    'Tags' => '',
+    'Post with tag «%s»:' => '',
+  ),
+  '#Taxonomy' => 
+  array (
+    'Personal' => '',
+    'Predefined' => '',
+    'Open' => '',
+    'The vocabulary has been updated!' => '',
+    'Terms' => '',
+    'Vocabulary' => '',
+    'Term has been created!' => '',
+    'Term has been updated!' => '',
+    'Term has been deleted!' => '',
+    'The vocabulary has been saved!' => '',
+    'The vocabulary has been deleted!' => '',
+    'Type' => '',
+    'Private' => '',
+    'Public' => '',
+    'Closed' => '',
+    'Is multichose?' => '',
+  ),
   '#User' => 
   array (
     'Profile' => '',
@@ -412,6 +456,10 @@ return array (
     'Registration is complete!' => '',
     'Registration code was not found.' => '',
   ),
+  '#Vocabulary' => 
+  array (
+    'Type' => '',
+  ),
   '#Vote' => 
   array (
     'You\ve already voted!' => '',
@@ -424,6 +472,13 @@ return array (
     'Users' => '',
     'Votes' => '',
     'Rating' => '',
+    'How many vote do you want to add?' => '',
+    'Add' => '',
+    'Amout' => '',
+    'Votes count' => '',
+    'Add votes to user' => '',
+    'Add votes' => '',
+    'Blogs' => '',
   ),
   '#blog' => 
   array (
@@ -462,6 +517,7 @@ return array (
   'Login name already in use!' => '',
   'Lost password' => '',
   'No' => '',
+  'Not found' => '',
   'OR' => '',
   'Page published!' => '',
   'Please, provide correct e-mail address.' => '',
@@ -480,16 +536,21 @@ return array (
   'Session' => '',
   'Settings' => '',
   'Success' => '',
+  'Tags' => '',
+  'Taxonomy' => '',
   'The page you are looking for is not found.' => '',
   'This field is required.' => '',
+  'Tsgs' => '',
   'Unlink' => '',
   'Update' => '',
   'Upload images' => '',
   'User <a href="%user_link%">%user_name%</a> has published a comment to your post <a href="%post_link%">"%post_name%"</a>:
                             <p><i>%comment%</i></p>
                             <p><a href="%reply_link%">Reply &rarr;</a></p>' => '',
+  'User role has been changed' => '',
   'Value must contain only alphabetical characters and numbers.' => '',
   'Value must contain only alphabetical characters and spaces.' => '',
+  'Value must contain only digits.' => '',
   'View' => '',
   'Yes' => '',
   'You have started to follow this blog.' => '',

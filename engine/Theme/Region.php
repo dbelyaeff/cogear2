@@ -7,16 +7,25 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Theme
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Theme_Region extends Core_ArrayObject{
     /**
      * Render theme region
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function render(){
-        return $this->toString();
+        $output = '';
+        foreach($this as $item){
+            if($item instanceof Callback){
+                $output .= $item->run();
+            }
+            else {
+                $output .= $item;
+            }
+        }
+        return $output;
     }
 }

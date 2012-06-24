@@ -696,5 +696,5 @@ function comment($id = NULL, $param = 'id') {
             return FALSE;
         }
     }
-    return FALSE;
+    return new Comments();
 }

@@ -22,6 +22,7 @@ class Vote_Object extends Db_ORM {
         'user' => 0,
         'post' => 1,
         'comment' => 2,
+        'blog'=> 3,
     );
     protected $error = '';
 
@@ -152,6 +153,10 @@ class Vote_Object extends Db_ORM {
                 case 'User':
                 case 'User_Object':
                     $this->type = 'user';
+                    break;
+                case 'Blog':
+                case 'Blog_Object':
+                    $this->type = 'blog';
                     break;
             }
         }

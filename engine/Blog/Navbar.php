@@ -29,7 +29,7 @@ class Blog_Navbar extends Object {
         }
         $blog = $this->object;
 
-        $tpl->navbar = $blog->render('list');
+        $tpl->navbar = $blog->render('navbar','profile');
         $tabs = new Menu_Auto(array(
                     'name' => 'blog.tabs',
                     'template' => 'Twitter_Bootstrap.tabs',

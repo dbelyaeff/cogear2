@@ -71,7 +71,7 @@ class Comments_List extends Object {
                     }
                 }
             }
-            foreach ($result as $comment) {
+            foreach ($result as &$comment) {
                 if ($this->object->aid == $comment->aid) {
                     $comment->by_post_author = TRUE;
                 }
@@ -81,6 +81,7 @@ class Comments_List extends Object {
                 }
                 $output->append($comment->render());
             }
+            event('comments.list',$result);
             $this->options->pager && $output->append($pager->render());
             return $output->toString();
         } else {

@@ -201,3 +201,18 @@ class Request_Object {
     }
 
 }
+/**
+ * Request param get alias
+ *
+ * @param type $param
+ * @param type $default
+ * @return type
+ */
+function server($param,$default = NULL){
+    if($param = cogear()->request->get($param)){
+        return $param;
+    }
+    else {
+        return $default;
+    }
+}

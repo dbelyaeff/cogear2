@@ -136,14 +136,7 @@ class Pages_Gear extends Gear {
      * Show list of pages
      */
     public function admin_index() {
-        $pages = new Pages();
-        $tpl = new Template('Pages.list');
-        $tpl->pages = $pages->findAll();
-        if ($tpl->pages) {
-            $tpl->show();
-        } else {
-            return event('empty');
-        }
+        $pages = new Pages_List();
     }
 
     /**

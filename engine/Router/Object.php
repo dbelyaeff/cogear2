@@ -93,7 +93,7 @@ class Router_Object extends Options {
      * Constructor
      */
     public function __construct() {
-        $this->uri = $this->sanitizePath(cogear()->request->get('uri'));
+        $this->uri = $this->sanitizePath(server('uri'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
         hook('ignite', array($this, 'run'));
@@ -106,7 +106,7 @@ class Router_Object extends Options {
      */
     public function sanitizePath($path) {
         $cogear = getInstance();
-        if(strpos($path,'?') !== -1){
+        if(strpos($path,'?') !== FALSE){
             $path = substr($path,0,strpos($path,'?'));
         }
         // Sanitize unwanted data from the path

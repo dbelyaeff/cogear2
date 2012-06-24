@@ -9,6 +9,7 @@ return array (
     'body' => 'longtext',
     'comments' => 'int(11) unsigned',
     'allow_comments' => 'tinyint(1)',
+    'tags' => 'varchar(255)',
     'views' => 'int(11) unsigned',
     'rating' => 'float',
     'created_date' => 'int(11)',

@@ -64,7 +64,7 @@ class Blog_Object extends Db_Item {
      * @param type $data
      */
     public function insert($data = NULL) {
-        $data OR $data = $this->object->toArray();
+        $data OR $data = $this->getData();
         $data['created_date'] = time();
         $this->aid OR $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
@@ -79,8 +79,6 @@ class Blog_Object extends Db_Item {
      * @param type $data
      */
     public function update($data = NULL) {
-        $data OR $data = $this->object->toArray();
-        isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
             event('blog.update', $this, $data);
         }
@@ -144,7 +142,7 @@ class Blog_Object extends Db_Item {
      */
     public function render($type = NULL, $param = NULL) {
         switch ($type) {
-            case 'list':
+            case 'navbar':
                 $name = 'blog.navbar';
                 if ($param) {
                     $name .= '.' . $param;

@@ -97,7 +97,7 @@ class User_Gear extends Gear {
                 $User->store();
             }
             else {
-                $this->cache->write('users/reset/'.$User->id,TRUE);
+                $User->refresh(TRUE);
             }
         }
     }
@@ -108,10 +108,7 @@ class User_Gear extends Gear {
      * If there is a flag to reset user data — reset it
      */
     public function hookDone(){
-       if($this->cache->read('users/reset/'.$this->id,TRUE)){
-           $this->session->remove('user');
-           $this->cache->remove('users/reset/'.$this->id);
-       }
+       $this->object->refresh();
     }
     /**
      * Hook blog reader

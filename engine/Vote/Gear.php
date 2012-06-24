@@ -20,13 +20,15 @@ class Vote_Gear extends Gear {
     protected $hooks = array(
         'post.before' => 'hookRenderVote',
         'comment.info' => 'hookRenderVote',
-        'user.navbar' => 'hookRenderVote',
+        'user.navbar' => 'hookUserNavbar',
+        'blog.navbar.profile' => 'hookRenderVote',
 //        'table.render.users' => 'hookUsersTableRender',
     );
     protected $routes = array(
     );
     protected $access = array(
         'status' => 'access',
+        'add' => 'access',
         'menu' => array(1, 100),
     );
 
@@ -40,6 +42,11 @@ class Vote_Gear extends Gear {
         switch ($rule) {
             case 'status':
                 if (role()) {
+                    return TRUE;
+                }
+                break;
+            case 'add':
+                if (role() == 1) {
                     return TRUE;
                 }
                 break;
@@ -68,6 +75,28 @@ class Vote_Gear extends Gear {
             'callback' => new Callback(array($this, 'prepareFields')),
             'class' => 't_c w10',
                 ), 'rating', 'reg_date');
+    }
+
+    /**
+     * Add add_votes action to user navbar
+     *
+     * @param type $Navbar
+     */
+    public function hookRenderUserNavbar($Navbar) {
+        $User = $Navbar->object;
+        if (access('Vote.add', $User)) {
+            $Navbar->append('<a href="/vote/points/'.$User->id.'" data-type="modal" data-source="form-vote-points" class="sh" title="'.t('Add votes','Vote').'"><i class="icon-volume-up"></i></a>');
+        }
+    }
+
+    /**
+     * Hooks for user navbar
+     *
+     * @param type $Navbar
+     */
+    public function hookUserNavbar($Navbar){
+        $this->hookRenderVote($Navbar);
+        $this->hookRenderUserNavbar($Navbar);
     }
 
     /**
@@ -175,6 +204,10 @@ class Vote_Gear extends Gear {
                             'link' => l('/vote/posts'),
                             'active' => TRUE,
                         ),
+                        'blogs' => array(
+                            'label' => t('Blogs', 'Vote') . ' <sup>' . sizeof($blogs) . '</sup>',
+                            'link' => l('/vote/blogs'),
+                        ),
                         'comments' => array(
                             'label' => t('Comments', 'Vote') . ' <sup>' . sizeof($comments) . '</sup>',
                             'link' => l('/vote/comments'),
@@ -219,6 +252,15 @@ class Vote_Gear extends Gear {
                                 'flat' => TRUE,
                             ));
                     break;
+                case 'blogs':
+                    Db_ORM::skipClear();
+                    $this->db->where_in('blogs.id', array_keys($blogs));
+                    new Blog_List(array(
+                                'name' => 'vote.blogs',
+                                'base' => l('/vote/blogs/'),
+                                'per_page' => config('Vote.blogs.per_page', 10),
+                            ));
+                    break;
             }
         } else {
             event('empty');
@@ -246,6 +288,11 @@ class Vote_Gear extends Gear {
                 break;
             case 'comment':
                 if (!$object = comment($id)) {
+                    return;
+                }
+                break;
+            case 'blog':
+                if (!$object = blog($id)) {
                     return;
                 }
                 break;
@@ -289,6 +336,28 @@ class Vote_Gear extends Gear {
             $msg_method($data['messages'][0]['body']);
             redirect($object->getLink());
         }
+    }
+
+    /**
+     * Add vote points to user
+     *
+     * @param type $uid
+     */
+    public function points_action($uid) {
+        $user = user($uid);
+        if (!$user OR !access('Vote.add',$user)) {
+            return event('404');
+        }
+        $form = new Form('Vote.points');
+        if ($result = $form->result()) {
+            if ($user->update(array('votes' => $user->votes + $result->votes))) {
+                if ($user->id == user()->id) {
+                    $user->store();
+                }
+                redirect($user->getLink());
+            }
+        }
+        $form->show();
     }
 
 }

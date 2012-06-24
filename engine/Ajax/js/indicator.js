@@ -20,6 +20,7 @@
     //        })
     //    });
     $(document).bind('ajaxSend',function($event,$xhr,$options){
+        console.log($options);
         $options.globalLoader && $('#ajax-loader').fadeIn('slow');
     }).bind('ajaxComplete',function($event,$xhr,$options){
         $options.globalLoader && $('#ajax-loader').fadeOut('slow');

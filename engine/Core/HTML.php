@@ -13,15 +13,15 @@
  */
 final class HTML {
 
-    public static $default_attributes = array('class', 'id', 'rel');
+    public static $default_attributes = array('class', 'id', 'rel','data-id','data-type','data-source','data-placeholder');
     public static $allowed_attributes = array(
         'a' => array('href', 'target','rel'),
         'img' => array('width', 'height', 'alt', 'title','src'),
         'form' => array('action', 'method', 'enctype'),
-        'input' => array('type', 'value', 'disabled', 'checked', 'name','placeholder','data-source'),
-        'select' => array('type', 'disabled', 'name','multiple','data-source','data-placeholder'),
+        'input' => array('type', 'value', 'disabled', 'checked', 'name','placeholder'),
+        'select' => array('type', 'disabled', 'name','multiple'),
         'option' => array('selected','value'),
-        'textarea' => array('rows', 'cols', 'name', 'disabled','placeholder','data-source'),
+        'textarea' => array('rows', 'cols', 'name', 'disabled','placeholder'),
         'script' => array('src', 'type', 'charset'),
         'link' => array('media', 'type', 'rel', 'href'),
         'meta' => array('content', 'type'),

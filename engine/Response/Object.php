@@ -80,8 +80,8 @@ class Response_Object extends Core_ArrayObject {
 
     /**
      * Flag indicates headers are send
-     * 
-     * @var boolean 
+     *
+     * @var boolean
      */
     private $headers_sent = FALSE;
 
@@ -113,7 +113,7 @@ class Response_Object extends Core_ArrayObject {
 
     /**
      * Set header
-     * 
+     *
      * @param string $name
      * @param string $data
      */
@@ -141,12 +141,19 @@ class Response_Object extends Core_ArrayObject {
      * Send response
      */
     public function send() {
-        event('reponse.send',$this);
+        event('response.send',$this);
         $this->sendHeaders();
         foreach ($this as $value) {
             echo $value;
         }
-        event('reponse.send.after',$this);
+        event('response.send.after',$this);
+    }
+
+    /**
+     * Clear the response
+     */
+    public function clear(){
+        $this->exchangeArray(array());
     }
 
 }

@@ -317,7 +317,7 @@ class Db_ORM extends Object {
      */
     public function update($data = NULL) {
         if ($data) {
-            $this->object->adopt($data);
+            $this->object->mix($data);
         } else {
             $data = $this->getData();
         }

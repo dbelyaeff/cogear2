@@ -33,8 +33,9 @@ class Callback extends Cogearable {
      *
      * @param   string|callback $callback
      */
-    public function __construct($callback) {
+    public function __construct($callback,$args = array()) {
         $this->callback = self::prepare($callback);
+        $args && $this->args = $args;
     }
 
     /**
@@ -72,7 +73,7 @@ class Callback extends Cogearable {
      * @param array $args
      */
     public function setArgs($args) {
-        $this->args = $args;
+        $this->args = $this->args ? array_merge($args,$this->args) : $args;
     }
 
     /**

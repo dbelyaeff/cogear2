@@ -10,6 +10,18 @@ $('.modal').live('shown',function () {
         }
     });
     modal.find('.modal-body').load(modal.attr('data-source'),function(){
+        var headers = modal.find('.page-header');
+        if(headers.length > 0){
+            header = headers[0];
+            if(modal.find('.modal-header').length > 0){
+               $(modal.find('.modal-header')[0]).html($(header).html());
+            }
+            else {
+                console.log();
+                $(header).removeClass('page-header').addClass('modal-header');
+                $(modal.find('.close')[0]).after($(header));
+            }
+        }
         var actions = modal.find(' .modal-body .form-actions');
         if(actions.length && modal.find('.modal-footer').length == 0){
             $('<div class=\"modal-footer\"/>').appendTo(modal);
@@ -26,7 +38,7 @@ $('.modal').live('shown',function () {
         if(actions.length) actions.hide();
     });
 })
-$('body').on('click','a[data-type="modal"]',function(e){
+$(document).on('click','a[data-type="modal"]',function(e){
     e.preventDefault();
     var link = $(this).attr('href')+'?modal';
     if($(this).attr('data-source')) link += '='+$(this).attr('data-source');
