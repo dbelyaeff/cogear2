@@ -100,7 +100,13 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         if ($where_in) {
             // @todo: Make it more safe and usable
             foreach ($where_in as $field => $values) {
-                $query[] = ' WHERE '.$field.' IN ('.implode(',',$values).') ';
+                $query[] = ' WHERE '.$field.' IN ('.implode(',',(array)$values).') ';
+            }
+        }
+        if ($where_not_in) {
+            // @todo: Make it more safe and usable
+            foreach ($where_not_in as $field => $values) {
+                $query[] = ' WHERE '.$field.' NOT IN ('.implode(',',(array)$values).') ';
             }
         }
         if ($where) {
@@ -109,7 +115,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
 //            $where = $this->filterFields($from, $where, TRUE);
             if ($where) {
                 foreach ($where as $field => $value) {
-                    if ($i > 0 OR $where_in) {
+                    if ($i > 0 OR $where_in OR $where_not_in) {
                         $query[] = ' AND ';
                     } else {
                         $query[] = ' WHERE ';
