@@ -20,6 +20,7 @@ class Post_List extends Options {
         'page_suffix' => 'page',
         'where' => array(
         ),
+        'where_in' => array(),
         'order' => array('posts.created_date', 'DESC'),
         'render' => 'content',
     );
@@ -40,6 +41,11 @@ class Post_List extends Options {
     public function render() {
         $post = new Post();
         $this->where && cogear()->db->where($this->where->toArray());
+        if($this->where_in){
+            foreach($this->where_in as $key=>$value){
+                cogear()->db->where_in($key,$value);
+            }
+        }
         $this->order && cogear()->db->order($this->order[0], $this->order[1]);
         $pager = new Pager(array(
                     'current' => $this->page ? $this->page : NULL,
