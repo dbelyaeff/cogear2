@@ -365,7 +365,7 @@ abstract class Db_Driver_Abstract {
      */
     public function join($table, $fields, $type='') {
         $type = strtoupper($type);
-        $query = $type . ' JOIN ' . $table . ' ON ' . $this->argsToString($fields, '=', ' AND ', '');
+        $query = $type . ' JOIN ' . $table . ' ON ' . is_array($fields) ? $this->argsToString($fields, '=', ' AND ', '') : $fields;
         $this->addQuery('join', $query);
         return $this;
     }
@@ -391,6 +391,29 @@ abstract class Db_Driver_Abstract {
                 $like = '%' . $value;
         }
         $this->addQuery('where', array($name . ' ' . $pattern => $like));
+        return $this;
+    }
+    /**
+     * OR LIKE subquery
+     *
+     * @param   string  $name
+     * @param   string  $value
+     * @return object   Self intsance.
+     */
+    public function or_like($name, $value, $type = 'before', $pattern = 'LIKE ') {
+        $value = $this->escape($value);
+        switch ($type) {
+            case 'both':
+                $like = '%' . $value . '%';
+                break;
+            case 'after':
+                $like = $value . '%';
+                break;
+            default:
+            case 'before':
+                $like = '%' . $value;
+        }
+        $this->addQuery('or_where', array($name . ' ' . $pattern => $like));
         return $this;
     }
 
