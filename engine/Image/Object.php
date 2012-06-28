@@ -10,7 +10,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Image_Object extends Adapter {
+class Image_Object extends Object {
     protected $file;
     /**
      * Constructor
