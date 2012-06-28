@@ -62,7 +62,7 @@ class Menu_Object extends Object {
     public function setActive() {
         $last_active = NULL;
         foreach ($this as $key => $item) {
-            if(NULL !== $item->options->active){
+            if(NULL != $item->options->active){
                 $last_active = $key;
             }
             else if (cogear()->router->check(trim($item->link, ' /'))) {
@@ -74,7 +74,7 @@ class Menu_Object extends Object {
             return;
         foreach ($this as $key => $item) {
             if ($item->options->active) {
-                if ($key != $last_active) {
+                if ($key !== $last_active) {
                     $item->options->active = FALSE;
                 } else {
                     event('menu.active', $item,$this);
