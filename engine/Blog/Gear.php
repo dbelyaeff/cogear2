@@ -444,11 +444,11 @@ class Blog_Gear extends Gear {
                                     'render' => FALSE,
                                 ));
                         $fields = $list->getFields();
-                        $fields->offsetSet('role', array(
+                        $fields->offsetSet('role', new Core_ArrayObject(array(
                             'label' => t('Role', 'Blog'),
                             'callback' => new Callback(array($this, 'prepareFields'), array($blog)),
                             'class' => 't_c',
-                        ));
+                        )));
                         $list->setFields($fields);
                         $list->show();
                     } else {
