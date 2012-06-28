@@ -32,6 +32,10 @@ class Blog_Gear extends Gear {
         'blog.follower.insert' => 'hookBlogFollowers',
         'blog.follower.update' => 'hookBlogFollowers',
         'blog.follower.delete' => 'hookBlogFollowers',
+        'widgets' => 'hookWidgets',
+    );
+    protected $routes = array(
+        'blogs:maybe' => 'list_action',
     );
     protected $access = array(
         'create' => 'access',
@@ -300,7 +304,11 @@ class Blog_Gear extends Gear {
             }
         }
     }
-
+    /**
+     * Hook blog followers
+     *
+     * @param type $Blog_Followers
+     */
     public function hookBlogFollowers($Blog_Followers){
         if($blog = blog($Blog_Followers->bid)){
             $followers = new Blog_Followers();
@@ -308,7 +316,14 @@ class Blog_Gear extends Gear {
             $blog->update(array('followers' => $followers->count(TRUE)));
         }
     }
-
+    /**
+     * Hook widgets
+     *
+     * @param type $widgets
+     */
+    public function hookWidgets($widgets){
+        $widgets->append(new Blog_Widget());
+    }
     /**
      * Constructor
      */
@@ -568,6 +583,16 @@ class Blog_Gear extends Gear {
         } else {
             event('empty');
         }
+    }
+
+    /**
+     * List blogs
+     */
+    public function list_action(){
+        page_header(t('Blogs','Blogs'));
+        new Blog_List(array(
+            'name' => 'main',
+        ));
     }
 
     /**

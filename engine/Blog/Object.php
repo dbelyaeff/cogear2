@@ -42,13 +42,16 @@ class Blog_Object extends Db_Item {
             case 'avatar':
                 $uri = new Stack(array('name' => 'blog.link.avatar'));
                 $uri->append($this->getLink());
-                return HTML::a($uri->render('/'), $this->getAvatarImage($param));
+                return HTML::a($uri->render('/'), $this->getAvatarImage($param ? $param : 'avatar.small'));
                 break;
             case 'edit':
                 $uri = new Stack(array('name' => 'blog.link.edit'));
                 $uri->append('blog');
                 $uri->append('edit');
                 $uri->append($this->id);
+                break;
+            case 'users':
+                return $this->getLink().'/users';
                 break;
             default:
                 $uri = new Stack(array('name' => 'blog.link'));
