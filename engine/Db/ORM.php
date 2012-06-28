@@ -196,6 +196,7 @@ class Db_ORM extends Object {
         $primary = $this->primary;
         if ($this->object->$primary && isset(self::$loaded_items[$this->table]) && isset(self::$loaded_items[$this->table][$this->object->$primary])) {
             $this->object = self::$loaded_items[$this->table][$this->object->$primary];
+            $this->clear();
             return TRUE;
         }
         if ($this->object->count()) {
@@ -206,6 +207,7 @@ class Db_ORM extends Object {
                 event('Db_ORM.find', $this, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
                 self::$loaded_items[$this->table][$result->{$this->primary}] = $this->object;
+                $this->clear();
                 return TRUE;
             }
         }
@@ -227,6 +229,7 @@ class Db_ORM extends Object {
                 $element = $this->filterData($element, self::FILTER_OUT);
                 self::$loaded_items[$this->table][$element->{$this->primary}] = $element;
             }
+            $this->clear();
         }
         return $result;
     }
@@ -334,15 +337,18 @@ class Db_ORM extends Object {
         $cogear = getInstance();
         $data = $this->getData();
         $result = FALSE;
-        if (!$data) {
-            return FALSE;
-        } elseif (!isset($data[$this->primary])) {
+        if (!isset($data[$this->primary]) && $data) {
             $result = $cogear->db->delete($this->table, $data) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
-        } else {
+        } elseif($data) {
             $result = $cogear->db->delete($this->table, array($this->primary => $data[$this->primary])) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
         }
+        else {
+            $result = $cogear->db->delete($this->table) ? TRUE : FALSE;
+            event('Db_ORM.delete', $this, $data, $result);
+        }
+        $this->clear();
         return $result;
     }
 
