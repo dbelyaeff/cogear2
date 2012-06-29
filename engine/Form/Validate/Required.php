@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Required Validate
  *
@@ -11,15 +12,23 @@
  * @version		$Id$
  */
 class Form_Validate_Required extends Form_Validate_Abstract {
-	/**
-	 * Validation
-	 *
-	 * @param	string	$value
-	 */
-	 public function validate($value){
-		 if($this->element->form->request && trim($value) == ''){
-			 return $this->element->addError(t('This field is required.'));
-		 }
-		 return TRUE;
-	 }
-} 
+
+    /**
+     * Validation
+     *
+     * @param	string	$value
+     */
+    public function validate($value) {
+        if ($this->element->form->request) {
+            if(is_array($value) && !$value){
+                return $this->element->addError(t('This field is required.'));
+            }
+            elseif (is_string($value) && trim($value) == '') {
+                return $this->element->addError(t('This field is required.'));
+            }
+        }
+        return TRUE;
+    }
+
+}
+
