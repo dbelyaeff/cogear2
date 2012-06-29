@@ -62,6 +62,7 @@ class Core_ArrayObject extends ArrayObject {
      * Mix elements with another object
      *
      * @param  array|self $data
+     * @return  self
      */
     public function mix($data) {
         if (!$data)
@@ -76,6 +77,7 @@ class Core_ArrayObject extends ArrayObject {
          * Have to reinterpret exchangeArray method with simple foreach cycle
          */
         $this->adopt($data);
+        return $this;
     }
 
     /**
@@ -157,7 +159,7 @@ class Core_ArrayObject extends ArrayObject {
     public function prepend($value, $key = NULL) {
         $temp_array = $this->getArrayCopy();
         if ($key) {
-            $temp_array = array_merge(array($key=>$value),$temp_array);
+            $temp_array = array_merge(array($key => $value), $temp_array);
         } else {
             array_unshift($temp_array, $value);
         }
@@ -171,11 +173,11 @@ class Core_ArrayObject extends ArrayObject {
      * @param type $key
      * @param type $to
      */
-    public function prependTo($value,$key,$to){
+    public function prependTo($value, $key, $to) {
         $data = $this->getArrayCopy();
         $new = array();
-        foreach($data as $k=>$item){
-            if($k == $to){
+        foreach ($data as $k => $item) {
+            if ($k == $to) {
                 $new[$key] = $value;
             }
             $new[$k] = $item;
@@ -189,7 +191,12 @@ class Core_ArrayObject extends ArrayObject {
      * @return object
      */
     public function reverse() {
-        return new Core_ArrayObject(array_reverse($this->toArray()));
+        $size = $this->count();
+        $data = array();
+        for($i = 0; $i < $size; $i++){
+            $this->offsetExists($size-$i) && $data[$i] = $this->offsetGet($size-$i);
+        }
+        return new self($data);
     }
 
     /**
@@ -345,13 +352,11 @@ class Core_ArrayObject extends ArrayObject {
      * @return int
      */
     public static function sortBy($param, $a, $b) {
-        if(!is_object($a)){
+        if (!is_object($a)) {
             return 1;
-        }
-        elseif(!is_object($b)){
+        } elseif (!is_object($b)) {
             return -1;
-        }
-        else if ($a->order == $b->order) {
+        } else if ($a->order == $b->order) {
             return 0;
         }
         return floatval($a->order) < floatval($b->order) ? -1 : 1;
