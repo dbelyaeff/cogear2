@@ -17,7 +17,7 @@ class Form_Object extends Object {
         'name' => '',
         'method' => 'POST',
         'action' => '',
-        'class' => '',
+        'class' => 'form',
         'enctype' => self::ENCTYPE_MULTIPART,
         'template' => 'Form.form',
         'prefix' => 'form',
@@ -118,17 +118,19 @@ class Form_Object extends Object {
             $config->placeholder = t('Enter %s…', 'Form.placeholder', strtolower($config->label));
         }
         $config->name = $name;
-        $name = str_replace('[]','',$name);
+        if (strpos($name, '[]')) {
+            $config->multiple = TRUE;
+            $name = str_replace('[]', '', $name);
+        }
         $config->form = $this;
         if (!$config->order) {
             $this->counter++;
             $config->order = $this->counter;
         }
         if (is_string($config->access)) {
-            if($this->object){
-                $config->access = access($config->access,$this->object);
-            }
-            else {
+            if ($this->object) {
+                $config->access = access($config->access, $this->object);
+            } else {
                 $config->access = access($config->access);
             }
         }
@@ -233,10 +235,10 @@ class Form_Object extends Object {
                 $ajax->json($data);
             }
         }
-        if($is_valid && $result){
+        if ($is_valid && $result) {
             $result = Core_ArrayObject::transform($result);
         }
-        if (!event('form.result.' . $this->options->name, $this, $is_valid,$result)->check() OR
+        if (!event('form.result.' . $this->options->name, $this, $is_valid, $result)->check() OR
                 !event('form.result', $this, $is_valid, $result)->check()) {
             return FALSE;
         }
