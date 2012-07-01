@@ -49,9 +49,8 @@ class Install_Gear extends Gear {
      * @param string $subaction
      */
     public function index($action = '') {
-        new Menu(array(
+        new Menu_Tabs(array(
                     'name' => 'install',
-                    'template' => 'Twitter_Bootstrap.tabs',
                     'render' => 'content',
                     'elements' => array(
                         array(
