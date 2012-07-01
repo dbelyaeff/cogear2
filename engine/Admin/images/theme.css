@@ -1,0 +1,115 @@
+body
+{
+    background: #FEFEFE;
+    font-family: Century Gothic;
+}
+a{
+    color: blue;
+}
+#header > div {
+    height: 145px;
+}
+#site_name{
+    position: relative;
+}
+#site_name a{
+    position: absolute;
+    top: 40px;
+    left: -70px;
+    color: #d4d4d4;
+    font-size: 2em;
+    text-decoration: none;
+    text-shadow: 2px 1px 2px #FFF;
+}
+#wrapper{
+}
+#sidebar {
+}
+#header_auth{
+    position: relative;
+}
+#header_auth .box{
+    position: absolute;
+    top: -10px;
+    right: -5px;
+}
+#header_auth .box p{
+    margin-top: 5px;
+}
+.box{
+    background: #FFF;
+    border: 2px solid #CCC;
+    -moz-border-radius: 10px;
+}
+.box > div, .box > p{
+    padding: 10px;
+    margin: 0;
+}
+#content{
+    min-height: 300px;
+}
+h1 {
+    border-bottom: 2px solid #CCC;
+    margin-bottom: 12px;
+    height: 16px;
+    font-size: 20px;
+
+}
+h4{
+    border-bottom: 2px solid #CCC;
+    margin-bottom: 15px;
+    height: 15px;
+}
+h1 > span, h4 > b {
+    padding: 4px 5px 0 0;
+    text-shadow: 1px 1px 5px #FFF;
+    color: #424141;
+    background: #FFF;
+    font-family: Century Gothic;
+}
+h4 > b {
+    font-size: 15px;
+}
+#footer_stat{
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+.padding-10{
+    padding: 10px;
+}
+table.list {
+    width: 100%;
+    border: 1px solid #DFDFDF;
+    clear: both;
+    border-collapse: separate;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    border-radius: 7px;
+}
+table.list thead tr th, table.list tfoot tr th{
+    background: #DFDFDF url("../images/thead-background.png") repeat-x left top;
+    color: #333333;
+}
+table.list tr{
+    border-collapse: collapse;
+}
+table.list th {
+    text-shadow: 0 1px 0 #FFF;
+    padding: 7px 7px 8px;
+    text-align: left;
+}
+table.list tr th.check {
+    width:10px;
+}
+table.list tr.active{
+    background: #F7F7F7;
+}
+table.list tr.controls{
+}
+table.list tr.controls td, table.list tr.controls th{
+    padding: 10px 0;
+    border-bottom: 1px dotted #CCC;
+}
+.info h1 span{
+    background: #E1F8E5;
+}

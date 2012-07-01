@@ -1,0 +1,59 @@
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markItUp .markItUpBold a {
+	background:url(images/toolbar.png) no-repeat 0 0;
+}
+.markItUp .markItUpItalic a {
+	background:url(images/toolbar.png) no-repeat -18px 0;
+}
+
+.markItUp .markItUpUndeline a {
+	background:url(images/toolbar.png) no-repeat -32px 0;
+}
+.markItUp .markItUpStrike a {
+	background:url(images/toolbar.png) no-repeat -48px 0;
+}
+.markItUp .markItUpH1 a {
+	background:url(images/toolbar.png) no-repeat -64px 0;
+}
+
+.markItUp .markItUpH2 a {
+	background:url(images/toolbar.png) no-repeat -80px 0;
+}
+.markItUp .markItUpH3 a {
+	background:url(images/toolbar.png) no-repeat -96px 0;
+}
+.markItUp .markItUpUl a {
+	background:url(images/toolbar.png) no-repeat -112px 0;
+}
+.markItUp .markItUpOl a {
+	background:url(images/toolbar.png) no-repeat -128px 0;
+}
+.markItUp .markItUpLink a {
+	background:url(images/toolbar.png) no-repeat -144px 0;
+}
+
+.markItUp .markItUpPicture a {
+	background:url(images/toolbar.png) no-repeat -160px 0;
+}
+
+.markItUp .markItUpUser a {
+	background:url(images/toolbar.png) no-repeat -176px 0;
+}
+.markItUp .markItUpCode a {
+	background:url(images/toolbar.png) no-repeat -208px 0;
+}
+.markItUp .markItUpVideo a {
+	background:url(images/toolbar.png) no-repeat -224px 0;
+}
+.markItUp .markItUpCut a {
+	background:url(images/toolbar.png) no-repeat -240px 0;
+}
+.markItUp .markItUpImageUpload a {
+	background:url(images/toolbar.png) no-repeat -256px 0;
+}
+.markItUp .markItUpFileManager a {
+	background:url(images/toolbar.png) no-repeat -272px 0;
+}

@@ -1,0 +1,114 @@
+.fl_l{
+    float: left;
+}
+.fl_r, .nav .fl_r{
+    float: right;
+}
+.no_fl{
+   float: none;
+}
+.t_c, .table .t_c {
+    text-align: center;
+}
+.t_l, .table .t_l{
+    text-align: left;
+}
+.t_r, .table .t_r{
+    text-align: right;
+}
+.p5{
+    padding: 5px;
+}
+.p10{
+    padding: 10px;
+}
+.p20{
+    padding: 20px;
+}
+.m5{
+    margin: 5px;
+}
+.m10{
+    margin: 10px;
+}
+.m20{
+    margin: 20px;
+}
+.ms5{
+    margin: 0 5px;
+}
+.ms10{
+    margin: 0 10px;
+}
+.ms20{
+    margin: 0 20px;
+}
+.w5{
+    width: 5%;
+}
+.w10{
+    width: 10%;
+}
+.w20{
+    width: 20%;
+}
+.w30 {
+    width: 30%;
+}
+.w50{
+    width: 50%;
+}
+.w70{
+    width: 70%;
+}
+.w80{
+    width: 80%;
+}
+.w90{
+    width: 90%;
+}
+.w95{
+    width: 95%;
+}
+.w100{
+    width: 100%;
+}
+/**
+* Show-Hide (sh) class for hidden controls
+*/
+.sh {
+    cursor: pointer;
+    margin-left: 5px;
+}
+.sh i{
+    opacity: 0.2;
+    visibility: hidden;
+}
+.sh.active i{
+    visibility: visible;
+    opacity: 0.8;
+}
+.sh.active:hover i{
+    visibility: 1;
+    opacity: 0.2;
+}
+.sh:hover i{
+    opacity: 1;
+}
+/**
+* Show-Hide Holder (shd) class for hidden controls
+*/
+.shd:hover .sh i{
+    visibility: visible;
+}
+.hltd{
+    background: #e9f2fa;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+[title],[data-original-title] {
+    cursor: help;
+}
+a[title],a[data-original-title] {
+    cursor: pointer;
+}
