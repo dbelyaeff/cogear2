@@ -25,10 +25,12 @@ class Blog_Widget extends Widgets_Widget {
      * Render
      */
     public function render() {
+        // @todo Find a bug with db to avoid the next stoke
+        cogear()->db->clear(); // Show be deleted
         $blogs = blog();
         $blogs->order('rating', 'desc');
         $blogs->limit($this->options->limit);
-        if($result = $blogs->findAll()){
+        if ($result = $blogs->findAll()) {
             $tpl = new Template('Blog.widget');
             $tpl->blogs = $result;
             $this->code = $tpl->render();

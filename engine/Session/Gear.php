@@ -36,17 +36,17 @@ class Session_Gear extends Gear {
     }
 
 }
-/**
- * Shortcut for session
- *
- * @param type $name
- * @param type $value
- */
-function session($name,$value = ''){
-    if($value !== NULL){
-        cogear()->session->set($name,$value);
-    }
-    else {
-        return cogear()->session->get($name);
-    }
-}
+///**
+// * Shortcut for session
+// *
+// * @param type $name
+// * @param type $value
+// */
+//function session($name,$value = ''){
+//    if($value !== NULL){
+//        cogear()->session->set($name,$value);
+//    }
+//    else {
+//        return cogear()->session->get($name);
+//    }
+//}

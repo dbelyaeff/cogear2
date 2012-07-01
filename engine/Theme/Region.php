@@ -10,22 +10,24 @@
  * @subpackage
  * @version		$Id$
  */
-class Theme_Region extends Core_ArrayObject{
+class Theme_Region extends Options{
     /**
      * Render theme region
      *
      * @return string
      */
     public function render(){
-        $output = '';
+        $output = new Core_ArrayObject();
         foreach($this as $item){
             if($item instanceof Callback){
-                $output .= $item->run();
+                $output->append($item->run());
             }
             else {
-                $output .= $item;
+                $output->append($item);
             }
         }
+        event('theme.region',$this,$output);
+        event('theme.region.'.$this->name,$this,$output);
         return $output;
     }
 }

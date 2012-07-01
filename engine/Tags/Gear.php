@@ -21,6 +21,7 @@ class Tags_Gear extends Gear {
         'form.init.post' => 'hookFormPost',
         'form.result.post' => 'hookFormPostResult',
         'post.after' => 'hookPostAfter',
+        'widgets' => 'hookWidgets',
     );
     protected $routes = array(
     );
@@ -65,10 +66,11 @@ class Tags_Gear extends Gear {
         if ($is_valid && $result) {
             $post = $Form->object;
             if ($result->tags) {
-                $tags = preg_split('#[\s]*[,][\s]*#', trim($result->tags));
+                $tags = preg_split('#[\s]*[,][\s]*#', trim($result->tags), NULL, PREG_SPLIT_NO_EMPTY);
                 $link = new Tags_Link();
                 $link->pid = $post->id;
                 $link->delete();
+                $tags = array_unique($tags);
                 foreach ($tags as $value) {
                     if ($value && !$tag = tag($value)) {
                         $tag = tag();
@@ -92,11 +94,19 @@ class Tags_Gear extends Gear {
      */
     public function hookPostAfter($Stack) {
         $post = $Stack->object;
-        if ($tags = preg_split('#[\s]*[,][\s]*#', $post->tags,NULL,PREG_SPLIT_NO_EMPTY)) {
+        if ($tags = preg_split('#[\s]*[,][\s]*#', $post->tags, NULL, PREG_SPLIT_NO_EMPTY)) {
             $Stack->append(template('Tags.post', array('tags' => $tags))->render());
         }
     }
 
+    /**
+     * Hook widgets
+     *
+     * @param Core_ArrayObject $widgets
+     */
+    public function hookWidgets($widgets){
+        $widgets->append(new Tags_Widget());
+    }
     /**
      * Default dispatcher
      *
@@ -117,7 +127,7 @@ class Tags_Gear extends Gear {
                             )
                         ),
                     ));
-            append('content', '<div class="page-header"><h1>' . $tag->name . '</h1></div>');
+            page_header($tag->name);
             $link = new Tags_Link();
             $link->tid = $tag->id;
             if ($links = $link->findAll()) {
@@ -135,7 +145,7 @@ class Tags_Gear extends Gear {
                 event('empty');
             }
         } else {
-            append('content', '<div class="page-header"><h1>' . t('Tags', 'Tags') . '</h1></div>');
+            page_header(t('Tags', 'Tags'));
 
             $tags_cloud = new Tags_Cloud();
             $tags_cloud->show();

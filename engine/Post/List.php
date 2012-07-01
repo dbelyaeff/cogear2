@@ -11,8 +11,9 @@
  * @subpackage
  * @version		$Id$
  */
-class Post_List extends Options {
+class Post_List extends Db_List_Abstract {
 
+    protected $class = 'Post';
     public $options = array(
         'page' => 0,
         'per_page' => 5,
@@ -20,52 +21,26 @@ class Post_List extends Options {
         'page_suffix' => 'page',
         'where' => array(
         ),
+        'like' => array(),
         'where_in' => array(),
         'order' => array('posts.created_date', 'DESC'),
-        'render' => 'content',
+        'render'=>'content',
     );
-
     /**
-     * Constructor
+     * Process posts render
      *
-     * @param array $options
+     * @param type $posts
+     * @return type
      */
-    public function __construct($options = array()) {
-        parent::__construct($options);
-        $this->render && hook($this->render, array($this, 'show'));
-    }
-
-    /**
-     * Render list of posts
-     */
-    public function render() {
-        $post = new Post();
-        $this->where && cogear()->db->where($this->where->toArray());
-        if($this->where_in){
-            foreach($this->where_in as $key=>$value){
-                cogear()->db->where_in($key,$value);
-            }
+    public function process($posts,$pager) {
+        $output = new Core_ArrayObject();
+        foreach ($posts as $post) {
+            $post->teaser = TRUE;
+            $output->append($post->render());
         }
-        $this->order && cogear()->db->order($this->order[0], $this->order[1]);
-        $pager = new Pager(array(
-                    'current' => $this->page ? $this->page : NULL,
-                    'count' => $post->count(),
-                    'per_page' => $this->per_page,
-                    'base' => $this->base,
-                ));
-        if ($posts = $post->findAll()) {
-            $output = new Core_ArrayObject();
-            foreach ($posts as $post) {
-                $post->teaser = TRUE;
-                $output->append($post->render());
-            }
-            event('post.list',$posts);
-            $output->append($pager->render());
-            return $output->toString();
-        } else {
-            event('empty');
-            return FALSE;
-        }
+        event('post.list', $posts);
+        $output->append($pager->render());
+        return $output->toString();
     }
 
 }

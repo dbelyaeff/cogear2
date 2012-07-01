@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Twitter_Bootstrap_Gear extends Gear {
@@ -30,6 +30,7 @@ class Twitter_Bootstrap_Gear extends Gear {
 //        $scripts[] = $scripts_dir.DS.'bootstrap-.js';
         cogear()->assets->addScript($scripts);
         cogear()->assets->addStyle($styles_dir . DS . 'bootstrap.css');
+        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap-responsive.css');
     }
 
 }

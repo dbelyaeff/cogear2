@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1340555893,
+    'last_run' => 1341126384,
   ),
   'user' => 
   array (
@@ -81,6 +81,14 @@ return array (
             0 => 'sizecrop',
           ),
         ),
+        'tiny' => 
+        array (
+          'size' => '16x16',
+          'actions' => 
+          array (
+            0 => 'sizecrop',
+          ),
+        ),
         'post' => 
         array (
           'size' => '24x24',
@@ -128,6 +136,30 @@ return array (
     'reset' => 
     array (
       1 => true,
+    ),
+  ),
+  'front' => 
+  array (
+    'counters' => 
+    array (
+      'all' => 
+      array (
+        'all' => '5',
+        'best' => '0',
+        'new' => '0',
+      ),
+      'blogs' => 
+      array (
+        'all' => '1',
+        'best' => '0',
+        'new' => '0',
+      ),
+      'users' => 
+      array (
+        'all' => '4',
+        'best' => '0',
+        'new' => '0',
+      ),
     ),
   ),
 );

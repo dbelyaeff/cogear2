@@ -27,7 +27,7 @@ class Ajax_Gear extends Gear {
      */
     public function hookGlobalJS($cogear) {
         $cogear->settings->ajax = array(
-        'showLoader' => config('Ajax.show.loader', TRUE),
+        'showLoader' => config('Ajax.show.loader', FALSE),
         );
     }
 

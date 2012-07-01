@@ -58,7 +58,7 @@ class Comments_Object extends Db_Tree {
         $this->aid OR $data['aid'] = cogear()->user->id;
         $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::insert($data)) {
-            event('comment.insert', $this,$data,$result);
+            event('comment.insert', $this, $data, $result);
         }
         return $result;
     }
@@ -73,7 +73,7 @@ class Comments_Object extends Db_Tree {
         isset($data['body']) && $data['last_update'] = time();
         $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::update($data)) {
-            event('comment.update', $this, $data,$result);
+            event('comment.update', $this, $data, $result);
         }
         return $result;
     }
@@ -84,9 +84,35 @@ class Comments_Object extends Db_Tree {
     public function delete() {
         $uid = $this->aid;
         if ($result = parent::delete()) {
-            event('comment.delete',$this);
+            event('comment.delete', $this);
         }
         return $result;
+    }
+    /**
+     * Render comment
+     *
+     * @param type $type
+     * @return type
+     */
+    public function render($type = 'full') {
+        switch ($type) {
+            case 'widget':
+                $comment = new Stack(array('name'=>'comment.widget'));
+                $author = user($this->aid);
+                $comment->append($author->getLink('avatar','avatar.tiny'));
+                $comment->append($author->getLink('profile'));
+                $comment->append(' &rarr; ');
+                $post = post($this->post_id);
+                $blog = blog($post->bid);
+                $comment->append($blog->getLink('profile'));
+                $comment->append(' / ');
+                $comment->append($post->getLink('full','#comment-'.$this->id));
+                $comment->append('<a class="comments-counter" href="'.$post->getLink().'#comment-'.$this->id.'">'.$post->comments.'</a>');
+                return '<div class="comment-widget">'.$comment->render().'</div>';
+                break;
+            default :
+                return parent::render();
+        }
     }
 
 }

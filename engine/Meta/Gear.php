@@ -113,3 +113,8 @@ function description($text) {
     $cogear = getInstance();
     $cogear->meta->info->description->append($text);
 }
+
+function page_header($title,$level=1){
+    append('info','<div class="page-header"><h'.$level.'>'.$title.'</h'.$level.'></div>');
+    title($title);
+}

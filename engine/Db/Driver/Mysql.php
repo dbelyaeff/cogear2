@@ -109,13 +109,18 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
                 $query[] = ' WHERE '.$field.' NOT IN ('.implode(',',(array)$values).') ';
             }
         }
+        if($in_set){
+            foreach($in_set as $field => $value){
+                $query[] = ' WHERE FIND_IN_SET('.$field.','.$value.') ';
+            }
+        }
         if ($where) {
             $i = 0;
             // Safe but trouble with join queries
 //            $where = $this->filterFields($from, $where, TRUE);
             if ($where) {
                 foreach ($where as $field => $value) {
-                    if ($i > 0 OR $where_in OR $where_not_in) {
+                    if ($i > 0 OR $where_in OR $where_not_in OR $in_set) {
                         $query[] = ' AND ';
                     } else {
                         $query[] = ' WHERE ';
@@ -134,7 +139,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         }
         if ($or_where) {
             foreach ($or_where as $field => $value) {
-                if ($i > 0) {
+                if ($i > 0 OR $where OR $where_in OR $where_not_in OR $in_set) {
                     $query[] = ' OR ';
                 } else {
                     $query[] = ' WHERE ';

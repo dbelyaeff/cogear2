@@ -23,6 +23,7 @@ class Comments_Gear extends Gear {
         'post.info' => 'hookRenderPostCommentsCount',
         'post.delete' => 'hookPostDelete',
         'comments.list' => 'hookUpdateCommentsViews',
+        'widgets' => 'hookWidgets',
     );
     protected $access = array(
         'post' => 'access',
@@ -47,7 +48,7 @@ class Comments_Gear extends Gear {
                 $event = event('access.comments.reply');
                 if ($event->check()) {
                     if (role()) {
-                        if (!$item->fronzen OR $item->level < config('comments.max_level', 2)) {
+                        if (!$Comment->fronzen OR $Comment->level < config('comments.max_level', 2)) {
                             return TRUE;
                         }
                     }
@@ -212,7 +213,14 @@ class Comments_Gear extends Gear {
         $views->cn = sizeof($result);
         $views->save();
     }
-
+    /**
+     * Hook widgets
+     *
+     * @param type $widgets
+     */
+    public function hookWidgets($widgets){
+        $widgets->append(new Comments_Widget());
+    }
     /**
      * Hook menu
      *
@@ -271,6 +279,7 @@ class Comments_Gear extends Gear {
             $where['aid'] = $user->id;
             $user->navbar()->show();
         }
+        page_header(t('Comments','Comments'));
         $comments = new Comments_List(array(
                     'name' => 'comments.list',
                     'where' => $where,
@@ -291,7 +300,7 @@ class Comments_Gear extends Gear {
         }
         $post = new Post();
         $post->id = $id;
-        if (!$post->find()) {
+        if (!$post->find() OR NULL == Ajax::is()) {
             return event('404');
         }
         $where = array('post_id' => $post->id);

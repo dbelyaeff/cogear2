@@ -191,11 +191,7 @@ class Core_ArrayObject extends ArrayObject {
      * @return object
      */
     public function reverse() {
-        $size = $this->count();
-        $data = array();
-        for($i = 0; $i < $size; $i++){
-            $this->offsetExists($size-$i) && $data[$i] = $this->offsetGet($size-$i);
-        }
+        $data = array_reverse((array)$this);
         return new self($data);
     }
 

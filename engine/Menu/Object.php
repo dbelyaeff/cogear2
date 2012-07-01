@@ -19,6 +19,7 @@ class Menu_Object extends Object {
         'template' => 'Menu.menu',
         'show_empty' => TRUE,
         'render' => 'content',
+        'multiple' => FALSE,
     );
 
     /**
@@ -70,7 +71,7 @@ class Menu_Object extends Object {
                 $last_active = $key;
             }
         }
-        if (!$last_active)
+        if (!$last_active OR $this->multiple)
             return;
         foreach ($this as $key => $item) {
             if ($item->options->active) {

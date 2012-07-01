@@ -11,11 +11,12 @@
  * @subpackage
  * @version		$Id$
  */
-class User_List extends Cogearable {
+class User_List extends Db_List_Table {
 
+    protected $class = 'User';
     protected $fields;
     public $options = array(
-        'name' => 'user.list',
+        'name' => 'user-list',
         'page' => 0,
         'per_page' => 5,
         'base' => '',
@@ -23,20 +24,12 @@ class User_List extends Cogearable {
         'where' => array(
             'login !=' => '',
         ),
+        'like' => array(),
+        'where_in' => array(),
         'fields' => array(),
         'order' => array('login', 'ASC'),
         'render' => 'content',
     );
-
-    /**
-     * Constructor
-     *
-     * @param array $options
-     */
-    public function __construct($options = array()) {
-        parent::__construct($options);
-        $this->render && hook($this->render, array($this, 'show'));
-    }
 
     /**
      * Get fields
@@ -48,63 +41,25 @@ class User_List extends Cogearable {
             return $this->fields;
         } else {
             return $this->setFields(array(
-                                'login' => array(
-                                    'label' => t('Login', 'User'),
-                                    'callback' => new Callback(array($this, 'prepareFields')),
-                                ),
-                                'posts' => array(
-                                    'label' => t('Posts', 'User'),
-                                    'callback' => new Callback(array($this, 'prepareFields')),
-                                    'class' => 't_c w10',
-                                ),
-                                'comments' => array(
-                                    'label' => t('Comments', 'User'),
-                                    'callback' => new Callback(array($this, 'prepareFields')),
-                                    'class' => 't_c w10',
-                                ),
-                                'reg_date' => array(
-                                    'label' => t('Registered', 'User'),
-                                    'callback' => new Callback(array($this, 'prepareFields')),
-                                ),
-                            ));
-        }
-    }
-
-    /**
-     * Set fields for table
-     *
-     * @param   mixed   $fields
-     * @return  Core_ArrayObject
-     */
-    public function setFields($fields){
-        if(is_array($fields)){
-            $fields = Core_ArrayObject::transform($fields);
-        }
-        return $this->fields = $fields;
-    }
-    /**
-     * Render list of users
-     */
-    public function render() {
-        $user = new User();
-        $this->where && $this->db->where((array) $this->where);
-        $this->order && $this->db->order($this->order[0], $this->order[1]);
-        $pager = new Pager(array(
-                    'current' => $this->page ? $this->page : NULL,
-                    'count' => $user->count(),
-                    'per_page' => $this->per_page,
-                    'base' => $this->base,
-                ));
-        if ($users = $user->findAll()) {
-            $table = new Table(array(
-                        'name' => 'users',
-                        'class' => 'table table-bordered table-striped shd',
-                        'fields' => $this->getFields(),
+                        'login' => array(
+                            'label' => t('Login', 'User'),
+                            'callback' => new Callback(array($this, 'prepareFields')),
+                        ),
+                        'posts' => array(
+                            'label' => t('Posts', 'User'),
+                            'callback' => new Callback(array($this, 'prepareFields')),
+                            'class' => 't_c w10',
+                        ),
+                        'comments' => array(
+                            'label' => t('Comments', 'User'),
+                            'callback' => new Callback(array($this, 'prepareFields')),
+                            'class' => 't_c w10',
+                        ),
+                        'reg_date' => array(
+                            'label' => t('Registered', 'User'),
+                            'callback' => new Callback(array($this, 'prepareFields')),
+                        ),
                     ));
-            $table->attach($users);
-            return $table->render();
-        } else {
-            event('empty');
         }
     }
 

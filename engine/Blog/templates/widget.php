@@ -20,7 +20,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td align="right" colspan="4"><a href="<?php echo l('/blogs') ?>"><?php echo t('All blogs &rarr;', 'Blogs.widget') ?></a></td>
+            <td align="right" colspan="4"><a href="<?php echo l('/blogs') ?>"><?php echo t('all blogs &rarr;', 'Blogs.widget') ?></a></td>
         </tr>
     </tfoot>
 </table>

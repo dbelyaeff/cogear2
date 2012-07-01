@@ -25,6 +25,7 @@ abstract class Db_Driver_Abstract {
         'delete' => NULL,
         'from' => array(),
         'join' => array(),
+        'in_set' => array(),
         'where' => array(),
         'or_where' => array(),
         'where_in' => array(),
@@ -55,6 +56,7 @@ abstract class Db_Driver_Abstract {
      * @var array
      */
     protected $queries;
+
     /**
      * Benchmark
      *
@@ -264,6 +266,18 @@ abstract class Db_Driver_Abstract {
     }
 
     /**
+     * FIND IN SET subquery
+     *
+     * @param   string|array    $name
+     * @param   string $value
+     * @return object   Self intsance.
+     */
+    public function in_set($name, $set) {
+        $this->addQuery('in_set', array($name => $set));
+        return $this;
+    }
+
+    /**
      * WHERE subquery
      *
      * @param   string|array    $name
@@ -271,7 +285,7 @@ abstract class Db_Driver_Abstract {
      * @return object   Self intsance.
      */
     public function where($name, $value = 1, $condition = ' = ') {
-        if(is_object($name)){
+        if (is_object($name)) {
             $name = $name->toArray();
         }
         if (is_array($name)) {
@@ -311,6 +325,7 @@ abstract class Db_Driver_Abstract {
         $this->addQuery('where_in', array($name => $values));
         return $this;
     }
+
     /**
      * WHERE NOT IN subquery
      *
@@ -365,7 +380,10 @@ abstract class Db_Driver_Abstract {
      */
     public function join($table, $fields, $type='') {
         $type = strtoupper($type);
-        $query = $type . ' JOIN ' . $table . ' ON ' . is_array($fields) ? $this->argsToString($fields, '=', ' AND ', '') : $fields;
+        if (is_array($fields)) {
+            $fields = $this->argsToString($fields, '=', ' AND ', '');
+        }
+        $query = $type . ' JOIN ' . $table . ' ON ' . $fields;
         $this->addQuery('join', $query);
         return $this;
     }
@@ -393,6 +411,7 @@ abstract class Db_Driver_Abstract {
         $this->addQuery('where', array($name . ' ' . $pattern => $like));
         return $this;
     }
+
     /**
      * OR LIKE subquery
      *
@@ -628,8 +647,7 @@ abstract class Db_Driver_Abstract {
                 if (strpos($key, 'LIKE')) {
                     $data = explode(' ', $key);
                     $skey = $data[0];
-                }
-                else {
+                } else {
                     $skey = preg_replace('/[^\w_-]/', '', $key);
                 }
                 if (isset($fields[$skey])) {
@@ -722,6 +740,7 @@ abstract class Db_Driver_Abstract {
                 'delete' => NULL,
                 'from' => array(),
                 'join' => array(),
+                'in_set' => array(),
                 'where' => array(),
                 'or_where' => array(),
                 'where_in' => array(),
@@ -739,8 +758,8 @@ abstract class Db_Driver_Abstract {
      *
      * @param string $query
      */
-    public function bench($query,$time) {
-        $this->benchmark->append(new Core_ArrayObject(array('query'=>$query,'time'=>$time)));
+    public function bench($query, $time) {
+        $this->benchmark->append(new Core_ArrayObject(array('query' => $query, 'time' => $time)));
         $this->queries->append($query);
     }
 
@@ -750,14 +769,16 @@ abstract class Db_Driver_Abstract {
     public function getErrors() {
         return $this->errors;
     }
+
     /**
      * Get queries
      *
      * @return type
      */
-    public function getQueries(){
+    public function getQueries() {
         return $this->queries;
     }
+
     /**
      * Get last query
      *
@@ -798,6 +819,6 @@ abstract class Db_Driver_Abstract {
 
 }
 
-function dlq(){
+function dlq() {
     return debug(cogear()->db->last());
 }

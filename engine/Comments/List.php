@@ -11,8 +11,9 @@
  * @subpackage
  * @version		$Id$
  */
-class Comments_List extends Object {
+class Comments_List extends Db_List_Abstract {
 
+    protected $class = 'Comments_Object';
     public $options = array(
         'page' => 0,
         'per_page' => 50,
@@ -20,6 +21,7 @@ class Comments_List extends Object {
         'page_suffix' => 'page',
         'where' => array(
         ),
+        'like' => array(),
         'render' => 'content',
         'pager' => TRUE,
         'flat' => FALSE,
@@ -32,61 +34,51 @@ class Comments_List extends Object {
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        $this->render && hook($this->render, array($this, 'show'));
+        $this->options->base OR $this->options->base = '/' . cogear()->router->getUri();
+        if ($this->flat) {
+            $this->db->order('comments.id', 'DESC');
+            Db_ORM::skipClear();
+        }
     }
 
     /**
-     * Render list of posts
+     * Process render
+     *
+     * @param type $comments
+     * @param type $pager
+     * @return type
      */
-    public function render() {
-        $comments = new Comments();
-        $this->where && cogear()->db->where($this->where->toArray());
-        if ($this->options->pager) {
-            $pager = new Pager(array(
-                        'current' => $this->page ? $this->page : NULL,
-                        'count' => $comments->count(),
-                        'per_page' => $this->per_page,
-                        'base' => '/' . cogear()->router->getUri(),
-                        'prefix' => 'comments-page',
-                        'method' => Pager::GET,
-                    ));
+    public function process($comments, $pager) {
+        $output = new Core_ArrayObject();
+        if ($this->flat) {
+            $ids = array();
+            foreach ($comments as $comment) {
+                if (!in_array($comment->post_id, $ids)) {
+                    $ids[] = $comment->post_id;
+                }
+            }
+            $post = new Post();
+            $this->db->where_in('posts.id', $ids);
+            if ($presult = $post->findAll()) {
+                $posts = array();
+                foreach ($presult as $post) {
+                    $posts[$post->id] = $post;
+                }
+            }
         }
-        $this->flat && $comments->order('comments.id','DESC');
-        if ($result = $comments->findAll()) {
-            $output = new Core_ArrayObject();
-            event('comments.list', $this, $result);
+        foreach ($comments as &$comment) {
+            if ($this->object && $this->object->aid == $comment->aid) {
+                $comment->by_post_author = TRUE;
+            }
+            $comment->flat = $this->flat;
             if ($this->flat) {
-                $ids = array();
-                foreach($result as $comment){
-                    if(!in_array($comment->post_id, $ids)){
-                        $ids[] = $comment->post_id;
-                    }
-                }
-                $post = new Post();
-                $this->db->where_in('posts.id',$ids);
-                if($presult = $post->findAll()){
-                    $posts = array();
-                    foreach($presult as $post){
-                        $posts[$post->id] = $post;
-                    }
-                }
+                $comment->post = $posts[$comment->post_id];
             }
-            foreach ($result as &$comment) {
-                if ($this->object->aid == $comment->aid) {
-                    $comment->by_post_author = TRUE;
-                }
-                $comment->flat = $this->flat;
-                if($this->flat){
-                    $comment->post = $posts[$comment->post_id];
-                }
-                $output->append($comment->render());
-            }
-            event('comments.list',$result);
-            $this->options->pager && $output->append($pager->render());
-            return $output->toString();
-        } else {
-            return FALSE;
+            $output->append($comment->render());
         }
+        event('comments.list', $this,$comments);
+        $this->options->pager && $output->append($pager->render());
+        return $output->toString();
     }
 
 }

@@ -134,12 +134,26 @@ class Theme_Gear extends Gear {
      * @param string $name
      */
     public function renderRegion($name) {
-        $this->regions->$name OR $this->regions->$name = new Theme_Region();
+        $this->region($name);
         hook($name, array($this, 'showRegion'), NULL, $name);
         ob_start();
         event($name);
         $content = ob_get_clean();
         return $content;
+    }
+
+    /**
+     * Check region for existance and create it if it's not exits
+     *
+     * @param string $name
+     * @return  Theme_Region
+     */
+    public function region($name) {
+        if ($this->regions->$name) {
+            return $this->regions->$name;
+        } else {
+            return $this->regions->$name = new Theme_Region(array('name' => $name));
+        }
     }
 
     /**
@@ -150,34 +164,32 @@ class Theme_Gear extends Gear {
      * @param string $name
      */
     public function showRegion($name) {
-        $this->regions->$name === NULL && $this->regions->$name = new Theme_Region();
+        $this->region($name);
         echo $this->regions->$name->render();
     }
 
     /**
      * Output
      */
-    public function output(){
+    public function output() {
         $this->object && $this->object->render();
     }
+
 }
 
 function append($name, $value) {
     $cogear = getInstance();
-    $cogear->theme->regions->$name OR $cogear->theme->regions->$name = new Theme_Region();
-    $cogear->theme->regions->$name->append($value);
+    $cogear->theme->region($name)->append($value);
 }
 
 function prepend($name, $value) {
     $cogear = getInstance();
-    $cogear->theme->regions->$name OR $cogear->theme->regions->$name = new Theme_Region();
-    $cogear->theme->regions->$name->prepend($value);
+    $cogear->theme->region($name)->prepend($value);
 }
 
 function inject($name, $value, $position = 0) {
     $cogear = getInstance();
-    $cogear->theme->regions->$name OR $cogear->theme->regions->$name = new Theme_Region();
-    $cogear->theme->regions->$name->inject($value, $position);
+    $cogear->theme->region($name)->inject($value, $position);
 }
 
 function theme($place) {

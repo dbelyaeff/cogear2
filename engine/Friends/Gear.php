@@ -207,7 +207,7 @@ class Friends_Gear extends Gear {
     }
 
     /**
-     * List posts
+     * List user friends
      *
      * @param type $login
      */
@@ -219,12 +219,11 @@ class Friends_Gear extends Gear {
         }
         $user->navbar()->show();
         $friends = $this->getFriends($user->id);
-        Db_ORM::skipClear();
-        $this->db->where_in('users.id', array_keys($friends));
-        $posts = new User_List(array(
+        $users = new User_List(array(
                     'name' => 'user.friends',
-                    'base' => user()->getLink() . '/friends/',
+                    'base' => $user->getLink() . '/friends/',
                     'per_page' => config('User.friends.per_page', 10),
+                    'where_in' => array('users.id'=>array_keys($friends)),
                 ));
     }
 

@@ -2,9 +2,11 @@ var Ajax = function(){
     this.init();
 }
 Ajax.prototype = {
+    inline: {},
     init: function(){
         this.bind();
         $ajax = this;
+        this.inline = $('<img src="'+l('/engine/Ajax/img/inline.loader.gif')+'" alt=""/>');
         $(document).ajaxSuccess(function(event,$xhr,$settings){
             if($settings.dataType == 'json' && $xhr.responseText[0] == '{'){
                 $data = $.parseJSON($xhr.responseText);

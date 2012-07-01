@@ -19,7 +19,7 @@ class Db_Tree extends Db_Item {
     protected $level_field = 'level';
     protected $parent_field = 'pid';
     protected $object_field = 'post_id';
-    protected $order = self::FORWARD;
+    public $order = self::FORWARD;
     const FORWARD = 1;
     const BACKWARD = -1;
     const DELIM = '.';
@@ -36,7 +36,7 @@ class Db_Tree extends Db_Item {
                 $order = 'DESC';
                 break;
         }
-        $this->order($this->thread_field, $order);
+        $this->order && $this->order($this->thread_field, $order);
         return parent::findAll();
     }
 

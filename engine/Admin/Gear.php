@@ -19,6 +19,7 @@ class Admin_Gear extends Gear {
     protected $order = -100;
     protected $access = array(
         'index' => array(1),
+//        'menu' => ar  ray(1,100),
     );
 
     /**
@@ -58,10 +59,24 @@ class Admin_Gear extends Gear {
         switch ($name) {
             case 'navbar':
                 $menu->register(array(
+                    'link' => l('/admin/clear/session'),
+                    'label' => icon('remove-sign icon-white') ,
+                    'title' => t('Clear session','Admin'),
+                    'place' => 'right',
+//                    'access' => access('admin'),
+                ));
+                $menu->register(array(
+                    'link' => l('/admin/clear/cache'),
+                    'label' => icon('trash icon-white') ,
+                    'title' => t('Clear cache','Admin'),
+                    'place' => 'right',
+                    'access' => access('Admin'),
+                ));
+                $menu->register(array(
                     'link' => l('/admin'),
                     'label' => icon('cog icon-white') . ' ' . t('Control Panel', 'Admin'),
                     'place' => 'right',
-                    'access' => access('admin'),
+                    'access' => access('Admin'),
                 ));
                 break;
             case 'admin':
@@ -92,6 +107,22 @@ class Admin_Gear extends Gear {
         }
     }
 
+    /**
+     * Cleaner
+     *
+     * @param type $action
+     */
+    public function clear_action($action){
+        switch($action){
+            case 'session':
+                $this->session->remove();
+                break;
+            case 'cache':
+                $this->system_cache->clear();
+                break;
+        }
+        back();
+    }
     /**
      * Site config
      */

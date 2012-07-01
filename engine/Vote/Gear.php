@@ -70,11 +70,11 @@ class Vote_Gear extends Gear {
      * @param type $Table
      */
     public function hookUsersTableRender($Table) {
-        $Table->options->fields->prependTo(array(
+        $Table->options->fields->append(new Core_ArrayObject(array(
             'label' => t('Rating', 'Vote'),
             'callback' => new Callback(array($this, 'prepareFields')),
             'class' => 't_c w10',
-                ), 'rating', 'reg_date');
+                )));
     }
 
     /**

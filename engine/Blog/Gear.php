@@ -16,7 +16,7 @@ class Blog_Gear extends Gear {
     protected $name = 'Blog';
     protected $description = 'Allow users to have their own blogs';
     protected $package = '';
-    protected $order = 0;
+    protected $order = 10;
     protected $hooks = array(
         'user.profile.fields' => 'hookUserProfile',
         'form.load.post' => 'hookPostForm',

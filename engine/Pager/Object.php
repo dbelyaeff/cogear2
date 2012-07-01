@@ -22,7 +22,7 @@ class Pager_Object extends Pager_Abstract {
         'show_empty' => FALSE,
         'autolimit' => TRUE,
         'prefix' => 'page',
-        'method' => self::PATH,
+        'method' => self::GET,
     );
     protected $prev;
     protected $next;
@@ -59,7 +59,7 @@ class Pager_Object extends Pager_Abstract {
                     }
                     break;
                 case self::GET:
-                        $this->options->current = cogear()->input->get($this->prefix);
+                    $this->options->current = cogear()->input->get($this->prefix);
                     break;
             }
         }
@@ -111,6 +111,9 @@ class Pager_Object extends Pager_Abstract {
         $this->is_init OR $this->init();
         if ($this->show_empty OR $this->per_page < $this->count) {
             $tpl = new Template('Pager.pages');
+            if (isset($_GET[$this->prefix])) {
+                unset($_GET[$this->prefix]);
+            }
             $tpl->assign(array(
                 'count' => $this->count,
                 'current' => $this->current,
@@ -121,7 +124,7 @@ class Pager_Object extends Pager_Abstract {
                 'next' => $this->next,
                 'order' => $this->order,
                 'base' => $this->base,
-                'prefix' => $this->method == self::GET ? '?'.$this->prefix.'=' : $this->prefix,
+                'prefix' => $this->method == self::GET ? '?' . ($_GET ? http_build_query($_GET) . '&' : '') . $this->prefix . '=' : $this->prefix,
                 'options' => $this->options,
             ));
             return $tpl->render();

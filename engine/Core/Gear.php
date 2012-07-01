@@ -169,6 +169,13 @@ abstract class Gear extends Object {
     protected $routes = array();
 
     /**
+     * List of widgets classes for this gear
+     *
+     * @var array
+     */
+    protected $widgets;
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -190,6 +197,7 @@ abstract class Gear extends Object {
         $this->loadAssets();
         $this->hooks();
         $this->routes();
+//        $this->widgets();
         event('gear.init', $this);
     }
 
@@ -343,12 +351,30 @@ abstract class Gear extends Object {
     /**
      * Get default settings
      */
-    public function getSettings(){
-        $path = $this->dir.DS.'settings'.EXT;
-        if(file_exists($path) && !config($this->gear)){
-            $this->config->load($path,$this->gear);
+    public function getSettings() {
+        $path = $this->dir . DS . 'settings' . EXT;
+        if (file_exists($path) && !config($this->gear)) {
+            $this->config->load($path, $this->gear);
         }
     }
+
+    /**
+     * Get gear widgets
+     *
+     * @return  array
+     */
+//    public function widgets() {
+//        $this->widgets = new Core_ArrayObject($this->widgets);
+//        $dir = $this->dir . DS . 'Widget';
+//        if (is_dir($dir) && $files = glob($dir . DS . '*' . EXT)) {
+//            foreach ($files as $file) {
+//                $class = str_replace(array(EXT, dirname($this->dir) . DS, DS), array('', '', '_'), $file);
+//                !in_array($class, $this->widgets->toArray()) && $this->widgets->append($class);
+//            }
+//        }
+//        return $this->widgets;
+//    }
+
     /**
      * Normalize relative path
      *
@@ -434,16 +460,14 @@ abstract class Gear extends Object {
         if (!$args = func_get_args()) {
             $args[] = 'index';
         }
-        if(!event('gear.dispatch',$this,$args)->check()){
+        if (!event('gear.dispatch', $this, $args)->check()) {
             return;
         }
-        if(method_exists($this, $args[0] . '_action')){
+        if (method_exists($this, $args[0] . '_action')) {
             call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));
-        }
-        elseif(method_exists($this, 'index_action')){
+        } elseif (method_exists($this, 'index_action')) {
             call_user_func_array(array($this, 'index_action'), $args);
-        }
-        else {
+        } else {
             event('404');
         }
     }

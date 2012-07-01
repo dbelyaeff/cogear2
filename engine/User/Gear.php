@@ -29,6 +29,7 @@ class User_Gear extends Gear {
         'assets.js.global' => 'hookGlobalScripts',
         'user.update' => 'hookUserUpdate',
         'done' => 'hookDone',
+        'widgets' => 'hookWidgets',
     );
     protected $access = array(
         'edit' => 'access',
@@ -177,6 +178,15 @@ class User_Gear extends Gear {
     }
 
     /**
+     * Hook widgets
+     *
+     * @param type $widgets
+     */
+    public function hookWidgets($widgets){
+        $widgets->append(new User_Widgets_Top());
+        $widgets->append(new User_Widgets_Online());
+    }
+    /**
      * Menu builder
      *
      * @param string $name
@@ -297,6 +307,7 @@ class User_Gear extends Gear {
                 return;
             }
         }
+        page_header(t('Users','User'));
         new User_List(array(
                     'name' => 'user',
                 ));

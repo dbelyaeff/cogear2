@@ -14,12 +14,12 @@
             </div>
             <div class="row">
                 <?php $sidebar = theme('sidebar') ?>
-                <div class="span<?php echo $sidebar ? '9' : '12';?>" id="content">
+                <div class="span<?php echo $sidebar ? '8' : '12';?>" id="content">
                 <?php echo theme('info') ?>
                 <?php echo theme('content') ?>
                 </div>
 <?php if ($sidebar): ?>
-                    <div class="span3" id="sidebar">
+                    <div class="span4" id="sidebar">
                             <?php echo $sidebar?>
                     </div>
 <?php endif; ?>

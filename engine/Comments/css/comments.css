@@ -104,3 +104,6 @@
 #comments-updater #comments-updater-counter{
 
 }
+.comments-widget a.comments-counter{
+    color: red;
+}

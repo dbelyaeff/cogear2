@@ -165,7 +165,12 @@ class Db_ORM extends Object {
     public function __call($name, $args) {
         $cogear = getInstance();
         if (method_exists($cogear->db, $name)) {
-            return call_user_func_array(array($cogear->db, $name), $args);
+            $result = call_user_func_array(array($cogear->db, $name), $args);
+            if($result instanceof Db_Driver_Abstract){
+                return $this;
+            }
+            return $result;
+
         }
         return NULL;
     }

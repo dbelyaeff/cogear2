@@ -145,9 +145,6 @@ class Session_Object extends Cache_Object {
             return $_SESSION;
         }
         switch ($name) {
-            case 'session_id':
-                return session_id();
-                break;
             default:
                 if (!isset($_SESSION[$name])) {
                     if ($default) {

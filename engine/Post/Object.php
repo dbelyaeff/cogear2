@@ -21,7 +21,7 @@ class Post_Object extends Db_Item {
      *
      * @return string
      */
-    public function getLink($type = 'default') {
+    public function getLink($type = 'default',$param = NULL) {
         switch ($type) {
             case 'edit':
                 $uri = new Stack(array('name' => 'post.link.edit'));
@@ -37,6 +37,9 @@ class Post_Object extends Db_Item {
                 $uri = new Stack(array('name' => 'post.link.hide'));
                 $uri->append('post');
                 $uri->append('hide');
+                break;
+            case 'full':
+                return '<a href="'.$this->getLink().$param.'">'.$this->name.'</a>';
                 break;
             default:
                 $uri = new Stack(array('name' => 'post.link'));

@@ -54,9 +54,9 @@ class User_Object extends Db_Item {
             $this->attach($cogear->session->get('user'));
             $this->store();
             return TRUE;
-        } elseif ($id = Cookie::get('id') && $hash = Cookie::get('hash')) {
-            $this->id = $id;
-            if ($this->find() && $this->genHash() == $hash) {
+        } elseif (Cookie::get('id') && $hash = Cookie::get('hash')) {
+            $this->id = Cookie::get('id');
+            if ($this->find() &&  cogear()->secure->genHash($this->login) == $hash) {
                 $this->store();
                 return TRUE;
             }
@@ -174,7 +174,7 @@ class User_Object extends Db_Item {
         if (!$this->object)
             return;
         Cookie::set('id', $this->id);
-        Cookie::set('hash', $this->genHash());
+        Cookie::set('hash', cogear()->secure->genHash($this->login));
         event('user.remember', $this);
     }
 
@@ -282,7 +282,7 @@ class User_Object extends Db_Item {
      * @return string
      */
     public function getAvatarImage($preset = 'avatar.small') {
-        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar'));
+        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar','title'=>$this->getName()));
     }
 
     /**
@@ -311,7 +311,7 @@ class User_Object extends Db_Item {
      * User navbar
      */
     public function navbar() {
-        if (!$this->navbar) {
+        if (!$this->navbar OR !$this->navbar->count()) {
             $this->navbar = new User_Navbar();
             $this->navbar->attach($this);
         }
