@@ -188,9 +188,12 @@ class Router_Object extends Options {
      * @return  boolean
      */
     public function check($uri, $type = self::STARTS) {
-        $site = 'http://' . config('site.url') . '/';
+        $site = 'http://' . SITE_URL . '/';
         if (strpos($uri, $site) !== FALSE) {
             $uri = str_replace($site, '', $uri);
+        }
+        if(defined('FOLDER')){
+            $uri = str_replace(FOLDER.'/','',$uri);
         }
         if (!$uri) {
             return $this->uri ? FALSE : TRUE;
