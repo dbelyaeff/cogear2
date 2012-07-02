@@ -1,9 +1,9 @@
-## cogear 
+## cogear
 #### open source cms
 
 > **Life is like development, but the last one never ends.**
 
-## Master branch
-Please, pay attention to the fact, that this branch is made only for release version. If you wanna look at the current code, switch to dev branch.
+## Dev branch
+This is a development branch. Current version may be unstable, so use it at your own risk. Or switch to master branch and download last stable version.
 
 **Have a nice day!**
