@@ -44,7 +44,7 @@ class Comments_Object extends Db_Tree {
                 $uri->append('comment');
         }
         $uri->append($this->id);
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

@@ -38,7 +38,7 @@ class Pages_Object extends Db_Tree {
                 }
                 $uri->append($this->link);
         }
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

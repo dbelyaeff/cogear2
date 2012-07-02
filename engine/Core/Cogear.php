@@ -45,6 +45,7 @@ final class Cogear implements Interface_Singleton {
      * Stop current event execution flag
      */
     public $stop_event = FALSE;
+
     /**
      * Settings and config
      */
@@ -68,6 +69,12 @@ final class Cogear implements Interface_Singleton {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
         $this->config = new Config(ROOT . DS . 'config' . EXT);
         $this->system_cache = new Cache(array('path' => CACHE . DS . 'system'));
+        defined('SITE_URL') OR define('SITE_URL', config('site.url'));
+        if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
+            $array = explode('/', SITE_URL, 2);
+            $folder = array_pop($array);
+            define('FOLDER', $folder);
+        }
         hook('ignite', array($this, 'loadGears'));
     }
 

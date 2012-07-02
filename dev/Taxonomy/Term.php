@@ -40,7 +40,7 @@ class Taxonomy_Term extends Db_Tree {
                 $uri->append('taxonomy/terms');
                 $uri->append($this->link);
         }
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

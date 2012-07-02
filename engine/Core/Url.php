@@ -26,7 +26,6 @@ class Url {
      */
     public static function link($url='', $absolute_flag = FALSE, $protocol = 'http') {
         $link = '';
-        defined('SITE_URL') OR define('SITE_URL', config('site.url'));
         $cogear = getInstance();
         if (!$url) {
             return $protocol . '://' . SITE_URL . '/';
@@ -34,11 +33,7 @@ class Url {
             return l() . cogear()->router->getUri();
         }
         $url = parse_url($url);
-        if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
-            $array = explode('/',SITE_URL,2);
-            $folder = array_pop($array);
-            define('FOLDER', $folder);
-        }
+
         if ($absolute_flag) {
             $link .= $protocol . '://';
             $link .= config('site.url');

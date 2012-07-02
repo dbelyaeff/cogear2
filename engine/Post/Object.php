@@ -46,7 +46,7 @@ class Post_Object extends Db_Item {
                 $uri->append('post');
         }
         $uri->append($this->id);
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

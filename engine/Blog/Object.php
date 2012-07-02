@@ -58,7 +58,7 @@ class Blog_Object extends Db_Item {
                 $uri->append('blog');
                 $uri->append($this->login);
         }
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

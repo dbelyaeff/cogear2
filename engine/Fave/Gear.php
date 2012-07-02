@@ -98,7 +98,7 @@ class Fave_Gear extends Gear {
             case 'navbar':
                 $menu->register(array(
                     'label' => icon('star icon-white'),
-                    'link' => l($this->user->getLink() . '/fave/'),
+                    'link' => $this->user->getLink() . '/fave/',
                     'title' => t('Favorites','Fave'),
                     'place' => 'left',
                     'order' => 20,
@@ -107,7 +107,7 @@ class Fave_Gear extends Gear {
             case 'user.profile.tabs':
                 $menu->register(array(
                     'label' => t('Favorites', 'Fave'),
-                    'link' => l($menu->object->getLink() . '/fave/'),
+                    'link' => $menu->object->getLink() . '/fave/',
                     'order' => 20,
                 ));
                 break;

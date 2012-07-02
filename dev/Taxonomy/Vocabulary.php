@@ -44,7 +44,7 @@ class Taxonomy_Vocabulary extends Db_Item {
                 $uri->append('taxonomy/vocabulary');
         }
         $uri->append($this->id);
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**

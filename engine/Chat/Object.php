@@ -30,7 +30,7 @@ class Chat_Object extends Db_Item {
                 $uri->append('view');
                 $uri->append($this->id);
         }
-        return '/' . $uri->render('/');
+        return l('/' . $uri->render('/'));
     }
 
     /**
