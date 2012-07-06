@@ -24,7 +24,7 @@ class Install_Gear extends Gear {
         parent::init();
         if (!config('installed')) {
             $this->router->bind(':index', array($this, 'index'), TRUE);
-            if(!check_route('install',  Router::STARTS)){
+            if (!check_route('install', Router::STARTS)) {
                 redirect(l('/install'));
             }
         }
@@ -43,6 +43,16 @@ class Install_Gear extends Gear {
     }
 
     /**
+     * Request
+     */
+    public function request() {
+        parent::request();
+        if (config('installed')) {
+            redirect('/');
+        }
+    }
+
+    /**
      * Default dispatcher
      *
      * @param string $action
@@ -56,22 +66,22 @@ class Install_Gear extends Gear {
                         array(
                             'label' => t('1. Start'),
                             'link' => '',
-                            'active' => check_route('install',  Router::ENDS),
+                            'active' => check_route('install', Router::ENDS),
                         ),
                         array(
                             'label' => t('2. Check'),
                             'link' => '',
-                            'active' => check_route('check',  Router::ENDS),
+                            'active' => check_route('check', Router::ENDS),
                         ),
                         array(
                             'label' => t('3. Settings'),
                             'link' => '',
-                            'active' => check_route('site',  Router::ENDS),
+                            'active' => check_route('site', Router::ENDS),
                         ),
                         array(
                             'label' => t('4. Finish'),
                             'link' => '',
-                            'active' => check_route('finish',  Router::ENDS),
+                            'active' => check_route('finish', Router::ENDS),
                         ),
                     ),
                 ));
@@ -81,7 +91,7 @@ class Install_Gear extends Gear {
                 $tpl->show();
                 break;
             case 'site':
-                append('content', '<p class="alert alert-info">'.t('Define basic settings for your site.', 'Install').'</p>');
+                append('content', '<p class="alert alert-info">' . t('Define basic settings for your site.', 'Install') . '</p>');
                 $form = new Form('Install.site');
                 $form->init();
                 if ($result = $form->result()) {
