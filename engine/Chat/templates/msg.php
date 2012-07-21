@@ -1,7 +1,7 @@
 <?php
 $author = user($item->aid);
 ?>
-<div class="chat-msg">
+<div class="chat-msg shd">
     <div class="chat-msg-avatar">
         <?php echo $author->getLink('avatar') ?>
     </div>
@@ -10,6 +10,11 @@ $author = user($item->aid);
             <?php echo $author->getLink('profile') ?>
         </div>
         <?php echo $item->body ?>
+    </div>
+    <div class="chat-msg-action">
+        <?php if (access('Chat.msg', $item)): ?>
+            <a href="/chat/msg/delete/<?php echo $item->id ?>" class="chat-action sh"><i class="icon icon-remove"></i></a>
+        <? endif; ?>
     </div>
     <div class="chat-msg-time">
         <?php
@@ -20,8 +25,5 @@ $author = user($item->aid);
         }
         ?>
     </div>
-    <?php if (access('Chat.msg', $item)) {
-        ?>
 
-        <? } ?>
 </div>

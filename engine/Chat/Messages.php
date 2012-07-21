@@ -16,7 +16,7 @@ class Chat_Messages extends Db_Item {
     protected $table = 'chats_msgs';
     protected $primary = 'id';
     protected $template = 'Chat.msg';
-
+    public $chat;
     /**
      * Create new chat message
      *
@@ -25,7 +25,7 @@ class Chat_Messages extends Db_Item {
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
         $data['created_date'] = time();
-        $data['ip'] = cogear()->session->get('ip');
+        $data['aid'] = user()->id;
         if ($result = parent::insert($data)) {
             event('chat_msg.insert', $this, $data, $result);
         }

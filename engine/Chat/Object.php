@@ -55,14 +55,20 @@ class Chat_Object extends Db_Item {
         }
         event('chat.join', $this, $uid);
         $users = $this->getUsers();
-        array_push($users, $uid);
-        $this->update(array('users' => $users));
+        if(in_array($uid, $users)) {
+            return FALSE;
+        } else {
+            array_push($users, $uid);
+            $this->update(array('users' => implode(',',$users)));
+            return TRUE;
+        }
     }
 
     /**
      * User left chat
      *
      * @param uid $uid
+     * @return boolean
      */
     public function left($uid = NULL) {
         if (!$uid) {
@@ -77,7 +83,8 @@ class Chat_Object extends Db_Item {
                 unset($users[$key]);
             }
         }
-        $this->update(array('users' => $users));
+        $this->update(array('users' => implode(',',$users)));
+        return TRUE;
     }
 
     /**
@@ -128,6 +135,7 @@ class Chat_Object extends Db_Item {
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
         $data['created_date'] = time();
+        $data['aid'] = user()->id;
         if ($result = parent::insert($data)) {
             event('chat.insert', $this, $data, $result);
         }

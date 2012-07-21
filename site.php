@@ -22,5 +22,5 @@ return array (
     'from_name' => 'cogear',
     'signature' => '<p>-----------------------<br/>Best regards<br/>cogear<br/>http://cogear.ru',
   ),
-  'installed' => FALSE,
+  'installed' => TRUE,
 );

@@ -51,14 +51,24 @@ return array (
     'Administrator' => '',
     'You can\'t change role for blog founder.' => '',
   ),
+  '#Blog.widget' => 
+  array (
+    'Top blogs' => '',
+  ),
   '#Blogs' => 
   array (
     'Blogs' => '',
+    'Readers' => '',
+    'Posts' => '',
   ),
   '#Blogs.profile' => 
   array (
     'Created' => '',
     'Reads' => '',
+  ),
+  '#Blogs.widget' => 
+  array (
+    'all blogs &rarr;' => '',
   ),
   '#Chat' => 
   array (
@@ -73,6 +83,15 @@ return array (
     'Users' => '',
     'Enter message…' => '',
     'Chat has been deleted!' => '',
+    'Chat admin:' => '',
+  ),
+  '#Chat.widget' => 
+  array (
+    'Controls' => '',
+    'Chat admin:' => '',
+    'Invite' => '',
+    'Kick off' => '',
+    'Users:' => '',
   ),
   '#Comment' => 
   array (
@@ -88,6 +107,11 @@ return array (
     'Post comment text here…' => '',
     'Reply to %s comment' => '',
     'allow comments' => '',
+  ),
+  '#Comments.widget' => 
+  array (
+    'Comments' => '',
+    'all comments &rarr;' => '',
   ),
   '#Database' => 
   array (
@@ -189,6 +213,7 @@ return array (
     'Posts' => '',
     'Drafts' => '',
     'Post has been deleted' => '',
+    'Post saved!' => '',
   ),
   '#Response' => 
   array (
@@ -210,10 +235,16 @@ return array (
   array (
     'Type to search…' => '',
     'Search…' => '',
+    'Search' => '',
   ),
   '#Tags' => 
   array (
     'Tags' => '',
+  ),
+  '#Tags.widget' => 
+  array (
+    'Tags cloud' => '',
+    'all tags &rarr;' => '',
   ),
   '#User' => 
   array (
@@ -240,6 +271,23 @@ return array (
   '#User.register' => 
   array (
     'Registration is complete!' => '',
+  ),
+  '#User.widget' => 
+  array (
+    'Top users' => '',
+    'Rating' => '',
+    'all users &rarr;' => '',
+  ),
+  '#User.widgets' => 
+  array (
+    'Online' => '',
+    'Users' => '',
+    'Delete' => '',
+    'Send' => '',
+    'All' => '',
+    'Blogs' => '',
+    'New' => '',
+    'Best' => '',
   ),
   '#Vote' => 
   array (
@@ -291,6 +339,7 @@ return array (
   'OR' => '',
   'Personal' => '',
   'Post comment' => '',
+  'Post published!' => '',
   'Preview' => '',
   'Promote to front page' => '',
   'Publish' => '',

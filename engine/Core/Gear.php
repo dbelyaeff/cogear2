@@ -469,6 +469,9 @@ abstract class Gear extends Object {
         } else {
             event('404');
         }
+        if (!event('gear.dispatch.after', $this, $args)->check()) {
+            return;
+        }
     }
 
 }

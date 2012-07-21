@@ -21,7 +21,7 @@ class Dev_Gear extends Gear {
     protected $hooks = array(
     );
     protected $access = array(
-        'index' => array(1),
+        'index' => array(1,100),
     );
 
     /**

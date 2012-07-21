@@ -52,8 +52,13 @@ class Widgets_Gear extends Gear {
             return;
         $widgets = new Core_ArrayObject();
         if ($gear->widgets !== NULL) {
-            foreach($gear->widgets as $class){
-                class_exists($class) && $widgets->append(new $class());
+            if ($gear->widgets) {
+                foreach ($gear->widgets as $class) {
+                    class_exists($class) && $widgets->append(new $class());
+                }
+            }
+            else {
+                append('sidebar',' ');
             }
         } else {
             event('widgets', $widgets);

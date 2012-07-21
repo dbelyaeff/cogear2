@@ -9,6 +9,11 @@ Chat.prototype = {
         this.id = $el.attr('data-id');
         this.scroll();
         this.bind();
+        this.inviter();
+        $chat = this;
+        setInterval(function(){
+            $chat.refresh();
+        },5000);
     },
     refresh: function(){
         $this = this;
@@ -20,6 +25,17 @@ Chat.prototype = {
     scroll: function(){
         this.window = this.el.find('.chat-window')[0];
         $(this.window).scrollTop($(this.window).height());
+    },
+    inviter: function(){
+        $('#form-chat-invite').ajaxForm({
+            dataType: 'json',
+            success: function(data){
+                if(data.code){
+                    $('#chat-users-container').append($(data.code));
+                }
+                $('#form-chat-invite input[name=users]').val('');
+            }
+        })
     },
     bind: function(){
 
@@ -44,14 +60,19 @@ $(document).ready(function(){
             }
         })
     })
-    $('.chat-action').on('click',function(event){
+    $(document).on('click','.chat-action',function(event){
         event.preventDefault();
         $link = $(this);
         bootbox.confirm(t('Are you sure?'), function(confirmed) {
             if(confirmed){
                 $.getJSON($link.attr('href'),function(data){
                     if(data.success){
-                        $link.parent().parent().slideUp();
+                        if(data.code){
+                            $link.parent().parent().replaceWith($(code));
+                        }
+                        else {
+                            $link.parent().parent().slideUp();
+                        }
                     }
                 });
             }

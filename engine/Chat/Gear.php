@@ -24,7 +24,11 @@ class Chat_Gear extends Gear {
     protected $access = array(
         'index' => array(1, 100),
         'view' => 'access',
+        'msg' => 'access',
+        'admin' => 'access',
     );
+    protected $widgets = FALSE;
+    public $current;
 
     /**
      * Acccess
@@ -34,16 +38,39 @@ class Chat_Gear extends Gear {
      */
     public function access($rule, $data = NULL) {
         switch ($rule) {
+            case 'admin':
+                if($data->aid == user()->id){
+                    return TRUE;
+                }
+                break;
             case 'view':
                 $event = event('access.chat.view');
                 if ($event->check()) {
-                    if ($data instanceof Chat_Object && (user()->id = $data->aid OR in_array(user()->id, $data->getUsers()))) {
+                    if ($data instanceof Chat_Object && (user()->id == $data->aid OR in_array(user()->id, $data->getUsers()))) {
                         return TRUE;
                     } else {
-                        return TRUE;
+                        if($data = chat(end($data))){
+                            if($data->aid == user()->id OR in_array(user()->id, $data->getUsers())){
+                                return TRUE;
+                            }
+                        }
                     }
                 } else {
                     return $event->result;
+                }
+                break;
+            case 'msg':
+                if (FALSE == ($data instanceof Chat_Messages)) {
+                    $mid = end($data);
+                    if (!$data = chat_msg($mid)) {
+                        return FALSE;
+                    }
+                    if (!$data->chat = chat($data->cid)) {
+                        return FALSE;
+                    }
+                }
+                if ($data->aid == user()->id OR $data->chat->aid == user()->id) {
+                    return TRUE;
                 }
                 break;
         }
@@ -116,7 +143,7 @@ class Chat_Gear extends Gear {
         $chats = new Chat_List(array(
                     'name' => 'chat-list',
                     'in_set' => array(
-                        'chat.to' => user()->id,
+                        'chats.users' => user()->id,
                     ),
                     'or_where' => array(
                         'aid' => user()->id,
@@ -145,6 +172,8 @@ class Chat_Gear extends Gear {
                 'label' => $chat->name,
                 'link' => $chat->getLink(),
             ));
+            $this->current = $chat;
+            $this->widgets = array('Chat_Widget');
             $chat->show();
         } else {
             event('404');
@@ -163,7 +192,9 @@ class Chat_Gear extends Gear {
             $form->init();
             $values = array();
             foreach ($friends as $uid => $role) {
-                $values[$uid] = user($uid)->getName();
+                if ($user = user($uid)) {
+                    $values[$uid] = $user->getName();
+                }
             }
             $form->users->setValues($values);
             if ($result = $form->result()) {
@@ -212,6 +243,33 @@ class Chat_Gear extends Gear {
     }
 
     /**
+     * Message action
+     *
+     * @param type $action
+     *
+     */
+    public function msg_action($action, $id) {
+        switch ($action) {
+            case 'delete':
+                if ($msg = chat_msg($id)) {
+                    if ($msg->chat = chat($msg->cid)) {
+                        if (access('Chat.msg', $msg)) {
+                            if ($msg->delete()) {
+                                if (Ajax::is()) {
+                                    $ajax = new Ajax();
+                                    $ajax->success = TRUE;
+                                    $ajax->json();
+                                }
+                                redirect($msg->chat->getLink());
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    /**
      * Leave chat
      *
      * @param type $cid
@@ -219,11 +277,19 @@ class Chat_Gear extends Gear {
      */
     public function leave_action($cid, $uid = NULL) {
         if ($chat = chat($cid)) {
-            if (user()->id == $chat->aid) {
+            if (!$uid && user()->id == $chat->aid) {
                 $this->delete_action($cid);
-            }
-            else {
-                if ($chat->left(user()->id)) {
+            } else {
+                if (user()->id == $chat->aid && $uid && $user = user($uid)) {
+                    if ($chat->left($user->id)) {
+                        if (Ajax::is()) {
+                            $ajax = new Ajax();
+                            $ajax->success = TRUE;
+                            $ajax->json();
+                        }
+                        redirect($chat->getLink());
+                    }
+                } else if ($chat->left(user()->id)) {
                     $text = t('You have left this chat!', 'Chat');
                     if (Ajax::is()) {
                         $ajax = new Ajax();
@@ -233,6 +299,42 @@ class Chat_Gear extends Gear {
                     }
                     flash_success($text);
                     redirect(l('/chat'));
+                }
+            }
+        }
+    }
+
+    /**
+     * Invite users to chat
+     *
+     * @param int $cid
+     */
+    public function invite_action($cid) {
+        if ($chat = chat($cid)) {
+            if (access('Chat.admin',$chat)) {
+                if ($users = $this->input->post('users')) {
+                    $users = preg_split('#[,\s]+#', $users, -1, PREG_SPLIT_NO_EMPTY);
+                    $users = array_unique($users);
+                    $code = '';
+                    foreach ($users as $login) {
+                        // Cannot invite chat admin
+                        if ($login === user()->login) {
+                            continue;
+                        } elseif ($user = user($login, 'login')) {
+                            if ($chat->join($user->id)) {
+                                $tpl = new Template('Chat.user');
+                                $tpl->user = $user;
+                                $tpl->chat = $chat;
+                                $code .= $tpl->render();
+                            }
+                        }
+                    }
+                    if ($code && Ajax::is()) {
+                        $ajax = new Ajax();
+                        $ajax->success = TRUE;
+                        $ajax->code = $code;
+                        $ajax->json();
+                    }
                 }
             }
         }
