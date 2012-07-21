@@ -18,7 +18,7 @@ class Widgets_Gear extends Gear {
     protected $package = '';
     protected $order = 1000;
     protected $hooks = array(
-        'gear.request' => 'hookRequest',
+        'gear.dispatch.after' => 'hookDispatchAfter',
         'theme.region' => 'hookThemeRegion',
     );
     protected $routes = array(
@@ -45,9 +45,9 @@ class Widgets_Gear extends Gear {
     }
 
     /**
-     * Hook done
+     * Hook after gear dispath
      */
-    public function hookRequest($gear) {
+    public function hookDispatchAfter($gear) {
         if ($this->input->get('splash') !== NULL)
             return;
         $widgets = new Core_ArrayObject();
