@@ -58,8 +58,8 @@ abstract class Db_List_Abstract extends Cogearable {
             }
         }
         if ($this->in_set) {
-            foreach ($this->in_set as $value => $key) {
-                $this->db->in_set($key, $value);
+            foreach ($this->in_set as $key => $value) {
+                $this->db->in_set($key,$value);
             }
         }
         if ($this->like) {
