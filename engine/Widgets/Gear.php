@@ -18,7 +18,7 @@ class Widgets_Gear extends Gear {
     protected $package = '';
     protected $order = 1000;
     protected $hooks = array(
-        'done' => 'hookDone',
+        'gear.request' => 'hookRequest',
         'theme.region' => 'hookThemeRegion',
     );
     protected $routes = array(
@@ -47,12 +47,12 @@ class Widgets_Gear extends Gear {
     /**
      * Hook done
      */
-    public function hookDone() {
+    public function hookRequest($gear) {
         if ($this->input->get('splash') !== NULL)
             return;
         $widgets = new Core_ArrayObject();
-        if ($this->widgets !== NULL) {
-            foreach($this->widgets as $class){
+        if ($gear->widgets !== NULL) {
+            foreach($gear->widgets as $class){
                 class_exists($class) && $widgets->append(new $class());
             }
         } else {
