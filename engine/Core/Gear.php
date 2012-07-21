@@ -446,10 +446,9 @@ abstract class Gear extends Object {
      */
     public function request() {
         $this->is_requested = TRUE;
-        if (!event('gear.request', $this)) {
+        if (FALSE === event('gear.request', $this)->check()) {
             return;
         }
-        event('gear.request.' . $this->gear);
     }
 
     /**
