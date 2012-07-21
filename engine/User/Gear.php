@@ -510,6 +510,22 @@ class User_Gear extends Gear {
         }
     }
 
+    /**
+     * Autocompleter
+     */
+    public function autocomplete_action(){
+        if($query = $this->input->get('query')){
+            $user = new User();
+            $this->db->like('login',$query,'both');
+            if($users = $user->findAll()){
+                $data = array('query'=>$query,'suggestions'=>array());
+                foreach($users as $user){
+                    array_push($data['suggestions'],$user->login);
+                }
+                die(json_encode($data));
+            }
+        }
+    }
 }
 
 /**
