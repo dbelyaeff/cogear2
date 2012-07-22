@@ -23,6 +23,9 @@ class User_Gear extends Gear {
         'post.delete' => 'hookPostCount',
         'friends.insert' => 'hookFriends',
         'friends.delete' => 'hookFriends',
+        'post.render' => 'hookRenderFilter',
+        'chat.msg.render' => 'hookRenderFilter',
+        'comment.render' => 'hookRenderFilter',
         'comment.insert' => 'hookCommentsRecount',
         'comment.update' => 'hookCommentsRecount',
         'comment.delete' => 'hookCommentsRecount',
@@ -87,17 +90,17 @@ class User_Gear extends Gear {
                     'render' => 'before',
                 ));
     }
+
     /**
      * If you edit smbdy profile — you need him to be updated immedeately
      *
      * @param   object  $User
      */
-    public function hookUserUpdate($User){
-        if($User->getLink('edit') == '/'.$this->router->getUri()){
-            if($User->id == user()->id){
+    public function hookUserUpdate($User) {
+        if ($User->getLink('edit') == '/' . $this->router->getUri()) {
+            if ($User->id == user()->id) {
                 $User->store();
-            }
-            else {
+            } else {
                 $User->refresh(TRUE);
             }
         }
@@ -108,9 +111,10 @@ class User_Gear extends Gear {
      *
      * If there is a flag to reset user data — reset it
      */
-    public function hookDone(){
-       $this->object->refresh();
+    public function hookDone() {
+        $this->object->refresh();
     }
+
     /**
      * Hook blog reader
      *
@@ -182,10 +186,27 @@ class User_Gear extends Gear {
      *
      * @param type $widgets
      */
-    public function hookWidgets($widgets){
+    public function hookWidgets($widgets) {
         $widgets->append(new User_Widgets_Top());
         $widgets->append(new User_Widgets_Online());
     }
+
+    /**
+     * Hook item render
+     *
+     * @param type $item
+     */
+    public function hookRenderFilter($item) {
+        if ($item->body && strpos($item->body, '[user')) {
+            preg_match_all('#\[user=([^\]]+)\]#imsU', $item->body, $matches);
+            for ($i = 0; $i < sizeof($matches[0]); $i++) {
+                if ($user = user($matches[1][$i], 'login')) {
+                    $item->body = str_replace($matches[0][$i],$user->getLink('avatar').' '.$user->getLink('profile'),$item->body);
+                }
+            }
+        }
+    }
+
     /**
      * Menu builder
      *
@@ -307,7 +328,7 @@ class User_Gear extends Gear {
                 return;
             }
         }
-        page_header(t('Users','User'));
+        page_header(t('Users', 'User'));
         new User_List(array(
                     'name' => 'user',
                 ));
@@ -513,19 +534,20 @@ class User_Gear extends Gear {
     /**
      * Autocompleter
      */
-    public function autocomplete_action(){
-        if($query = $this->input->get('query')){
+    public function autocomplete_action() {
+        if ($query = $this->input->get('query')) {
             $user = new User();
-            $this->db->like('login',$query,'both');
-            if($users = $user->findAll()){
-                $data = array('query'=>$query,'suggestions'=>array());
-                foreach($users as $user){
-                    array_push($data['suggestions'],$user->login);
+            $this->db->like('login', $query, 'both');
+            if ($users = $user->findAll()) {
+                $data = array('query' => $query, 'suggestions' => array());
+                foreach ($users as $user) {
+                    array_push($data['suggestions'], $user->login);
                 }
                 die(json_encode($data));
             }
         }
     }
+
 }
 
 /**

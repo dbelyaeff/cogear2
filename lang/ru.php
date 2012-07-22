@@ -92,6 +92,7 @@ return array (
     'Invite' => '',
     'Kick off' => '',
     'Users:' => '',
+    'Delete chat' => '',
   ),
   '#Comment' => 
   array (
@@ -288,6 +289,7 @@ return array (
     'Blogs' => '',
     'New' => '',
     'Best' => '',
+    'Guests' => '',
   ),
   '#Vote' => 
   array (

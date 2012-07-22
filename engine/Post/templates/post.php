@@ -1,5 +1,4 @@
 <?php
-event('post.render', $item);
 $user = new User();
 $user->id = $item->aid;
 $user->find();

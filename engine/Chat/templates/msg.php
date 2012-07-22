@@ -1,4 +1,5 @@
 <?php
+ event('chat.msg.render',$item);
 $author = user($item->aid);
 ?>
 <div class="chat-msg shd">

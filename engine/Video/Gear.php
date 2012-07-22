@@ -20,6 +20,7 @@ class Video_Gear extends Gear {
     protected $hooks = array(
         'markitup.toolbar' => 'hookMarkitup',
         'post.render' => 'hookPostRender',
+        'chat.msg.render' => 'hookPostRender',
         'comment.render' => 'hookPostRender',
     );
 
