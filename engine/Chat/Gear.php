@@ -39,7 +39,7 @@ class Chat_Gear extends Gear {
     public function access($rule, $data = NULL) {
         switch ($rule) {
             case 'admin':
-                if($data->aid == user()->id){
+                if ($data->aid == user()->id) {
                     return TRUE;
                 }
                 break;
@@ -49,8 +49,8 @@ class Chat_Gear extends Gear {
                     if ($data instanceof Chat_Object && (user()->id == $data->aid OR in_array(user()->id, $data->getUsers()))) {
                         return TRUE;
                     } else {
-                        if($data = chat(end($data))){
-                            if($data->aid == user()->id OR in_array(user()->id, $data->getUsers())){
+                        if ($data = chat(end($data))) {
+                            if ($data->aid == user()->id OR in_array(user()->id, $data->getUsers())) {
                                 return TRUE;
                             }
                         }
@@ -193,17 +193,28 @@ class Chat_Gear extends Gear {
             $values = array();
             foreach ($friends as $uid => $role) {
                 if ($user = user($uid)) {
-                    $values[$uid] = $user->getName();
+                    $values[$uid] = $user->login;
                 }
             }
-            $form->users->setValues($values);
             if ($result = $form->result()) {
                 $chat = new Chat_Object();
 //                $chat->aid = user()->id;
-                $chat->users = $result->users->toString(',');
                 $chat->name = $result->name;
                 $chat->created_date = time();
                 if ($cid = $chat->insert()) {
+                    $users = preg_split('#[,\s]+#', $result->users, -1, PREG_SPLIT_NO_EMPTY);
+                    $users = array_unique($users);
+                    $data = array();
+                    foreach ($users as $login) {
+                        // Cannot invite chat admin
+                        if ($login === user()->login) {
+                            continue;
+                        } else if ($user = user($login, 'login')) {
+                            $chat->join($user->id);
+                            $data[] = $user->id;
+                        }
+                    }
+                    $chat->update(array('users'=>implode(',',$data)));
                     $msg = new Chat_Messages();
                     $msg->cid = $cid;
 //                    $msg->aid = user()->id;
@@ -311,7 +322,7 @@ class Chat_Gear extends Gear {
      */
     public function invite_action($cid) {
         if ($chat = chat($cid)) {
-            if (access('Chat.admin',$chat)) {
+            if (access('Chat.admin', $chat)) {
                 if ($users = $this->input->post('users')) {
                     $users = preg_split('#[,\s]+#', $users, -1, PREG_SPLIT_NO_EMPTY);
                     $users = array_unique($users);

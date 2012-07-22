@@ -6,11 +6,13 @@ return array(
         'title' => array(
             'label'=>t('Create chat','Chat'),
         ),
-        'users[]' => array(
-            'type' => 'select',
+        'users' => array(
+            'type' => 'text',
             'label' => t('Users', 'Chat'),
             'validators' => array('Required'),
             'values' => array(''),
+            'class' => 'autocomplete',
+            'data-source' => l('/user/autocomplete'),
         ),
         'name' => array(
             'type' => 'text',
