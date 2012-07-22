@@ -22,3 +22,6 @@
     }
     ?>
 </div>
+<?php if (access('Chat.admin', $chat)): ?>
+<p align="right"><a href="<?php echo l('/chat/delete/'.$chat->id);?>" class="chat-action noajax btn btn-danger"><?php echo t('Delete chat','Chat.widget')?></a></p>
+<?php endif; ?>

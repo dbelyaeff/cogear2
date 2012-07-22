@@ -65,16 +65,21 @@ $(document).ready(function(){
         $link = $(this);
         bootbox.confirm(t('Are you sure?'), function(confirmed) {
             if(confirmed){
-                $.getJSON($link.attr('href'),function(data){
-                    if(data.success){
-                        if(data.code){
-                            $link.parent().parent().replaceWith($(code));
+                if($link.hasClass('noajax')){
+                    document.location = $link.attr('href');
+                }
+                else {
+                    $.getJSON($link.attr('href'),function(data){
+                        if(data.success){
+                            if(data.code){
+                                $link.parent().parent().replaceWith($(code));
+                            }
+                            else {
+                                $link.parent().parent().slideUp();
+                            }
                         }
-                        else {
-                            $link.parent().parent().slideUp();
-                        }
-                    }
-                });
+                    });
+                }
             }
         });
     })
