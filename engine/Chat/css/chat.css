@@ -11,10 +11,20 @@
 #form-chat-msg-body-element{
     height: 100px;
 }
+#navbar-msg-counter{
+    font-size: 0.8em;
+    color: #FFF;
+    vertical-align:baseline;
+    position:relative;
+    line-height:1;
+    top: -.2em;
+    margin-left: 3px;
+
+}
 .chat-msg{
     float: left;
-    width: 100%;
-    margin: 0 0 10px 0;
+    width: 98%;
+    padding: 5px;
 }
 .chat-msg-avatar{
     float: left;
@@ -34,5 +44,21 @@
     float: right;
     padding: 10px 0 0 0;
     width: 30px;
-    text-align: center; 
+    text-align: center;
+}
+.chat-msg-preview {
+    background: #FFF;
+    float: left;
+    width: 98%;
+    border: 1px solid #CFCFCF;
+    cursor: pointer;
+}
+.chat-msg.unviewed{
+    background: #EDF1F5;
+}
+.chat-msg-preview .chat-msg-action{
+    display: none;
+}
+.chat-msg-preview  .chat-msg-time{
+    margin-right: 10px;
 }

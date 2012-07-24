@@ -17,6 +17,21 @@ class Chat_Messages extends Db_Item {
     protected $primary = 'id';
     protected $template = 'Chat.msg';
     public $chat;
+
+    /**
+     * Find
+     */
+    public function find(){
+        cogear()->db->select('chats_msgs.*, chats_views.viewed')->join('chats_views',array('chats_msgs.id'=>'chats_views.mid','chats_views.uid' => user()->id),'LEFT');
+        return parent::find();
+    }
+    /**
+     * Find all
+     */
+    public function findAll(){
+        cogear()->db->select('chats_msgs.*, chats_views.viewed')->join('chats_views',array('chats_msgs.id'=>'chats_views.mid','chats_views.uid' => user()->id),'LEFT');
+        return parent::findAll();
+    }
     /**
      * Create new chat message
      *
@@ -56,5 +71,15 @@ class Chat_Messages extends Db_Item {
         }
         return $result;
     }
-
+    /**
+     * Render message
+     */
+    public function render($type = NULL){
+        switch($type){
+            case 'text':
+                $this->body = strip_tags($this->body);
+                break;
+        }
+        return parent::render();
+    }
 }

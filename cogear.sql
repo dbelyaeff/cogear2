@@ -95,12 +95,7 @@ CREATE TABLE IF NOT EXISTS `chats` (
   `created_date` int(111) unsigned NOT NULL,
   `last_update` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `chats`
---
-
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -117,11 +112,21 @@ CREATE TABLE IF NOT EXISTS `chats_msgs` (
   `ip` varchar(15) NOT NULL,
   `created_date` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `chats_msgs`
+-- Table structure for table `chats_views`
 --
+
+DROP TABLE IF EXISTS `chats_views`;
+CREATE TABLE IF NOT EXISTS `chats_views` (
+  `mid` int(11) unsigned NOT NULL,
+  `uid` int(11) unsigned NOT NULL,
+  `viewed` tinyint(1) unsigned NOT NULL,
+  UNIQUE KEY `mid` (`mid`,`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------

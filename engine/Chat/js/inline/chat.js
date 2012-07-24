@@ -4,27 +4,45 @@ var Chat = function($el){
 Chat.prototype = {
     id: 0,
     el: {},
+    window: {},
+    form: {},
     init: function($el){
         this.el = $el;
+        this.window = this.el.find('.chat-window').first();
         this.id = $el.attr('data-id');
+        this.form = $('#form-chat-msg');
+        this.resize();
         this.scroll();
         this.bind();
         this.inviter();
+        this.viewer();
+        this.updateCounter();
         $chat = this;
         setInterval(function(){
             $chat.refresh();
         },5000);
+        setInterval(function(){
+            $chat.updateCounter();
+        },5000);
     },
     refresh: function(){
         $this = this;
-        $(this.el).load(l('/chat/view/'+this.id+' #chat-window-'+this.id+''),{},function(){
-            $this.scroll();
-        });
+        $last = $('.chat-msg').last();
 
+        $.getJSON('/chat/refresh/'+$this.id+'/'+$last.attr('data-id'),function(data){
+            if(data.code){
+                $this.window.append(data.code);
+                $this.scroll();
+            }
+        })
+    },
+    resize: function(){
+        $top = this.el.offset().top;
+        $height = this.el.height();
+        this.window.height($(window).height() - this.form.height() - 200);
     },
     scroll: function(){
-        this.window = this.el.find('.chat-window')[0];
-        $(this.window).scrollTop($(this.window).height());
+        $(this.window).scrollTop($('.chat-msg').last().offset().top);
     },
     inviter: function(){
         $('#form-chat-invite').ajaxForm({
@@ -37,10 +55,29 @@ Chat.prototype = {
             }
         })
     },
+    viewer: function(){
+        $chat = $(this);
+        $(document).on('mouseover','.chat-msg.unviewed',function(){
+            $(this).removeClass('unviewed');
+            $.getJSON(l('/chat/viewer/'+$(this).attr('data-id')));
+            $chat.updateCounter();
+        });
+    },
+    updateCounter: function(){
+        $('#navbar-msg-counter').load(l('/chat/counter/'));
+    },
     bind: function(){
-
+        $chat = $(this);
+        $(document).resize(function(){
+            $chat.resize();
+        });
+        $(document).keydown(function(e){
+            console.log(e)
+            if(e.keyCode == 13 && e.ctrlKey == true){
+                $chat.form.find('[type=submit]').click();
+            }
+        })
     }
-
 };
 
 $(document).ready(function(){

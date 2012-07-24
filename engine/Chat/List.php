@@ -38,19 +38,14 @@ class Chat_List extends Db_List_Table {
             return $this->fields;
         } else {
             return $this->setFields(array(
-                        'name' => array(
-                            'label' => t('Name', 'Chat'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
-                        ),
                         'users' => array(
-                            'class' => 't_c w30',
-                            'label' => t('Users', 'Chat'),
+                            'class' => 't_l w20',
                             'callback' => new Callback(array($this, 'prepareFields')),
                         ),
                         'last_update' => array(
                             'label' => t('Last message', 'Chat'),
                             'callback' => new Callback(array($this, 'prepareFields')),
-                            'class' => 't_c w20',
+                            'class' => 't_c',
                         ),
                         'controls' => array(
                             'callback' => new Callback(array($this, 'prepareFields')),
@@ -68,22 +63,20 @@ class Chat_List extends Db_List_Table {
      */
     public function prepareFields($chat, $key) {
         switch ($key) {
-            case 'name':
-                return $chat->getLink('full');
-                break;
             case 'users':
                 $output = new Core_ArrayObject();
+                $output->append('<div class="chat-msg-title">'.$chat->getLink('full').'</div>');
                 $user = user($chat->aid);
-                $output->append($user->getLink('avatar', 'avatar.tiny').' &rarr; ');
+                $output->append($user->getLink('avatar','avatar.tiny'));
                 foreach ($chat->getUsers() as $uid) {
                     if ($user = user($uid)) {
-                        $output->append($user->getLink('avatar', 'avatar.tiny'));
+                        $output->append($user->getLink('avatar','avatar.tiny'));
                     }
                 }
                 return $output->toString(' ');
                 break;
             case 'last_update':
-                return df($chat->last_update);
+                return '<div class="chat-msg-preview" onclick="window.location=\''.$chat->getLink().'\'">'.$chat->getLastMsg()->render('text').'</div>';
                 break;
             case 'controls':
                 if ($chat->aid == user()->id) {

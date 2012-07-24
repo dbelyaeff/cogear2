@@ -173,7 +173,7 @@ abstract class Gear extends Object {
      *
      * @var array
      */
-    protected $widgets;
+    public $widgets;
 
     /**
      * Constructor

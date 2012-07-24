@@ -52,8 +52,14 @@ class Video_Gear extends Gear {
         }
         $matches[0] = array_merge_recursive($video[0],$media[0],$httpv[0]);
         $matches[1] = array_merge_recursive($video[1],$media[1],$httpv[1]);
+        $width = NULL;
+        $height = NULL;
+        if($post instanceof Chat_Messages){
+            $width = 300;
+            $height = 225;
+        }
         for($i = 0; $i < sizeof($matches[1]); $i++){
-            $post->body = str_replace($matches[0][$i], Video_Embed::getCode($matches[1][$i]),$post->body);
+            $post->body = str_replace($matches[0][$i], Video_Embed::getCode($matches[1][$i],$width,$height),$post->body);
         }
     }
 

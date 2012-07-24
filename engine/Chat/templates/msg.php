@@ -2,14 +2,11 @@
  event('chat.msg.render',$item);
 $author = user($item->aid);
 ?>
-<div class="chat-msg shd">
+<div class="chat-msg shd <?php if(!$item->viewed){ echo ' unviewed';}?>" data-id="<?php echo $item->id?>">
     <div class="chat-msg-avatar">
         <?php echo $author->getLink('avatar') ?>
     </div>
-    <div class="chat-msg-body">
-        <div class="chat-msg-body-author">
-            <?php echo $author->getLink('profile') ?>
-        </div>
+    <div class="chat-msg-body"><div class="chat-msg-body-author"><?php echo $author->getLink('profile')?></div>
         <?php echo $item->body ?>
     </div>
     <div class="chat-msg-action">

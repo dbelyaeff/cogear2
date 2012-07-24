@@ -17,7 +17,7 @@ class Chat_Gear extends Gear {
     protected $description = 'Instant messenger';
     protected $order = 20;
     protected $hooks = array(
-        'chat_msg.insert' => 'hookMsg',
+        'chat_msg.insert' => 'hookMsgInsert',
         'chat_msg.update' => 'hookMsg',
         'chat_msg.delete' => 'hookMsg',
     );
@@ -27,7 +27,7 @@ class Chat_Gear extends Gear {
         'msg' => 'access',
         'admin' => 'access',
     );
-    protected $widgets = FALSE;
+    public $widgets = FALSE;
     public $current;
 
     /**
@@ -77,6 +77,23 @@ class Chat_Gear extends Gear {
         return FALSE;
     }
 
+    public function hookMsgInsert($Msg) {
+        if ($chat = chat($Msg->cid)) {
+            if ($users = $chat->getUsers()) {
+                $users[] = $chat->aid;
+                foreach ($users as $uid) {
+                    $view = new Chat_View();
+                    $view->uid = $uid;
+                    $view->mid = $Msg->id;
+                    $view->viewed = $uid == user()->id ? 1 : 0;
+                    $view->insert();
+                }
+            }
+        }
+
+        $this->hookMsg($Msg);
+    }
+
     /**
      * Hook chat message
      *
@@ -100,8 +117,9 @@ class Chat_Gear extends Gear {
     public function menu($name, $menu) {
         switch ($name) {
             case 'navbar':
+                $count = $this->getNewMsgCount();
                 $menu->register(array(
-                    'label' => icon('envelope icon-white') . ' ' . (cogear()->user->pm_new ? badge(cogear()->user->pm_new, 'info') : ''),
+                    'label' => icon('envelope icon-white') . '<span id="navbar-msg-counter">' . ($count ? '+' . $count : '') . '</span>',
                     'link' => l('/chat/'),
                     'title' => t('Chats', 'Chat'),
                     'place' => 'left',
@@ -109,6 +127,25 @@ class Chat_Gear extends Gear {
                 ));
                 break;
         }
+    }
+
+    /**
+     * Current user message counter
+     */
+    public function getNewMsgCount() {
+        $view = new Chat_View();
+        $view->uid = user()->id;
+        $view->viewed = 0;
+        $count = $view->count();
+        return $count;
+    }
+
+    /**
+     * Push new messages count
+     */
+    public function counter_action(){
+        $count = $this->getNewMsgCount();
+        exit($count ? '+'.$count : '');
     }
 
     /**
@@ -214,7 +251,7 @@ class Chat_Gear extends Gear {
                             $data[] = $user->id;
                         }
                     }
-                    $chat->update(array('users'=>implode(',',$data)));
+                    $chat->update(array('users' => implode(',', $data)));
                     $msg = new Chat_Messages();
                     $msg->cid = $cid;
 //                    $msg->aid = user()->id;
@@ -277,6 +314,47 @@ class Chat_Gear extends Gear {
                     }
                 }
                 break;
+        }
+    }
+
+    /**
+     * Refresh chat action
+     *
+     * @param int $cid
+     * @param int $last_id
+     */
+    public function refresh_action($cid,$last_id){
+        if($chat = chat($cid) && Ajax::is()){
+            $msg = chat_msg();
+            $msg->cid = $cid;
+            $msg->where('id',$last_id, ' > ');
+            $ajax = new Ajax();
+            $ajax->code = '';
+            if($msgs = $msg->findAll()){
+                foreach($msgs as $msg){
+                    $msg->chat = $chat;
+                    $ajax->code .= $msg->render();
+                }
+            }
+            $ajax->json();
+        }
+    }
+    /**
+     * Viewer action
+     *
+     * @param type $id
+     */
+    public function viewer_action($id) {
+        if (user()->id) {
+            $view = new Chat_View();
+            $view->mid = $id;
+            $view->uid = user()->id;
+            if ($view->find()) {
+                $view->update(array('viewed' => 1), array('mid' => $id, 'uid' => user()->id));
+            } else {
+                $view->viewed = 1;
+                $view->insert();
+            }
         }
     }
 

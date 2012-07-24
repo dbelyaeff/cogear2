@@ -55,11 +55,11 @@ class Chat_Object extends Db_Item {
         }
         event('chat.join', $this, $uid);
         $users = $this->getUsers();
-        if(in_array($uid, $users)) {
+        if (in_array($uid, $users)) {
             return FALSE;
         } else {
             array_push($users, $uid);
-            $this->update(array('users' => implode(',',$users)));
+            $this->update(array('users' => implode(',', $users)));
             return TRUE;
         }
     }
@@ -83,7 +83,7 @@ class Chat_Object extends Db_Item {
                 unset($users[$key]);
             }
         }
-        $this->update(array('users' => implode(',',$users)));
+        $this->update(array('users' => implode(',', $users)));
         return TRUE;
     }
 
@@ -167,6 +167,21 @@ class Chat_Object extends Db_Item {
             $msgs->delete();
         }
         return $result;
+    }
+
+    /**
+     * Get last message from chat
+     *
+     * @return type
+     */
+    public function getLastMsg() {
+        $msg = chat_msg();
+        $msg->cid = $this->id;
+        $msg->limit(1);
+        $msg->order('id', 'DESC');
+        foreach($msg->findAll() as $item){
+            return $item;
+        }
     }
 
 }
