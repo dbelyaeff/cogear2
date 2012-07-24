@@ -27,10 +27,15 @@ class Db_Gear extends Gear {
     public function __construct() {
         parent::__construct();
         if ($dsn = config('database.dsn')) {
-            if (!$this->checkDSN($dsn)) {
+            if (!($config = $this->checkDSN($dsn))){
                 $this->object->error(t('Couldn\'t establish database connection.', 'Db.errors'));
                 fatal_error($this->object->errors());
             } else {
+                $this->attach(new $config['adapter']($config));
+                if (!$this->object->init()) {
+                    return FALSE;
+                }
+                cogear()->db = $this->object;
                 if (access('Dev') && config('site.development')) {
                     hook('done', array($this, 'showErrors'));
                     hook('footer', array($this, 'trace'));
@@ -62,17 +67,12 @@ class Db_Gear extends Gear {
         if (!isset($config['prefix']))
             $config['prefix'] = $this->get('database.prefix', '');
         $config['database'] = trim($config['path'], ' /');
-        $adapter = 'Db_Driver_' . ucfirst($config['scheme']);
-        if (!class_exists($adapter)) {
+        $config['adapter'] = 'Db_Driver_' . ucfirst($config['scheme']);
+        if (!class_exists($config['adapter'])) {
             error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
             return FALSE;
         }
-        $this->attach(new $adapter($config));
-        if (!$this->object->init()) {
-            return FALSE;
-        }
-        cogear()->db = $this->object;
-        return TRUE;
+        return $config;
     }
 
     /**
