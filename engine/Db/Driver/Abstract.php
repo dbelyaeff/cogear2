@@ -478,8 +478,8 @@ abstract class Db_Driver_Abstract {
      * @param   int $offset
      * @return object   Self intsance.
      */
-    public function limit($start = 0, $offset = 0) {
-        $this->addQuery('limit', array($start, $offset));
+    public function limit($amount = 0, $offset = 0) {
+        $this->addQuery('limit', array($amount, $offset));
         return $this;
     }
 

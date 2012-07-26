@@ -166,7 +166,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         $group && $query[] = ' GROUP BY ' . implode(', ', $group);
         $having && $query[] = ' HAVING ' . implode(', ', $having);
         $order && $query[] = ' ORDER BY ' . implode(', ', $order);
-        $limit && isset($limit[0]) && $query[] = ' LIMIT ' . $limit[0] . ($limit[1] ? ', ' . $limit[1] : '');
+        $limit && isset($limit[0]) && $query[] = ' LIMIT ' . ($limit[1] ? $limit[1].' ,'.$limit[0] : $limit[0]);
         return $this->query = implode($query);
     }
 
