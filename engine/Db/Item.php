@@ -11,7 +11,7 @@ class Db_Item extends Db_ORM {
         if ($result = parent::findAll()) {
             $class = $this->reflection->getName();
             foreach ($result as $key => $value) {
-                $item = new $class($this->table);
+                $item = new $class($this->table,$this->primary,$this->db);
                 $item->attach($value);
                 $result->$key = $item;
             }

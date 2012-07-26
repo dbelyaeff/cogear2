@@ -27,53 +27,17 @@ class Db_Gear extends Gear {
     public function __construct() {
         parent::__construct();
         if ($dsn = config('database.dsn')) {
-            if (!($config = $this->checkDSN($dsn))){
-                $this->object->error(t('Couldn\'t establish database connection.', 'Db.errors'));
-                fatal_error($this->object->errors());
-            } else {
-                $this->attach(new $config['adapter']($config));
-                if (!$this->object->init()) {
-                    return FALSE;
-                }
-                cogear()->db = $this->object;
+                $this->attach(new Db($dsn));
                 if (access('Dev') && config('site.development')) {
                     hook('done', array($this, 'showErrors'));
                     hook('footer', array($this, 'trace'));
                 }
-            }
         } else {
             error(t('Database connection string is not defined.', 'Db.errors'));
         }
     }
 
-    /**
-     * Check data source name
-     *
-     * @param string $dsn
-     * @return boolean
-     */
-    public function checkDSN($dsn) {
-        $config = parse_url($dsn);
-        if (isset($config['query'])) {
-            parse_str($config['query'], $query);
-            $config = array_merge($config, $query);
-        }
-        if (!isset($config['host']))
-            $config['host'] = 'localhost';
-        if (!isset($config['user']))
-            $config['user'] = 'root';
-        if (!isset($config['pass']))
-            $config['pass'] = '';
-        if (!isset($config['prefix']))
-            $config['prefix'] = $this->get('database.prefix', '');
-        $config['database'] = trim($config['path'], ' /');
-        $config['adapter'] = 'Db_Driver_' . ucfirst($config['scheme']);
-        if (!class_exists($config['adapter'])) {
-            error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
-            return FALSE;
-        }
-        return $config;
-    }
+
 
     /**
      * Show errors

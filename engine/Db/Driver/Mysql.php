@@ -12,6 +12,7 @@
  * @version		$Id$
  */
 class Db_Driver_Mysql extends Db_Driver_Abstract {
+    protected $connection;
 
     /**
      * Connect to database
@@ -19,13 +20,17 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * @return boolean
      */
     public function connect() {
-        $this->connection = mysql_connect($this->config['host'] . ':' . $this->config['port'], $this->config['user'], $this->config['pass']);
-        if (!$database_exists = mysql_select_db($this->config['database'])) {
-            $this->error(t('Database <b>%s</b> doesn\'t exists.', 'Db.errors', $this->config['database']));
+        $this->connection = mysql_connect($this->config['host'] . ':' . $this->config['port'], $this->config['user'], $this->config['pass'], TRUE);
+        if (is_resource($this->connection)) {
+            if (!$database_exists = mysql_select_db($this->config['database'], $this->connection)) {
+                $this->error(t('Database <b>%s</b> doesn\'t exists.', 'Db.errors', $this->config['database']));
+            }
+            $this->query('SET NAMES utf8;', FALSE);
+            return $this->connection;
+        } else {
+            $this->error(t('Couldn\'t connect to the database.', 'Db.errors', $this->config['database']));
             return FALSE;
         }
-        $this->query('SET NAMES utf8;',FALSE);
-        return $this->connection ? TRUE : FALSE;
     }
 
     /**
@@ -44,19 +49,22 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * @param boolean $bench
      * @return boolean
      */
-    public function query($query = '',$bench = TRUE) {
+    public function query($query = '', $bench = TRUE) {
+        if(!is_resource($this->connection)){
+            return FALSE;
+        }
         if (!$query) {
             if (!$query = $this->buildQuery()) {
                 return FALSE;
             }
         }
         $start = microtime();
-        if (!$this->result = @mysql_query($query, $this->connection)) {
+        if (!$this->result = mysql_query($query, $this->connection)) {
             $this->silent OR $this->errors[] = mysql_error() . ' (' . mysql_errno() . ')';
         }
-        $bench && $this->bench($query,  microtime() - $start);
+        $bench && $this->bench($query, microtime() - $start);
         $this->clear();
-        event('database.query',$query);
+        event('database.query', $query);
         return $this->errors ? FALSE : TRUE;
     }
 
@@ -100,18 +108,18 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         if ($where_in) {
             // @todo: Make it more safe and usable
             foreach ($where_in as $field => $values) {
-                $query[] = ' WHERE '.$field.' IN ('.implode(',',(array)$values).') ';
+                $query[] = ' WHERE ' . $field . ' IN (' . implode(',', (array) $values) . ') ';
             }
         }
         if ($where_not_in) {
             // @todo: Make it more safe and usable
             foreach ($where_not_in as $field => $values) {
-                $query[] = ' WHERE '.$field.' NOT IN ('.implode(',',(array)$values).') ';
+                $query[] = ' WHERE ' . $field . ' NOT IN (' . implode(',', (array) $values) . ') ';
             }
         }
-        if($in_set){
-            foreach($in_set as $field => $value){
-                $query[] = ' WHERE FIND_IN_SET('.$field.','.$value.') ';
+        if ($in_set) {
+            foreach ($in_set as $field => $value) {
+                $query[] = ' WHERE FIND_IN_SET(' . $field . ',' . $value . ') ';
             }
         }
         if ($where) {
@@ -169,7 +177,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      */
     public function result() {
         $result = array();
-        if ($this->result) {
+        if (is_resource($this->result)) {
             while ($row = mysql_fetch_assoc($this->result)) {
                 $result[] = $row;
             }

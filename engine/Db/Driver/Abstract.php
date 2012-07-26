@@ -127,18 +127,41 @@ abstract class Db_Driver_Abstract {
      *
      * @param array $config
      */
-    public function __construct(array $config) {
-        $this->config = array_merge($this->config, $config);
+    public function __construct($config) {
+        $this->config = array_merge($this->config, (array) $config);
         $this->_swap = $this->_query;
         $this->queries = new Core_ArrayObject();
         $this->benchmark = new Core_ArrayObject();
+        $this->open();
     }
 
     /**
-     * Init driver
+     * Check data source name
+     *
+     * @param string $dsn
+     * @return boolean
      */
-    public function init() {
-        return $this->open();
+    public function checkDSN($dsn) {
+        $config = parse_url($dsn);
+        if (isset($config['query'])) {
+            parse_str($config['query'], $query);
+            $config = array_merge($config, $query);
+        }
+        if (!isset($config['host']))
+            $config['host'] = 'localhost';
+        if (!isset($config['user']))
+            $config['user'] = 'root';
+        if (!isset($config['pass']))
+            $config['pass'] = '';
+        if (!isset($config['prefix']))
+            $config['prefix'] = config('database.prefix', '');
+        $config['database'] = trim($config['path'], ' /');
+        $config['adapter'] = 'Db_Driver_' . ucfirst($config['scheme']);
+        if (!class_exists($config['adapter'])) {
+            error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
+            return FALSE;
+        }
+        return $config;
     }
 
     /**
@@ -146,7 +169,8 @@ abstract class Db_Driver_Abstract {
      */
     public function open() {
         if (!$this->connect()) {
-            error(t(Db_Gear::$error_codes[101], 'Db.errors'));
+            $this->error(t(Db_Gear::$error_codes[101], 'Db.errors'));
+            $this->error(t('Couldn\'t establish database connection.', 'Db.errors'));
             return FALSE;
         }
         return TRUE;
@@ -163,7 +187,7 @@ abstract class Db_Driver_Abstract {
      * Desctructor
      */
     public function __destruct() {
-        $this->connection && $this->close();
+        is_resource($this->connection) && $this->close();
     }
 
     /**
@@ -621,13 +645,13 @@ abstract class Db_Driver_Abstract {
      */
     public function getFields($table) {
         $table OR $table = reset($this->_query['from']);
-        if (!$this->fields[$table] = cogear()->system_cache->read('database/' . $table, TRUE)) {
+        if (!$this->fields[$table] = cogear()->system_cache->read('database/' . $this->config['database'] . '/' . $table, TRUE)) {
             if ($fields = $this->getFieldsQuery($table)) {
                 $this->fields[$table] = array();
                 foreach ($fields as $field) {
                     $this->fields[$table][$field->Field] = $field->Type;
                 }
-                cogear()->system_cache->write('database/' . $table, $this->fields[$table], array('db_fields'));
+                cogear()->system_cache->write('database/' . $this->config['database'] . '/' . $table, $this->fields[$table], array('db_fields'));
             }
         }
         return $this->fields[$table];
