@@ -210,7 +210,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * @return int
      */
     public function getInsertId() {
-        return mysql_insert_id();
+        return mysql_insert_id($this->connection);
     }
 
     /**
