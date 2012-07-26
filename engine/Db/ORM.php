@@ -93,7 +93,7 @@ class Db_ORM extends Object {
             self::$loaded_items = new Core_ArrayObject();
         }
         $table && $this->table = $table;
-        $this->db = $db instanceof Db_Object ? $db->object : cogear()->db->object;
+        $this->db = $db instanceof Db_Object ? $db : cogear()->db->object;
         $this->fields = $this->db->getFields($this->table);
         $this->reflection = new ReflectionClass($this);
         $this->class = $this->reflection->getName();
@@ -174,7 +174,7 @@ class Db_ORM extends Object {
         $callback = array($this->db, $name);
         if (is_callable($callback)) {
             $result = call_user_func_array($callback, $args);
-            if($result instanceof Db_Driver_Abstract){
+            if ($result instanceof Db_Driver_Abstract) {
                 return $this;
             }
             return $result;
@@ -300,11 +300,10 @@ class Db_ORM extends Object {
             if ($this->update($data)) {
                 return TRUE;
             }
-        } else {
-            if ($this->insert($data)) {
-                return $this->object->{$this->primary};
-            }
+        } elseif ($id = $this->insert($data)) {
+            return $id;
         }
+        return FALSE;
     }
 
     /**
@@ -351,11 +350,10 @@ class Db_ORM extends Object {
         if (!isset($data[$this->primary]) && $data) {
             $result = $this->db->delete($this->table, $data) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
-        } elseif($data) {
+        } elseif ($data) {
             $result = $this->db->delete($this->table, array($this->primary => $data[$this->primary])) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
-        }
-        else {
+        } else {
             $result = $this->db->delete($this->table) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
         }
