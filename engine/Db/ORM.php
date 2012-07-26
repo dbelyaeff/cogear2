@@ -199,14 +199,29 @@ class Db_ORM extends Object {
     }
 
     /**
+     * Local cache method
+     *
+     * @param type $id
+     * @param type $object
+     */
+    public function cache($id,$object = NULL){
+        $path = $this->db->options->database.'.'.$this->table;
+        if($object){
+            self::$loaded_items[$path][$id] = $object;
+        }
+        else {
+            return isset(self::$loaded_items[$path][$id]) ? self::$loaded_items[$path][$id] : NULL;
+        }
+    }
+    /**
      * Find row
      *
      * @return  object/NULL
      */
     public function find() {
         $primary = $this->primary;
-        if ($this->object->$primary && isset(self::$loaded_items[$this->table]) && isset(self::$loaded_items[$this->table][$this->object->$primary])) {
-            $this->object = self::$loaded_items[$this->table][$this->object->$primary];
+        if ($object = $this->cache($this->object->$primary)) {
+            $this->object = $object;
             $this->clear();
             return TRUE;
         }
@@ -217,7 +232,7 @@ class Db_ORM extends Object {
             if ($result = $this->db->get($this->table)->row()) {
                 event('Db_ORM.find', $this, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
-                self::$loaded_items[$this->table][$result->{$this->primary}] = $this->object;
+                $this->cache($result->{$this->primary},$this->object);
                 $this->clear();
                 return TRUE;
             }
@@ -238,7 +253,7 @@ class Db_ORM extends Object {
             foreach ($result as &$element) {
                 event('Db_ORM.findAll', $this, $result);
                 $element = $this->filterData($element, self::FILTER_OUT);
-                self::$loaded_items[$this->table][$element->{$this->primary}] = $element;
+                $this->cache($element->{$this->primary},$element);
             }
             $this->clear();
         }
