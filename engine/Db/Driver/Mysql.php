@@ -12,8 +12,6 @@
  * @version		$Id$
  */
 class Db_Driver_Mysql extends Db_Driver_Abstract {
-    protected $connection;
-
     /**
      * Connect to database
      *
