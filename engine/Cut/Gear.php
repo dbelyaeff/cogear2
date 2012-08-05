@@ -71,15 +71,15 @@ class Cut_Gear extends Gear {
      * @param Post $Post
      */
     public function hookPostRender($Post) {
-        if (preg_match_all('#(.*?)[\<\[]cut\s*(text="(.*?)")?\/?[\>\]]\s*(.*?)#imsU', $Post->body, $matches)) {
+        if (preg_match_all('#(.*?)[\[\<]cut((\s*text)?=([^\]\>]+))?\s*/?[\]\>](.*?)#imsU', $Post->body, $matches)) {
             if($Post->teaser){
                 $Post->body = $matches[1][0];
-                if(isset($matches[3][0])){
-                    $Post->body .= template('Cut.cut',array('text'=>$matches[3][0],'post'=>$Post))->render();
+                if(!empty($matches[4][0])){
+                    $Post->body .= template('Cut.cut',array('text'=>$matches[4][0],'post'=>$Post))->render();
                 }
             }
             else {
-                $Post->body = $matches[1][0].'<div id="cut"></div>'.$matches[4][0];
+                $Post->body = $matches[1][0].'<div id="cut"></div>'.$matches[5][0];
             }
         }
     }
