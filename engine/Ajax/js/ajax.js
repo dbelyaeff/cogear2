@@ -1,12 +1,46 @@
 var Ajax = function(){
     this.init();
 }
+var Ajax_Loader = function(){
+    this.init();
+}
+Ajax_Loader.prototype = {
+    el: '',
+    options: {
+        defaultClass: 'black-spinner'
+    },
+    className: 'ajax-loader',
+    init: function(){
+      this.el = $('<img src="'+l('/engine/Ajax/img/1x1.gif')+'" alt=""/>');
+      this.type(this.options.defaultClass)
+    },
+    type: function(type){
+        this.el.attr('class',this.className);
+        this.el.addClass(type);
+    },
+    after: function(selector){
+        $(selector).after(this.el);
+        return this;
+    },
+    before: function(selector){
+        $(selector).before(this.el);
+        return this;
+    },
+    show: function(){
+        this.el.show();
+        return this;
+    },
+    hide: function(){
+        this.el.hide();
+        return this;
+    }
+}
 Ajax.prototype = {
     inline: {},
+    loader: {},
     init: function(){
         this.bind();
         $ajax = this;
-        this.inline = $('<img src="'+l('/engine/Ajax/img/inline.loader.gif')+'" alt=""/>');
         $(document).ajaxSuccess(function(event,$xhr,$settings){
             if($settings.dataType == 'json' && $xhr.responseText[0] == '{'){
                 $data = $.parseJSON($xhr.responseText);
@@ -17,6 +51,7 @@ Ajax.prototype = {
                 $ajax.dispatch($data);
             }
         })
+        this.loader = new Ajax_Loader();
     },
     bind: function(){
         $ajax = this;
@@ -84,14 +119,6 @@ Ajax.prototype = {
                 action.code && $item.prepend(action.code);
                 break;
 
-        }
-    },
-    loader: function(){
-        if(cogear.settings.ajax.showLoader){
-            return cogear.settings.ajax.showLoader = false;
-        }
-        else {
-            return cogear.settings.ajax.showLoader = true;
         }
     }
 }

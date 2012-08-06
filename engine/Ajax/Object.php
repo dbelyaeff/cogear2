@@ -50,7 +50,7 @@ class Ajax_Object extends Core_ArrayObject{
      * @param array $data
      */
     public function json($data = array(),$escape = FALSE){
-        $data && $this->mix($data);
+        $data && $this->extend($data);
         $response = json_encode($this);
         $escape && $response = $this->escape($response);
         echo $response;
