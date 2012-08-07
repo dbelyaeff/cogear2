@@ -256,7 +256,7 @@ abstract class Db_Driver_Abstract {
      * @param array $values
      * @return string
      */
-    protected function prepareValues(array $values, $isolator='"') {
+    protected function prepareValues(array $values, $isolator = '"') {
         $result = array();
         foreach ($values as $key => $value) {
             $value = $this->escape($value);
@@ -402,7 +402,7 @@ abstract class Db_Driver_Abstract {
      * @param string $type
      * @return object   Self intsance.
      */
-    public function join($table, $fields, $type='') {
+    public function join($table, $fields, $type = '') {
         $type = strtoupper($type);
         if (is_array($fields)) {
             $fields = $this->argsToString($fields, '=', ' AND ', '');
@@ -491,12 +491,12 @@ abstract class Db_Driver_Abstract {
      * @param   int     $offset
      * @return  object  Self instance.
      */
-    public function get($table, $limit=0, $offset=0) {
+    public function get($table, $limit = 0, $offset = 0) {
         $this->from($table);
         $limit && $this->limit($limit, $offset);
         $this->buildQuery();
-        $this->clear();
         $this->query($this->query);
+        $this->clear();
         return $this;
     }
 
@@ -509,7 +509,7 @@ abstract class Db_Driver_Abstract {
      * @param int $offset
      * @return object   Self instance.
      */
-    public function get_where($table, $where, $limit=0, $offset=0) {
+    public function get_where($table, $where, $limit = 0, $offset = 0) {
         $this->where($where);
         $this->get($table, $limit, $offset);
         return $this;
@@ -525,10 +525,14 @@ abstract class Db_Driver_Abstract {
         $this->swap('select');
         $this->qr_flag = $reset;
         $this->_query['select'] = array('COUNT(' . $field . ') as count');
-        $row = $this->get($table)->row();
-        $this->swap('select');
-        $this->qr_flag = TRUE;
-        return $row->count;
+        if ($row = $this->get($table)->row()) {
+            $this->swap('select');
+            $this->qr_flag = TRUE;
+            return $row->count;
+        }
+        else {
+            return NULL;
+        }
     }
 
     /**
@@ -821,26 +825,13 @@ abstract class Db_Driver_Abstract {
         return $this->benchmark;
     }
 
-    public function createTable($table, $fields) {
+    abstract public function create($table, $fields);
 
-    }
+    abstract public function truncate($table);
 
-    public function dropTable($table, $if_exists) {
+    abstract public function drop($table);
 
-    }
-
-    public function createFields($fields) {
-
-    }
-
-    public function alterTable($table, $fields) {
-
-    }
-
-    public function alterFields($fields) {
-
-    }
-
+    abstract public function alter($table, $fields);
 }
 
 function dlq() {
