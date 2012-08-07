@@ -15,7 +15,7 @@ class Tags_Widget extends Widgets_Widget {
 
     public $options = array(
         'class' => 'well tags-widget',
-        'limit' => 10,
+        'limit' => 50,
         'render' => 'sidebar',
         'order' => 10,
     );
@@ -24,7 +24,7 @@ class Tags_Widget extends Widgets_Widget {
      * Render
      */
     public function render() {
-        $cloud = new Tags_Cloud();
+        $cloud = new Tags_Cloud(array('limit'=>$this->options->limit));
         $this->code = template('Tags.widget',array('cloud'=>$cloud->render()))->render();
         return parent::render();
     }

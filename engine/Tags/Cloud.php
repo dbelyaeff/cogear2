@@ -27,7 +27,17 @@ class Tags_Cloud extends Options {
                 }
                 $counter[$link->tid] += 1;
             }
+            $tids = array();
+            if($this->limit){
+                asort($counter,SORT_NUMERIC);
+                $counter = array_reverse($counter, TRUE);
+                $counter = array_slice($counter, 0, $this->limit, TRUE);
+                foreach($counter as $tid=>$count){
+                    $tids[] = $tid;
+                }
+            }
             $tag = tag();
+            $tids && $tag->where_in('id',$tids);
             $tags = $tag->findAll();
             $tpl = new Template('Tags.cloud');
             $tpl->tags = $tags;

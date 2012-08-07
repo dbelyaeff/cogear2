@@ -114,7 +114,23 @@ class Tags_Gear extends Gear {
      * @param string $subaction
      */
     public function index_action($tag = '') {
-        if ($tag = tag($tag)) {
+        if($tags = $this->input->get('tags')){
+            $tags = preg_split('#([\s,]+)#', $tags, -1, PREG_SPLIT_NO_EMPTY);
+            !$tag && $tag = $tags[0];
+            $elements = array();
+            foreach($tags as $t){
+                $elements[] = array(
+                    'label' => $t,
+                    'link' => l('/tags/'.$t).e(),
+                    'active' => $t == $tag,
+                );
+            }
+            new Menu_Pills(array(
+                'name' => 'tags',
+                'elements' => $elements,
+            ));
+        }
+        if ($tag && $tag = tag($tag)) {
             $bc = new Breadcrumb_Object(array(
                         'name' => 'tags',
                         'elements' => array(
@@ -146,7 +162,7 @@ class Tags_Gear extends Gear {
             }
         } else {
             page_header(t('Tags', 'Tags'));
-
+            template('Tags.search')->show();
             $tags_cloud = new Tags_Cloud();
             $tags_cloud->show();
         }
