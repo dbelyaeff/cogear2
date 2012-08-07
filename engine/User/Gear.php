@@ -201,7 +201,7 @@ class User_Gear extends Gear {
             preg_match_all('#\[user=([^\]]+)\]#imsU', $item->body, $matches);
             for ($i = 0; $i < sizeof($matches[0]); $i++) {
                 if ($user = user($matches[1][$i], 'login')) {
-                    $item->body = str_replace($matches[0][$i],$user->getLink('avatar').' '.$user->getLink('profile'),$item->body);
+                    $item->body = str_replace($matches[0][$i], $user->getLink('avatar') . ' ' . $user->getLink('profile'), $item->body);
                 }
             }
         }
@@ -295,7 +295,7 @@ class User_Gear extends Gear {
         $list = new User_List(array(
                     'name' => 'admin.users',
                     'base' => l('/admin/user/'),
-                    'per_page' => config('Admin.user.per_page', 5),
+                    'per_page' => config('Admin.user.per_page', 20),
                     'render' => FALSE,
                 ));
         $fields = $list->getFields();
@@ -307,7 +307,7 @@ class User_Gear extends Gear {
      * Dispatcher
      * @param string $action
      */
-    public function index_action($action = 'index', $subaction=NULL) {
+    public function index_action($action = 'index', $subaction = NULL) {
         $this->show_action($action);
     }
 
@@ -329,8 +329,50 @@ class User_Gear extends Gear {
             }
         }
         page_header(t('Users', 'User'));
+        new Menu_Tabs(array(
+                    'name' => 'users',
+                    'multiple' => TRUE,
+                    'elements' => array(
+                        array(
+                            'label' => t('All'),
+                            'link' => l('/users'),
+                            'active' => 'new' != $this->input->get('type'),
+                        ),
+                        array(
+                            'label' => t('New'),
+                            'link' => l('/users') . e('type', 'new'),
+                            'active' => $this->input->get('type') == 'new',
+                        ),
+                        array(
+                            'label' => t('Negative'),
+                            'link' => l('/users') . e('filter', 'negative'),
+                            'class' => 'fl_r',
+                            'active' => $this->input->get('filter') == 'negative',
+                        ),
+                        array(
+                            'label' => t('Positive'),
+                            'link' => l('/users') . e('filter', 'positive'),
+                            'class' => 'fl_r',
+                            'active' => NULL === $this->input->get('filter') OR $this->input->get('filter') == 'positive',
+                        ),
+                    )
+                ));
+        $this->db->order('rating', 'desc');
+        if ($this->input->get('filter') == 'negative') {
+            $where = array('rating <' => 0);
+            $order = array('rating', 'asc');
+        } else {
+            $where = array('rating >=' => 0);
+            $order = array('rating', 'desc');
+        }
+        if($this->input->get('type') == 'new'){
+            $where['reg_date >'] = time() - 24*60*60*7;
+        }
         new User_List(array(
                     'name' => 'user',
+                    'per_page' => config('User.per_page', 20),
+                    'where' => $where,
+                    'order' => $order,
                 ));
     }
 
@@ -415,7 +457,7 @@ class User_Gear extends Gear {
     /**
      * Lost password recovery
      */
-    public function lostpassword_action($code= NULL) {
+    public function lostpassword_action($code = NULL) {
         $this->showMenu();
         if ($code) {
             $user = new User();
@@ -482,7 +524,7 @@ class User_Gear extends Gear {
                 $form->init();
                 $form->email->setValue($user->email);
                 if ($result = $form->result()) {
-                    $user->object->mix($result);
+                    $user->object->extend($result);
                     $result->realname && $user->name = $result->realname;
                     $user->hashPassword();
                     $user->hash = $this->secure->genHash($user->password);
