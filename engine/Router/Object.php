@@ -187,7 +187,7 @@ class Router_Object extends Options {
      * @param int $type
      * @return  boolean
      */
-    public function check($uri, $type = self::STARTS) {
+    public function check($uri = '', $type = self::STARTS) {
         $site = 'http://' . SITE_URL . '/';
         if (strpos($uri, $site) !== FALSE) {
             $uri = str_replace($site, '', $uri);
@@ -291,6 +291,6 @@ function route($route, $callback, $prepend = FALSE) {
  * @param type $arg
  * @return type
  */
-function check_route($route, $arg = Router::BOTH) {
+function check_route($route = '', $arg = Router::BOTH) {
     return cogear()->router->check($route, $arg);
 }
