@@ -365,8 +365,8 @@ class User_Gear extends Gear {
             $where = array('rating >=' => 0);
             $order = array('rating', 'desc');
         }
-        if($this->input->get('type') == 'new'){
-            $where['reg_date >'] = time() - 24*60*60*7;
+        if ($this->input->get('type') == 'new') {
+            $where['reg_date >'] = time() - 24 * 60 * 60 * 7;
         }
         new User_List(array(
                     'name' => 'user',
@@ -475,29 +475,28 @@ class User_Gear extends Gear {
             $form = new Form('User.lostpassword');
             if ($result = $form->result()) {
                 $user = new User();
-                if ($result->email) {
-                    $user->email = $result->email;
-                } elseif ($result->login) {
-                    $user->login = $result->login;
+                $user->login = $result->login;
+                if (!$user->find()) {
+                    $user->email = $result->login;
+                    if (!$user->find()) {
+                        error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'), 'growl');
+                        $form->show();
+                        return;
+                    }
                 }
-                if ($user->find()) {
-                    $recover = l('/user/lostpassword/' . $user->hash, TRUE);
-                    $mail = new Mail(array(
-                                'name' => 'register.lostpassword',
-                                'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
-                                'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>.
+                $recover = l('/user/lostpassword/' . $user->hash, TRUE);
+                $mail = new Mail(array(
+                            'name' => 'register.lostpassword',
+                            'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
+                            'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>.
                                     <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
                                     <p>To recover password, click following link:<p>
                             <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $this->session->get('ip'), $recover, $recover),
-                            ));
-                    $mail->to($user->email);
-                    if ($mail->send()) {
-                        $user->save();
-                        success(t('Follow the instructions that were send to your email.', 'Mail.lostpassword', $user->email));
-                    }
-                } else {
-                    error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'), 'growl');
-                    $form->show();
+                        ));
+                $mail->to($user->email);
+                if ($mail->send()) {
+                    $user->save();
+                    success(t('Follow the instructions that were send to your email.', 'Mail.lostpassword', $user->email));
                 }
             }
             else

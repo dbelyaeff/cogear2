@@ -39,7 +39,6 @@ class Ajax_Gear extends Gear {
         if (Ajax::is()) {
             event('ajax.hashchange');
         }
-        append('footer', '<div id="global-loader"><p>' . t('Loading…', 'Ajax') . '</p></div>');
     }
 
 }

@@ -8,11 +8,11 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          
+ * @subpackage
  * @version		$Id$
  */
 class Mail_Object extends Object{
-    
+
     public $options = array(
         'name' => '',
         'from' => '',
@@ -33,23 +33,23 @@ class Mail_Object extends Object{
 
     /**
      * Constructor
-     * 
+     *
      * @param string $from
      * @param string $from_name
      * @param array $to
      * @param string $subject
-     * @param string $body 
+     * @param string $body
      */
     public function __construct($options) {
         parent::__construct($options);
-        $this->options->mix(config('mail'));
+        $this->options->extend(config('mail'));
         event('mail.'.$this->name);
     }
 
     /**
      * Set email "from" param.
-     * 
-     * @param string $from 
+     *
+     * @param string $from
      */
     public function from($from) {
         $this->options->from = $from;
@@ -58,8 +58,8 @@ class Mail_Object extends Object{
 
     /**
      * Set email "from_name" param.
-     * 
-     * @param string $from 
+     *
+     * @param string $from
      */
     public function fromName($from_name) {
         $this->options->from_name = $from_name;
@@ -68,19 +68,19 @@ class Mail_Object extends Object{
 
     /**
      * Set email "to" param.
-     * 
-     * @param array $from 
+     *
+     * @param array $from
      */
     public function to($to) {
        is_string($to) && $to = explode(',', $to);
-       $this->options->to->mix($to);
+       $this->options->to->extend($to);
         return $this;
     }
 
     /**
      * Set email "subject" param.
-     * 
-     * @param type $subject 
+     *
+     * @param type $subject
      */
     public function subject($subject) {
         $this->options->subject = $subject;
@@ -89,8 +89,8 @@ class Mail_Object extends Object{
 
     /**
      * Set email "body" param.
-     * 
-     * @param type $body 
+     *
+     * @param type $body
      */
     public function body($body) {
         $this->options->body = $body;
@@ -99,8 +99,8 @@ class Mail_Object extends Object{
 
     /**
      * Set email "signature" param.
-     * 
-     * @param type $signature 
+     *
+     * @param type $signature
      */
     public function signature($signature) {
         $this->options->signature = $signature;
@@ -109,8 +109,8 @@ class Mail_Object extends Object{
 
     /**
      * Set email "attachments" param.
-     * 
-     * @param array|string $files 
+     *
+     * @param array|string $files
      */
     public function attach($files) {
         $this->options->attachments = array_unique(array_merge($this->options->attachments, (array) $files));

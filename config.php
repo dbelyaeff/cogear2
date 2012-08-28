@@ -14,7 +14,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1343136807,
+    'last_run' => 1346158629,
   ),
   'user' => 
   array (
@@ -38,6 +38,30 @@ return array (
         'avatar' => 
         array (
           'size' => '100x100',
+          'actions' => 
+          array (
+            0 => 'resize',
+          ),
+        ),
+        'profile' => 
+        array (
+          'size' => '32x32',
+          'actions' => 
+          array (
+            0 => 'resize',
+          ),
+        ),
+        'small' => 
+        array (
+          'size' => '24x24',
+          'actions' => 
+          array (
+            0 => 'resize',
+          ),
+        ),
+        'tiny' => 
+        array (
+          'size' => '16x16',
           'actions' => 
           array (
             0 => 'resize',
@@ -70,7 +94,7 @@ return array (
           'size' => '48x48',
           'actions' => 
           array (
-            0 => 'sizecrop',
+            0 => 'resize',
           ),
         ),
         'small' => 
@@ -78,7 +102,7 @@ return array (
           'size' => '24x24',
           'actions' => 
           array (
-            0 => 'sizecrop',
+            0 => 'resize',
           ),
         ),
         'tiny' => 
@@ -86,7 +110,7 @@ return array (
           'size' => '16x16',
           'actions' => 
           array (
-            0 => 'sizecrop',
+            0 => 'resize',
           ),
         ),
         'post' => 
@@ -102,7 +126,7 @@ return array (
           'size' => '32x32',
           'actions' => 
           array (
-            0 => 'sizecrop',
+            0 => 'resize',
           ),
         ),
         'photo' => 

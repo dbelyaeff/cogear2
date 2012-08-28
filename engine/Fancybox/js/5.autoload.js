@@ -9,7 +9,12 @@ $(document).ready(function() {
         openEffect	: 'elastic',
         closeEffect	: 'elastic'
     });
-
+    $('.post-body a > img').each(function(){
+        $(this).parent().addClass('fancybox');
+    })
+    $('.chat-msg-text a > img').each(function(){
+        $(this).parent().addClass('fancybox');
+    })
 });
 cogear.fancybox = {};
 cogear.fancybox.settings = {

@@ -77,7 +77,7 @@ class Image_Upload extends File_Upload {
      */
     public function upload() {
         if ($this->options->preset && $preset = config('image.presets.' . $this->options->preset)) {
-            $preset->options && $this->options->mix($preset->options);
+            $preset->options && $this->options->extend($preset->options);
         }
         if ($result = parent::upload()) {
             if (is_array($result)) {

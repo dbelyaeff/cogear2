@@ -65,24 +65,25 @@ class Chat_List extends Db_List_Table {
         switch ($key) {
             case 'users':
                 $output = new Core_ArrayObject();
-                $output->append('<div class="chat-msg-title">'.$chat->getLink('full').'</div>');
-                $user = user($chat->aid);
-                $output->append($user->getLink('avatar','avatar.tiny'));
-                foreach ($chat->getUsers() as $uid) {
-                    if ($user = user($uid)) {
-                        $output->append($user->getLink('avatar','avatar.tiny'));
+                $output->append('<div class="chat-msg-title">' . $chat->getLink('full') . '</div>');
+                if ($user = user($chat->aid)) {
+                    $output->append($user->getLink('avatar', 'avatar.tiny'));
+                    foreach ($chat->getUsers() as $uid) {
+                        if ($user = user($uid)) {
+                            $output->append($user->getLink('avatar', 'avatar.tiny'));
+                        }
                     }
                 }
                 return $output->toString(' ');
                 break;
             case 'last_update':
-                return '<div class="chat-msg-preview" onclick="window.location=\''.$chat->getLink().'\'">'.$chat->getLastMsg()->render('text').'</div>';
+                return '<div class="chat-msg-preview" onclick="window.location=\'' . $chat->getLink() . '\'">' . $chat->getLastMsg()->render('teaser') . '</div>';
                 break;
             case 'controls':
                 if ($chat->aid == user()->id) {
-                    return '<a href="/chat/delete/'.$chat->id.'" class="chat-action" title="' . t('Delete chat', 'Chat') . '"><i class="icon-remove"></i></a>';
+                    return '<a href="/chat/delete/' . $chat->id . '" class="chat-action" title="' . t('Delete chat', 'Chat') . '"><i class="icon-remove"></i></a>';
                 } else {
-                    return '<a href="/chat/left/'.$chat->id.'" class="chat-action" title="' . t('Leave chat', 'Chat') . '"><i class="icon-remove"></i></a>';
+                    return '<a href="/chat/left/' . $chat->id . '" class="chat-action" title="' . t('Leave chat', 'Chat') . '"><i class="icon-remove"></i></a>';
                 }
                 break;
         }

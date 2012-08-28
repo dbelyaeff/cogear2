@@ -32,7 +32,7 @@ class Redactor_Editor extends Wysiwyg_Abstract {
         $folder = cogear()->redactor->folder . '/js/redactor/';
         css($folder . 'css/redactor.css');
         js($folder . 'redactor.js','after');
-        $this->options->toolbar && $this->editor->mix($this->options->toolbar);
+        $this->options->toolbar && $this->editor->extend($this->options->toolbar);
         $options = array(
             'lang' => config('i18n.lang','en'),
             'toolbar' => $this->editor->toolbar,

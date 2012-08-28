@@ -45,9 +45,9 @@ class Config extends Core_ArrayObject {
         }
         if ($section) {
             $this->$section OR $this->$section = new Core_ArrayObject();
-            $this->$section->mix(self::read($path));
+            $this->$section->extend(self::read($path));
         } else {
-            $this->mix(self::read($path));
+            $this->extend(self::read($path));
         }
     }
 

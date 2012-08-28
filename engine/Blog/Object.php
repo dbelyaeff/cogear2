@@ -42,7 +42,7 @@ class Blog_Object extends Db_Item {
             case 'avatar':
                 $uri = new Stack(array('name' => 'blog.link.avatar'));
                 $uri->append($this->getLink());
-                return HTML::a($uri->render('/'), $this->getAvatarImage($param ? $param : 'avatar.small'));
+                return HTML::a($uri->render('/'), $this->getAvatarImage($param ? $param : 'blog.profile'));
                 break;
             case 'edit':
                 $uri = new Stack(array('name' => 'blog.link.edit'));
@@ -68,7 +68,7 @@ class Blog_Object extends Db_Item {
      */
     public function insert($data = NULL) {
         $data OR $data = $this->getData();
-        $data['created_date'] = time();
+        $this->created_date OR $data['created_date'] = time();
         $this->aid OR $data['aid'] = cogear()->user->id;
         if ($result = parent::insert($data)) {
             event('blog.insert', $this);
@@ -106,7 +106,7 @@ class Blog_Object extends Db_Item {
      * @return string
      */
     public function getAvatarImage($preset = 'avatar.small') {
-        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar'));
+        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'blog-avatar'));
     }
 
     /**
@@ -152,7 +152,7 @@ class Blog_Object extends Db_Item {
                 }
                 $navbar = new Stack(array('name' => $name));
                 $navbar->attach($this);
-                $navbar->avatar = $this->getAvatarImage('avatar.profile');
+                $navbar->avatar = $this->getAvatarImage('blog.tiny');
                 $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->name . '</a></strong>';
                 if (access('Blog.edit', $this)) {
                     $navbar->edit = '<a class="blog-edit" title="' . t('Settings') . '" href="' . $this->getLink('edit') . '"><i class="icon-cog"></i></a>';
@@ -173,6 +173,9 @@ class Blog_Object extends Db_Item {
                     }
                 }
                 return '<span class="blog-navbar">' . $navbar->render() . '</span>';
+                break;
+            case 'post':
+                return $this->getLink('avatar','blog.tiny').' '.$this->getLink('profile');
                 break;
             default:
                 event('blog.render', $this);

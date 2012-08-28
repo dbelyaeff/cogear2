@@ -153,25 +153,30 @@ class Fave_Gear extends Gear {
                 $this->db->select('posts.*')->join('fave', array(
                     'fave.pid' => 'posts.id',
                     'fave.uid' => $user->id
-                ));
+                ),'INNER');
+
                 $posts = new Post_List(array(
                             'name' => 'fave',
                             'base' => l($user->getLink() . '/' . $fave . '/posts/'),
                             'per_page' => config('Fave.posts.per_page', 5),
+                            'render' => FALSE,
                         ));
+                $posts->show();
                 break;
             case 'comments':
                 Db_ORM::skipClear();
                 $this->db->select('comments.*')->join('fave', array(
                     'fave.cid' => 'comments.id',
                     'fave.uid' => $user->id
-                ));
+                ),'INNER');
                 $comments = new Comments_List(array(
                             'name' => 'fave',
                             'base' => l($user->getLink() . '/' . $fave . '/comments/'),
                             'per_page' => config('Fave.comments.per_page', 5),
                             'flat' => TRUE,
+                            'render' => FALSE,
                         ));
+                $comments->show();
                 break;
         }
     }

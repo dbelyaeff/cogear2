@@ -23,7 +23,7 @@ class Blog_Gear extends Gear {
         'form.result.post' => 'hookFormResult',
         'post.full.before' => 'hookShowUserNavbar',
         'user.verified' => 'hookAutoRegUserBlog',
-        'post.title' => 'hookPostTitle',
+        'post.before' => 'hookPostBefore',
         'post.insert' => 'hookBlogPostCount',
         'post.update' => 'hookBlogPostCount',
         'post.delete' => 'hookBlogPostCount',
@@ -46,6 +46,7 @@ class Blog_Gear extends Gear {
         'menu' => array(1, 100),
     );
     public $current;
+
     const LEFT = 0;
     const JOINED = 1;
     const APPROVED = 2;
@@ -151,11 +152,15 @@ class Blog_Gear extends Gear {
      * @param type $Blog
      */
     public function hookBlogInsert($Blog) {
-        $reader = new Blog_Followers();
-        $reader->uid = $this->user->id;
-        $reader->bid = $Blog->id;
-        $reader->role = Blog_Gear::ADMIN;
-        $reader->save();
+        // Important!
+        // If you are converting blogs via Converter gear it will create unnecessary table rows
+        if (NULLL === session('converter.users')) {
+            $reader = new Blog_Followers();
+            $reader->uid = $this->user->id;
+            $reader->bid = $Blog->id;
+            $reader->role = Blog_Gear::ADMIN;
+            $reader->save();
+        }
     }
 
     /**
@@ -174,7 +179,7 @@ class Blog_Gear extends Gear {
      *
      * @param type $title
      */
-    public function hookPostTitle($title) {
+    public function hookPostBefore($title) {
         if ($title->object->preview) {
             return;
         }
@@ -184,7 +189,7 @@ class Blog_Gear extends Gear {
             return;
         }
         if ($blog->find() && $title->object->teaser) {
-            $title->inject(' &larr; ' . $blog->render('navbar'), 1);
+            $title->inject($blog->render('post'));
         }
     }
 
@@ -283,9 +288,21 @@ class Blog_Gear extends Gear {
     public function hookUserDelete($User) {
         $blog = new Blog();
         $blog->aid = $User->id;
-        $blog->type = Blog::$types['personal'];
-        if ($blog->find()) {
-            $blog->delete();
+        if ($blogs = $blog->findAll()) {
+            foreach ($blogs as $blog) {
+                if ($blog->type == Blog::$types['personal']) {
+                    $blog->delete();
+                } else {
+                    $blog->update(array('aid' => 1));
+                }
+            }
+        }
+        $follower = new Blog_Followers();
+        $follower->uid = $User->id;
+        if ($followers = $follower->findAll()) {
+            foreach ($followers as $follower) {
+                $follower->delete();
+            }
         }
     }
 
@@ -304,26 +321,29 @@ class Blog_Gear extends Gear {
             }
         }
     }
+
     /**
      * Hook blog followers
      *
      * @param type $Blog_Followers
      */
-    public function hookBlogFollowers($Blog_Followers){
-        if($blog = blog($Blog_Followers->bid)){
+    public function hookBlogFollowers($Blog_Followers) {
+        if ($blog = blog($Blog_Followers->bid)) {
             $followers = new Blog_Followers();
             $followers->bid = $blog->id;
             $blog->update(array('followers' => $followers->count(TRUE)));
         }
     }
+
     /**
      * Hook widgets
      *
      * @param type $widgets
      */
-    public function hookWidgets($widgets){
+    public function hookWidgets($widgets) {
         $widgets->append(new Blog_Widget());
     }
+
     /**
      * Constructor
      */
@@ -400,16 +420,16 @@ class Blog_Gear extends Gear {
                                 'name' => 'blog.users.types',
                                 'elements' => array(
                                     'admin' => array(
-                                        'label' => t('Admins', 'Blog.roles').' ('.$admin_count.')',
+                                        'label' => t('Admins', 'Blog.roles') . ' (' . $admin_count . ')',
                                         'link' => $blog->getLink() . '/users/admins/',
                                         'active' => TRUE,
                                     ),
                                     'moders' => array(
-                                        'label' => t('Moders', 'Blog.roles').' ('.$moders_count.')',
+                                        'label' => t('Moders', 'Blog.roles') . ' (' . $moders_count . ')',
                                         'link' => $blog->getLink() . '/users/moders/',
                                     ),
                                     'followers' => array(
-                                        'label' => t('Followers', 'Blog.roles').' ('.$followers_count.')',
+                                        'label' => t('Followers', 'Blog.roles') . ' (' . $followers_count . ')',
                                         'link' => $blog->getLink() . '/users/followers/',
                                     ),
                                     'newbies' => array(
@@ -445,10 +465,10 @@ class Blog_Gear extends Gear {
                                 ));
                         $fields = $list->getFields();
                         $fields->offsetSet('role', new Core_ArrayObject(array(
-                            'label' => t('Role', 'Blog'),
-                            'callback' => new Callback(array($this, 'prepareFields'), array($blog)),
-                            'class' => 't_c',
-                        )));
+                                    'label' => t('Role', 'Blog'),
+                                    'callback' => new Callback(array($this, 'prepareFields'), array($blog)),
+                                    'class' => 't_c',
+                                )));
                         $list->setFields($fields);
                         $list->show();
                     } else {
@@ -550,7 +570,7 @@ class Blog_Gear extends Gear {
      * @param string $action
      * @param string $page
      */
-    public function feed_action($login = NULL, $action='feed', $page = 'page0') {
+    public function feed_action($login = NULL, $action = 'feed', $page = 'page0') {
         if ($login) {
             if (!$user = user($login, 'login')) {
                 return event('404');
@@ -588,11 +608,16 @@ class Blog_Gear extends Gear {
     /**
      * List blogs
      */
-    public function list_action(){
-        page_header(t('Blogs','Blogs'));
+    public function list_action() {
+        page_header(t('Blogs', 'Blogs'));
         new Blog_List(array(
-            'name' => 'main',
-        ));
+                    'name' => 'main',
+                    'where' => array(
+                        'type' => Blog::$types['public']
+                    ),
+                    'per_page' => 20,
+                    'order' => array('rating','desc'),
+                ));
     }
 
     /**
@@ -634,7 +659,7 @@ class Blog_Gear extends Gear {
      * @return int // 0 - left, 1 - joined, 2 - approved
      */
     public function check_status($bid) {
-        if ($blog = $this->session->get('blogs')) {
+        if ($blog = session('blogs') && is_int($bid)) {
             return isset($blog[$bid]) ? $blog[$bid] : 0;
         }
     }
@@ -739,7 +764,7 @@ class Blog_Gear extends Gear {
             Blog_Gear::JOINED => t('Newbie', 'Blog.roles'),
             Blog_Gear::LEFT => t('Dismiss', 'Blog.roles'),
         );
-        if($blog->type != Blog_Object::$types['private']){
+        if ($blog->type != Blog_Object::$types['private']) {
             unset($values[Blog_Gear::JOINED]);
         }
         $form->role->setValues($values);

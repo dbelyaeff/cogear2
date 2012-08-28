@@ -12,6 +12,9 @@
  * @version		$Id$
  */
 class Db_Driver_Mysql extends Db_Driver_Abstract {
+
+    protected $connection;
+
     /**
      * Connect to database
      *
@@ -48,7 +51,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * @return boolean
      */
     public function query($query = '', $bench = TRUE) {
-        if(!is_resource($this->connection)){
+        if (!is_resource($this->connection)) {
             return FALSE;
         }
         if (!$query) {
@@ -164,7 +167,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         $group && $query[] = ' GROUP BY ' . implode(', ', $group);
         $having && $query[] = ' HAVING ' . implode(', ', $having);
         $order && $query[] = ' ORDER BY ' . implode(', ', $order);
-        $limit && isset($limit[0]) && $query[] = ' LIMIT ' . ($limit[1] ? $limit[1].' ,'.$limit[0] : $limit[0]);
+        $limit && isset($limit[0]) && $query[] = ' LIMIT ' . ($limit[1] ? $limit[1] . ' ,' . $limit[0] : $limit[0]);
         return $this->query = implode($query);
     }
 
@@ -199,7 +202,7 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
      * @return string
      */
     public function escape($value) {
-        return mysql_real_escape_string($value);
+        return mysql_real_escape_string($value, $this->connection);
     }
 
     /**
@@ -225,6 +228,46 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
     public function commit() {
         $this->query('COMMIT');
         $this->query('SET AUTOCOMMIT=1');
+    }
+
+    public function create($table, $fields) {
+
+    }
+
+    public function alter($table, $fields) {
+
+    }
+
+    /**
+     * Truncate table
+     *
+     * @param type $table
+     * @return type
+     */
+    public function truncate($table) {
+        if (is_array($table)) {
+            foreach ($table as $name) {
+                $this->truncate($name);
+            }
+        } else {
+            return $this->query('TRUNCATE TABLE ' . $table);
+        }
+    }
+
+    /**
+     * Drop table
+     *
+     * @param type $table
+     * @return type
+     */
+    public function drop($table) {
+        if (is_array($table)) {
+            foreach ($table as $name) {
+                $this->drop($name);
+            }
+        } else {
+            return $this->query('DROP TABLE ' . $table);
+        }
     }
 
 }

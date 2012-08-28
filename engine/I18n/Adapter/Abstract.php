@@ -21,7 +21,7 @@ abstract class I18n_Adapter_Abstract extends Options {
 
     /**
      * Get text
-     * 
+     *
      * @param   string  $text
      * @param   string  $section
      */
@@ -49,7 +49,7 @@ abstract class I18n_Adapter_Abstract extends Options {
 
     /**
      * Get text
-     * 
+     *
      * @param   string  $text
      * @param   string  $value
      * @param   string  $section
@@ -70,8 +70,8 @@ abstract class I18n_Adapter_Abstract extends Options {
 
     /**
      * Prepare section
-     * 
-     * @param string $section 
+     *
+     * @param string $section
      */
     protected function prepareSection($section) {
         if ($section[0] != self::SECTION_PREFIX) {
@@ -82,21 +82,21 @@ abstract class I18n_Adapter_Abstract extends Options {
 
     /**
      * Import text
-     * 
+     *
      * @param   string  $text
      * @param   string  $section
      */
     public function import($data, $section = NULL) {
         if ($section) {
-            $this->$section->mix($data);
+            $this->$section->extend($data);
         } else {
-            $this->mix($data);
+            $this->extend($data);
         }
     }
 
     /**
      * Export text
-     * 
+     *
      * @param   string  $text
      * @param   string  $section
      */
@@ -116,7 +116,7 @@ abstract class I18n_Adapter_Abstract extends Options {
 
     /**
      * Magic __get method
-     * 
+     *
      * @param string $name
      * @return mixed
      */

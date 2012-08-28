@@ -19,6 +19,17 @@
 .post-body{
     padding: 5px 0 10px 10px;
 }
+.post-body img{
+    padding: 1px;
+    border: 1px solid #CCC;
+}
+.post-body img[align=right]{
+    margin: 15px 20px 0 0;
+    border: none;
+}
+.post-body img.no-border{
+    border: none;
+}
 .post-info{
     border-top: 1px solid #CFCFCF;
     padding: 5px 10px;

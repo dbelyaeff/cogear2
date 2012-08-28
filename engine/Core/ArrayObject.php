@@ -59,12 +59,12 @@ class Core_ArrayObject extends ArrayObject {
     }
 
     /**
-     * Mix elements with another object
+     * Extend elements with another object
      *
      * @param  array|self $data
      * @return  self
      */
-    public function mix($data) {
+    public function extend($data) {
         if (!$data)
             return;
         $data instanceof self && $data = (array) $data;

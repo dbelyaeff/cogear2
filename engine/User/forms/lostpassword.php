@@ -4,20 +4,10 @@ return array(
     'name' => 'user-lostpassword',
     'class' => 'form-horizontal',
     'elements' => array(
-        'email' => array(
-            'label' => t('E-Mail', 'User'),
-            'type' => 'text',
-            'validators' => array('Email'),
-        ),
-        'or' => array(
-            'label' => t('OR', 'User'),
-            'type' => 'div',
-            'class' => 'or',
-        ),
         'login' => array(
-            'label' => t('Login', 'User'),
+            'label' => t('Login or email', 'User'),
             'type' => 'text',
-            'validators' => array('Login'),
+            'validators' => array('Required'),
         ),
         'buttons' => array(
             'type' => 'group',

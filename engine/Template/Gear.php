@@ -14,3 +14,17 @@ class Template_Gear extends Gear {
     protected $name = 'Template';
     protected $description = 'Deals with templates';
 }
+
+
+/**
+ * Template object alias
+ *
+ * @param string $name
+ * @param array $args
+ * @return Template
+ */
+function template($name,$args = array()){
+    $tpl = new Template($name);
+    $args && $tpl->assign($args);
+    return $tpl;
+}

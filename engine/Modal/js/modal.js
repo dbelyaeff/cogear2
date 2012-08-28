@@ -9,6 +9,8 @@ $('.modal').live('shown',function () {
             modal.find('.btn-primary').click();
         }
     });
+    cogear.ajax.loader.el.appendTo($('.modal-body'));
+    cogear.ajax.loader.type('blue-stripe').show();
     modal.find('.modal-body').load(modal.attr('data-source'),function(){
         var headers = modal.find('.page-header');
         if(headers.length > 0){
@@ -17,7 +19,6 @@ $('.modal').live('shown',function () {
                $(modal.find('.modal-header')[0]).html($(header).html());
             }
             else {
-                console.log();
                 $(header).removeClass('page-header').addClass('modal-header');
                 $(modal.find('.close')[0]).after($(header));
             }

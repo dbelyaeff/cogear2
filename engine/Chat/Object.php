@@ -133,9 +133,12 @@ class Chat_Object extends Db_Item {
      * @param type $data
      */
     public function insert($data = NULL) {
-        $data OR $data = $this->object->toArray();
-        $data['created_date'] = time();
-        $data['aid'] = user()->id;
+        if($this->find()){
+            return $this->id;
+        }
+        $data OR $data = $this->getData();
+        isset($data['created_date']) OR $data['created_date'] = time();
+        isset($data['aid']) OR $data['aid'] = user()->id;
         if ($result = parent::insert($data)) {
             event('chat.insert', $this, $data, $result);
         }
@@ -148,7 +151,7 @@ class Chat_Object extends Db_Item {
      * @param type $data
      */
     public function update($data = NULL) {
-        $data OR $data = $this->object->toArray();
+        $data OR $data = $this->getData();
         $data['last_update'] = time();
         if ($result = parent::update($data)) {
             event('chat.update', $this, $data, $result);

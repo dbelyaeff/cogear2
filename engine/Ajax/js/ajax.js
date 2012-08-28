@@ -17,6 +17,7 @@ Ajax_Loader.prototype = {
     type: function(type){
         this.el.attr('class',this.className);
         this.el.addClass(type);
+        return this;
     },
     after: function(selector){
         $(selector).after(this.el);

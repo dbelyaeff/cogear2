@@ -224,6 +224,7 @@ class Friends_Gear extends Gear {
                     'base' => $user->getLink() . '/friends/',
                     'per_page' => config('User.friends.per_page', 10),
                     'where_in' => array('users.id'=>array_keys($friends)),
+                    'order' => array('rating','desc'),
                 ));
     }
 

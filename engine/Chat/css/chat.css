@@ -34,6 +34,11 @@
 }
 .chat-msg-body{
     float: left;
+    text-align: left;
+    width: 90%;
+}
+.chat-msg-text{
+
 }
 .chat-msg-time{
     float: right;

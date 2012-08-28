@@ -4,7 +4,22 @@
         <?php if ($prev) { ?><li><a class="prev" href="<?php echo $base . $prefix . $prev ?>">&larr;</a></li><?php } ?>
         <?php
         if ($order == Pager::FORWARD) {
+            $a = 5;
+            $b = $a + 1;
             for ($i = 1; $i <= $pages_num; $i++):
+                if($pages_num > 12){
+                    if($i == $current - $b OR $i == $current + $b){
+                        ?>
+                         <li><a>…</a></li>
+                        <?
+                    }
+                    if($current < 9 && $i > 12){
+                        continue;
+                    }
+                    if($i > $current + $a OR $i < $current - $a){
+                        continue;
+                    }
+                }
                 ?>
                 <li class="<?php if ($i == $current) { ?>active<?php } ?>">
                     <a href="<?php echo $base . ( $i != $options->first ? $prefix . $i : '') ?>"><?php echo $i ?></a>

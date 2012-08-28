@@ -22,7 +22,7 @@ class Pager_Object extends Pager_Abstract {
         'show_empty' => FALSE,
         'autolimit' => TRUE,
         'prefix' => 'page',
-        'method' => self::GET,
+        'method' => 1,
     );
     protected $prev;
     protected $next;
@@ -31,6 +31,7 @@ class Pager_Object extends Pager_Abstract {
     protected $pages_num;
     protected $is_init;
     public $start;
+
     const FORWARD = 0;
     const REVERSE = 1;
     const PATH = 0;
@@ -51,11 +52,13 @@ class Pager_Object extends Pager_Abstract {
      */
     protected function init() {
         // Auto parse page from uri
-        if ($this->current == 0 && $uri = cogear()->router->getUri()) {
+        if ($this->current == 0) {
             switch ($this->method) {
                 case self::PATH:
-                    if (preg_match('#' . preg_quote($this->prefix) . '([\d+])/?$#', $uri, $matches)) {
-                        $this->options->current = $matches[1];
+                    if ($uri = cogear()->router->getUri()) {
+                        if (preg_match('#' . preg_quote($this->prefix) . '([\d+])/?$#', $uri, $matches)) {
+                            $this->options->current = $matches[1];
+                        }
                     }
                     break;
                 case self::GET:
@@ -86,7 +89,7 @@ class Pager_Object extends Pager_Abstract {
             $this->prev = $this->current + 1;
             $this->next = $this->current - 1;
         }
-        $this->options->autolimit && cogear()->db->limit($this->start, $this->per_page);
+        $this->options->autolimit && cogear()->db->limit($this->per_page, $this->start);
         if ($this->first == $this->current) {
             $this->first = NULL;
             $this->prev = NULL;

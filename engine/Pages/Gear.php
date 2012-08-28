@@ -184,7 +184,7 @@ class Pages_Gear extends Gear {
         $form->attach($page);
         $form->elements->title->options->label = t('Edit page');
         if ($result = $form->result()) {
-            $page->object->mix($result);
+            $page->object->extend($result);
             if ($result->delete && (access('page.delete.all') OR access('page.delete') && $this->user->id == $page->aid)) {
                 if ($page->delete()) {
                     flash_success(t('Page has been deleted!'));

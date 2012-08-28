@@ -223,21 +223,23 @@ class Vote_Gear extends Gear {
                 case 'posts':
                     Db_ORM::skipClear();
                     $this->db->where_in('posts.id', array_keys($posts));
-                    new Post_List(array(
+                    $list = new Post_List(array(
                                 'name' => 'vote.posts',
                                 'base' => l('/vote/posts/'),
                                 'per_page' => config('Vote.post.per_page', 5),
+                                'render' => FALSE,
                             ));
 
                     break;
                 case 'comments':
                     Db_ORM::skipClear();
                     $this->db->where_in('comments.id', array_keys($comments));
-                    new Comments_List(array(
+                    $list = new Comments_List(array(
                                 'name' => 'vote.comments',
                                 'base' => l('/vote/comments/'),
                                 'per_page' => config('Vote.comments.per_page', 10),
                                 'flat' => TRUE,
+                                'render' => FALSE,
                             ));
 
 
@@ -245,23 +247,26 @@ class Vote_Gear extends Gear {
                 case 'users':
                     Db_ORM::skipClear();
                     $this->db->where_in('users.id', array_keys($users));
-                    new User_List(array(
+                    $list = new User_List(array(
                                 'name' => 'vote.users',
                                 'base' => l('/vote/users/'),
                                 'per_page' => config('Vote.users.per_page', 10),
                                 'flat' => TRUE,
+                                'render' => FALSE,
                             ));
                     break;
                 case 'blogs':
                     Db_ORM::skipClear();
                     $this->db->where_in('blogs.id', array_keys($blogs));
-                    new Blog_List(array(
+                    $list = new Blog_List(array(
                                 'name' => 'vote.blogs',
                                 'base' => l('/vote/blogs/'),
                                 'per_page' => config('Vote.blogs.per_page', 10),
+                                'render' => FALSE,
                             ));
                     break;
             }
+            $list->show();
         } else {
             event('empty');
         }

@@ -34,6 +34,7 @@ class I18n_Gear extends Gear {
         $this->attach(new $adapter($options));
         $this->load();
         setlocale(LC_ALL, $this->locale);
+        date_default_timezone_set(config('i18n.timezone','Europe/Moscow'));
         hook('done', array($this->object, 'save'));
         parent::__construct();
     }

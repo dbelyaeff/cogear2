@@ -25,7 +25,7 @@ class Code_Editor extends Wysiwyg_Abstract {
         $folder = cogear()->code->folder . '/codemirror/lib/';
         css($folder . 'codemirror.css','form.close');
         js($folder . 'codemirror.js','form.close');
-        $this->options->toolbar && $this->editor->mix($this->options->toolbar);
+        $this->options->toolbar && $this->editor->extend($this->options->toolbar);
         $options = array(
             'mode' => $this->editor->mode,
             'theme' => $this->editor->theme,

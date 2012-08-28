@@ -123,9 +123,11 @@ class Url {
      * @param array $data
      * @return  string
      */
-    public static function extendQuery($data) {
-        $_GET = array_merge($_GET, $data);
-        return http_build_query($_GET);
+    public static function extendQuery($data = array(),$value = NULL) {
+        if(!is_array($data) && $value){
+            $data = array($data=>$value);
+        }
+        return http_build_query(array_merge($_GET, $data));
     }
 
 }
@@ -138,3 +140,6 @@ function s($url='', $absolute_flag = FALSE, $protocol = 'http') {
     return Url::slink($url, $absolute_flag, $protocol);
 }
 
+function e($data = array(),$value = NULL){
+    return '?'.Url::extendQuery($data,$value);
+}

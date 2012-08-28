@@ -20,6 +20,7 @@ class Post_Gear extends Gear {
         'comment.insert' => 'hookCommentsRecount',
         'comment.update' => 'hookCommentsRecount',
         'comment.delete' => 'hookCommentsRecount',
+        'user.delete' => 'hookUserDelete',
     );
     protected $access = array(
         'create' => 'access',
@@ -101,6 +102,20 @@ class Post_Gear extends Gear {
     }
 
     /**
+     * Hook user delete
+     *
+     * @param object $User
+     */
+    public function hookUserDelete($User){
+        $post = post();
+        $post->aid = $User->id;
+        if($posts = $post->findAll()){
+            foreach($posts as $post){
+                $post->delete();
+            }
+        }
+    }
+    /**
      * Constructor
      */
     public function init() {
@@ -179,7 +194,7 @@ class Post_Gear extends Gear {
         $user->navbar()->show();
         $posts = new Post_List(array(
                     'name' => 'user.posts',
-                    'base' => user()->getLink() . '/posts/',
+                    'base' => $user->getLink() . '/posts/',
                     'per_page' => config('User.posts.per_page', 5),
                     'where' => array('aid' => $user->id, 'published' => 1),
                 ));
@@ -222,7 +237,7 @@ class Post_Gear extends Gear {
         $form = new Form('Post.post');
         $form->attach($post);
         if ($result = $form->result()) {
-            $post->object->mix($result);
+            $post->object->extend($result);
             if ($result->preview) {
                 $post->preview = TRUE;
                 $post->show();
@@ -263,7 +278,7 @@ class Post_Gear extends Gear {
         $form->attach($post);
         $form->elements->title->options->label = t('Edit post');
         if ($result = $form->result()) {
-            $post->object->mix($result);
+            $post->object->extend($result);
             if ($result->delete && access('Post.delete',$post)) {
                 $blog = new Blog();
                 $blog->id = $post->bid;

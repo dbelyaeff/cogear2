@@ -38,9 +38,9 @@ class Chat_Messages extends Db_Item {
      * @param type $data
      */
     public function insert($data = NULL) {
-        $data OR $data = $this->object->toArray();
-        $data['created_date'] = time();
-        $data['aid'] = user()->id;
+        $data OR $data = $this->getData();
+        isset($data['created_date']) OR $data['created_date'] = time();
+        isset($data['aid']) OR $data['aid'] = user()->id;
         if ($result = parent::insert($data)) {
             event('chat_msg.insert', $this, $data, $result);
         }
@@ -53,9 +53,9 @@ class Chat_Messages extends Db_Item {
      * @param type $data
      */
     public function update($data = NULL) {
-        $data OR $data = $this->object->toArray();
+        $data OR $data = $this->getData();
         $data['last_update'] = time();
-        $data['ip'] = cogear()->session->get('ip');
+        isset($data['ip']) OR $data['ip'] = cogear()->session->get('ip');
         if ($result = parent::update($data)) {
             event('chat_msg.update', $this, $data, $result);
         }
@@ -78,6 +78,9 @@ class Chat_Messages extends Db_Item {
         switch($type){
             case 'text':
                 $this->body = strip_tags($this->body);
+                break;
+            case 'teaser':
+                $this->body = mb_substr(strip_tags($this->body),0,125,'UTF-8').'…';
                 break;
         }
         return parent::render();

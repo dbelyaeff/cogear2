@@ -1,5 +1,4 @@
 .ajax-loader{
-    float: left;
     margin: 2px 5px;
 }
 .ajax-loader.black-spinner{
@@ -10,6 +9,7 @@
 .ajax-loader.black-stripe{
     width: 220px;
     height: 19px;
+    display: block;
     background: url(../img/black/stripe.gif) no-repeat 0 0;
 }
 .ajax-loader.blue-dots{
@@ -20,5 +20,6 @@
 .ajax-loader.blue-stripe{
     width: 220px;
     height: 19px;
+    display: block;
     background: url(../img/blue/stripe.gif) no-repeat 0 0;
 }

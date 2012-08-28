@@ -111,7 +111,7 @@ class Form_Object extends Object {
     public function addElement($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
         if ($this->defaults->$name) {
-            $this->defaults->$name->mix($config);
+            $this->defaults->$name->extend($config);
             $config = $this->defaults->$name;
         }
         if ($config->label && !$config->placeholder && in_array($config->type, array('text', 'input', 'textarea', 'password', 'editor'))) {

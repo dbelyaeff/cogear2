@@ -37,7 +37,9 @@ class Image_Object extends Object {
      * @return Core_ArrayObject
      */
     public static function getInfo($path = NULL) {
-        $path OR $path = $this->file->path;
+        if($path instanceof  self){
+            $path = $path->getFile()->path;
+        }
         if(!file_exists($path)) return NULL;
         $info = getimagesize($path);
         return new Core_ArrayObject(array(

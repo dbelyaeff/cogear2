@@ -447,7 +447,7 @@ class Taxonomy_Gear extends Gear {
                     flash_success(t('The vocabulary has been deleted!', 'Taxonomy'), NULL, 'growl');
                     return redirect('/admin/taxonomy');
                 }
-                $vocabulary->object->mix($result);
+                $vocabulary->object->extend($result);
                 if ($vocabulary->update()) {
                     flash_success(t('The vocabulary has been updated!', 'Taxonomy'), NULL, 'growl');
                     redirect('/admin/taxonomy');

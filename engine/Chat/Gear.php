@@ -136,16 +136,17 @@ class Chat_Gear extends Gear {
         $view = new Chat_View();
         $view->uid = user()->id;
         $view->viewed = 0;
-        $count = $view->count();
+        $count = $view->count(TRUE);
+        $this->db->clear();
         return $count;
     }
 
     /**
      * Push new messages count
      */
-    public function counter_action(){
+    public function counter_action() {
         $count = $this->getNewMsgCount();
-        exit($count ? '+'.$count : '');
+        exit($count ? '+' . $count : '');
     }
 
     /**
@@ -227,40 +228,32 @@ class Chat_Gear extends Gear {
         if ($friends = $this->friends->getFriends()) {
             $form = new Form('Chat.chat');
             $form->init();
-            $values = array();
-            foreach ($friends as $uid => $role) {
-                if ($user = user($uid)) {
-                    $values[$uid] = $user->login;
-                }
-            }
             if ($result = $form->result()) {
                 $chat = new Chat_Object();
-//                $chat->aid = user()->id;
-                $chat->name = $result->name;
-                $chat->created_date = time();
-                if ($cid = $chat->insert()) {
-                    $users = preg_split('#[,\s]+#', $result->users, -1, PREG_SPLIT_NO_EMPTY);
-                    $users = array_unique($users);
-                    $data = array();
-                    foreach ($users as $login) {
-                        // Cannot invite chat admin
-                        if ($login === user()->login) {
-                            continue;
-                        } else if ($user = user($login, 'login')) {
-                            $chat->join($user->id);
-                            $data[] = $user->id;
-                        }
+                $users = preg_split('#[,\s]+#', $result->users, -1, PREG_SPLIT_NO_EMPTY);
+                $users = array_unique($users);
+                $data = array();
+                foreach ($users as $login) {
+                    // Cannot invite chat admin
+                    if ($login === user()->login) {
+                        continue;
+                    } else if ($user = user($login, 'login')) {
+                        $chat->join($user->id);
+                        $data[] = $user->id;
                     }
-                    $chat->update(array('users' => implode(',', $data)));
-                    $msg = new Chat_Messages();
-                    $msg->cid = $cid;
-//                    $msg->aid = user()->id;
-                    $msg->created_date = time();
-                    $msg->body = $result->body;
-                    if ($msg->insert()) {
-                        flash_success(t('Chat has been started'));
-                        redirect($chat->getLink());
-                    }
+                }
+                $chat->aid = user()->id;
+                natsort($data);
+                $chat->users = implode(',', $data);
+                $chat->insert();
+                $msg = new Chat_Messages();
+                $msg->cid = $chat->id;
+                $msg->aid = user()->id;
+                $msg->created_date = time();
+                $msg->body = $result->body;
+                if ($msg->insert()) {
+                    flash_success(t('Chat has been started'));
+                    redirect($chat->getLink());
                 }
             }
             $form->show();
@@ -323,15 +316,15 @@ class Chat_Gear extends Gear {
      * @param int $cid
      * @param int $last_id
      */
-    public function refresh_action($cid,$last_id){
-        if($chat = chat($cid) && Ajax::is()){
+    public function refresh_action($cid, $last_id) {
+        if ($chat = chat($cid) && Ajax::is()) {
             $msg = chat_msg();
             $msg->cid = $cid;
-            $msg->where('id',$last_id, ' > ');
+            $msg->where('id', $last_id, ' > ');
             $ajax = new Ajax();
             $ajax->code = '';
-            if($msgs = $msg->findAll()){
-                foreach($msgs as $msg){
+            if ($msgs = $msg->findAll()) {
+                foreach ($msgs as $msg) {
                     $msg->chat = $chat;
                     $ajax->code .= $msg->render();
                 }
@@ -339,6 +332,7 @@ class Chat_Gear extends Gear {
             $ajax->json();
         }
     }
+
     /**
      * Viewer action
      *

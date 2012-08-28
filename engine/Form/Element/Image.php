@@ -23,7 +23,7 @@ class Form_Element_Image extends Form_Element_File {
         if ($result = $image->upload()) {
             $this->is_fetched = TRUE;
             $this->image = $image->getInfo();
-            $this->value = $result;
+            $this->value = File::pathToUri($result->path, UPLOADS);
         } else {
             $this->errors = $image->errors;
             $this->value = $this->options->value;

@@ -77,7 +77,7 @@ class Db_Tree extends Db_Item {
      */
     public function branching() {
         if ($this->{$this->parent_field}) {
-            $parent = new $this->class;
+            $parent = new $this->class($this->table,$this->primary,$this->db);
             $parent->{$this->primary} = $this->{$this->parent_field};
             if ($parent->find()) {
                 $obj = new $this->class;

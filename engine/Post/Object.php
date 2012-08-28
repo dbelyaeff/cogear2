@@ -21,7 +21,7 @@ class Post_Object extends Db_Item {
      *
      * @return string
      */
-    public function getLink($type = 'default',$param = NULL) {
+    public function getLink($type = 'default', $param = NULL) {
         switch ($type) {
             case 'edit':
                 $uri = new Stack(array('name' => 'post.link.edit'));
@@ -39,7 +39,7 @@ class Post_Object extends Db_Item {
                 $uri->append('hide');
                 break;
             case 'full':
-                return '<a href="'.$this->getLink().$param.'">'.$this->name.'</a>';
+                return '<a href="' . $this->getLink() . $param . '">' . $this->name . '</a>';
                 break;
             default:
                 $uri = new Stack(array('name' => 'post.link'));
@@ -56,12 +56,14 @@ class Post_Object extends Db_Item {
      */
     public function insert($data = NULL) {
         $data OR $data = $this->object->toArray();
-        $data['created_date'] = time();
-        $data['ip']= cogear()->session->get('ip');
-        $data['last_update'] = time();
-        $data['aid'] = cogear()->user->id;
+        if (NULL === session('converter.adapter')) {
+            $data['created_date'] = time();
+            $data['ip'] = cogear()->session->get('ip');
+            $data['last_update'] = time();
+            $data['aid'] = cogear()->user->id;
+        }
         if ($result = parent::insert($data)) {
-            event('post.insert', $this,$data,$result);
+            event('post.insert', $this, $data, $result);
         }
         return $result;
     }
@@ -75,7 +77,7 @@ class Post_Object extends Db_Item {
         $data OR $data = $this->object->toArray();
         isset($data['body']) && $data['last_update'] = time();
         if ($result = parent::update($data)) {
-            event('post.update', $this,$data,$result);
+            event('post.update', $this, $data, $result);
         }
         return $result;
     }
@@ -85,7 +87,7 @@ class Post_Object extends Db_Item {
      */
     public function delete() {
         if ($result = parent::delete()) {
-            event('post.delete',$this,array(),$result);
+            event('post.delete', $this, array(), $result);
         }
         return $result;
     }
@@ -101,4 +103,5 @@ class Post_Object extends Db_Item {
         }
         return parent::render($template);
     }
+
 }

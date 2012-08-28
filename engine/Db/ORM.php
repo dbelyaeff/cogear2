@@ -18,7 +18,8 @@ class Db_ORM extends Object {
      *
      * @var type
      */
-    protected static $loaded_items = array();
+    protected static $cached = array();
+    protected $cache_path = '';
 
     /**
      * Table name
@@ -89,8 +90,8 @@ class Db_ORM extends Object {
         } else {
             $this->clear();
         }
-        if (!self::$loaded_items) {
-            self::$loaded_items = new Core_ArrayObject();
+        if (!self::$cached) {
+            self::$cached = new Core_ArrayObject();
         }
         $table && $this->table = $table;
         $this->db = $db instanceof Db_Object ? $db : cogear()->db->object;
@@ -100,6 +101,7 @@ class Db_ORM extends Object {
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
         $this->primary = $primary ? $primary : $first;
+        $this->cache_path = $this->db->options->database.'.'.$this->table;
         $this->attach(new Core_ArrayObject());
     }
 
@@ -172,6 +174,9 @@ class Db_ORM extends Object {
      */
     public function __call($name, $args) {
         $callback = array($this->db, $name);
+        if(!$args){
+            $args = array($this->table);
+        }
         if (is_callable($callback)) {
             $result = call_user_func_array($callback, $args);
             if ($result instanceof Db_Driver_Abstract) {
@@ -205,12 +210,14 @@ class Db_ORM extends Object {
      * @param type $object
      */
     public function cache($id,$object = NULL){
-        $path = $this->db->options->database.'.'.$this->table;
+        $path = $this->cache_path;
+        self::$cached OR self::$cached = new Core_ArrayObject();
         if($object){
-            self::$loaded_items[$path][$id] = $object;
+            self::$cached->$path OR self::$cached->$path = new Core_ArrayObject();
+            self::$cached->$path->$id = $object;
         }
         else {
-            return isset(self::$loaded_items[$path][$id]) ? self::$loaded_items[$path][$id] : NULL;
+            return self::$cached->$path && self::$cached->$path->$id ? self::$cached->$path->$id : NULL;
         }
     }
     /**
@@ -267,9 +274,9 @@ class Db_ORM extends Object {
      */
     public function count($reset = FALSE) {
         if ($data = $this->getData()) {
-            $this->db->where($data);
+            $this->db->object->where($data);
         }
-        return $this->db->count($this->table, $this->table . '.' . $this->primary, $reset);
+        return $this->db->object->count($this->table, $this->table . '.' . $this->primary, $reset);
     }
 
     /**
