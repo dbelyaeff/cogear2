@@ -39,27 +39,24 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract {
      * @param boolean $force
      * @return mixed|NULL
      */
-    public function read($name, $force=FALSE) {
-        if (!$force && $this->enabled === FALSE) {
-            return NULL;
-        }
+    public function read($name, $force = FALSE) {
         $name = $this->prepareKey($name);
         $path = $this->options->path . DS . $name;
         if (file_exists($path)) {
             $data = Config::read($path, Config::AS_ARRAY);
             if ($force) {
                 return $data['value'];
-            } elseif ($data['ttl'] && time() > $data['ttl']) {
+            }
+            if ($data['ttl'] && time() > $data['ttl']) {
                 return NULL;
             } elseif (isset($data['tags']) && is_array($data['tags'])) {
                 foreach ($data['tags'] as $tag) {
-                    if (!$this->read('tags/' . $tag)) {
+                    if (NULL === $this->read('tags/' . $tag)) {
                         return NULL;
                     }
                 }
-            } else {
-                return $data['value'];
             }
+            return $data['value'];
         }
         return NULL;
     }
@@ -76,12 +73,12 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract {
         $name = $this->prepareKey($name);
         $data = array(
             'value' => $value,
-            'ttl' => $ttl,
+            'ttl' => $ttl ? time() + $ttl : 0,
         );
         if ($tags) {
             $data['tags'] = $tags;
             foreach ($tags as $tag) {
-                $this->write('tags/' . $tag, '', array(), $ttl);
+                $this->write('tags/' . $tag, '', array());
             }
         }
         File::mkdir(dirname($this->options->path . DS . $name));

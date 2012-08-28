@@ -23,3 +23,20 @@ class Cache_Gear extends Gear {
         $this->attach(new Cache_Object());
     }
 }
+/**
+ * Caching alias
+ *
+ * @param type $name
+ * @param type $value
+ * @param type $tags
+ * @param type $ttl
+ * @return type
+ */
+function cache($name,$value = '',$tags = array(),$ttl = 3600){
+    if($value){
+        return cogear()->cache->write($name,$value,$tags,$ttl);
+    }
+    else {
+        return cogear()->cache->read($name);
+    }
+}
