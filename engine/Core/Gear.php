@@ -326,7 +326,7 @@ abstract class Gear extends Object {
     protected function getFolder() {
         if (!$this->dir)
             $this->getDir();
-        $this->folder = str_replace(array(ROOT), array(''), $this->dir);
+        $this->folder = str_replace(array(ROOT,DS), array('','/'), $this->dir);
         return self::normalizePath($this->dir);
     }
 

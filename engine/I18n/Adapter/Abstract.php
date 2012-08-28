@@ -32,16 +32,16 @@ abstract class I18n_Adapter_Abstract extends Options {
                 if ($this->$section->$text) {
                     return $this->$section->$text;
                 } elseif ($this->$section->$text == NULL) {
-                    $this->set($text, '', $section);
+//                    $this->set($text, '', $section);
                 }
             } else {
-                $this->set($text, '', $section);
+//                $this->set($text, '', $section);
             }
         } else {
             if ($this->$text) {
                 return $this->$text;
             } elseif ($this->$text == NULL) {
-                $this->set($text, '', $section);
+//                $this->set($text, '', $section);
             }
         }
         return $text;
@@ -54,19 +54,19 @@ abstract class I18n_Adapter_Abstract extends Options {
      * @param   string  $value
      * @param   string  $section
      */
-    public function set($text, $value, $section = NULL) {
-        $args = func_get_args();
-        if ($section) {
-            $section = $this->prepareSection($section);
-            if (!$this->$section) {
-                $this->$section = new Core_ArrayObject();
-            }
-            $this->$section->$text = $value;
-        } else {
-            $this->$text = $value;
-        }
-        $this->update_flag = TRUE;
-    }
+//    public function set($text, $value, $section = NULL) {
+//        $args = func_get_args();
+//        if ($section) {
+//            $section = $this->prepareSection($section);
+//            if (!$this->$section) {
+//                $this->$section = new Core_ArrayObject();
+//            }
+//            $this->$section->$text = $value;
+//        } else {
+//            $this->$text = $value;
+//        }
+//        $this->update_flag = TRUE;
+//    }
 
     /**
      * Prepare section
@@ -88,6 +88,7 @@ abstract class I18n_Adapter_Abstract extends Options {
      */
     public function import($data, $section = NULL) {
         if ($section) {
+            $this->$section OR $this->$section = new Core_ArrayObject();
             $this->$section->extend($data);
         } else {
             $this->extend($data);

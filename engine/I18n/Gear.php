@@ -21,7 +21,22 @@ class I18n_Gear extends Gear {
     protected $domains = array();
     protected $lang;
     protected $locale;
+    protected $hooks = array('gear.init'=>'hookGearInit');
+    const EXT = '.php';
 
+    /**
+     * Hook gear init
+     *
+     * @param type $Gear
+     */
+    public function hookGearInit($Gear){
+        $file = $Gear->dir.DS.'lang'.DS.$this->lang.self::EXT;
+        if(is_dir(dirname($file)) && file_exists($file)){
+            if($data = Config::read($file)){
+                $this->import($data,$this->prepareSection($Gear->gear));
+            }
+        }
+    }
     /**
      * Constructor
      */
@@ -32,10 +47,10 @@ class I18n_Gear extends Gear {
         $options = config('i18n');
         $options->path OR $options->path = ROOT . DS . 'lang';
         $this->attach(new $adapter($options));
-        $this->load();
+        //$this->load();
         setlocale(LC_ALL, $this->locale);
         date_default_timezone_set(config('i18n.timezone','Europe/Moscow'));
-        hook('done', array($this->object, 'save'));
+        //hook('done', array($this->object, 'save'));
         parent::__construct();
     }
 
@@ -78,20 +93,21 @@ class I18n_Gear extends Gear {
      * @return string
      */
     public function translate($text, $domain = '') {
-        $domain OR $this->domains && $domain = reset($this->domains);
+        $domain OR $domain = $this->domain();
         return $this->get($text, $domain);
     }
 
     /**
-     * Set domain
+     * Set or get domain
      *
      * @param   string  $domain If empty — return to previous domain
+     * @return  string
      */
-    public function setDomain($domain = '') {
+    public function domain($domain = '') {
         if ($domain) {
             array_push($this->domains, $domain);
         } else {
-            array_pop($this->domains);
+            return $this->domains ? array_pop($this->domains) : '';
         }
     }
 
