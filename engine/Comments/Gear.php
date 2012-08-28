@@ -162,7 +162,7 @@ class Comments_Gear extends Gear {
     public function hookPostComments($after) {
         if ($after->object->allow_comments) {
             $after->append('<div class="page-header" id="comment-form-placer"><h2>' . t('Comments', 'Comments') . '</h2></div>');
-            $after->append('<div class="comments-handler" data-type="post" data-id="' . $after->object->id . '"><p class="well t_c">' . t('Loading…', 'Ajax') . '</p></div>');
+            $after->append('<div class="comments-handler" data-type="post" data-id="' . $after->object->id . '"><p class="t_c">' . t('Loading…', 'Ajax') . '</p></div>');
         }
     }
 
@@ -213,14 +213,16 @@ class Comments_Gear extends Gear {
         $views->cn = sizeof($result);
         $views->save();
     }
+
     /**
      * Hook widgets
      *
      * @param type $widgets
      */
-    public function hookWidgets($widgets){
+    public function hookWidgets($widgets) {
         $widgets->append(new Comments_Widget());
     }
+
     /**
      * Hook menu
      *
@@ -279,13 +281,31 @@ class Comments_Gear extends Gear {
             $where['aid'] = $user->id;
             $user->navbar()->show();
         }
-        page_header(t('Comments','Comments'));
+        page_header(t('Comments', 'Comments'));
+        Db_ORM::skipClear();
+        if ($filter = $this->input->get('filter')) {
+            if ($value = $this->input->get('value')) {
+                $this->db->where($filter, $value);
+                $comments = new Comments();
+                if ($comments->count()) {
+                    append('info', '<a href="' . l(TRUE) . e(array('action' => 'delete')) . '" class="fl_r delete btn btn-danger">' . t('Delete all') . '</a>');
+                    if ($this->input->get('action') == 'delete' && access('Comments.delete_all')) {
+                        $comments->delete();
+                        redirect(l(TRUE) . '?filter=' . $filter . '&value=' . $value);
+                    }
+                }
+            }
+        }
+        Db_ORM::skipClear();
         $comments = new Comments_List(array(
                     'name' => 'comments.list',
                     'where' => $where,
-                    'per_page' => config('User.comments.per_page', 10),
+                    'per_page' => config('User.comments.per_page', 20),
                     'flat' => TRUE,
+                    'order' => array('id', 'desc'),
+                    'render' => FALSE,
                 ));
+        $comments->show();
     }
 
     /**
@@ -476,7 +496,7 @@ class Comments_Gear extends Gear {
             if ($result = $form->result()) {
                 if ($result->preview) {
                     append('info', '<div class="page-header"><h2>' . t('Preview') . '</h2></div>');
-                    $comment->mix($result);
+                    $comment->extend($result);
                     $comment->id = 'preview';
                     $comment->aid = $this->user->id;
                     $comment->created_date = time();
@@ -497,7 +517,7 @@ class Comments_Gear extends Gear {
                         redirect($post->getLink() . '#comments');
                     }
                 } else {
-                    $comment->object->mix($result);
+                    $comment->object->extend($result);
                     if ($comment->save()) {
                         if ($form->ajaxed) {
                             event('comment.render', $comment);

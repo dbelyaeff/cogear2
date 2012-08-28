@@ -53,10 +53,10 @@ class Comments_Object extends Db_Tree {
      * @param type $data
      */
     public function insert($data = NULL) {
-        $data OR $data = $this->object->toArray();
-        $data['created_date'] = time();
-        $this->aid OR $data['aid'] = cogear()->user->id;
-        $data['ip'] = cogear()->session->get('ip');
+        $data OR $data = $this->getData();
+        isset($data['created_date']) OR $data['created_date'] = time();
+        isset($data['aid']) OR $data['aid'] = cogear()->user->id;
+        isset($data['ip']) OR $data['ip'] = session('ip');
         if ($result = parent::insert($data)) {
             event('comment.insert', $this, $data, $result);
         }
@@ -69,9 +69,9 @@ class Comments_Object extends Db_Tree {
      * @param type $data
      */
     public function update($data = NULL) {
-        $data OR $data = $this->object->toArray();
+        $data OR $data = $this->getData();
         isset($data['body']) && $data['last_update'] = time();
-        $data['ip'] = cogear()->session->get('ip');
+        isset($data['ip']) OR $data['ip'] = session('ip');
         if ($result = parent::update($data)) {
             event('comment.update', $this, $data, $result);
         }
@@ -88,6 +88,7 @@ class Comments_Object extends Db_Tree {
         }
         return $result;
     }
+
     /**
      * Render comment
      *
@@ -97,18 +98,19 @@ class Comments_Object extends Db_Tree {
     public function render($type = 'full') {
         switch ($type) {
             case 'widget':
-                $comment = new Stack(array('name'=>'comment.widget'));
-                $author = user($this->aid);
-                $comment->append($author->getLink('avatar','avatar.tiny'));
-                $comment->append($author->getLink('profile'));
-                $comment->append(' &rarr; ');
-                $post = post($this->post_id);
-                $blog = blog($post->bid);
-                $comment->append($blog->getLink('profile'));
-                $comment->append(' / ');
-                $comment->append($post->getLink('full','#comment-'.$this->id));
-                $comment->append('<a class="comments-counter" href="'.$post->getLink().'#comment-'.$this->id.'">'.$post->comments.'</a>');
-                return '<div class="comment-widget">'.$comment->render().'</div>';
+                $comment = new Stack(array('name' => 'comment.widget'));
+                if ($author = user($this->aid)) {
+                    $comment->append($author->getLink('avatar', 'avatar.tiny'));
+                    $comment->append($author->getLink('profile'));
+                    $comment->append(' &rarr; ');
+                    $post = post($this->post_id);
+                    $blog = blog($post->bid);
+                    $comment->append($blog->getLink('profile'));
+                    $comment->append(' / ');
+                    $comment->append($post->getLink('full', '#comment-' . $this->id));
+                    $comment->append('<a class="comments-counter" href="' . $post->getLink() . '#comment-' . $this->id . '">' . $post->comments . '</a>');
+                }
+                return '<div class="comment-widget">' . $comment->render() . '</div>';
                 break;
             default :
                 return parent::render();

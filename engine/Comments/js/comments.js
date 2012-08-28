@@ -22,7 +22,7 @@ Comments_Updater.prototype = {
         this.director = $('#comments-updater-director',this.el);
         this.director.click(function(){
 
-        })
+            })
         this.handler = $('#comments-updater-handler',this.el);
         this.handler.click($.proxy(function(){
             this.update();
@@ -356,5 +356,9 @@ Comments.prototype = {
 
 $(document).ready(function(){
     cogear.comments = new Comments();
+    $('.comments-handler').each(function(){
+        cogear.ajax.loader.type('black-spinner').el.appendTo($(this).find('p'));
+        cogear.ajax.loader.show();
+    });
 })
 
