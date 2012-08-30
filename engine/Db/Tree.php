@@ -151,6 +151,9 @@ class Db_Tree extends Db_Item {
                 else {
                     $current .= self::DELIM.$thread;
                 }
+                if($current == $this->{$this->thread_field}){
+                    continue;
+                }
                 $parent = new $this->class;
                 $parent->{$this->thread_field} = $current;
                 $parent->{$this->object_field} = $this->{$this->object_field};
