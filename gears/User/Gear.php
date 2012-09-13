@@ -223,6 +223,7 @@ class User_Gear extends Gear {
                         'label' => $this->getAvatarImage('avatar.navbar'),
                         'link' => $this->getLink(),
                         'place' => 'left',
+                        'title' => FALSE,
                     ));
                     $menu->register(array(
                         'label' => $this->getName(),
@@ -230,6 +231,7 @@ class User_Gear extends Gear {
                         'title' => t('Profile', 'User'),
                         'place' => 'left',
                         'active' => TRUE,
+                        'title' => FALSE,
                     ));
                     $menu->register(array(
                         'label' => t('Logout'),

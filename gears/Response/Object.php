@@ -84,7 +84,12 @@ class Response_Object extends Core_ArrayObject {
      * @var boolean
      */
     private $headers_sent = FALSE;
-
+    /**
+     * Output
+     *
+     * @var type
+     */
+    public $output = '';
     /**
      * Constructor
      */
@@ -141,11 +146,12 @@ class Response_Object extends Core_ArrayObject {
      * Send response
      */
     public function send() {
+        foreach ($this as $value) {
+            $this->output .= $value;
+        }
         event('response.send',$this);
         $this->sendHeaders();
-        foreach ($this as $value) {
-            echo $value;
-        }
+        echo $this->output;
         event('response.send.after',$this);
     }
 

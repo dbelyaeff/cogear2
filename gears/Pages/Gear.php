@@ -23,6 +23,7 @@ class Pages_Gear extends Gear {
         'router.run' => 'hookRouter',
     );
     protected $is_core = TRUE;
+
     /**
      * Hook router
      *
@@ -118,6 +119,7 @@ class Pages_Gear extends Gear {
                             'class' => 'fl_r',
                         ),
                     ),
+                    'title' => FALSE,
                     'render' => 'info',
                 ));
         switch ($action) {

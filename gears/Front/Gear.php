@@ -102,6 +102,7 @@ class Front_Gear extends Gear {
         new Menu_Tabs(array(
                     'name' => 'front',
                     'multiple' => TRUE,
+                    'title' => TRUE,
                     'elements' => array(
                         array(
                             'label' => t('All') . '<sup>' . $counters->all->all . '</sup>',

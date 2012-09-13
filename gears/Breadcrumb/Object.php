@@ -28,7 +28,12 @@ class Breadcrumb_Object extends Menu_Auto {
      * @param Menu_Object $menu
      */
     public function update(SplSubject $menu){
-        foreach($menu as $item){
+        $i = 0;
+        foreach($menu as $key => $item){
+            if($i == 0){
+                $i++;
+                continue;
+            }
             if($item->active){
                 foreach($this as $sitem){
                     if($sitem->link == $item->link){

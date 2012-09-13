@@ -62,6 +62,7 @@ class Admin_Gear extends Gear {
         $this->bc = new Breadcrumb_Object(
                         array(
                             'name' => 'admin_breadcrumb',
+                            'title' => FALSE,
                             'elements' => array(
                                 array(
                                     'link' => l('/admin'),
@@ -119,7 +120,7 @@ class Admin_Gear extends Gear {
             $args = array_slice($args, 1);
             $callback = array(cogear()->$gear, 'admin');
             $name = t(cogear()->$gear->gear, 'Gears');
-            title($name);
+//            title($name);
             $this->router->exec($callback, $args);
         }
     }
@@ -148,7 +149,7 @@ class Admin_Gear extends Gear {
      */
     public function site_action() {
         $form = new Form('Admin.site');
-        $form->setValues(array(
+        $form->object(array(
             'name' => config('site.name'),
             'url' => config('site.url'),
             'dev' => config('site.development'),

@@ -14,7 +14,6 @@
 class Menu_Auto extends Menu_Object {
 
     protected $is_init;
-
     /**
      * Render
      *

@@ -141,6 +141,7 @@ class Blog_Gear extends Gear {
                     'label' => t('Feed', 'Blog'),
                     'link' => $menu->object()->getLink() . '/feed',
                     'order' => 100,
+                    'title' => FALSE,
                 ));
                 break;
         }
@@ -756,7 +757,6 @@ class Blog_Gear extends Gear {
             return;
         }
         $form = new Form('Blog.role');
-        $form->init();
         $values = array(
             Blog_Gear::ADMIN => t('Administrator', 'Blog.roles'),
             Blog_Gear::MODER => t('Moderator', 'Blog.roles'),

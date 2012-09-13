@@ -12,6 +12,7 @@
  * @version		$Id$
  */
 class User_Navbar extends Object {
+
     public $options = array(
         'render' => 'info',
     );
@@ -31,6 +32,7 @@ class User_Navbar extends Object {
         $tabs = new Menu_Tabs(array(
                     'name' => 'user.profile.tabs',
                     'render' => FALSE,
+                    'title' => 4,
                     'elements' => array(
                         'profile' => array(
                             'label' => t('Profile', 'User'),
@@ -45,7 +47,7 @@ class User_Navbar extends Object {
                 ));
         $tabs->object($user);
         $tpl->tabs = $tabs;
-        event('user.navbar.render',$user,$this);
+        event('user.navbar.render', $user, $this);
         return $tpl->render();
     }
 

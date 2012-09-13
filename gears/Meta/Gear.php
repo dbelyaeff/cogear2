@@ -11,7 +11,7 @@
  * @subpackage
  * @version		$Id$
  */
-class Meta_Gear extends Gear {
+class Meta_Gear extends Gear implements SplObserver {
 
     protected $name = 'Meta';
     protected $description = 'Meta information handler.';
@@ -22,13 +22,20 @@ class Meta_Gear extends Gear {
         'description' => array(),
     );
     protected $hooks = array(
-        'menu.active' => 'menuTitleHook',
+//        'menu.active' => 'menuTitleHook',
         'post.full.after' => 'showObjectTitle',
         'blog.navbar.render' => 'showObjectTitle',
         'user.navbar.render' => 'showObjectTitle',
         'form.element.title.render' => 'showObjectTitle',
+        'head' => 'hookHead',
+        'response.send' => 'hookResponse',
     );
     protected $is_core = TRUE;
+
+    const SNIPPET = '<!-- meta -->';
+    const PREPEND = 0;
+    const APPEND = 1;
+
     /**
      * Constructor
      */
@@ -38,12 +45,30 @@ class Meta_Gear extends Gear {
     }
 
     /**
+     * Hook meta
+     */
+    public function hookResponse($Response) {
+        $output = "";
+        $output .= HTML::paired_tag('title', $this->info->title->toString(config('meta.title.delimiter', ' &raquo; '))) . "\n";
+        $output .= HTML::tag('meta', array('type' => 'keywords', 'content' => $this->info->keywords->toString(', '))) . "\n";
+        $output .= HTML::tag('meta', array('type' => 'description', 'content' => $this->info->description->toString('. '))) . "\n";
+        $Response->output = str_replace(self::SNIPPET, $output, $Response->output);
+    }
+
+    /**
+     * Generate <head> output
+     */
+    public function hookHead() {
+        echo self::SNIPPET;
+        event('meta');
+    }
+
+    /**
      * Init
      */
     public function init() {
         parent::init();
         title(t(config('site.name', config('site.url'))));
-        hook('head', array($this, 'head'), 0);
     }
 
     /**
@@ -52,17 +77,29 @@ class Meta_Gear extends Gear {
      * @param object $object
      */
     public function showObjectTitle($object) {
-        if($object->label){
+        if ($object->label) {
             title($object->label);
-        }
-        elseif($object->getName()){
+        } elseif ($object->getName()) {
             title($object->getName(FALSE));
-        }
-        elseif($object->name){
+        } elseif ($object->name) {
             title($object->name);
-        }
-        else if($object->object && $object->object()->name){
+        } else if ($object->object && $object->object()->name) {
             title($object->object()->name);
+        }
+    }
+
+    /**
+     * Update title with menu changes
+     */
+    public function update(SplSubject $menu) {
+        if (!$menu->options->title) {
+            return;
+        }
+        $i = 0;
+        foreach ($menu as $key => $item) {
+            if ($item->active && FALSE !== $item->title) {
+                title(is_string($item->title) ? $item->title : $item->label, is_int($menu->title) ? $menu->title : NULL);
+            }
         }
     }
 
@@ -72,28 +109,20 @@ class Meta_Gear extends Gear {
      * @param string $element
      */
     public function menuTitleHook($item, $menu) {
-        if (!$menu->autotitle) {
+        if ($menu->title && FALSE !== $item->title) {
             title($item->label);
         }
-//        $this->info->title->inject(trim(strip_tags($element->value)), $this->info->title->count() - 1);
-    }
-
-    /**
-     * Generate <head> output
-     */
-    public function head() {
-        echo HTML::paired_tag('title', $this->info->title->toString(config('meta.title.delimiter', ' &raquo; '))) . "\n";
-        echo HTML::tag('meta', array('type' => 'keywords', 'content' => $this->info->keywords->toString(', '))) . "\n";
-        echo HTML::tag('meta', array('type' => 'description', 'content' => $this->info->description->toString('. '))) . "\n";
-        event('theme.head.meta.after');
     }
 
 }
 
-function title($text) {
-    $cogear = getInstance();
-    $text = preg_replace('#\<.*?\>#imsU','',$text);
-    $cogear->meta->info->title->prepend($text);
+function title($text, $position = NULL) {
+    $text = trim(preg_replace('#\<.*?\>#imsU', '', strip_tags($text)));
+    if ($position) {
+        cogear()->meta->info->title->inject($text,$position);
+    } else {
+        cogear()->meta->info->title->prepend($text);
+    }
     return TRUE;
 }
 
@@ -114,7 +143,7 @@ function description($text) {
     $cogear->meta->info->description->append($text);
 }
 
-function page_header($title,$level=1){
-    append('info','<div class="page-header"><h'.$level.'>'.$title.'</h'.$level.'></div>');
+function page_header($title, $level = 1) {
+    append('info', '<div class="page-header"><h' . $level . '>' . $title . '</h' . $level . '></div>');
     title($title);
 }

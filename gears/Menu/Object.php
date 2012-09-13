@@ -20,7 +20,10 @@ class Menu_Object extends Observer {
         'show_empty' => TRUE,
         'render' => 'content',
         'multiple' => FALSE,
+        'title' => 1,
+        'autoactive' => TRUE,
     );
+    protected $is_activated;
 
     /**
      * Constructor
@@ -29,6 +32,7 @@ class Menu_Object extends Observer {
      */
     public function __construct($options) {
         parent::__construct($options);
+        $this->attach(cogear()->gears->Meta);
         cogear()->menu->register($this->options->name, $this);
         $this->options->base = rtrim(parse_url($this->options->base ? $this->options->base : Url::link(), PHP_URL_PATH), '/') . '/';
         $this->options->render && hook($this->options->render, array($this, 'output'));
@@ -38,6 +42,7 @@ class Menu_Object extends Observer {
                 $this->register($item->toArray());
             }
         }
+        $this->autoactive && $this->setActive();
     }
 
     /**
@@ -49,7 +54,7 @@ class Menu_Object extends Observer {
     public function register($item) {
         if (is_array($item)) {
             isset($item['order']) OR $item['order'] = $this->pointer++;
-            $item['level'] = count(explode('.',$item['order']));
+            $item['level'] = count(explode('.', $item['order']));
             $item = new Menu_Item($item);
         }
         if ($item->access !== FALSE) {
@@ -62,12 +67,14 @@ class Menu_Object extends Observer {
      * Set menu items active
      */
     public function setActive() {
+        if ($this->is_activated) {
+            return;
+        }
         $last_active = NULL;
         foreach ($this as $key => $item) {
-            if(NULL != $item->options->active){
+            if (NULL != $item->options->active) {
                 $last_active = $key;
-            }
-            else if (cogear()->router->check(trim($item->link, ' /'))) {
+            } else if (cogear()->router->check(trim($item->link, ' /'))) {
                 $item->options->active = TRUE;
                 $last_active = $key;
             }
@@ -79,11 +86,12 @@ class Menu_Object extends Observer {
                 if ($key !== $last_active) {
                     $item->options->active = FALSE;
                 } else {
-                    event('menu.active', $item,$this);
+                    event('menu.active', $item, $this);
                 }
             }
         }
         $this->notify();
+        $this->is_activated = TRUE;
     }
 
     /**
@@ -104,6 +112,7 @@ class Menu_Object extends Observer {
         }
         return $result->count() ? $result : NULL;
     }
+
     /**
      * Render menu
      *
