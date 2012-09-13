@@ -1,0 +1,22 @@
+$.fn.resetButton = function(){
+    $el = $(this);
+    $btn = $('<a class="input-reset"><i class="icon-remove-sign"></i></a>');
+    $btn.css('cursor','pointer');
+    $btn.css('opacity','0.4');
+    $btn.hover(function(){
+        $btn.css('opacity','0.8');
+    },function(){
+        $btn.css('opacity','0.4');
+    })
+    $btn.css({
+        top: $el.position().top + '5',
+        left: $el.position().left + $el.width()
+    })
+    $btn.insertAfter($el);
+    $btn.click(function(){
+        $el.val('')
+    })
+}
+$(document).ready(function(){
+    $('input[type=text], input[type=password], input[type=search]').resetButton();
+})

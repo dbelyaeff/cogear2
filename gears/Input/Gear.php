@@ -18,7 +18,7 @@ class Input_Gear extends Gear {
     protected $get = array();
     protected $post = array();
     protected $cookies = array();
-
+    protected $is_core = TRUE;
 
     /**
      * Init
@@ -38,7 +38,7 @@ class Input_Gear extends Gear {
      * @return mixed
      */
     public function get($name = '',$default = NULL){
-        if(!$name) return $this->get;
+        if(!$name) return $this->get->count() ? $this->get : NULL;
         if(isset($this->get->$name)){
             /**
              * Important. Wrap value into object to get it through event.
@@ -60,7 +60,7 @@ class Input_Gear extends Gear {
      * @return mixed
      */
     public function post($name = '',$default = NULL){
-        if(!$name) return $this->post;
+        if(!$name) return $this->post->count() ? $this->post : NULL;
         return isset($this->post[$name]) ? $this->post[$name] : $default;
     }
     /**
@@ -71,7 +71,7 @@ class Input_Gear extends Gear {
      * @return mixed
      */
     public function cookie($name = '',$default = NULL){
-        if(!$name) return $this->cookie;
+        if(!$name) return $this->cookie->count() ? $this->cookie : NULL;
         return isset($this->cookie[$name]) ? $this->cookie[$name] : $default;
     }
 }

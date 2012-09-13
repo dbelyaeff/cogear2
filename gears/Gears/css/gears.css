@@ -1,0 +1,32 @@
+.package{
+    border: 1px solid #CFCFCF;
+    border-radius: 5px;
+    padding: 5px;
+    clear: both;
+    margin: 0 0 10px 0;
+}
+.package > h1 {
+    margin: 0;
+    font-family: "Century Gothic";
+    font-size: 18px;
+}
+.package > h1 a.edit{
+    font-size:12px;
+    font-family: Arial;
+}
+.gear{
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    margin: 0 0 5px 0;
+}
+.gear-title{
+    font-family: "Century Gothic";
+    font-size: 16px;
+    font-weight: bold;
+}
+.gear-version{
+   font-size:10px;
+   color: #CCC;
+   vertical-align: super;
+}

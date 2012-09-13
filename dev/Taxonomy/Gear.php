@@ -50,7 +50,7 @@ class Taxonomy_Gear extends Gear {
     public function hookFormPost($Form) {
         if ($vocabularies = vocabularies()->findAll()) {
             $i = 1;
-            $post = $Form->object;
+            $post = $Form->object();
             $config = array();
             foreach ($vocabularies as $vocabulary) {
                 $name = 'taxonomy_' . $vocabulary->link;
@@ -98,7 +98,7 @@ class Taxonomy_Gear extends Gear {
      */
     public function hookFormPostResult($Form, $is_valid, $result) {
         if ($is_valid && $result) {
-            $post = $Form->object;
+            $post = $Form->object();
             if ($vocabularies = vocabularies()->findAll()) {
                 $i = 1;
                 $config = array();
@@ -155,7 +155,7 @@ class Taxonomy_Gear extends Gear {
      * @param type $Stack
      */
     public function hookPostAfter($Stack) {
-        $post = $Stack->object;
+        $post = $Stack->object();
         $link = new Taxonomy_Link();
         $link->pid = $post->id;
         if ($links = $link->findAll()) {
@@ -369,7 +369,7 @@ class Taxonomy_Gear extends Gear {
         $form->elements->offsetUnset('delete');
         if ($result = $form->result()) {
             $term = term();
-            $term->object->adopt($result);
+            $term->object()->adopt($result);
             if ($term->insert()) {
                 flash_success(t('Term has been created!', 'Taxonomy'), NULL, 'growl');
                 redirect(vocabulary($vid)->getLink('edit.terms'));
@@ -385,12 +385,12 @@ class Taxonomy_Gear extends Gear {
      */
     private function admin_term_edit(Taxonomy_Term $term) {
         $form = new Form('Taxonomy.term');
-        $form->attach($term);
+        $form->object($term);
         if ($result = $form->result()) {
             if ($result->delete && $term->delete()) {
                 flash_success(t('Term has been deleted!', 'Taxonomy'));
             } else {
-                $term->object->adopt($result);
+                $term->object()->adopt($result);
                 if ($term->update()) {
                     flash_success(t('Term has been updated!', 'Taxonomy'));
                 }
@@ -420,7 +420,7 @@ class Taxonomy_Gear extends Gear {
         $form->elements->offsetUnset('delete');
         if ($result = $form->result()) {
             $vocabulary = vocabulary();
-            $vocabulary->object->adopt($result);
+            $vocabulary->object()->adopt($result);
             if ($vocabulary->insert()) {
                 flash_success(t('The vocabulary has been saved!', 'Taxonomy'), NULL, 'growl');
                 redirect('/admin/taxonomy');
@@ -441,13 +441,13 @@ class Taxonomy_Gear extends Gear {
                 'link' => l('admin/taxonomy/edit/' . $id),
             ));
             $form = new Form('Taxonomy.vocabulary');
-            $form->attach($vocabulary);
+            $form->object($vocabulary);
             if ($result = $form->result()) {
                 if ($result->delete && $vocabulary->delete()) {
                     flash_success(t('The vocabulary has been deleted!', 'Taxonomy'), NULL, 'growl');
                     return redirect('/admin/taxonomy');
                 }
-                $vocabulary->object->extend($result);
+                $vocabulary->object()->extend($result);
                 if ($vocabulary->update()) {
                     flash_success(t('The vocabulary has been updated!', 'Taxonomy'), NULL, 'growl');
                     redirect('/admin/taxonomy');

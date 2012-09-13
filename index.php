@@ -13,7 +13,6 @@ define('ROOT', realpath(dirname(__FILE__)));
 // For the future multisiting
 define('SITE', ROOT);
 define('CACHE',ROOT.DS.'cache');
-define('ENGINE',ROOT.DS.'engine');
 define('GEARS', ROOT.DS.'gears');
 define('THEMES',ROOT.DS.'themes');
 define('UPLOADS', ROOT . DS . 'uploads');
@@ -30,9 +29,8 @@ ini_set('error_reporting', E_ALL);
  */
 function find($file) {
     $paths = array(
-        ENGINE . DS . $file,
-        ENGINE . DS . 'Core' . DS . $file,
         GEARS . DS . $file,
+        GEARS . DS . 'Core' . DS . $file,
         THEMES . DS . $file,
     );
     while ($path = array_pop($paths)) {

@@ -51,8 +51,7 @@ final class Cogear implements Interface_Singleton {
      */
     public $site;
     public $config;
-
-    const GEAR = 'Gear';
+    public $system_cache;
 
     /**
      * Constructor
@@ -68,7 +67,7 @@ final class Cogear implements Interface_Singleton {
     public function load() {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
         $this->config = new Config(ROOT . DS . 'config' . EXT);
-        $this->system_cache = new Cache(array('path' => CACHE . DS . 'system'));
+        $this->system_cache = new Cache_Object(array('path' => CACHE . DS . 'system'));
         defined('SITE_URL') OR define('SITE_URL', config('site.url'));
         if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
             $array = explode('/', SITE_URL, 2);
@@ -149,11 +148,8 @@ final class Cogear implements Interface_Singleton {
      *  Load gears
      */
     public function loadGears() {
-        $gears = $this->findGears(GEARS);
-        foreach ($gears as $gear) {
-            $this->chargeGear($gear);
-        }
-        $this->gears->uasort('Core_ArrayObject::sortByOrder');
+        $gears = new Gears(GEARS);
+        $this->gears = $gears->filter(Gears::ENABLED);
         foreach ($this->gears as $gear) {
             $gear->init();
         }
@@ -189,83 +185,7 @@ final class Cogear implements Interface_Singleton {
         return $this->config->set($name, $value);
     }
 
-    /**
-     * Find gears in direcotry
-     *
-     * @param string $dir
-     */
-    public function findGears($dir) {
-        $gears = glob($dir . DS . '*' . DS . self::GEAR . EXT);
-        if ($dive = glob($dir . DS . '*' . DS . '*' . DS . self::GEAR . EXT)) {
-            $gears = array_merge($gears, $dive);
-        }
-        return $gears;
-    }
 
-    /**
-     * Simple method that turn gears on during loading process.
-     *
-     * @param   string $path
-     * @return boolean
-     */
-    public function chargeGear($path, $stack = NULL) {
-        $stack OR $stack = $this->gears;
-        $gear = self::pathToGear($path);
-        $class = $gear . '_' . self::GEAR;
-        if ($class != 'Core_Gear') {
-            $stack->$gear = new $class;
-        }
-    }
-
-    /**
-     * Extract gear name from path
-     *
-     * @param string $path
-     * @return string
-     */
-    public static function pathToGear($path) {
-        $paths = array(
-            'gears' => GEARS . DS,
-            'alt_gears' => GEARS . DS . 'Core' . DS,
-        );
-        foreach ($paths as $explicit_path) {
-            if (strpos($path, $explicit_path) !== FALSE) {
-                $path = str_replace($explicit_path, '', $path);
-                continue;
-            }
-        }
-        $gear = str_replace(array(
-            DS . pathinfo($path, PATHINFO_BASENAME),
-            DS
-                ), array(
-            '',
-            '_'
-                ), $path);
-        return $gear;
-    }
-
-    /**
-     * Sort gears by parameter
-     *
-     * @param	string $param
-     */
-    private function sortGears($param = 'order') {
-        $method = 'sortBy' . ucfirst($param);
-        if (method_exists('Core_ArrayObject', $method)) {
-            $this->gears->uasort('Core_ArrayObject::' . $method);
-        }
-    }
-
-    /**
-     * Prepare gear name from class
-     *
-     * @param   string  $class
-     * @return  string
-     */
-    public static function prepareGearNameFromClass($class) {
-        $gear = str_replace('_Gear', '', $class);
-        return $gear;
-    }
 
 //    /**
 //     * Check for required gears

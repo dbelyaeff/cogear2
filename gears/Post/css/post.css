@@ -1,0 +1,58 @@
+.post{
+    margin: 10px 0 15px;
+    border: 1px solid transparent;
+}
+.post-title{
+
+}
+.post-title i{
+    vertical-align: middle;
+}
+.post-title h2{
+    display: inline;
+    font-size: 22px;
+    margin: 0 5px 0 0;
+}
+.post-title a{
+    vertical-align: middle;
+}
+.post-body{
+    padding: 5px 0 10px 10px;
+}
+.post-body img{
+    padding: 1px;
+    border: 1px solid #CCC;
+}
+.post-body img[align=right]{
+    margin: 15px 20px 0 0;
+    border: none;
+}
+.post-body img.no-border{
+    border: none;
+    clear: both;
+}
+.post-info{
+    border-top: 1px solid #CFCFCF;
+    padding: 5px 10px;
+    clear: both;
+}
+
+.post.sh i.icon-eye-close {
+    visibility: visible;
+}
+
+.post:hover .sh i{
+    visibility: visible;
+}
+.post-time{
+    font-size: 0.8em;
+}
+.post-title .sh{
+    float: right;
+}
+.post-after{
+    clear: both;
+}
+.post-before{
+    clear: both;
+}

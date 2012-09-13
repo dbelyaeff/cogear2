@@ -24,7 +24,7 @@ class Secure_Gear extends Gear {
     );
     protected $key;
     protected $salt;
-
+    protected $is_core = TRUE;
     /**
      * Constructor
      */

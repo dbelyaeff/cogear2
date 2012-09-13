@@ -1,0 +1,30 @@
+#ajax-loader{
+    width: 230px;
+    height: 50px;
+    margin: -25px 0 0 -115px;
+    opacity: 0.8;
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    z-index:1000;
+    border-radius: 10px;
+    text-align:center;
+    background: #353535 url(../img/loader.gif) no-repeat center 10px;
+    box-shadow: 1px 1px 3px #000;
+    display: none;
+}
+#ajax-loader > p{
+    color: #FFF;
+    position: absolute;
+    bottom: -5px;
+    text-align: center;
+    width: 100%;
+}
+.ajax-loader{
+    width: 24px;
+    background: url(../img/inline.loader.gif) no-repeat center center;
+    height: 11px;
+    padding: 5px;
+    position: abosolute;
+    float: left;
+}

@@ -1,6 +1,0 @@
-
-.autocomplete-w1 { background: #FFF url(../img/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; }
-.autocomplete-w2 { border:1px solid #CCC; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; }
-.autocomplete-w2 .selected { background:#3399FF; color: #FFF; }
-.autocomplete-w2 div { padding:5px; white-space:nowrap; }
-.autocomplete-w2 .selected strong { color:FFF; }

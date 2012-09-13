@@ -94,7 +94,7 @@ class Db_ORM extends Object {
             self::$cached = new Core_ArrayObject();
         }
         $table && $this->table = $table;
-        $this->db = $db instanceof Db_Object ? $db : cogear()->db->object;
+        $this->db = $db instanceof Db_Object ? $db : cogear()->db->object();
         $this->fields = $this->db->getFields($this->table);
         $this->reflection = new ReflectionClass($this);
         $this->class = $this->reflection->getName();
@@ -102,7 +102,7 @@ class Db_ORM extends Object {
         $first = reset($fields);
         $this->primary = $primary ? $primary : $first;
         $this->cache_path = $this->db->options->database.'.'.$this->table;
-        $this->attach(new Core_ArrayObject());
+        $this->object(new Core_ArrayObject());
     }
 
     /**
@@ -119,7 +119,7 @@ class Db_ORM extends Object {
      * @param mixed $value
      */
     public function __set($name, $value) {
-        $this->object instanceof Core_ArrayObject && $this->object->$name = $value;
+        $this->object instanceof Core_ArrayObject && $this->object()->$name = $value;
     }
 
     /**
@@ -133,10 +133,10 @@ class Db_ORM extends Object {
          * Some unusual patch
          *
          * Sometimes object becomes NULL. Need to find this place and fix. PHP < 5.3 Only
-         * After all it's possible to left just "return $this->object->$name;" over there.
+         * After all it's possible to left just "return $this->object()->$name;" over there.
          *
          */
-        return $this->object ? $this->object->$name : NULL;
+        return $this->object ? $this->object()->$name : NULL;
     }
 
     /**
@@ -145,7 +145,7 @@ class Db_ORM extends Object {
      * @param string $name
      */
     public function __isset($name) {
-        return isset($this->object->$name);
+        return isset($this->object()->$name);
     }
 
     /**
@@ -154,8 +154,8 @@ class Db_ORM extends Object {
      * @param string $name
      */
     public function __unset($name) {
-        if (isset($this->object->$name)) {
-            unset($this->object->$name);
+        if (isset($this->object()->$name)) {
+            unset($this->object()->$name);
         }
     }
 
@@ -194,9 +194,9 @@ class Db_ORM extends Object {
      */
     public function getData() {
         $data = array();
-        if ($this->object->count()) {
+        if ($this->object()->count()) {
             foreach ($this->fields as $key => $value) {
-                isset($this->object->$key) && $data[$key] = $this->object->$key;
+                isset($this->object()->$key) && $data[$key] = $this->object()->$key;
             }
         }
         $data = $this->filterData($data, self::FILTER_IN);
@@ -227,12 +227,12 @@ class Db_ORM extends Object {
      */
     public function find() {
         $primary = $this->primary;
-        if ($object = $this->cache($this->object->$primary)) {
+        if ($object = $this->cache($this->object()->$primary)) {
             $this->object = $object;
             $this->clear();
             return TRUE;
         }
-        if ($this->object->count()) {
+        if ($this->object()->count()) {
             if ($data = $this->getData()) {
                 $this->db->where($data);
             }
@@ -274,9 +274,9 @@ class Db_ORM extends Object {
      */
     public function count($reset = FALSE) {
         if ($data = $this->getData()) {
-            $this->db->object->where($data);
+            $this->db->object()->where($data);
         }
-        return $this->db->object->count($this->table, $this->table . '.' . $this->primary, $reset);
+        return $this->db->object()->count($this->table, $this->table . '.' . $this->primary, $reset);
     }
 
     /**
@@ -336,12 +336,12 @@ class Db_ORM extends Object {
      */
     public function insert($data = NULL) {
         if ($data) {
-            $this->object->adopt($data);
+            $this->object()->adopt($data);
         } else {
             $data = $this->getData();
         }
         event('Db_ORM.insert', $this, $data);
-        return $this->object->{$this->primary} = $this->db->insert($this->table, $data);
+        return $this->object()->{$this->primary} = $this->db->insert($this->table, $data);
     }
 
     /**
@@ -352,7 +352,7 @@ class Db_ORM extends Object {
      */
     public function update($data = NULL) {
         if ($data) {
-            $this->object->extend($data);
+            $this->object()->extend($data);
         } else {
             $data = $this->getData();
         }
@@ -389,7 +389,7 @@ class Db_ORM extends Object {
      * @param array $data
      */
     public function merge($data = array()) {
-        $data && $this->object->extend($data);
+        $data && $this->object()->extend($data);
     }
 
 }
