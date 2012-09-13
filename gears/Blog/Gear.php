@@ -548,7 +548,7 @@ class Blog_Gear extends Gear {
             return event('404');
         }
         $form = new Form('Blog.edit');
-        $form->init();
+
         $form->avatar->options->rename = $blog->login;
         $form->object($blog);
         access('Blog.edit.login') OR $form->login->options->disabled = TRUE;
@@ -660,7 +660,7 @@ class Blog_Gear extends Gear {
      * @return int // 0 - left, 1 - joined, 2 - approved
      */
     public function check_status($bid) {
-        if ($blog = session('blogs') && is_int($bid)) {
+        if ($blog = session('blogs')) {
             return isset($blog[$bid]) ? $blog[$bid] : 0;
         }
     }
