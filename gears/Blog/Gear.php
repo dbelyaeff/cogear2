@@ -661,7 +661,7 @@ class Blog_Gear extends Gear {
      */
     public function check_status($bid) {
         if ($blog = session('blogs')) {
-            return isset($blog[$bid]) ? $blog[$bid] : 0;
+            return !empty($blog[$bid]) ? $blog[$bid] : 0;
         }
     }
 
