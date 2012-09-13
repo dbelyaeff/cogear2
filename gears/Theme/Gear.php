@@ -45,6 +45,55 @@ class Theme_Gear extends Gear {
     }
 
     /**
+     * hook Menu
+     *
+     * @param string  $name
+     * @param object $menu
+     */
+    public function menu($name,$menu){
+        switch($name){
+            case 'admin':
+                $menu->register(array(
+                    'label' => icon('eye-open').' '.t('Theme','Theme'),
+                    'link' => l('/admin/theme'),
+                    'order' => 200,
+                ));
+                break;
+        }
+    }
+    /**
+     * Admin dispatcher
+     *
+     * @param type $action
+     */
+    public function admin($action = 'settings'){
+        $form = new Form('Theme.choose');
+        $form->elements->theme->setValues($this->getThemes());
+        $form->elements->theme->setValue(config('theme.current'));
+        if($result = $form->result()){
+            cogear()->set('theme.current',$result->theme);
+        }
+        $form->show();
+    }
+    /**
+     * Get installed themes
+     *
+     * @return  array
+     */
+    private function getThemes(){
+        $scan = glob(THEMES.DS.'*'.DS.'Theme'.EXT);
+        $themes = array();
+        foreach($scan as $file){
+            $theme_name = basename(dirname($file));
+            $class = Gears::pathToGear($file).'_Theme';
+            $theme = new $class;
+            if($theme instanceof Theme_Object){
+                $themes[$theme_name] = t($theme->name,'Themes');
+            }
+        }
+        return $themes;
+    }
+    /**
      * Catch output
      *
      * @param string $mode
