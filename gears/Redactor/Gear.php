@@ -17,6 +17,56 @@ class Redactor_Gear extends Gear {
     protected $description = 'Redactor editor';
     protected $package = 'Wysiwyg';
     protected $order = 0;
+    protected $hooks = array(
+        'form.attach' => 'hookFormAttach',
+        'form.result' => 'hookFormResult'
+    );
+
+    /**
+     * Transform \n to <br/>
+     *
+     * @param type $Form
+     * @param type $data
+     */
+    public function hookFormAttach($Form, $data) {
+        foreach ($Form->elements as $key => $element) {
+            if ($element->type == 'editor' && isset($data->$key)) {
+                $Form->elements->$key->setValue(preg_replace("([\n\t\r]+)", "<br/>", $data->$key));
+            }
+        }
+    }
+
+    /**
+     * Transform back to \n before send to database
+     *
+     * @param type $Form
+     * @param type $is_valid
+     * @param type $result
+     */
+    public function hookFormResult($Form, $is_valid, $result) {
+        if ($is_valid && $result) {
+            foreach ($Form->elements as $key => $element) {
+                if ($element->type == 'editor' && $result->$key) {
+                    $result->$key = preg_replace("#(\<br/?\>)#","\n",$result->$key);
+                }
+            }
+        }
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct();
+        Wysiwyg_Gear::$editors['redactor'] = 'Redactor_Editor';
+    }
+
+    /**
+     * Avoid assets autoload
+     */
+    public function loadAssets() {
+        //parent::loadAssets();
+    }
 
     /**
      * Upload Image action
@@ -54,10 +104,11 @@ class Redactor_Gear extends Gear {
     /**
      * Link
      */
-    public function link_action(){
+    public function link_action() {
         $form = new Form('Redactor.link');
         $form->show();
     }
+
     /**
      * Toolbar
      *
@@ -188,7 +239,7 @@ class Redactor_Gear extends Gear {
                 'func' => 'fullscreen',
             ),
         );
-        event('toolbar.'.$type,$toolbar);
+        event('toolbar.' . $type, $toolbar);
         $ajax->append("if (typeof RTOOLBAR == 'undefined') var RTOOLBAR = {};
 
 RTOOLBAR['default'] = " . json_encode($toolbar));
