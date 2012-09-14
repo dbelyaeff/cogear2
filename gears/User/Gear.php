@@ -408,7 +408,7 @@ class User_Gear extends Gear {
         if ($user->id == 1) {
             $form->elements->delete->options->render = FALSE;
         }
-        $form->init();
+        
         if ($result = $form->result()) {
             if ($user->login != $result['login']) {
                 $redirect = Url::gear('user') . $result['login'];
@@ -533,7 +533,7 @@ class User_Gear extends Gear {
             $user->hash = $code;
             if ($user->find()) {
                 $form = new Form('User.verify');
-                $form->init();
+                
                 $form->email->setValue($user->email);
                 if ($result = $form->result()) {
                     $user->object()->extend($result);

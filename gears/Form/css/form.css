@@ -13,7 +13,7 @@
 .form .control-group input[type=text],.form .control-group input[type=password]{
     width: 98%;
 }
-textarea{
+.form .controls textarea{
     width: 100%;
     height: 300px;
     margin-bottom: 0;

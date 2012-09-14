@@ -16,9 +16,8 @@ class Wysiwyg_Gear extends Gear {
     protected $name = 'WYSIWYG';
     protected $description = 'Visual editors manager.';
     public static $editors = array(
-        'redactor' => 'Redactor_Editor',
-        'markitup' => 'Markitup_Editor',
         'textarea' => 'Form_Element_Textarea',
+        'redactor' => 'Redactor_Editor',
     );
     protected $order = -10;
 
@@ -37,8 +36,7 @@ class Wysiwyg_Gear extends Gear {
         $form = new Form("Wysiwyg.config");
         $options = new Core_ArrayObject;
         $options->editor = config('wysiwyg.editor');
-        $form->init();
-        $form->elements->type->setValues(self::$editors);
+        $form->elements->type->setValues(self::$editors );
         $form->object($options);
         if ($result = $form->result()) {
             if (isset(self::$editors[$result['type']])) {

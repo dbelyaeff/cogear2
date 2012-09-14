@@ -93,7 +93,7 @@ class Install_Gear extends Gear {
             case 'site':
                 append('content', '<p class="alert alert-info">' . t('Define basic settings for your site.', 'Install') . '</p>');
                 $form = new Form('Install.site');
-                $form->init();
+                
                 if ($result = $form->result()) {
                     $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;

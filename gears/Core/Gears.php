@@ -113,6 +113,7 @@ class Gears extends Core_ArrayObject {
         $paths = array(
             'gears' => GEARS . DS,
             'alt_gears' => GEARS . DS . 'Core' . DS,
+            'themes' => THEMES . DS,
         );
         foreach ($paths as $explicit_path) {
             if (strpos($path, $explicit_path) !== FALSE) {

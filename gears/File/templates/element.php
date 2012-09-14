@@ -5,12 +5,13 @@ if ($element->options->multiple) {
     $name = $element->options->name;
 }
 ?>
-<input id="<?php echo $element->id ?>" type="file" name="<?php echo $name ?>" data-url="<?php echo $element->options->action ?>"<?php
+<input id="<?php echo $element->id ?>" type="file" name="<?php echo $name ?>" <?php if($element->options->ajax):?>data-url="<?php echo $element->options->ajax ?>"<?php endif;?> <?php
 if ($element->options->multiple) {
     echo ' multiple';
 }
 ?>>
 <div class="attached-files"></div>
+<?php if($element->options->ajax):?>
 <script>
     $(document).ready(function(){
         $el = $('#<?php echo $element->id ?>');
@@ -26,3 +27,5 @@ if ($element->options->multiple) {
         });
     });
 </script>
+
+<?php endif;?>

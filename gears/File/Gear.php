@@ -27,6 +27,7 @@ class File_Gear extends Gear {
     public function __construct() {
         parent::__construct();
         Form::$types['file'] = 'File_Element';
+        Form::$types['file_url'] = 'File_Url_Element';
     }
     /**
      * Extend post form

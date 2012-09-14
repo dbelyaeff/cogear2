@@ -62,4 +62,14 @@ return array(
         'label' => t('Send'),
         'class' => 'btn btn-primary',
     ),
+    'save' => array(
+        'type' => 'submit',
+        'label' => t('Save'),
+        'class' => 'btn btn-primary',
+    ),
+    'update' => array(
+        'type' => 'submit',
+        'label' => t('Update'),
+        'class' => 'btn btn-primary',
+    ),
 );

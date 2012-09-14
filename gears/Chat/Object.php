@@ -112,7 +112,7 @@ class Chat_Object extends Db_Item {
             $tpl->chat = $this;
             $output->append($tpl->render());
             $form = new Form('Chat.msg');
-            $form->init();
+            
             $form->cid->setValue($this->id);
             if ($result = $form->result()) {
                 $msg = new Chat_Messages();

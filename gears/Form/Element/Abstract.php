@@ -17,6 +17,7 @@ class Form_Element_Abstract extends Options {
         'name' => '',
         'label' => '',
         'description' => '',
+        'placeholder' => '',
         'value' => NULL,
         'type' => 'input',
         'template' => 'Form.input',

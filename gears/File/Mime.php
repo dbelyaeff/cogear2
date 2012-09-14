@@ -14,10 +14,10 @@
 class File_Mime {
     /**
      * List of mime-types
-     * 
+     *
      * @var array
      */
-    private static $types = array(
+    public static $types = array(
         'hqx' => 'application/mac-binhex40',
         'cpt' => 'application/mac-compactpro',
         'csv' => array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel'),
@@ -61,7 +61,7 @@ class File_Mime {
         'tgz' => 'application/x-tar',
         'xhtml' => 'application/xhtml+xml',
         'xht' => 'application/xhtml+xml',
-        'zip' => array('application/x-zip', 'application/zip', 'application/x-zip-compressed'),
+        'zip' => array('application/x-zip', 'application/zip', 'application/x-zip-compressed','application/octet-stream'),
         'mid' => 'audio/midi',
         'midi' => 'audio/midi',
         'mpga' => 'audio/mpeg',

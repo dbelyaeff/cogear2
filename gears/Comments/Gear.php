@@ -381,7 +381,7 @@ class Comments_Gear extends Gear {
             if (!$post->allow_comments) {
                 return error(t('Comments are disabled for this post.', 'Comment'));
             }
-            $form->init();
+            
             $pid = $this->input->post('pid', $pid);
             if ($pid) {
                 $form->pid->setValue($pid);
@@ -501,7 +501,7 @@ class Comments_Gear extends Gear {
                 $form->title->options->label = t('Edit %s comment', 'Comments', $user->getLink('avatar') . ' ' . $user->getLink('profile')) . ' ' . t('to <a href="%s">%s</a>', 'Comment', $post->getLink(), $post->name);
             }
             $form->publish->options->label = t('Update');
-            $form->init();
+            
             if ($result = $form->result()) {
                 if ($result->preview) {
                     append('info', '<div class="page-header"><h2>' . t('Preview') . '</h2></div>');

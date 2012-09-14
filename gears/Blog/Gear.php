@@ -661,6 +661,7 @@ class Blog_Gear extends Gear {
      */
     public function check_status($bid) {
         if ($blog = session('blogs')) {
+            if(!is_array($blog)) return 0;
             return !empty($blog[$bid]) ? $blog[$bid] : 0;
         }
     }

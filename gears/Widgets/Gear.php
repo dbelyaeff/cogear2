@@ -58,7 +58,7 @@ class Widgets_Gear extends Gear {
                 }
             }
             else {
-                append('sidebar',' ');
+//                append('sidebar',' ');
             }
         } else {
             event('widgets', $widgets);

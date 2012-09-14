@@ -172,7 +172,7 @@ class File_Upload extends Adapter {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
+            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.','File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
             return FALSE;
         }
         return TRUE;

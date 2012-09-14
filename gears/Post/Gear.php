@@ -274,6 +274,7 @@ class Post_Gear extends Gear {
         if (!$post = post($id)) {
             return event('404');
         }
+        $this->widgets = NULL;
         $form = new Form('Post.post');
         $form->object($post);
         $form->elements->title->options->label = t('Edit post');

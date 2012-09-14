@@ -122,4 +122,19 @@ class Gears_Gear extends Gear {
         $tpl->show();
     }
 
+    /**
+     * Add gears
+     */
+    public function admin_add(){
+        $form = new Form('Gears.add');
+        if($result = $form->result()){
+            $file = $result->file ? $result->file : $result->url;
+            if(TRUE === $this->zip->open($file->path)){
+                $this->zip->extractTo(GEARS);
+                $this->zip->close();
+                success(t('Gears has been successfully installed!','Gears'));
+            }
+        }
+        $form->show();
+    }
 }

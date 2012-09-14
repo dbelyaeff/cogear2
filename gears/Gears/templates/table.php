@@ -18,9 +18,12 @@
                     <td class="t_c"><input type="checkbox" name="gears[<?php echo $gear->gear; ?>]" <?php if ($gear->is_core OR $gear->status() == Gears::ENABLED): ?>checked="checked"<?php endif; ?> <?php if ($gear->is_core): ?>disabled="disabled"<?php endif; ?>/>
                     </td>
                     <td><?php echo t($gear->name, 'Gears') ?>
-                    <?php if(method_exists($gear,'admin')):?>
+                    <?php if(method_exists($gear,'admin') && ($gear->status() == Gears::ENABLED OR $gear->is_core)):?>
                             <a href="<?php echo l('/admin/'.$gear->base);?>" title="<?php echo t("Settings");?>"><i class="icon-cog"></i></a>
                         <?php endif;?>
+                            <?php if(filectime($gear->dir) > time()-3600 && $gear->status() != Gears::ENABLED):?>
+                                <span class="label label-success"><small><?php echo t('New');?></small></span>
+                            <?php endif;?>
                     </td>
                     <td><?php echo $gear->version ?></td>
                     <td><?php echo t($gear->description, 'Gears') ?></td>

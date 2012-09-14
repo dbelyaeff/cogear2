@@ -17,6 +17,7 @@ class Form_Object extends Object {
         'name' => '',
         'method' => 'POST',
         'action' => '',
+        'title' => '',
         'class' => 'form',
         'enctype' => self::ENCTYPE_MULTIPART,
         'template' => 'Form.form',
@@ -188,10 +189,10 @@ class Form_Object extends Object {
             if($data instanceof Object){
                 $data = $data->object();
             }
-            event('form.attach', $this);
             foreach ($data as $key => $value) {
                 $this->elements->$key && $this->elements->$key->setValue($value);
             }
+            event('form.attach', $this,$data);
         }
         return $result;
     }
