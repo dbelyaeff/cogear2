@@ -150,8 +150,14 @@ final class Cogear implements Interface_Singleton {
     public function loadGears() {
         $gears = new Gears(GEARS);
         $this->gears = $gears->filter(Gears::ENABLED);
-        foreach ($this->gears as $gear) {
-            $gear->init();
+        foreach ($this->gears as $key=>$gear) {
+            $check = $gear->checkRequiredGears();
+            if ($check->success) {
+                $gear->init();
+            }
+            else {
+                $gear->disable();
+            }
         }
     }
 
@@ -184,8 +190,6 @@ final class Cogear implements Interface_Singleton {
     public function set($name, $value) {
         return $this->config->set($name, $value);
     }
-
-
 
 //    /**
 //     * Check for required gears

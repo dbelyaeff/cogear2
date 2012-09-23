@@ -29,7 +29,6 @@ class Chat_Gear extends Gear {
     );
     public $widgets = FALSE;
     public $current;
-
     /**
      * Acccess
      *
@@ -227,7 +226,7 @@ class Chat_Gear extends Gear {
         $this->showMenu();
         if ($friends = $this->friends->getFriends()) {
             $form = new Form('Chat.chat');
-            
+
             if ($result = $form->result()) {
                 $chat = new Chat_Object();
                 $users = preg_split('#[,\s]+#', $result->users, -1, PREG_SPLIT_NO_EMPTY);

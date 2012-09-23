@@ -195,7 +195,6 @@ abstract class Gear extends Object {
         $this->loadAssets();
         $this->hooks();
         $this->routes();
-//        $this->widgets();
         event('gear.init', $this);
     }
 
@@ -250,15 +249,50 @@ abstract class Gear extends Object {
     /**
      * Check required gears
      *
+     * Response codes
+     *
+     * 1 — gear is ok
+     * 0 — gear is not installed
+     * -1 — gear version is not compatible
+     *
      * @return boolean
      */
-    private function checkRequiredGears() {
+    public function checkRequiredGears() {
+        $result = new Core_ArrayObject(array(
+                    'success' => TRUE,
+                    'gears' => new Core_ArrayObject(),
+                ));
         if ($this->required) {
             foreach ($this->required as $required_gear) {
-                preg_match('#([\w_-]+)\s?([<?php echo ]{1}?)\s([\f]+)?#', $required_gear, $matches);
+                $pieces = explode(' ', $required_gear);
+                $gear_name = $pieces[0];
+                $sizeof = sizeof($pieces);
+                $gear = cogear()->gears->$gear_name;
+                if (NULL === $gear) {
+                    $result->gears->$gear_name = FALSE;
+                    $result->success = FALSE;
+                    continue;
+                }
+                switch ($sizeof) {
+                    case 3:
+                        if (!version_compare($gear->version, $pieces[2], $pieces[1])) {
+                            $result->gears->$gear_name = $pieces[2];
+                            $result->success = FALSE;
+                            continue;
+                        }
+                        break;
+                    case 2:
+                        if (-1 === version_compare($gear->version, $pieces[1], '')) {
+                            $result->gears->$gear_name = $pieces[1];
+                            $result->success = FALSE;
+                            continue;
+                        }
+                        break;
+                }
+                $result->gears->$gear_name = TRUE;
             }
         }
-        return TRUE;
+        return $result;
     }
 
     /**
@@ -288,11 +322,11 @@ abstract class Gear extends Object {
      */
     public function install() {
         $result = new Core_ArrayObject(array(
-            'success' => TRUE,
-            'message' => t('Gear has been successfully installed!','Gears'),
-        ));
-        if($this->status() != Gears::EXISTS){
-            $result->message = t('This gear has been already installed!','Gears');
+                    'success' => TRUE,
+                    'message' => t('Gear has been successfully installed!', 'Gears'),
+                ));
+        if ($this->status() != Gears::EXISTS) {
+            $result->message = t('This gear has been already installed!', 'Gears');
             $result->success = FALSE;
         }
         $this->status(Gears::INSTALLED);
@@ -303,7 +337,7 @@ abstract class Gear extends Object {
      * Uninstall
      */
     public function uninstall() {
-         $result = new Core_ArrayObject(array(
+        $result = new Core_ArrayObject(array(
                     'success' => TRUE,
                     'message' => t('Gear has been successfully uninstalled!', 'Gears'),
                 ));
@@ -319,15 +353,33 @@ abstract class Gear extends Object {
      * Activate
      */
     public function enable() {
-         $result = new Core_ArrayObject(array(
+        $result = new Core_ArrayObject(array(
                     'success' => TRUE,
                     'message' => t('Gear has been successfully enabled!', 'Gears'),
+                    'code' => 1,
+                    'gears' => new Core_ArrayObject(),
                 ));
         if ($this->status() != Gears::INSTALLED) {
-            $result->message =  t('Cannot enabled gear!','Gears');
+            $result->message = t('Cannot enable already enabled gear!', 'Gears');
             $result->success = FALSE;
         }
-        $this->status(Gears::ENABLED);
+        $check = $this->checkRequiredGears();
+        if (TRUE !== $check->success) {
+            $gears_required = new Core_ArrayObject();
+            $gears_incomp_version = new Core_ArrayObject();
+            foreach ($check->gears as $gear => $code) {
+                if (FALSE === $code) {
+                    $gears_required->append('<b>' . t($gear, 'Gears') . '</b>');
+                } else {
+                    $gears_incomp_version->append('<b>' . t($gear, 'Gears') . ' ' . $code . '</b>');
+                }
+            }
+            $result->message = '';
+            $gears_required->count() && $result->message .= t('Following gears are required to be enabled: ', 'Gears') . $gears_required->toString(", ") . "\n";
+            $gears_incomp_version->count() && $result->message .= t('Following gears are required to be specific version: ', 'Gears') . $gears_required->toString(", ");
+            $result->success = FALSE;
+        }
+        $result->success && $this->status(Gears::ENABLED);
         return $result;
     }
 
@@ -335,15 +387,26 @@ abstract class Gear extends Object {
      * Deactivate
      */
     public function disable() {
-         $result = new Core_ArrayObject(array(
+        $result = new Core_ArrayObject(array(
                     'success' => TRUE,
                     'message' => t('Gear has been successfully disabled!', 'Gears'),
+                    'depends' => new Core_ArrayObject(),
                 ));
         if ($this->status() != Gears::ENABLED) {
-            $result->message =   t('Cannot disable inactive gear!','Gears');
+            $result->message = t('Cannot disable inactive gear!', 'Gears');
             $result->success = FALSE;
         }
-        $this->status(Gears::EXISTS);
+        foreach(cogear()->gears as $gear){
+            $check = $gear->checkRequiredGears();
+            if($check->gears->{$this->gear}){
+                $result->depends->{$gear->gear} = TRUE;
+            }
+        }
+        if($result->depends->count()){
+            $result->success = FALSE;
+            $result->message = t('Cannot disable gear becase of following dependencies: ','Gears').' <b>'.implode('</b>, <b>',array_keys($result->depends->toArray())).'</b>';
+        }
+        $result->success && $this->status(Gears::EXISTS);
         return $result;
     }
 
