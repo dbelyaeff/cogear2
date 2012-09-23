@@ -47,7 +47,7 @@ class Redactor_Gear extends Gear {
         if ($is_valid && $result) {
             foreach ($Form->elements as $key => $element) {
                 if ($element->type == 'editor' && $result->$key) {
-                    $result->$key = preg_replace("#(\<br/?\>)#","\n",$result->$key);
+                    $result->$key = preg_replace("#(\<br/?\>)#", "\n", $result->$key);
                 }
             }
         }
@@ -73,31 +73,27 @@ class Redactor_Gear extends Gear {
      *
      * @param type $type
      */
-    public function upload_action($type = 'image') {
-        switch ($type) {
-            default:
-                $img = new Image_Upload(array(
-                            'name' => 'file',
-                            'min' => array(
-                                'width' => 50,
-                                'height' => 50,
-                            ),
-                            'max' => array(
-                                'width' => 1280,
-                                'height' => 800,
-                            ),
-                            'preset' => 'post',
-                            'path' => UPLOADS . DS . 'images' . DS . date('Y/m/d'),
-                            'rename' => substr(md5(time() . cogear()->session->get('ip')), 0, 5) . substr(time(), 5, 10),
-                        ));
-                if ($result = $img->upload()) {
-                    $ajax = new Ajax();
-                    $info = $img->getInfo();
-                    $ajax->append('<img src="' . File::pathToUri(UPLOADS . $result) . '" width="' . $info->width . '" height="' . $info->height . '" alt=""/>');
-                    $ajax->send();
-                }
-                else
-                    exit(implode('<br/>', $img->errors));
+    public function upload_action() {
+        $img = new Image_Upload(array(
+                    'name' => 'file',
+                    'min' => array(
+                        'width' => 50,
+                        'height' => 50,
+                    ),
+                    'max' => array(
+                        'width' => 1280,
+                        'height' => 800,
+                    ),
+                    'preset' => 'post',
+                    'path' => UPLOADS . DS . 'images' . DS . date('Y/m/d'),
+                    'rename' => substr(md5(time() . cogear()->session->get('ip')), 0, 5) . substr(time(), 5, 10),
+                ));
+        if ($result = $img->upload()) {
+            $ajax = new Ajax();
+            $ajax->filelink = $result->uri_full;
+            $ajax->json();
+        } else {
+            exit(implode('<br/>', $img->errors));
         }
     }
 

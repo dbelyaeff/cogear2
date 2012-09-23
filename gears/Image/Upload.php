@@ -124,9 +124,10 @@ class Image_Upload extends File_Upload {
      */
     protected function process($file) {
         if ($file = parent::process($file)) {
-            $this->getInfo($this->file->tmp_name);
+            $this->getInfo($file->path);
             if ($this->options->max && !$this->checkMax($this->options->max->width, $this->options->max->height)
-                    OR $this->options->min && !$this->checkMin($this->options->max->width, $this->options->max->height)) {
+                    OR $this->options->min && !$this->checkMin($this->options->min->width, $this->options->min->height)) {
+                @unlink($file->path);
                 return FALSE;
             }
         }

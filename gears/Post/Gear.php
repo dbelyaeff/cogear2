@@ -264,7 +264,7 @@ class Post_Gear extends Gear {
         // Remove 'delete' button from create post form
         $form->elements->offsetUnset('delete');
         $form->show();
-        js($this->folder . '/js/inline/autosave.js','footer');
+//        js($this->folder . '/js/inline/autosave.js','footer');
     }
 
     /**

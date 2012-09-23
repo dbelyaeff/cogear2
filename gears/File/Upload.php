@@ -51,6 +51,12 @@ class File_Upload extends Adapter {
     );
 
     /**
+     * Errors
+     *
+     * @var type
+     */
+    public $errors = array();
+    /**
      * Upload file
      *
      * @param string $name

@@ -44,10 +44,11 @@ class Redactor_Editor extends Wysiwyg_Abstract {
 'alignleft', 'aligncenter', 'alignright', 'justify', '|',
 'horizontalrule');
         $options->autoresize = TRUE;
-        $options->imageUpload = l('/redactor/upload/image/');
+        $options->imageUpload = l('/redactor/upload/');
         $options->overlay = TRUE;
         $options->minHeight = 300;
         $options->wym = FALSE;
+        $options->autosave = FALSE;
         event('redactor.options',$options);
 //        $this->options->toolbar && $this->editor->extend($this->options->toolbar);
 //        $options = array(
