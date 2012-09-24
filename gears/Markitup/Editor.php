@@ -12,7 +12,6 @@
  * @version		$Id$
  */
 class Markitup_Editor extends Wysiwyg_Abstract {
-    protected $name = 'Markitup';
     /**
      * Load scripts
      */

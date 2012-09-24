@@ -225,29 +225,28 @@ class Post_Gear extends Gear {
      */
     public function create_action() {
         $post = new Post();
-        if ($pid = $this->session->get('draft')) {
-            $post->id = $pid;
-            $post->find();
-        } else {
-            $post->aid = $this->user->id;
-            $post->created_date = time();
-            $post->insert();
-            $this->session->set('draft', $post->id);
-        }
+//        if ($pid = $this->session->get('draft')) {
+//            $post->id = $pid;
+//            $post->find();
+//        } else {
+//            $post->aid = $this->user->id;
+//            $post->created_date = time();
+//            $post->insert();
+//            $this->session->set('draft', $post->id);
+//        }
         $form = new Form('Post.post');
-        $form->object($post);
         if ($result = $form->result()) {
             $post->object()->extend($result);
             if ($result->preview) {
                 $post->preview = TRUE;
                 $post->show();
             } else {
-                if (Ajax::is() && $this->input->get('autosave')) {
-                    $post->update();
-                    $ajax = new Ajax();
-                    $ajax->message(t('Post saved!', 'Post'));
-                    $ajax->send();
-                }
+//                if (Ajax::is() && $this->input->get('autosave')) {
+//                    $post->update();
+//                    $ajax = new Ajax();
+//                    $ajax->message(t('Post saved!', 'Post'));
+//                    $ajax->send();
+//                }
                 $post->last_update = time();
                 if ($result->draft) {
                     $post->published = 0;
@@ -260,6 +259,9 @@ class Post_Gear extends Gear {
                     redirect($post->getLink());
                 }
             }
+        }
+        else {
+//            $form->object($post);
         }
         // Remove 'delete' button from create post form
         $form->elements->offsetUnset('delete');
