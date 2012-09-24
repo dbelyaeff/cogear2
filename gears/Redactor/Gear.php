@@ -58,6 +58,12 @@ class Redactor_Gear extends Gear {
      */
     public function __construct() {
         parent::__construct();
+    }
+    /**
+     * Init
+     */
+    public function init(){
+        parent::init();
         Wysiwyg_Gear::$editors['redactor'] = 'Redactor_Editor';
     }
 
@@ -240,6 +246,17 @@ class Redactor_Gear extends Gear {
 
 RTOOLBAR['default'] = " . json_encode($toolbar));
         $ajax->send();
+    }
+
+    /**
+     * Disable
+     */
+    public function disable(){
+       $result = parent::disable();
+       if($result->success){
+           $this->set('wysiwyg.editor', 'textarea');
+       }
+       return $result;
     }
 
 }

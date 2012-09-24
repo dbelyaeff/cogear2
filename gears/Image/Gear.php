@@ -22,6 +22,7 @@ class Image_Gear extends Gear {
         'post.full.after' => 'hookPostComments',
     );
     protected $is_core = TRUE;
+
     /**
      * Hook form render
      *
@@ -97,19 +98,17 @@ class Image_Gear extends Gear {
                 $data['success'] = TRUE;
                 $data['code'] = '';
                 foreach ($files as $file) {
-                    if ($file->uri) {
+                    if ($file->uri_full) {
                         $data['code'] .= template('Image.insert', array('image' => $file))->render();
                     }
                 }
             } else {
                 $data['success'] = FALSE;
-                foreach ($files as $file) {
-                    if ($file->errors) {
-                        $data['messages'][] = array(
-                            'type' => 'error',
-                            'body' => implode('<br/>', $file->errors),
-                        );
-                    }
+                if ($image->errors) {
+                    $data['messages'][] = array(
+                        'type' => 'error',
+                        'body' => implode('<br/>', $image->errors),
+                    );
                 }
             }
             $ajax->json($data);

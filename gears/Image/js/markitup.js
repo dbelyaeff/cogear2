@@ -5,7 +5,7 @@ function showImageUpload(){
         maxHeight	: 300,
         fitToView	: false,
         width		: 600,
-        height		: 260,
+        height		: 300,
         autoSize	: false,
         openEffect	: 'elastic',
         closeEffect	: 'elastic',
@@ -15,6 +15,7 @@ function showImageUpload(){
                 dataType: 'json',
                 done: function (e, response) {
                     data = response.result;
+                    console.log(data);
                     if(data.success){
                         $.markItUp({
                             replaceWith:data.code
