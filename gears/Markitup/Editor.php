@@ -25,12 +25,7 @@ class Markitup_Editor extends Wysiwyg_Abstract {
 //        $this->toolbar->markupSet->uasort('Core_ArrayObject::sortByOrder');
 //            $(document).ready(function(){
         inline_js("
-			$('body').on('focus','textarea',function(){
-                              if($(this).parents('.markItUp').length == 0){
-                                   $(this).markItUp(" . json_encode($this->toolbar) . ");
-                              }
-            });
-	", 'after');
+                                   $('[name=$this->name]').markItUp(" . json_encode($this->toolbar) . ")", 'after');
 //                        }
     }
 

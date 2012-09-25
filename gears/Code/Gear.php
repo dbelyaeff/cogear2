@@ -15,6 +15,7 @@ class Code_Gear extends Gear {
 
     protected $name = 'Code';
     protected $description = 'Helps to deal with programming code';
+    protected $version = '1.2';
     /**
      * Construct
      */

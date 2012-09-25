@@ -17,6 +17,7 @@ class Breadcrumb_Gear extends Gear {
     protected $package = '';
     protected $order = 0;
     protected $is_core = TRUE;
+    protected $required = array('Menu');
 }
 
 /**

@@ -32,8 +32,14 @@ abstract class Gear extends Object {
      *
      * @var string
      */
-    protected $version = '2.x-1.0';
+    protected $version = '1.0';
 
+    /**
+     * Core version
+     *
+     * @var type
+     */
+    protected $core = '2.x';
     /**
      * If gear can be deactivated
      *
@@ -273,6 +279,7 @@ abstract class Gear extends Object {
                     $result->success = FALSE;
                     continue;
                 }
+                $result->gears->$gear_name = TRUE;
                 switch ($sizeof) {
                     case 3:
                         if (!version_compare($gear->version, $pieces[2], $pieces[1])) {
@@ -282,14 +289,13 @@ abstract class Gear extends Object {
                         }
                         break;
                     case 2:
-                        if (-1 === version_compare($gear->version, $pieces[1], '')) {
+                        if (!version_compare($gear->version, $pieces[1], ' >= ')) {
                             $result->gears->$gear_name = $pieces[1];
                             $result->success = FALSE;
                             continue;
                         }
                         break;
                 }
-                $result->gears->$gear_name = TRUE;
             }
         }
         return $result;
@@ -376,7 +382,7 @@ abstract class Gear extends Object {
             }
             $result->message = '';
             $gears_required->count() && $result->message .= t('Following gears are required to be enabled: ', 'Gears') . $gears_required->toString(", ") . "\n";
-            $gears_incomp_version->count() && $result->message .= t('Following gears are required to be specific version: ', 'Gears') . $gears_required->toString(", ");
+            $gears_incomp_version->count() && $result->message .= t('Following gears are required to be specific version: ', 'Gears') . $gears_incomp_version->toString(", ");
             $result->success = FALSE;
         }
         $result->success && $this->status(Gears::ENABLED);
