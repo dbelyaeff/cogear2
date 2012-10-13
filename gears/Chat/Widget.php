@@ -25,7 +25,7 @@ class Chat_Widget extends Widgets_Widget {
      */
     public function render() {
         if ($chat = cogear()->chat->current) {
-            $tpl = new Template('Chat.widget');
+            $tpl = new Template('Chat/templates/widget');
             $tpl->chat = $chat;
             $this->code = $tpl->render();
             return parent::render();

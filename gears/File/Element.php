@@ -36,7 +36,7 @@ class File_Element extends Form_Element_Abstract {
      */
     public function render() {
         $this->prepareOptions();
-        $tpl = new Template('File.element');
+        $tpl = new Template('File/templates/element');
         $tpl->assign($this->options);
         $this->code = $tpl->render();
         $this->decorate();

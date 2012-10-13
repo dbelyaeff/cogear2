@@ -75,7 +75,7 @@ class Cut_Gear extends Gear {
             if($Post->teaser){
                 $Post->body = $matches[1][0];
                 if(!empty($matches[4][0])){
-                    $Post->body .= template('Cut.cut',array('text'=>$matches[4][0],'post'=>$Post))->render();
+                    $Post->body .= template('Cut/templates/cut',array('text'=>$matches[4][0],'post'=>$Post))->render();
                 }
             }
             else {

@@ -64,7 +64,7 @@ class File_Gear extends Gear {
             $data['code'] = '';
             foreach ($files as $file) {
                 if ($file->uri) {
-                    $data['code'] .= template('File.attached',array('file'=>$file))->render();
+                    $data['code'] .= template('File/templates/attached',array('file'=>$file))->render();
                 }
             }
         } else {

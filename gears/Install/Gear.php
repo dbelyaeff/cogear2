@@ -87,12 +87,12 @@ class Install_Gear extends Gear {
                 ));
         switch ($action) {
             case 'check':
-                $tpl = new Template('Install.check');
+                $tpl = new Template('Install/templates/check');
                 $tpl->show();
                 break;
             case 'site':
                 append('content', '<p class="alert alert-info">' . t('Define basic settings for your site.', 'Install') . '</p>');
-                $form = new Form('Install.site');
+                $form = new Form('Install/forms/site');
                 
                 if ($result = $form->result()) {
                     $config = new Config(SITE . DS . 'site' . EXT);
@@ -107,7 +107,7 @@ class Install_Gear extends Gear {
                 $form->show();
                 break;
             case 'finish':
-                $tpl = new Template('Install.finish');
+                $tpl = new Template('Install/templates/finish');
                 $tpl->show();
                 break;
             case 'done':
@@ -119,7 +119,7 @@ class Install_Gear extends Gear {
                 break;
             default:
             case 'welcome':
-                $tpl = new Template('Install.welcome');
+                $tpl = new Template('Install/templates/welcome');
                 $tpl->show();
         }
     }

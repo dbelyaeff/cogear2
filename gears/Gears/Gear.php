@@ -95,7 +95,7 @@ class Gears_Gear extends Gear {
         isset($filter) && $gears = $gears->filter($filter, FALSE);
         if ($gears->count()) {
             $gears->ksort();
-            $tpl = new Template('Gears.table');
+            $tpl = new Template('Gears/templates/table');
             $tpl->action = "";
             $tpl->gears = $gears;
             $tpl->show();
@@ -111,7 +111,7 @@ class Gears_Gear extends Gear {
      * @param type $gears
      */
     public function admin_action($do, $do_gears) {
-        $tpl = new Template('Gears.action');
+        $tpl = new Template('Gears/templates/action');
         $tpl->do = $do;
         $all_gears = new Gears(GEARS);
         $gears = new Core_ArrayObject();
@@ -126,7 +126,7 @@ class Gears_Gear extends Gear {
      * Add gears
      */
     public function admin_add(){
-        $form = new Form('Gears.add');
+        $form = new Form('Gears/forms/add');
         if($result = $form->result()){
             $file = $result->file ? $result->file : $result->url;
             if(TRUE === $this->zip->open($file->path)){

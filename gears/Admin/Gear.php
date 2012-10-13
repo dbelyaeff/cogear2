@@ -32,14 +32,14 @@ class Admin_Gear extends Gear {
 //        if (check_route('admin', Router::STARTS)) {
 //            $menu = new Menu_Auto(array(
 //                        'name' => 'admin',
-//                        'template' => 'Admin.menu',
+//                        'template' => 'Admin/templates/menu',
 //                        'render' => 'info',
 //                    ));
 //        }
         if (access('Admin')) {
             $this->menu = new Menu_Auto(array(
                         'name' => 'admin',
-                        'template' => 'Admin.menu',
+                        'template' => 'Admin/templates/menu',
                         'render' => 'before',
                     ));
             parent::loadAssets();
@@ -148,7 +148,7 @@ class Admin_Gear extends Gear {
      * Site config
      */
     public function site_action() {
-        $form = new Form('Admin.site');
+        $form = new Form('Admin/forms/site');
         $form->object(array(
             'name' => config('site.name'),
             'url' => config('site.url'),

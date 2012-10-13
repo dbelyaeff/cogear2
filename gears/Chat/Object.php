@@ -108,10 +108,10 @@ class Chat_Object extends Db_Item {
         if (access('Chat.view', $this)) {
             $output = new Core_ArrayObject();
             title($this->name);
-            $tpl = new Template('Chat.chat');
+            $tpl = new Template('Chat/templates/chat');
             $tpl->chat = $this;
             $output->append($tpl->render());
-            $form = new Form('Chat.msg');
+            $form = new Form('Chat/forms/msg');
             
             $form->cid->setValue($this->id);
             if ($result = $form->result()) {

@@ -1,7 +1,7 @@
 <form action="<?php echo $action ?>" method="POST">
     <?php d('Gears.admin'); ?>
     <input type="search" class="span3" placeholder="<?php echo t("Type to filter…"); ?>" id="search-gears"/>
-    <?php echo template('Gears.formaction')->render() ?>
+    <?php echo template('Gears/templates/formaction')->render() ?>
     <table class="table table-bordered table-hover" id="gears-table">
         <thead>
             <tr>
@@ -72,7 +72,7 @@
             </tr>
         </tfoot>
     </table>
-    <?php echo template('Gears.formaction')->render() ?>
+    <?php echo template('Gears/templates/formaction')->render() ?>
 </form>
 <script>
     function filterTable(value){

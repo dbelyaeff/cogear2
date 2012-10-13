@@ -23,7 +23,7 @@ class User_Navbar extends Object {
      * @return type
      */
     public function render() {
-        $tpl = new Template('User.navbar');
+        $tpl = new Template('User/templates/navbar');
         if (!$this->object) {
             return;
         }

@@ -20,7 +20,7 @@ class Form_Object extends Object {
         'title' => '',
         'class' => 'form',
         'enctype' => self::ENCTYPE_MULTIPART,
-        'template' => 'Form.form',
+        'template' => 'Form/templates/form',
         'prefix' => 'form',
         'ajax' => FALSE,
     );
@@ -91,7 +91,7 @@ class Form_Object extends Object {
     public function __construct($options) {
         $this->elements = new Core_ArrayObject();
         if (is_string($options)) {
-            if (!$config = Config::read(Gear::preparePath($options, 'forms') . EXT)) {
+            if (!$config = Config::read(Gear::preparePath($options))) {
                 return error(t('Cannot read form config <b>%s</b>.', '', $options));
             } else {
                 $options = $config;

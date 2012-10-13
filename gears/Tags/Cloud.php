@@ -39,7 +39,7 @@ class Tags_Cloud extends Options {
             $tag = tag();
             $tids && $tag->where_in('id',$tids);
             $tags = $tag->findAll();
-            $tpl = new Template('Tags.cloud');
+            $tpl = new Template('Tags/templates/cloud');
             $tpl->tags = $tags;
             $tpl->counter = $counter;
             return $tpl->render();

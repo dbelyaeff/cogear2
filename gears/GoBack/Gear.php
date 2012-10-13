@@ -29,7 +29,7 @@ class GoBack_Gear extends Gear {
      */
     public function showGoBackButton($Form){
        if(defined('LAYOUT')) return;
-       $tpl = new Template('GoBack.button');
+       $tpl = new Template('GoBack/templates/button');
        $tpl->show();
     }
 }

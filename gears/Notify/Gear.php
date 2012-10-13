@@ -17,7 +17,7 @@ class Notify_Gear extends Gear {
     protected $name = 'Notifications';
     protected $description = 'Handle with messages dialogs and windows.';
     protected $order = -999;
-    protected $template = 'Notify.alert';
+    protected $template = 'Notify/templates/alert';
     protected $hooks = array(
         'ignite' => 'renderFlash',
     );
@@ -33,7 +33,7 @@ class Notify_Gear extends Gear {
      */
     public function showMessage($body, $title = NULL, $class = NULL, $region = 'info') {
         if ($region == 'growl') {
-            $this->template = 'Notify.growl';
+            $this->template = 'Notify/templates/growl';
             $region = 'after';
         }
         $tpl = new Template($this->template);

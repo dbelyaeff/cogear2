@@ -22,7 +22,7 @@ class Pages_Gear extends Gear {
     protected $hooks = array(
         'router.run' => 'hookRouter',
     );
-    protected $is_core = TRUE;
+//    protected $is_core = TRUE;
 
     /**
      * Hook router
@@ -145,7 +145,7 @@ class Pages_Gear extends Gear {
      * Create page
      */
     public function admin_create() {
-        $form = new Form('Pages.page');
+        $form = new Form('Pages/forms/page');
         if ($result = $form->result()) {
             $page = new Pages();
             $page->object($result);
@@ -182,7 +182,7 @@ class Pages_Gear extends Gear {
         if (!$page->find()) {
             return event('404');
         }
-        $form = new Form('Pages.page');
+        $form = new Form('Pages/forms/page');
         $form->object($page);
         $form->elements->title->options->label = t('Edit page');
         if ($result = $form->result()) {

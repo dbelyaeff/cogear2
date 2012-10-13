@@ -26,7 +26,7 @@ class Code_Gear extends Gear {
 
     public function editor_action(){
         define('LAYOUT','splash');
-        $form = new Form('Code.editor');
+        $form = new Form('Code/forms/editor');
         if($result = $form->result()){
             Redactor_Editor::insert($result->editor);
         }

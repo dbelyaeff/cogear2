@@ -17,7 +17,7 @@ class Form_Element_Checkbox extends Form_Element_Abstract{
      * @param type $options
      */
     public function __construct($options) {
-        $options['template'] = 'Form.checkbox';
+        $options['template'] = 'Form/templates/checkbox';
         parent::__construct($options);
     }
     /**

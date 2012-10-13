@@ -33,7 +33,7 @@ class Session_Gear extends Gear {
      * Trace session
      */
     public function trace($Stack){
-        $Stack->append(template('Session.trace')->render());
+        $Stack->append(template('Session/templates/trace')->render());
     }
 
 }

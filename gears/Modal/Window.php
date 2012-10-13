@@ -51,7 +51,7 @@ class Modal_Window extends Object {
     public function render() {
         event('Modal.window', $this);
         event('Modal.window.' . $this->name, $this);
-        $tpl = new Template('Modal.window');
+        $tpl = new Template('Modal/templates/window');
         $this->options->id = $this->id();
         $tpl->assign($this->options);
 

@@ -34,7 +34,7 @@ class Syndicate_Gear extends Gear {
      */
     public function hookFeed($items) {
         if ($this->input->get('rss') !== NULL) {
-            $tpl = new Template('Syndicate.rss');
+            $tpl = new Template('Syndicate/templates/rss');
             $tpl->title = $this->meta->info->title->toString(config('meta.title.delimiter', ' &raquo; '));
             $tpl->link = l() . $this->router->getUri() . '?rss';
             $tpl->items = $items;

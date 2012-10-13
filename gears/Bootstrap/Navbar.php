@@ -17,7 +17,7 @@ class Bootstrap_Navbar extends Menu_Auto {
      * @param array $options
      */
     public function __construct($options) {
-        $options['template'] = 'Bootstrap.navbar';
+        $options['template'] = 'Bootstrap/templates/navbar';
         parent::__construct($options);
     }
 }

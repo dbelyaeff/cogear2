@@ -13,11 +13,11 @@
 class Form_Element_Group extends Form_Element_Abstract{
     /**
      * Constructor
-     * 
-     * @param type $options 
+     *
+     * @param type $options
      */
     public function __construct($options) {
-        $options['template'] = 'Form.group';
+        $options['template'] = 'Form/templates/group';
         parent::__construct($options);
         foreach($this->options->elements as $key=>$element){
             $element->render = FALSE;
@@ -33,7 +33,7 @@ class Form_Element_Group extends Form_Element_Abstract{
     }
     /**
      * Prepare options
-     * @return type 
+     * @return type
      */
     public function render() {
         $elements = array();

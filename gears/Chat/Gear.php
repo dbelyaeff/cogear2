@@ -225,7 +225,7 @@ class Chat_Gear extends Gear {
     public function create_action() {
         $this->showMenu();
         if ($friends = $this->friends->getFriends()) {
-            $form = new Form('Chat.chat');
+            $form = new Form('Chat/forms/chat');
 
             if ($result = $form->result()) {
                 $chat = new Chat_Object();
@@ -404,7 +404,7 @@ class Chat_Gear extends Gear {
                             continue;
                         } elseif ($user = user($login, 'login')) {
                             if ($chat->join($user->id)) {
-                                $tpl = new Template('Chat.user');
+                                $tpl = new Template('Chat/templates/user');
                                 $tpl->user = $user;
                                 $tpl->chat = $chat;
                                 $code .= $tpl->render();

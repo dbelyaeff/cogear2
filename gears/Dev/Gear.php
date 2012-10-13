@@ -53,7 +53,7 @@ class Dev_Gear extends Gear {
     public function finish() {
         $this->addPoint('system.end');
         $cogear = getInstance();
-        $template = new Template('Dev.results');
+        $template = new Template('Dev/templates/results');
         $template->data = Dev_Gear::humanize($cogear->dev->calc('system'));
         append('footer', $template->render());
     }

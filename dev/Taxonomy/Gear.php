@@ -166,7 +166,7 @@ class Taxonomy_Gear extends Gear {
             foreach ($vocabularies as $vid => $terms_ids) {
                 if ($terms_ids) {
                     $vocabulary = vocabulary($vid);
-                    $tpl = new Template('Taxonomy.post');
+                    $tpl = new Template('Taxonomy/templates/post');
                     $tpl->vocabulary = $vocabulary;
                     $terms = terms();
                     $terms->where_in('id', $terms_ids);
@@ -361,7 +361,7 @@ class Taxonomy_Gear extends Gear {
         $this->bc->register(array(
             'label' => t('Create'),
         ));
-        $form = new Form('Taxonomy.term');
+        $form = new From('Taxonomy/forms/term');
         $form->options->elements->vid->label = '';
         $form->options->elements->vid->type = 'hidden';
         $form->options->elements->vid->value = $vid;
@@ -384,7 +384,7 @@ class Taxonomy_Gear extends Gear {
      * @param Taxonomy_Term $term
      */
     private function admin_term_edit(Taxonomy_Term $term) {
-        $form = new Form('Taxonomy.term');
+        $form = new Form('Taxonomy/forms/term');
         $form->object($term);
         if ($result = $form->result()) {
             if ($result->delete && $term->delete()) {
@@ -411,7 +411,7 @@ class Taxonomy_Gear extends Gear {
      * Create vocabulary
      */
     private function admin_vocabulary_create() {
-        $form = new Form('Taxonomy.vocabulary');
+        $form = new Form('Taxonomy/forms/vocabulary');
         $this->bc->register(array(
             'label' => t('Create'),
             'link' => l('admin/taxonomy/create'),
@@ -440,7 +440,7 @@ class Taxonomy_Gear extends Gear {
                 'label' => $vocabulary->name,
                 'link' => l('admin/taxonomy/edit/' . $id),
             ));
-            $form = new Form('Taxonomy.vocabulary');
+            $form = new Form('Taxonomy/forms/vocabulary');
             $form->object($vocabulary);
             if ($result = $form->result()) {
                 if ($result->delete && $vocabulary->delete()) {

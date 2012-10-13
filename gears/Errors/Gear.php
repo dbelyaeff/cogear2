@@ -75,7 +75,7 @@ HTML;
 
     public function _404() {
         $this->response->header('Status', '404 ' . Response::$codes[404]);
-        $tpl = new Template('Errors.404');
+        $tpl = new Template('Errors/templates/404');
         $tpl->show();
     }
 

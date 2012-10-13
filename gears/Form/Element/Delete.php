@@ -22,7 +22,7 @@ class Form_Element_Delete extends Form_Element_Submit {
         $this->prepareOptions();
         $this->options->value = $this->label;
         $this->options->label = '';
-        $tpl = new Template('Form.delete');
+        $tpl = new Template('Form/templates/delete');
         $tpl->options = $this->options;
         $this->code = $tpl->render();
         return $this->code;

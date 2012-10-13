@@ -170,12 +170,12 @@ class Converter_Gear extends Gear {
                 $form->show();
                 break;
             case 'process':
-                template('Converter.process',array('steps'=>$this->adapter->getSteps()))->show();
+                template('Converter/templates/process',array('steps'=>$this->adapter->getSteps()))->show();
                 js($this->folder.'/js/converter.js');
                 css($this->folder.'/css/converter.css');
                 break;
             case 'finish':
-                template('Converter.finish')->show();
+                template('Converter/templates/finish')->show();
                 break;
             case 'adapter':
                 if($subaction && method_exists($this->adapter, $subaction)){

@@ -36,7 +36,7 @@ class File_Url_Element extends Form_Element_Abstract {
      */
     public function render() {
         $this->prepareOptions();
-        $tpl = new Template('File.url');
+        $tpl = new Template('File/templates/url');
         $tpl->assign($this->options);
         $this->code = $tpl->render();
         $this->decorate();

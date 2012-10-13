@@ -40,6 +40,7 @@ abstract class Gear extends Object {
      * @var type
      */
     protected $core = '2.x';
+
     /**
      * If gear can be deactivated
      *
@@ -402,15 +403,15 @@ abstract class Gear extends Object {
             $result->message = t('Cannot disable inactive gear!', 'Gears');
             $result->success = FALSE;
         }
-        foreach(cogear()->gears as $gear){
+        foreach (cogear()->gears as $gear) {
             $check = $gear->checkRequiredGears();
-            if($check->gears->{$this->gear}){
+            if ($check->gears->{$this->gear}) {
                 $result->depends->{$gear->gear} = TRUE;
             }
         }
-        if($result->depends->count()){
+        if ($result->depends->count()) {
             $result->success = FALSE;
-            $result->message = t('Cannot disable gear becase of following dependencies: ','Gears').' <b>'.implode('</b>, <b>',array_keys($result->depends->toArray())).'</b>';
+            $result->message = t('Cannot disable gear becase of following dependencies: ', 'Gears') . ' <b>' . implode('</b>, <b>', array_keys($result->depends->toArray())) . '</b>';
         }
         $result->success && $this->status(Gears::EXISTS);
         return $result;
@@ -538,23 +539,22 @@ abstract class Gear extends Object {
      *
      * Errors.index = Core/Errors/$dir/index
      *
-     * @param	string	$name
-     * @param   string  $dir
-     * @param   string  $default
-     * @return	string  Path without file extension
+     * @param	string	$path
+     * @return	string  Path
      */
-    public static function preparePath($name, $dir = '', $default = 'index') {
-        if ($pieces = preg_split('#[\s><.]#', $name, -1, PREG_SPLIT_NO_EMPTY)) {
-            if (sizeof($pieces) == 1) {
-                array_push($pieces, $default);
+    public static function preparePath($path) {
+        // Add extension
+        strpos($path, EXT) OR $path .= EXT;
+        // If it has relative path
+        if (strpos($path, ROOT) === FALSE) {
+            if ($path[0] == '/') {
+                $path = ROOTPATH . DS . $path;
+            } else {
+                $path = GEARS . DS . $path;
             }
-            $gear = array_shift($pieces);
-            $cogear = getInstance();
-            if ($cogear->gears->$gear) {
-                $gear_dir = $cogear->gears->$gear->dir;
-                $file_name = implode(DS, $pieces);
-                return $path = $gear_dir . DS . $dir . DS . $file_name;
-            }
+        }
+        if (file_exists($path)) {
+            return $path;
         }
         return NULL;
     }

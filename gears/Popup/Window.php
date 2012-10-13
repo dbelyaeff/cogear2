@@ -50,7 +50,7 @@ class Popup_Window extends Object {
     public function render() {
         event('Popup.window', $this);
         event('Popup.window.' . $this->name, $this);
-        $tpl = new Template('Popup.window');
+        $tpl = new Template('Popup/templates/window');
         $this->options->id = $this->id();
         $tpl->assign($this->options);
 

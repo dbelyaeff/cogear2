@@ -22,7 +22,7 @@ class Table_Object extends Object {
         'name' => 'name',
         'class' => 'table',
         'fields' => array(),
-        'template' => 'Table.table'
+        'template' => 'Table/templates/table'
     );
 
     /**

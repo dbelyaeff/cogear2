@@ -34,7 +34,7 @@ class Image_Gear extends Gear {
             case 'page':
             case 'comment':
                 if (access('images.upload')) {
-                    $tpl = new Template('Image.upload');
+                    $tpl = new Template('Image/templates/upload');
                     $tpl->show('after');
                     js($this->folder . '/js/markitup.js');
                 }
@@ -48,7 +48,7 @@ class Image_Gear extends Gear {
     public function hookPostComments($after) {
         if ($after->object()->allow_comments) {
             if (access('images.upload')) {
-                $tpl = new Template('Image.upload');
+                $tpl = new Template('Image/templates/upload');
                 $tpl->show('after');
                 js($this->folder . '/js/markitup.js');
             }
@@ -99,7 +99,7 @@ class Image_Gear extends Gear {
                 $data['code'] = '';
                 foreach ($files as $file) {
                     if ($file->uri_full) {
-                        $data['code'] .= template('Image.insert', array('image' => $file))->render();
+                        $data['code'] .= template('Image/templates/insert', array('image' => $file))->render();
                     }
                 }
             } else {

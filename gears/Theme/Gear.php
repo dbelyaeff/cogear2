@@ -67,7 +67,7 @@ class Theme_Gear extends Gear {
      * @param type $action
      */
     public function admin($action = 'settings'){
-        $form = new Form('Theme.choose');
+        $form = new Form('Theme/forms/choose');
         $form->elements->theme->setValues($this->getThemes());
         $form->elements->theme->setValue(config('theme.current'));
         if($result = $form->result()){

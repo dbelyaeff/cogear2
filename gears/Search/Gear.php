@@ -48,7 +48,7 @@ class Search_Gear extends Gear {
         $q = $this->input->get('q');
 
         page_header($q ? t('Search results for «%s»', 'Seach', $q) : t('Search'));
-        $tpl = new Template('Search.form');
+        $tpl = new Template('Search/templates/form');
         $tpl->action = l('/search/') . $type;
         $q && $tpl->value = $q;
         $tpl->show('info');

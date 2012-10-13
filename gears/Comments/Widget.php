@@ -42,7 +42,7 @@ class Comments_Widget extends Widgets_Widget {
             $comments->order('id', 'DESC');
             $comments->where_in('id', $ids);
             if ($result = $comments->findAll()) {
-                $tpl = new Template('Comments.widget');
+                $tpl = new Template('Comments/templates/widget');
                 $tpl->comments = $result;
                 $this->code = $tpl->render();
             }

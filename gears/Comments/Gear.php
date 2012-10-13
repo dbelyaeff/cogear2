@@ -373,7 +373,7 @@ class Comments_Gear extends Gear {
      * @return type
      */
     protected function post($post_id, $pid = 0, $render = TRUE) {
-        $form = new Form('Comments.form');
+        $form = new Form('Comments/forms/form');
         $post = new Post();
         $post->id = $post_id;
         $form->options->action .= $post->id;
@@ -494,7 +494,7 @@ class Comments_Gear extends Gear {
             $user = new User();
             $user->id = $comment->aid;
             $user->find();
-            $form = new Form('Comments.form');
+            $form = new Form('Comments/forms/form');
             $form->options->action = l('/comments/edit/' . $comment->id);
             $form->object($comment);
             if ($post->find()) {

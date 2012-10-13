@@ -23,7 +23,7 @@ class Blog_Navbar extends Object {
      * @return type
      */
     public function render() {
-        $tpl = new Template('Blog.navbar');
+        $tpl = new Template('Blog/templates/navbar');
         if (!$this->object) {
             return;
         }
@@ -32,7 +32,7 @@ class Blog_Navbar extends Object {
         $tpl->navbar = $blog->render('navbar','profile');
         $tabs = new Menu_Auto(array(
                     'name' => 'blog.tabs',
-                    'template' => 'Bootstrap.tabs',
+                    'template' => 'Bootstrap/templates/tabs',
                     'render' => FALSE,
                     'elements' => array(
                         'profile' => array(

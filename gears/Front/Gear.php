@@ -84,17 +84,17 @@ class Front_Gear extends Gear {
                         'all' => array(
                             'all' => post()->where('published')->count(TRUE),
                             'best' => post()->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-                            'new' => post()->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
+//                            'new' => post()->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
                         ),
                         'blogs' => array(
                             'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('published')->count(TRUE),
                             'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
+//                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
                         ),
                         'users' => array(
                             'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('published')->count(TRUE),
                             'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
+//                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
                         ),
                     ));
             $this->cache->set('front.counters', $counters);
@@ -123,12 +123,12 @@ class Front_Gear extends Gear {
                             'class' => 'fl_r',
                             'active' => $filter == 'all',
                         ),
-                        array(
-                            'label' => t('New') . ($counters->$action->new > 0 ? '<sup>+' . $counters->$action->new . '</sup>' : ''),
-                            'link' => l('/front/' . $action . '/new/'),
-                            'class' => 'fl_r',
-                            'active' => $filter == 'new',
-                        ),
+//                        array(
+//                            'label' => t('New') . ($counters->$action->new > 0 ? '<sup>+' . $counters->$action->new . '</sup>' : ''),
+//                            'link' => l('/front/' . $action . '/new/'),
+//                            'class' => 'fl_r',
+//                            'active' => $filter == 'new',
+//                        ),
                         array(
                             'label' => t('Best') . ($counters->$action->best > 0 ? '<sup>+' . $counters->$action->best . '</sup>' : ''),
                             'link' => l('/front/' . $action . '/best/'),
@@ -153,9 +153,9 @@ class Front_Gear extends Gear {
                 $this->db->where('posts.rating', config('Front.best', 1), ' > ');
                 $this->db->where('posts.front');
                 break;
-            case 'new':
-                $this->db->where('posts.created_date', time() - config('Front.new', 86400), ' > ');
-                break;
+//            case 'new':
+//                $this->db->where('posts.created_date', time() - config('Front.new', 86400), ' > ');
+//                break;
         }
         Db_ORM::skipClear();
         $posts = new Post_List(array(
@@ -169,6 +169,7 @@ class Front_Gear extends Gear {
                     'render' => FALSE,
                 ));
         $posts->show();
+        dlq();
     }
 
     /**

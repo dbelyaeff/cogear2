@@ -17,7 +17,7 @@
     $users = $chat->getUsers();
     foreach ($users as $uid) {
         if ($user = user($uid)) {
-            echo template('Chat.user', array('user' => $user, 'chat' => $chat))->render();
+            echo template('Chat/templates/user', array('user' => $user, 'chat' => $chat))->render();
         }
     }
     ?>

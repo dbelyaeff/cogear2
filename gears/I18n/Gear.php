@@ -121,7 +121,7 @@ class I18n_Gear extends Gear {
     public function admin($action = NULL) {
         switch ($action) {
             default:
-                $form = new Form('I18n.admin');
+                $form = new Form('I18n/forms/admin');
                 if ($data = $form->result()) {
                     $data->lang && $this->set('i18n.lang', $data->lang);
                     success(t('Data is saved successfully!'));

@@ -404,7 +404,7 @@ class Blog_Gear extends Gear {
             $blog->navbar()->show();
             switch ($action) {
                 case 'info':
-                    $tpl = new Template('Blog.info');
+                    $tpl = new Template('Blog/templates/info');
                     $tpl->blog = $blog;
                     $tpl->show();
                     break;
@@ -522,7 +522,7 @@ class Blog_Gear extends Gear {
         if (!access('Blog.create')) {
             return event('403');
         }
-        $form = new Form('Blog.create');
+        $form = new Form('Blog/forms/create');
         if ($result = $form->result()) {
             $blog = new blog();
             $blog->object($result);
@@ -547,7 +547,7 @@ class Blog_Gear extends Gear {
         if (!$blog->find()) {
             return event('404');
         }
-        $form = new Form('Blog.edit');
+        $form = new Form('Blog/forms/edit');
 
         $form->avatar->options->rename = $blog->login;
         $form->object($blog);
@@ -757,7 +757,7 @@ class Blog_Gear extends Gear {
             }
             return;
         }
-        $form = new Form('Blog.role');
+        $form = new Form('Blog/forms/role');
         $values = array(
             Blog_Gear::ADMIN => t('Administrator', 'Blog.roles'),
             Blog_Gear::MODER => t('Moderator', 'Blog.roles'),

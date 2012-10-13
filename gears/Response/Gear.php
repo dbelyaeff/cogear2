@@ -34,7 +34,7 @@ class Response_Gear extends Gear {
      */
     public function notFound(){
         $this->request();
-        $tpl = new Template('Response.404');
+        $tpl = new Template('Response/templates/404');
         $tpl->show();
     }
     /**

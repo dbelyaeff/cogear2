@@ -353,7 +353,7 @@ class Vote_Gear extends Gear {
         if (!$user OR !access('Vote.add',$user)) {
             return event('404');
         }
-        $form = new Form('Vote.points');
+        $form = new Form('Vote/forms/points');
         if ($result = $form->result()) {
             if ($user->update(array('votes' => $user->votes + $result->votes))) {
                 if ($user->id == user()->id) {

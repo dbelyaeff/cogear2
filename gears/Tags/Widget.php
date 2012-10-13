@@ -26,7 +26,7 @@ class Tags_Widget extends Widgets_Widget {
      */
     public function render() {
         $cloud = new Tags_Cloud(array('limit'=>$this->options->limit));
-        $this->code = template('Tags.widget',array('cloud'=>$cloud->render()))->render();
+        $this->code = template('Tags/templates/widget',array('cloud'=>$cloud->render()))->render();
         return parent::render();
     }
 

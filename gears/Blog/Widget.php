@@ -32,7 +32,7 @@ class Blog_Widget extends Widgets_Widget {
         $blogs->order('rating', 'desc');
         $blogs->limit($this->options->limit);
         if ($result = $blogs->findAll()) {
-            $tpl = new Template('Blog.widget');
+            $tpl = new Template('Blog/templates/widget');
             $tpl->blogs = $result;
             $this->code = $tpl->render();
         }

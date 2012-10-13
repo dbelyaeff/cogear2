@@ -66,7 +66,7 @@ class Db_Gear extends Gear {
      * Output all queries
      */
     public function trace() {
-        $tpl = new Template('Db.debug');
+        $tpl = new Template('Db/templates/debug');
         $tpl->data = $this->getBenchmark();
         $tpl->show('footer');
     }

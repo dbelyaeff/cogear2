@@ -95,7 +95,7 @@ class Tags_Gear extends Gear {
     public function hookPostAfter($Stack) {
         $post = $Stack->object();
         if ($tags = preg_split('#[\s]*[,][\s]*#', $post->tags, NULL, PREG_SPLIT_NO_EMPTY)) {
-            $Stack->append(template('Tags.post', array('tags' => $tags))->render());
+            $Stack->append(template('Tags/templates/post', array('tags' => $tags))->render());
         }
     }
 
@@ -162,7 +162,7 @@ class Tags_Gear extends Gear {
             }
         } else {
             page_header(t('Tags', 'Tags'));
-            template('Tags.search')->show();
+            template('Tags/templates/search')->show();
             $tags_cloud = new Tags_Cloud();
             $tags_cloud->show();
         }

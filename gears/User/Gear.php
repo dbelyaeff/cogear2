@@ -270,7 +270,7 @@ class User_Gear extends Gear {
         d('User');
         new Menu_Auto(array(
                     'name' => 'user.login',
-                    'template' => 'Bootstrap.tabs',
+                    'template' => 'Bootstrap/templates/tabs',
                     'elements' => array(
                         'login' => array(
                             'label' => t('Enter'),
@@ -297,7 +297,7 @@ class User_Gear extends Gear {
     public function admin() {
         $q = $this->input->get('q');
 
-        $tpl = new Template('Search.form');
+        $tpl = new Template('Search/templates/form');
         $tpl->action = l('/admin/user/');
         $q && $tpl->value = $q;
         $tpl->show('info');
@@ -333,7 +333,7 @@ class User_Gear extends Gear {
             $user->login = $login;
             if ($user->find()) {
                 $user->navbar()->show();
-                $tpl = new Template('User.profile');
+                $tpl = new Template('User/templates/profile');
                 $tpl->user = $user;
                 $tpl->show();
                 return;
@@ -402,7 +402,7 @@ class User_Gear extends Gear {
             return event('404');
         }
         $user->navbar()->show();
-        $form = new Form('User.profile');
+        $form = new Form('User/forms/profile');
         $user->password = '';
         $form->object($user->object);
         if ($user->id == 1) {
@@ -438,7 +438,7 @@ class User_Gear extends Gear {
      */
     public function login_action() {
         $this->showMenu();
-        $form = new Form('User.login');
+        $form = new Form('User/forms/login');
         if ($data = $form->result()) {
             $user = new User();
             $user->object($data);
@@ -485,7 +485,7 @@ class User_Gear extends Gear {
                 error(t('Password recovery code has been already used.', 'User.lostpassword'));
             }
         } else {
-            $form = new Form('User.lostpassword');
+            $form = new Form('User/forms/lostpassword');
             if ($result = $form->result()) {
                 $user = new User();
                 $user->login = $result->login;
@@ -532,7 +532,7 @@ class User_Gear extends Gear {
             $user = new User();
             $user->hash = $code;
             if ($user->find()) {
-                $form = new Form('User.verify');
+                $form = new Form('User/forms/verify');
                 
                 $form->email->setValue($user->email);
                 if ($result = $form->result()) {
@@ -554,7 +554,7 @@ class User_Gear extends Gear {
                 error(t('Registration code was not found.', 'User.register'));
             }
         } else {
-            $form = new Form('User.register');
+            $form = new Form('User/forms/register');
             if ($result = $form->result()) {
                 $user = new User();
                 $user->email = $result->email;

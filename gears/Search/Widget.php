@@ -23,7 +23,7 @@ class Search_Widget extends Widgets_Widget {
      * Render
      */
     public function render() {
-        $tpl = new Template('Search.widget');
+        $tpl = new Template('Search/templates/widget');
         $this->code = $tpl->render();
         return parent::render();
     }

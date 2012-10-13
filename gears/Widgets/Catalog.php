@@ -47,7 +47,7 @@ class Widgets_Catalog extends Options {
      */
     public function render(){
         $this->harvestWidgets();
-        $tpl = new Template('Widgets.catalog');
+        $tpl = new Template('Widgets/templates/catalog');
         $tpl->packages = $this->packages;
         return $tpl->render();
     }

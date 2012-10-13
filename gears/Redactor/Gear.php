@@ -16,7 +16,7 @@ class Redactor_Gear extends Gear {
     protected $name = 'Redactor';
     protected $description = 'Redactor editor';
     protected $package = 'Wysiwyg';
-    protected $order = 0;
+    protected $order = -100;
     protected $hooks = array(
         'form.attach' => 'hookFormAttach',
         'form.result' => 'hookFormResult'
@@ -107,7 +107,7 @@ class Redactor_Gear extends Gear {
      * Link
      */
     public function link_action() {
-        $form = new Form('Redactor.link');
+        $form = new Form('Redactor/forms/link');
         $form->show();
     }
 

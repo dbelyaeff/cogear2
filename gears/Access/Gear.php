@@ -62,7 +62,7 @@ class Access_Gear extends Gear {
      * Show access denied page
      */
     public function hookAccessDenied() {
-        $tpl = new Template('Access.denied');
+        $tpl = new Template('Access/templates/denied');
         $tpl->show();
     }
 

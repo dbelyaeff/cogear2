@@ -25,7 +25,7 @@ class Template_Object extends Core_ArrayObject{
      */
     public function __construct($name) {
         $this->name = $name;
-        $path = Gear::preparePath($this->name, 'templates') . EXT;
+        $path = Gear::preparePath($this->name);
         if (file_exists($path)) {
             $this->path = $path;
         } else {

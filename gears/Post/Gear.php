@@ -234,7 +234,7 @@ class Post_Gear extends Gear {
 //            $post->insert();
 //            $this->session->set('draft', $post->id);
 //        }
-        $form = new Form('Post.post');
+        $form = new Form('Post/forms/post');
         if ($result = $form->result()) {
             $post->object()->extend($result);
             if ($result->preview) {
@@ -277,7 +277,7 @@ class Post_Gear extends Gear {
             return event('404');
         }
         $this->widgets = NULL;
-        $form = new Form('Post.post');
+        $form = new Form('Post/forms/post');
         $form->object($post);
         $form->elements->title->options->label = t('Edit post');
         if ($result = $form->result()) {

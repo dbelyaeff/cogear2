@@ -113,7 +113,7 @@ class Pager_Object extends Pager_Abstract {
     public function render() {
         $this->is_init OR $this->init();
         if ($this->show_empty OR $this->per_page < $this->count) {
-            $tpl = new Template('Pager.pages');
+            $tpl = new Template('Pager/templates/pages');
             if (isset($_GET[$this->prefix])) {
                 unset($_GET[$this->prefix]);
             }
