@@ -1,138 +1,142 @@
-<?php 
+<?php
 return array (
-  'i18n' => 
+  'gears' =>
+  array (
+
+  ),
+  'i18n' =>
   array (
     'lang' => 'ru',
     'locale' => 'ru_RU.UTF8',
     'path' => SITE.'\lang',
   ),
-  'theme' => 
+  'theme' =>
   array (
     'logo' => '/theme/logo/logo.png',
     'favicon' => '/theme/icon/favicon.ico',
     'current' => 'Default',
   ),
-  'cron' => 
+  'cron' =>
   array (
-    'last_run' => 1346158629,
+    'last_run' => 1350394435,
   ),
-  'user' => 
+  'user' =>
   array (
     'refresh' => 60,
-    'register' => 
+    'register' =>
     array (
       'verification' => true,
     ),
-    'avatar' => 
+    'avatar' =>
     array (
       'default' => 'avatars/0/avatar.jpg',
     ),
-    'last_visit' => 1337543993,
+    'last_visit' => 1347460375,
   ),
-  'image' => 
+  'image' =>
   array (
-    'presets' => 
+    'presets' =>
     array (
-      'blog' => 
+      'blog' =>
       array (
-        'avatar' => 
+        'avatar' =>
         array (
           'size' => '100x100',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'profile' => 
+        'profile' =>
         array (
           'size' => '32x32',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'small' => 
+        'small' =>
         array (
           'size' => '24x24',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'tiny' => 
+        'tiny' =>
         array (
           'size' => '16x16',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
       ),
-      'post' => 
+      'post' =>
       array (
-        'large' => 
+        'large' =>
         array (
           'size' => '700x500',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
       ),
-      'avatar' => 
+      'avatar' =>
       array (
-        'navbar' => 
+        'navbar' =>
         array (
           'size' => '38x38',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'sizecrop',
           ),
         ),
-        'comment' => 
+        'comment' =>
         array (
           'size' => '48x48',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'small' => 
+        'small' =>
         array (
           'size' => '24x24',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'tiny' => 
+        'tiny' =>
         array (
           'size' => '16x16',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'post' => 
+        'post' =>
         array (
           'size' => '24x24',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'sizecrop',
           ),
         ),
-        'profile' => 
+        'profile' =>
         array (
           'size' => '32x32',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
         ),
-        'photo' => 
+        'photo' =>
         array (
           'size' => '200x200',
-          'actions' => 
+          'actions' =>
           array (
             0 => 'resize',
           ),
@@ -140,7 +144,11 @@ return array (
       ),
     ),
   ),
-  'ReCaptcha' => 
+  'Pages' =>
+  array (
+    'root_link' => true,
+  ),
+  'ReCaptcha' =>
   array (
     'public' => '6Lc2s9ESAAAAACmHbFjk5VUf_IUd7Srum4K2KTRo',
     'private' => '6Lc2s9ESAAAAALSiny44S4M3Q0tWH-WxnKrvQQrd',
@@ -150,40 +158,47 @@ return array (
     'signup_url' => 'https://www.google.com/recaptcha/admin/create',
     'theme' => 'clean',
   ),
-  'friends' => 
+  'friends' =>
   array (
   ),
   '/users/reset/9' => true,
   '/users/reset/1' => true,
-  'users' => 
+  'users' =>
   array (
-    'reset' => 
+    'reset' =>
     array (
       1 => true,
     ),
   ),
-  'front' => 
+  'front' =>
   array (
-    'counters' => 
+    'counters' =>
     array (
-      'all' => 
+      'all' =>
       array (
         'all' => '5',
         'best' => '0',
         'new' => '0',
       ),
-      'blogs' => 
+      'blogs' =>
       array (
         'all' => '1',
         'best' => '0',
         'new' => '0',
       ),
-      'users' => 
+      'users' =>
       array (
         'all' => '4',
         'best' => '0',
         'new' => '0',
       ),
     ),
+  ),
+  'votes' =>
+  array (
+  ),
+  'wysiwyg' =>
+  array (
+    'editor' => 'markitup',
   ),
 );
