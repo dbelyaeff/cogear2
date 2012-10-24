@@ -96,7 +96,7 @@ class User_Widgets_Online extends Widgets_Widget {
             }
             $data->counters->all = $data->counters->users + $data->counters->bots + $data->counters->guests;
         }
-        $tpl = new Template('User.widgets/online');
+        $tpl = new Template('User/templates/widgets/online');
         $tpl->data = $data;
         $this->code = $tpl->render();
         return parent::render();
