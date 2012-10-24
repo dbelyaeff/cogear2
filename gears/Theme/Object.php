@@ -77,7 +77,7 @@ abstract class Theme_Object extends Gear {
      */
     public function render() {
         $this->input->get('splash') !== NULL && self::$layout = 'splash';
-        $this->template = new Template(THEMES.DS.$this->theme . '\templates\\' . self::$layout);
+        $this->template = new Template(THEMES.DS.$this->theme . DS . 'templates' . DS . self::$layout);
         $this->template->theme = $this;
         cogear()->response->object()->append($this->template->render());
     }
