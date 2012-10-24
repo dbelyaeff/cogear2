@@ -20,7 +20,7 @@ class Blog_Widget extends Widgets_Widget {
         'order' => 1,
         'cache_ttl' => 3600,
     );
-    protected $template = 'Widgets.widget';
+    protected $template = 'Widgets/templates/widget';
 
     /**
      * Render

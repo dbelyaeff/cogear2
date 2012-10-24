@@ -30,7 +30,7 @@ class User_Widgets_Top extends Widgets_Widget {
         $users->order('rating', 'desc');
         $users->limit($this->options->limit);
         if($result = $users->findAll()){
-            $tpl = new Template('User.widgets/top');
+            $tpl = new Template('User/templates/widgets/top');
             $tpl->users = $result;
             $this->code = $tpl->render();
         }

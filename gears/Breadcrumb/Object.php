@@ -17,7 +17,7 @@ class Breadcrumb_Object extends Menu_Auto {
      * @param type $options
      */
     public function __construct($options) {
-        $options['template'] = 'Breadcrumb.breadcrumb';
+        $options['template'] = 'Breadcrumb/templates/breadcrumb';
         !isset($options['render']) && $options['render'] = 'info';
         parent::__construct($options);
     }

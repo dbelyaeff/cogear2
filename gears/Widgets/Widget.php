@@ -24,7 +24,7 @@ class Widgets_Widget extends Options {//Db_Item {
         'order' => 0,
         'cache_ttl' => 600,
     );
-    protected $template = 'Widgets.widget';
+    protected $template = 'Widgets/templates/widget';
     public $code = '';
 
     /**

@@ -15,7 +15,7 @@ class Menu_Tabs extends Menu_Auto{
      * Constructor
      */
     public function __construct($options) {
-        isset($options['template']) OR $options['template'] = 'Bootstrap.tabs';
+        isset($options['template']) OR $options['template'] = 'Bootstrap/templates/tabs';
         parent::__construct($options);
     }
     
