@@ -17,7 +17,7 @@ class Form_Element_Link extends Form_Element_Abstract{
      * @param type $options 
      */
     public function __construct($options) {
-        $options['template'] = 'Form.link';
+        $options['template'] = 'Form/templates/link';
         $options['wrapper'] = FALSE;
         parent::__construct($options);
     }
