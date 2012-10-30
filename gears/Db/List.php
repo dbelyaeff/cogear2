@@ -14,7 +14,7 @@
 class Db_List extends Object {
 
     protected $class = 'Pages_Object';
-    protected $template = 'Db.list';
+    protected $template = 'Db/templates/list';
     public $options = array(
         'dragndrop' => FALSE,
         'render' => 'content',
