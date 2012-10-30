@@ -14,7 +14,7 @@ class Post_Object extends Db_Item {
 
     protected $table = 'posts';
     protected $primary = 'id';
-    protected $template = 'Post.post';
+    protected $template = 'Post/templates/post';
     protected $filters_out = array('name' => array('stripslashes'));
 
     /**
