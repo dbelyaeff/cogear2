@@ -24,7 +24,6 @@ class Cron_Gear extends Gear {
     const STEP = 60;
 
     protected $key;
-    protected $is_core = TRUE;
 
     /**
      * Init

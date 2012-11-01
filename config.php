@@ -2,32 +2,11 @@
 return array (
   'gears' => 
   array (
-    'AutoLink' => 3,
-    'Blog' => 3,
-    'Comments' => 3,
-    'Cut' => 3,
-    'Fave' => 3,
-    'Files' => 3,
-    'Friends' => 3,
-    'Front' => 3,
-    'GoBack' => 3,
-    'Highlight' => 3,
-    'Markitup' => 3,
-    'Pages' => 3,
-    'Popup' => 3,
-    'ReCaptcha' => 3,
-    'Table' => 3,
-    'Tags' => 3,
-    'Video' => 3,
-    'Vote' => 3,
-    'Widgets' => 3,
-    'Wysiwyg' => 3,
   ),
   'i18n' => 
   array (
     'lang' => 'ru',
     'locale' => 'ru_RU.UTF8',
-    'path' => SITE.'\lang',
   ),
   'theme' => 
   array (
@@ -37,7 +16,7 @@ return array (
   ),
   'cron' => 
   array (
-    'last_run' => 1351113189,
+    'last_run' => 1351775236,
   ),
   'user' => 
   array (

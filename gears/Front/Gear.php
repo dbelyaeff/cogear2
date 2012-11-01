@@ -79,85 +79,85 @@ class Front_Gear extends Gear {
      * @param string $subaction
      */
     public function index_action($action = 'all', $filter = 'best') {
-        if (!$counters = $this->cache->get('front.counters')) {
-            $counters = Core_ArrayObject::transform(array(
-                        'all' => array(
-                            'all' => post()->where('published')->count(TRUE),
-                            'best' => post()->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-//                            'new' => post()->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
-                        ),
-                        'blogs' => array(
-                            'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('published')->count(TRUE),
-                            'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-//                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
-                        ),
-                        'users' => array(
-                            'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('published')->count(TRUE),
-                            'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
-//                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
-                        ),
-                    ));
-            $this->cache->set('front.counters', $counters);
-        }
-        new Menu_Tabs(array(
-                    'name' => 'front',
-                    'multiple' => TRUE,
-                    'title' => TRUE,
-                    'elements' => array(
-                        array(
-                            'label' => t('All') . '<sup>' . $counters->all->all . '</sup>',
-                            'link' => l('/front/all/' . $filter),
-                            'active' => $action == 'all',
-                        ),
-                        array(
-                            'label' => t('Blogs') . '<sup>' . $counters->blogs->all . '</sup>',
-                            'link' => l('/front/blogs/' . $filter),
-                        ),
-                        array(
-                            'label' => t('Users') . '<sup>' . $counters->users->all . '</sup>',
-                            'link' => l('/front/users/' . $filter),
-                        ),
-                        array(
-                            'label' => t('All'), //.($counters->$action->all ? '<sup>+'.$counters->$action->all.'</sup>' : ''),
-                            'link' => l('/front/' . $action . '/all/'),
-                            'class' => 'fl_r',
-                            'active' => $filter == 'all',
-                        ),
-//                        array(
-//                            'label' => t('New') . ($counters->$action->new > 0 ? '<sup>+' . $counters->$action->new . '</sup>' : ''),
-//                            'link' => l('/front/' . $action . '/new/'),
-//                            'class' => 'fl_r',
-//                            'active' => $filter == 'new',
+//        if (!$counters = $this->cache->get('front.counters')) {
+//            $counters = Core_ArrayObject::transform(array(
+//                        'all' => array(
+//                            'all' => post()->where('published')->count(TRUE),
+//                            'best' => post()->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
+////                            'new' => post()->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
 //                        ),
-                        array(
-                            'label' => t('Best') . ($counters->$action->best > 0 ? '<sup>+' . $counters->$action->best . '</sup>' : ''),
-                            'link' => l('/front/' . $action . '/best/'),
-                            'class' => 'fl_r',
-                            'active' => $filter == 'best',
-                        ),
-                    )
-                ));
-        $this->db->select('posts.*');
-        switch ($action) {
-            case 'blogs':
-                $this->db->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public']);
-                break;
-            case 'users':
-                $this->db->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal']);
-                break;
-            default:
-            case 'all':
-        }
-        switch ($filter) {
-            case 'best':
-                $this->db->where('posts.rating', config('Front.best', 1), ' > ');
-                $this->db->where('posts.front');
-                break;
-//            case 'new':
-//                $this->db->where('posts.created_date', time() - config('Front.new', 86400), ' > ');
+//                        'blogs' => array(
+//                            'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('published')->count(TRUE),
+//                            'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
+////                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
+//                        ),
+//                        'users' => array(
+//                            'all' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('published')->count(TRUE),
+//                            'best' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.rating', config('Front.best', 1), ' > ')->where('posts.front')->where('published')->count(TRUE),
+////                            'new' => post()->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal'])->where('posts.created_date', time() - config('Front.new', 86400), ' > ')->where('published')->count(TRUE),
+//                        ),
+//                    ));
+//            $this->cache->set('front.counters', $counters);
+//        }
+//        new Menu_Tabs(array(
+//                    'name' => 'front',
+//                    'multiple' => TRUE,
+//                    'title' => TRUE,
+//                    'elements' => array(
+//                        array(
+//                            'label' => t('All') . '<sup>' . $counters->all->all . '</sup>',
+//                            'link' => l('/front/all/' . $filter),
+//                            'active' => $action == 'all',
+//                        ),
+//                        array(
+//                            'label' => t('Blogs') . '<sup>' . $counters->blogs->all . '</sup>',
+//                            'link' => l('/front/blogs/' . $filter),
+//                        ),
+//                        array(
+//                            'label' => t('Users') . '<sup>' . $counters->users->all . '</sup>',
+//                            'link' => l('/front/users/' . $filter),
+//                        ),
+//                        array(
+//                            'label' => t('All'), //.($counters->$action->all ? '<sup>+'.$counters->$action->all.'</sup>' : ''),
+//                            'link' => l('/front/' . $action . '/all/'),
+//                            'class' => 'fl_r',
+//                            'active' => $filter == 'all',
+//                        ),
+////                        array(
+////                            'label' => t('New') . ($counters->$action->new > 0 ? '<sup>+' . $counters->$action->new . '</sup>' : ''),
+////                            'link' => l('/front/' . $action . '/new/'),
+////                            'class' => 'fl_r',
+////                            'active' => $filter == 'new',
+////                        ),
+//                        array(
+//                            'label' => t('Best') . ($counters->$action->best > 0 ? '<sup>+' . $counters->$action->best . '</sup>' : ''),
+//                            'link' => l('/front/' . $action . '/best/'),
+//                            'class' => 'fl_r',
+//                            'active' => $filter == 'best',
+//                        ),
+//                    )
+//                ));
+//        $this->db->select('posts.*');
+//        switch ($action) {
+//            case 'blogs':
+//                $this->db->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['public']);
 //                break;
-        }
-        Db_ORM::skipClear();
+//            case 'users':
+//                $this->db->join('blogs', 'blogs.id = posts.bid AND blogs.type = ' . Blog::$types['personal']);
+//                break;
+//            default:
+//            case 'all':
+//        }
+//        switch ($filter) {
+//            case 'best':
+//                $this->db->where('posts.rating', config('Front.best', 1), ' > ');
+//                $this->db->where('posts.front');
+//                break;
+////            case 'new':
+////                $this->db->where('posts.created_date', time() - config('Front.new', 86400), ' > ');
+////                break;
+//        }
+//        Db_ORM::skipClear();
         $posts = new Post_List(array(
                     'name' => 'front',
                     'base' => '/',
@@ -169,7 +169,6 @@ class Front_Gear extends Gear {
                     'render' => FALSE,
                 ));
         $posts->show();
-        dlq();
     }
 
     /**

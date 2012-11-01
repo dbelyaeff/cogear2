@@ -31,7 +31,11 @@ class Post_Gear extends Gear {
         'menu' => 'access',
         'ajax' => 'access',
     );
+    protected $routes = array(
+        ':index' => 'front_action',
+    );
     protected $is_core = TRUE;
+
     /**
      * Access
      *
@@ -55,7 +59,7 @@ class Post_Gear extends Gear {
                 }
                 if ($data) {
                     if (event('access.post.edit', $data)->check()) {
-
+                        
                     }
                 }
                 break;
@@ -106,15 +110,16 @@ class Post_Gear extends Gear {
      *
      * @param object $User
      */
-    public function hookUserDelete($User){
+    public function hookUserDelete($User) {
         $post = post();
         $post->aid = $User->id;
-        if($posts = $post->findAll()){
-            foreach($posts as $post){
+        if ($posts = $post->findAll()) {
+            foreach ($posts as $post) {
                 $post->delete();
             }
         }
     }
+
     /**
      * Constructor
      */
@@ -158,6 +163,18 @@ class Post_Gear extends Gear {
                 break;
         }
         d();
+    }
+
+    /**
+     * Show front page
+     */
+    public function front_action($page = 0) {
+        $posts = new Post_List(array(
+                    'name' => 'front.posts',
+                    'base' => l(),
+                    'per_page' => config('User.posts.per_page', 5),
+                    'where' => array('published' => 1),
+                ));
     }
 
     /**
@@ -259,8 +276,7 @@ class Post_Gear extends Gear {
                     redirect($post->getLink());
                 }
             }
-        }
-        else {
+        } else {
 //            $form->object($post);
         }
         // Remove 'delete' button from create post form
@@ -282,7 +298,7 @@ class Post_Gear extends Gear {
         $form->elements->title->options->label = t('Edit post');
         if ($result = $form->result()) {
             $post->object()->extend($result);
-            if ($result->delete && access('Post.delete',$post)) {
+            if ($result->delete && access('Post.delete', $post)) {
                 $blog = new Blog();
                 $blog->id = $post->bid;
                 $blog->find();

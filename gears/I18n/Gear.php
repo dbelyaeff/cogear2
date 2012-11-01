@@ -49,7 +49,6 @@ class I18n_Gear extends Gear {
         $this->locale = config('i18n.locale');
         $adapter = config('i18n.adapter', 'I18n_Adapter_File');
         $options = config('i18n');
-        $options->path OR $options->path = ROOT . DS . 'lang';
         $this->object(new $adapter($options));
         //$this->load();
         setlocale(LC_ALL, $this->locale);

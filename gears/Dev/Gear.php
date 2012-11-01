@@ -17,7 +17,7 @@ class Dev_Gear extends Gear {
 
     protected $name = 'Developer';
     protected $description = 'Calculate cogear performance at current system configuration.';
-    protected $order = 0;
+    protected $order = -10000;
     protected $hooks = array(
     );
     protected $access = array(

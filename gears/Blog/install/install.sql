@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 01 2012 г., 16:24
+-- Время создания: Ноя 01 2012 г., 15:51
 -- Версия сервера: 5.1.65-community-log
 -- Версия PHP: 5.2.17
 
@@ -23,31 +23,40 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `users`
+-- Структура таблицы `blogs`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `blogs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `hash` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `aid` int(11) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
+  `login` varchar(255) NOT NULL,
+  `body` text NOT NULL,
   `avatar` varchar(255) NOT NULL,
-  `role` smallint(3) NOT NULL,
+  `type` tinyint(1) NOT NULL,
+  `followers` int(11) unsigned NOT NULL,
   `posts` int(11) unsigned NOT NULL,
-  `drafts` int(11) unsigned NOT NULL,
-  `reg_date` int(11) unsigned NOT NULL,
-  `last_visit` int(11) unsigned NOT NULL,
+  `rating` float NOT NULL,
+  `per_page` smallint(2) unsigned NOT NULL,
+  `created_date` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Дамп данных таблицы `users`
+-- Структура таблицы `blogs_followers`
 --
 
-INSERT INTO `users` (`id`, `login`, `password`, `hash`, `email`, `name`, `avatar`, `role`, `posts`, `drafts`, `reg_date`, `last_visit`) VALUES
-(1, 'admin', 'fa4654b18a5442c0914cc1c6b536cd73', 'c535ef8cb9b02af1b3907c5ab8d4009e', 'admin@cogear.ru', 'Беляев Дмитрий', '/avatars/1/1.jpg', 1, 1, 0, 1333104704, 1351776229);
+CREATE TABLE IF NOT EXISTS `blogs_followers` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL,
+  `bid` int(11) unsigned NOT NULL,
+  `role` mediumint(3) unsigned NOT NULL,
+  `created_date` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`,`bid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

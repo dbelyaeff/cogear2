@@ -16,20 +16,12 @@ class Code_Gear extends Gear {
     protected $name = 'Code';
     protected $description = 'Helps to deal with programming code';
     protected $version = '1.2';
-    /**
-     * Construct
-     */
-    public function __construct() {
-        parent::__construct();
-        Form::$types['code_editor'] = 'Code_Editor';
+    
+    public function loadAssets() {
+        //parent::loadAssets();
+        
+        $this->assets->addScript($this->dir.DS.'js'.DS.'jquery.chili-2.2.js');
+        $this->assets->addScript($this->dir.DS.'js'.DS.'recipes.js');
     }
-
-    public function editor_action(){
-        define('LAYOUT','splash');
-        $form = new Form('Code/forms/editor');
-        if($result = $form->result()){
-            Redactor_Editor::insert($result->editor);
-        }
-        $form->show();
-    }
+    
 }
