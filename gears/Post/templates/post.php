@@ -39,7 +39,7 @@ if (!$item->published && !$item->preview) {
     echo '<div class="post-before">' . $before->render() . '</div>';
     ?>
     <div class="post-body">
-        <?php echo nl2br($item->body); ?>
+        <?php echo $item->body; ?>
     </div>
     <?php
     $after = new Stack(array('name' => 'post.after'));
