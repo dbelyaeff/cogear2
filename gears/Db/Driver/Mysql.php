@@ -24,12 +24,12 @@ class Db_Driver_Mysql extends Db_Driver_Abstract {
         $this->connection = mysql_connect($this->config['host'] . ':' . $this->config['port'], $this->config['user'], $this->config['pass'], TRUE);
         if (is_resource($this->connection)) {
             if (!$database_exists = mysql_select_db($this->config['database'], $this->connection)) {
-                $this->error(t('Database <b>%s</b> doesn\'t exists.', 'Db.errors', $this->config['database']));
+                $this->error('Couldn\'t connect to the database. Please, check settings in the <b>/site.php</b> file.');
             }
             $this->query('SET NAMES utf8;', FALSE);
             return $this->connection;
         } else {
-            $this->error(t('Couldn\'t connect to the database.', 'Db.errors', $this->config['database']));
+            $this->error('Couldn\'t connect to the database server. Please, check settings in the <b>/site.php</b> file.');
             return FALSE;
         }
     }

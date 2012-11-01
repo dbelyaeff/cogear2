@@ -16,11 +16,10 @@ class Db_Gear extends Gear {
     protected $name = 'Database';
     protected $description = 'Database operations management';
     protected $order = 0;
-    public static $error_codes = array(
-        100 => 'Driver not found.',
-        101 => 'Couldn\'t connect to the database.',
-    );
     protected $is_core = TRUE;
+    protected $hooks = array(
+        'done' => 'showErrors',
+    );
 
     /**
      * Constructor
@@ -30,8 +29,7 @@ class Db_Gear extends Gear {
         if(cogear()->db) return;
         if ($dsn = config('database.dsn')) {
             $this->object(new Db($dsn));
-            if (access('Dev') && config('site.development')) {
-                hook('done', array($this, 'showErrors'));
+            if (access('Dev')) {
                 hook('footer', array($this, 'trace'));
             }
         } else {
@@ -43,9 +41,11 @@ class Db_Gear extends Gear {
      * Show errors
      */
     public function showErrors() {
-        $errors = $this->object()->getErrors();
-        if (config('site.development') && $errors) {
-            error(implode('<br/>', $errors), t('Database error', 'Database'));
+        if ($errors = $this->object()->getErrors()) {
+            foreach($errors as $key=>$error){
+                $errors[$key] = t($error,'Db');
+            }
+            error(implode('<br/>', $errors), t('Database error', 'Db'));
         }
     }
 

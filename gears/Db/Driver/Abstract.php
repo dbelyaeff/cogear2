@@ -168,9 +168,8 @@ abstract class Db_Driver_Abstract {
      * Open database connection
      */
     public function open() {
-        if (!$this->connect()) {
-            $this->error(t(Db_Gear::$error_codes[101], 'Db.errors'));
-            $this->error(t('Couldn\'t establish database connection.', 'Db.errors'));
+        if (!@$this->connect()) {
+            $this->error('Couldn\'t establish database connection.');
             return FALSE;
         }
         return TRUE;
@@ -529,8 +528,7 @@ abstract class Db_Driver_Abstract {
             $this->swap('select');
             $this->qr_flag = TRUE;
             return $row->count;
-        }
-        else {
+        } else {
             return NULL;
         }
     }
