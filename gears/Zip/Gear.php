@@ -17,7 +17,7 @@ class Zip_Gear extends Gear {
     protected $description = 'Extract and pack zip archives';
     protected $package = '';
     protected $order = 0;
-    protected $is_core = TRUE;
+    protected $is_core = FALSE;
     protected $hooks = array(
     );
     protected $routes = array(
