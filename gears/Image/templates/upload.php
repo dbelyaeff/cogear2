@@ -5,4 +5,7 @@
         </div>
     </div>
     <div class="well t_c"><?php echo t('OR'); ?><p><b><?php echo t('Drag and drop your images here') ?></b></p></div>
+    <script src="/gears/File/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/gears/File/js/jquery.iframe-transport.js"></script>
+    <script src="/gears/File/js/jquery.fileupload.js"></script>
 </form>

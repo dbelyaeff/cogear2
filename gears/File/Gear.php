@@ -30,6 +30,12 @@ class File_Gear extends Gear {
         Form::$types['file_url'] = 'File_Url_Element';
     }
     /**
+     * Stop assets autoload
+     */
+    public function loadAssets() {
+        //parent::loadAssets();
+    }
+    /**
      * Extend post form
      *
      * @param type $Form
@@ -44,9 +50,6 @@ class File_Gear extends Gear {
     }
 
 
-
-    public function index_action() {
-    }
 
     public function upload_action() {
         $image = new Image_Upload(array(
