@@ -256,6 +256,8 @@ class Post_Gear extends Gear {
             $post->object()->extend($result);
             if ($result->preview) {
                 $post->preview = TRUE;
+                $post->aid = user()->id;
+                $post->created_date = time();
                 $post->show();
             } else {
 //                if (Ajax::is() && $this->input->get('autosave')) {
