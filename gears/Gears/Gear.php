@@ -125,16 +125,20 @@ class Gears_Gear extends Gear {
     /**
      * Add gears
      */
-    public function admin_add(){
+    public function admin_add() {
         $form = new Form('Gears/forms/add');
-        if($result = $form->result()){
+        if ($this->zip && $result = $form->result()) {
             $file = $result->file ? $result->file : $result->url;
-            if(TRUE === $this->zip->open($file->path)){
+            if (TRUE === $this->zip->open($file->path)) {
                 $this->zip->extractTo(GEARS);
                 $this->zip->close();
-                success(t('Gears has been successfully installed!','Gears'));
+                success(t('Gears has been successfully installed!', 'Gears'));
             }
+        } else {
+            warning(t('You must activete Zip gear to upload new gears.'));
         }
+
         $form->show();
     }
+
 }
