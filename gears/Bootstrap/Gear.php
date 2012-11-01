@@ -24,8 +24,8 @@ class Bootstrap_Gear extends Gear {
         $styles_dir = $this->dir . DS . 'bootstrap' . DS . 'css';
         $scripts[] = $scripts_dir.DS.'bootstrap.min.js';
         cogear()->assets->addScript($scripts);
-        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap.css');
-        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap-responsive.css');
+        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap.min.css');
+        cogear()->assets->addStyle($styles_dir . DS . 'bootstrap-responsive.min.css');
     }
 
 }
