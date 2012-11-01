@@ -14,7 +14,7 @@ class Comments_Object extends Db_Tree {
 
     protected $table = 'comments';
     protected $primary = 'id';
-    protected $template = 'Comments.comment';
+    protected $template = 'Comments/templates/comment';
     protected $fields_select = TRUE;
 
     /**

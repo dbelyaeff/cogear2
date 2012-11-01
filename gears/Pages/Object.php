@@ -15,7 +15,7 @@ class Pages_Object extends Db_Tree {
 
     protected $table = 'pages';
     protected $primary = 'id';
-    protected $template = 'Pages.page';
+    protected $template = 'Pages/templates/page';
 
     /**
      * Get page Uri
