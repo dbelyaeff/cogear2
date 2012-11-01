@@ -18,4 +18,8 @@ to
 
 Where [] — means "Optional".
 
+Also change 'site' => 'url' param to your site domain without http:// and www.
+
+Just like 'cogear.new' or 'localhost'.
+
 5. Start your web-site and finish the installation process.
