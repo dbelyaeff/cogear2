@@ -34,10 +34,11 @@ class Table_Object extends Object {
         $items = new Core_ArrayObject();
         if ($this->object && $this->object()->count()) {
             $i = 0;
+            $unset = array();
             foreach ($this->object as $item) {
                 foreach ($this->fields as $key => $field) {
                     if (FALSE === $field->access) {
-                        $this->fields->offsetUnset($key);
+                        $unset[] = $key;
                         continue;
                     }
                     $name = $field->source ? $field->source : $key;
@@ -54,6 +55,11 @@ class Table_Object extends Object {
                     }
                 }
                 $i++;
+            }
+            if ($unset) {
+                foreach ($unset as $key) {
+                    $this->fields->offsetUnset($key);
+                }
             }
         }
         return $items;
