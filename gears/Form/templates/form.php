@@ -11,4 +11,3 @@ foreach ($form->elements as $element) {
 }
 echo theme('form.close');
 echo HTML::close_tag('form') . "\n";
-?>
