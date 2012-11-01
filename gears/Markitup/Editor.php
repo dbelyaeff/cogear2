@@ -130,7 +130,7 @@ class Markitup_Editor extends Wysiwyg_Abstract {
             array(
                 'name' => 'Code',
                 'key' => 'O',
-                'openWith' => '<pre><code class="php">',
+                'openWith' => '<pre class="prettyprint linenums"><code>',
                 'closeWith' => '</code></pre>',
                 'className' => 'markItUpCode',
             ),

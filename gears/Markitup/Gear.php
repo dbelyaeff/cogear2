@@ -17,6 +17,7 @@ class Markitup_Gear extends Gear {
     protected $description = 'Markitup editor';
     protected $package = 'Wysiwyg';
     protected $order = 10;
+    protected $required = array('Wysiwyg');
    
     /**
      * Constructor
