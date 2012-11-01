@@ -16,6 +16,7 @@ class Comments_Gear extends Gear {
     protected $name = 'Comments';
     protected $description = 'Comments description';
     protected $order = 15;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'post.full.after' => 'hookPostComments',
         'form.init.post' => 'hookFormPost',

@@ -17,6 +17,7 @@ class Highlight_Gear extends Gear {
     protected $description = 'Syntax highlight';
     protected $package = '';
     protected $order = 0;
+    protected $version = '1.0-alpha';
 
     /**
      * Load assets

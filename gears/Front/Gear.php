@@ -16,6 +16,7 @@ class Front_Gear extends Gear {
     protected $name = 'Front';
     protected $description = 'Front page';
     protected $order = 0;
+    protected $version = '1.0-alpha';
     protected $routes = array(
         ':index' => 'index',
         'page:digit' => 'index',

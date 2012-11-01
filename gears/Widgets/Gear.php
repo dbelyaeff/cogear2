@@ -17,6 +17,7 @@ class Widgets_Gear extends Gear {
     protected $description = 'Widgets description';
     protected $package = '';
     protected $order = 1000;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'gear.dispatch.after' => 'hookDispatchAfter',
         'theme.region' => 'hookThemeRegion',

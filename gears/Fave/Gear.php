@@ -16,6 +16,7 @@ class Fave_Gear extends Gear {
     protected $name = 'Favorite';
     protected $description = 'Store favorite posts and comments';
     protected $package = '';
+    protected $version = '1.0-alpha';
     protected $order = 0;
     protected $hooks = array(
         'post.title' => 'hookPostTitle',

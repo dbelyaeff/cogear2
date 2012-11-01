@@ -16,6 +16,7 @@ class Pages_Gear extends Gear {
     protected $name = 'Pages';
     protected $description = 'Pages manager';
     protected $order = 0;
+    protected $version = '1.0-alpha';
     protected $routes = array(
         'page/:digit/?' => 'showPage',
     );

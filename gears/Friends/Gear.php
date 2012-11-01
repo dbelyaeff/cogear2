@@ -17,6 +17,7 @@ class Friends_Gear extends Gear {
     protected $description = 'Manage friends';
     protected $package = '';
     protected $order = 10;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'user.navbar' => 'hookUserNavbar',
         'blog.follower.insert' => 'clear',

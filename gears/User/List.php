@@ -54,6 +54,7 @@ class User_List extends Db_List_Table {
                             'label' => t('Comments', 'User'),
                             'callback' => new Callback(array($this, 'prepareFields')),
                             'class' => 't_c w10',
+                            'access' => FALSE,
                         ),
                         'reg_date' => array(
                             'label' => t('Registered', 'User'),

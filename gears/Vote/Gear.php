@@ -17,6 +17,7 @@ class Vote_Gear extends Gear {
     protected $description = 'Provide voting API';
     protected $package = '';
     protected $order = 0;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'post.before' => 'hookRenderVote',
         'comment.info' => 'hookRenderVote',

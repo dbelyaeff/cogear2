@@ -16,6 +16,7 @@ class Chat_Gear extends Gear {
     protected $name = 'Chat';
     protected $description = 'Instant messenger';
     protected $order = 20;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'chat_msg.insert' => 'hookMsgInsert',
         'chat_msg.update' => 'hookMsg',

@@ -17,6 +17,7 @@ class Redactor_Gear extends Gear {
     protected $description = 'Redactor editor';
     protected $package = 'Wysiwyg';
     protected $order = -100;
+    protected $version = '1.0-alpha';
     protected $hooks = array(
         'form.attach' => 'hookFormAttach',
         'form.result' => 'hookFormResult'
