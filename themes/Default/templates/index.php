@@ -2,6 +2,7 @@
 <html lang="ru">
     <head>
         <?php echo theme('head') ?>
+        <link rel="shortcut icon" href="/favicon.ico" />
     </head>
     <body>
         <?php echo theme('before') ?>
