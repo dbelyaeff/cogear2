@@ -5,6 +5,29 @@
  * "Life is like development. But the last one never ends." — cogear founder Dmitriy Belyaev
  */
 
+define('START_MEMORY',  memory_get_usage());
+define('IGNITE', microtime());
+
+/**
+ * Little fast benchmark
+ * 
+ * @staticvar array $points
+ * @param type $point
+ */
+function bench($point = NULL){
+    static $points = array();
+    if(!$point){
+        return $points;
+    }
+    isset($points[$point]) OR $points[$point] = array(
+        'time' => microtime() - IGNITE,
+        'memory' => memory_get_usage() - START_MEMORY,
+    );
+    
+}
+
+bench('ignite');
+
 define('COGEAR', '2.0');
 define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
@@ -17,7 +40,6 @@ define('GEARS', ROOT.DS.'gears');
 define('THEMES',ROOT.DS.'themes');
 define('UPLOADS', ROOT . DS . 'uploads');
 define('PHP_FILE_PREFIX', '<?php ' . "\n");
-define('IGNITE', time());
 
 ini_set('display_errors', 1);
 ini_set('error_reporting', E_ALL);
