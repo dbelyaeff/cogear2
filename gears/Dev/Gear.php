@@ -23,20 +23,6 @@ class Dev_Gear extends Gear {
     protected $access = array(
         'index' => array(1, 100),
     );
-    protected $is_core = TRUE;
-
-    /**
-     * Benchmark points
-     *
-     * @param
-     */
-    protected $points = array();
-
-    public function __construct() {
-        parent::__construct();
-        $this->addPoint('system.begin');
-    }
-
     /**
      * Init
      */
@@ -51,42 +37,9 @@ class Dev_Gear extends Gear {
      * Add final point and show calculations for system benchmark
      */
     public function finish() {
-        $this->addPoint('system.end');
-        $cogear = getInstance();
+        bench('done');
         $template = new Template('Dev/templates/results');
-        $template->data = Dev_Gear::humanize($cogear->dev->calc('system'));
         append('footer', $template->render());
-    }
-
-    /**
-     * Add point
-     *
-     * @param	string	$name
-     */
-    public function addPoint($name) {
-        if (!isset($this->points[$name])) {
-            $this->points[$name] = array(
-                'time' => microtime() - IGNITE,
-                'memory' => memory_get_usage(),
-            );
-        }
-    }
-
-    /**
-     * Measure points
-     * There should be two point. One with '.being' suffix, other with '.end'
-     *
-     * @param	string	$point
-     */
-    public function calc($point) {
-        $result = array();
-        if (isset($this->points[$point . '.begin']) && isset($this->points[$point . '.end'])) {
-            $result = array(
-                'time' => $this->points[$point . '.end']['time'] - $this->points[$point . '.begin']['time'],
-                'memory' => $this->points[$point . '.end']['memory'] - $this->points[$point . '.begin']['memory'],
-            );
-        }
-        return $result;
     }
 
     /**
@@ -95,7 +48,7 @@ class Dev_Gear extends Gear {
      * @param	array	$point
      * @return	array
      */
-    public static function humanize($point, $measure = null) {
+    public static function humanize($point, $measure = NULL) {
         if (is_array($point) && !isset($point['time'])) {
             $result = array();
             foreach ($point as $key => $dot) {
@@ -120,7 +73,16 @@ class Dev_Gear extends Gear {
     }
 
 }
-
+/**
+ * Humanize benchmark
+ * 
+ * @param type $point
+ * @param type $measure
+ * @return type
+ */
+function humanize_bench($point, $measure = NULL){
+    return Dev_Gear::humanize($point,$measure);
+}
 /**
  * Temp debug
  *
