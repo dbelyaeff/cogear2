@@ -41,9 +41,6 @@ class Event extends Core_ArrayObject {
                 $this->results->append($result);
             }
         }
-        if($this->name =='menu.auto.init'){
-            debug($this->results);
-        }
         return $this;
     }
 
