@@ -121,7 +121,7 @@ class Mail_Object extends Object{
      * Send email
      */
     public function send() {
-        $mail = new Mail_PHPMailer();
+        $mail = new Mail_Phpmailer();
         $this->charset && $mail->CharSet = $this->charset;
         if($this->smtp->login && $this->smtp->host){
             $mail->IsSMTP();
