@@ -22,7 +22,7 @@
                 }
                 ?>
                 <li class="<?php if ($i == $current) { ?>active<?php } ?>">
-                    <a href="<?php echo $base . ( $i != $options->first ? $prefix . $i : '') ?>"><?php echo $i ?></a>
+                    <a href="<?php echo $base . ( $i != $first ? $prefix . $i : '') ?>"><?php echo $i ?></a>
                 </li>
                 <?php
             endfor;
