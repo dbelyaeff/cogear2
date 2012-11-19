@@ -36,10 +36,6 @@ class I18n_Gear extends Gear {
                 $this->import($data,$this->prepareSection($Gear->gear));
             }
         }
-        else {
-            File::mkdir(dirname($file),0777,TRUE);
-
-        }
     }
     /**
      * Constructor
