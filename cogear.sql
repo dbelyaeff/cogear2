@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 01 2012 г., 18:47
+-- Время создания: Ноя 24 2012 г., 11:39
 -- Версия сервера: 5.1.65-community-log
--- Версия PHP: 5.2.17
+-- Версия PHP: 5.3.18
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Структура таблицы `posts`
 --
 
+DROP TABLE IF EXISTS `posts`;
 CREATE TABLE IF NOT EXISTS `posts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `aid` int(11) unsigned NOT NULL,
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
 --
 
 INSERT INTO `posts` (`id`, `aid`, `name`, `body`, `views`, `created_date`, `last_update`, `published`, `ip`) VALUES
-(1, 1, 'Добро пожаловать!', 'Поздравляю, вы успешно установили PHP-фреймворк <b>Cogear</b>!<br/>\r\n<br/>\r\nЕсли вы еще не авторизировались, то используйте для входа на сайт логин <b>admin</b> и пароль <b>password</b>.<br/>\r\n<br/>\r\nНа данный момент вам доступен базовый функционал публикации постов. <br/>\r\n<br/>\r\nРасширить функционал можно за счет активации «шестеренок», то есть компонентов системы. <br/>\r\n<br/>\r\nПосмотреть список шестеренок можно <a href="http://admin/gears">здесь</a> (не забудьте предварительно авторизироваться под админом):<br/>\r\n<br/>\r\nО том, как работать с системой вы узнаете на <a href="http://cogear.ru">официальном сайте</a>.<br/>\r\n<br/>\r\nУдачи!', 9, 1351776024, 1351784816, 1, '127.0.0.1');
+(1, 1, 'Добро пожаловать!', 'Поздравляю, вы успешно установили PHP-фреймворк <b>Cogear</b>!<br/>\r\n<br/>\r\nЕсли вы еще не авторизировались, то используйте для входа на сайт логин <b>admin</b> и пароль <b>password</b>.<br/>\r\n<br/>\r\nНа данный момент вам доступен базовый функционал публикации постов. <br/>\r\n<br/>\r\nРасширить функционал можно за счет активации «шестеренок», то есть компонентов системы. <br/>\r\n<br/>\r\nПосмотреть список шестеренок можно <a href="/admin/gears">здесь</a> (не забудьте предварительно авторизироваться под админом):<br/>\r\n<br/>\r\nО том, как работать с системой вы узнаете на <a href="http://cogear.ru">официальном сайте</a>.<br/>\r\n<br/>\r\nУдачи!', 9, 1351776024, 1351784816, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -52,6 +53,7 @@ INSERT INTO `posts` (`id`, `aid`, `name`, `body`, `views`, `created_date`, `last
 -- Структура таблицы `roles`
 --
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(3) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -73,6 +75,7 @@ INSERT INTO `roles` (`id`, `name`) VALUES
 -- Структура таблицы `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `login` varchar(255) NOT NULL,
