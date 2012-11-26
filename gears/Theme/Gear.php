@@ -19,7 +19,6 @@ class Theme_Gear extends Gear {
     protected $hooks = array(
         'exit' => 'output',
     );
-    public $current;
     public $regions;
     const SUFFIX = '_Theme';
     protected $is_core = TRUE;
@@ -139,7 +138,6 @@ class Theme_Gear extends Gear {
         $this->object(new $class());
         $this->object()->init();
         $this->object()->enable();
-        cogear()->gears->$theme = $this->object();
     }
 
     /**
