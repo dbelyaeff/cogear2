@@ -15,7 +15,7 @@ class Menu_Auto extends Menu_Object {
 
     protected $is_init;
     /**
-     * Render
+     * Рендер
      *
      * @return string
      */
@@ -25,7 +25,7 @@ class Menu_Auto extends Menu_Object {
     }
 
     /**
-     * Init
+     * Инициализация
      */
     public function init() {
         if ($this->is_init)
