@@ -22,9 +22,7 @@ class Observer extends Object implements SplObserver, SplSubject {
 
 
     /**
-    * Attaches an SplObserver to
-    * the ExceptionHandler to be notified
-    * when an uncaught Exception is thrown.
+    * Attaches an SplObserver
     *
     * @param SplObserver        The observer to attach
     * @return void
@@ -36,9 +34,7 @@ class Observer extends Object implements SplObserver, SplSubject {
     }
 
     /**
-    * Detaches the SplObserver from the
-    * ExceptionHandler, so it will no longer
-    * be notified when an uncaught Exception is thrown.
+    * Detaches the SplObserver
     *
     * @param SplObserver        The observer to detach
     * @return void
@@ -50,8 +46,7 @@ class Observer extends Object implements SplObserver, SplSubject {
     }
 
     /**
-    * Notify all observers of the uncaught Exception
-    * so they can handle it as needed.
+    * Notify all observers
     *
     * @return void
     */
