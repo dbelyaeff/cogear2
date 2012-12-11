@@ -1,837 +1,433 @@
 <?php
 
 /**
- * Abstract Database Driver
+ * Абстркатный класс драйвера баз данных
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Db
- * @version		$Id$
  */
-abstract class Db_Driver_Abstract {
+abstract class Db_Driver_Abstract extends Object {
 
     /**
-     * Query builder
+     * Настройки подключения
      *
      * @var array
      */
-    protected $_query = array(
-        'select' => array(),
-        'insert' => array(),
-        'update' => array(),
-        'delete' => NULL,
-        'from' => array(),
-        'join' => array(),
-        'in_set' => array(),
-        'where' => array(),
-        'or_where' => array(),
-        'where_in' => array(),
-        'where_not_in' => array(),
-        'group' => array(),
-        'having' => array(),
-        'order' => array(),
-        'limit' => array(),
+    public $options = array(
+        'host' => 'localhost',
+        'base' => 'cogear',
+        'user' => 'root',
+        'pass' => '',
+        'port' => 3306,
+        'prefix' => '',
     );
 
     /**
-     * Swap query
+     * Звенья запроса
      *
      * @var array
      */
-    protected $_swap = array();
+    protected $chain = array(
+        'SELECT' => '*',
+        'FROM' => '',
+        'JOIN' => '',
+        'WHERE' => '',
+        'LIKE' => '',
+        'GROUP BY' => '',
+        'HAVING' => '',
+        'ORDER BY' => '',
+        'LIMIT' => '',
+    );
 
     /**
-     * Compiled query
+     * Переменная для смены звеньев текущего запроса
+     *
+     * @var type
+     */
+    protected $swap_chain;
+
+    /**
+     * Схема таблиц в базе данных
+     *
+     * @var array
+     */
+    protected $tables = array();
+
+    /**
+     * Выполненные запросы
+     *
+     * @var array
+     */
+    public $queries;
+
+    /**
+     * Текущий запрос
      *
      * @var string
      */
     protected $query;
 
     /**
-     * Queries
-     *
-     * @var array
-     */
-    protected $queries;
-
-    /**
-     * Benchmark
-     *
-     * @var array
-     */
-    protected $benchmark;
-
-    /**
-     * Result
+     * Результат запроса
      *
      * @var object
      */
     protected $result;
 
     /**
-     * Database fields
+     * Констрктор
      *
-     * @var array
+     * @param array $options
      */
-    protected $fields = array();
-
-    /**
-     * Output errors or not
-     * @var boolean
-     */
-    protected $silent;
-
-    /**
-     * Errors
-     *
-     * @var array
-     */
-    protected $errors = array();
-
-    /**
-     * Configuration
-     *
-     * @var array
-     */
-    protected $config = array(
-        'host' => 'localhost',
-        'port' => 3306,
-        'user' => 'root',
-        'pass' => NULL,
-        'database' => 'cogear',
-        'prefix' => '',
-        'socket' => NULL,
-    );
-
-    /**
-     * Database connection
-     *
-     * @var resource
-     */
-    protected $connection;
-
-    /**
-     * If this flag is off query elements will be saved after it's execution
-     *
-     * Useful for count query rows
-     *
-     * @var boolean
-     */
-    protected $qr_flag = TRUE;
-
-    /**
-     * Constructor
-     *
-     * @param array $config
-     */
-    public function __construct($config) {
-        $this->config = array_merge($this->config, (array) $config);
-        $this->_swap = $this->_query;
-        $this->queries = new Core_ArrayObject();
-        $this->benchmark = new Core_ArrayObject();
-        $this->open();
+    public function __construct($options) {
+        parent::__construct($options);
+        $this->queries = new SplStack();
+        $this->connect();
     }
 
     /**
-     * Check data source name
-     *
-     * @param string $dsn
-     * @return boolean
+     * Соединение с базой данных
      */
-    public function checkDSN($dsn) {
-        $config = parse_url($dsn);
-        if (isset($config['query'])) {
-            parse_str($config['query'], $query);
-            $config = array_merge($config, $query);
+    abstract public function connect();
+
+    /**
+     * Рассоединение с базой данных
+     */
+    abstract public function disconnect();
+
+    /**
+     * Прямое исполнение запроса
+     */
+    abstract public function query($query);
+
+    abstract public function lastInsertId();
+
+    /**
+     * Получние списка полей из таблицы
+     *
+     * @param type $table
+     * @return type
+     */
+    abstract public function getFieldsQuery($table);
+    /**
+     * Экранирование данных
+     *
+     * @param   mixed   $data
+     */
+    abstract public function escape($data);
+    /**
+     *  Получение информации о полях в таблице
+     *
+     * @param string $table
+     * @return array
+     */
+    public function getFields($table = NULL) {
+        $table OR $table = $this->chain['FROM'];
+        if (!$this->tables[$table] = cogear()->system_cache->read('database/' . $this->options->base. '/' . $table, TRUE)) {
+            if ($fields = $this->getFieldsQuery($table)) {
+                $this->tables[$table] = array();
+                foreach ($fields as $field) {
+                    $this->tables[$table][$field->Field] = $field->Type;
+                }
+                cogear()->system_cache->write('database/' . $this->options->base. '/' . $table, $this->tables[$table], array('db_fields'));
+            }
         }
-        if (!isset($config['host']))
-            $config['host'] = 'localhost';
-        if (!isset($config['user']))
-            $config['user'] = 'root';
-        if (!isset($config['pass']))
-            $config['pass'] = '';
-        if (!isset($config['prefix']))
-            $config['prefix'] = config('database.prefix', '');
-        $config['database'] = trim($config['path'], ' /');
-        $config['adapter'] = 'Db_Driver_' . ucfirst($config['scheme']);
-        if (!class_exists($config['adapter'])) {
-            error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
-            return FALSE;
-        }
-        return $config;
+        return $this->tables[$table];
     }
 
     /**
-     * Open database connection
-     */
-    public function open() {
-        if (!@$this->connect()) {
-            $this->error('Couldn\'t establish database connection.');
-            return FALSE;
-        }
-        return TRUE;
-    }
-
-    /**
-     * Connect to database
+     * Имя таблицы с префиксом
      *
-     * @return  resource
-     */
-    abstract protected function connect();
-
-    /**
-     * Desctructor
-     */
-    public function __destruct() {
-        is_resource($this->connection) && $this->close();
-    }
-
-    /**
-     * Handle params
-     *
-     * @param string|arrray $data
-     */
-    protected function parse($data) {
-        if (is_string($data)) {
-            $data = preg_split('[\s,]', $data, -1, PREG_SPLIT_NO_EMPTY);
-        }
-        return $data;
-    }
-
-    /**
-     * Add elements to query builder
-     *
+     * @param mixed $value
      * @param string $type
-     * @param array $values
+     * @return mixed
      */
-    protected function addQuery($type, $values) {
-        $args = func_get_args();
-        $values = $this->parse($values);
-        return $this->_query[$type] = array_merge($this->_query[$type], $values);
+    protected function tableName($value) {
+        return $this->options->prefix . $value;
     }
-
     /**
-     * Show errors or be silent
+     * Исполнение запроса в базу данных
      *
-     * @return Db_Driver_Abstract
+     * @param string $table
+     * @return object
      */
-    public function silent() {
-        $this->silent = $this->silent ? NULL : TRUE;
+    public function get($table = '', $limit = NULL, $offset = NULL) {
+        $table && $this->from($table);
+        $limit && $this->limit($limit, $offset);
+        $this->query = $this->buildQuery();
+        $this->query($this->query);
         return $this;
     }
 
     /**
-     * Transform arguments array into string
+     * Построение запроса
      *
-     * @param   array $args
-     * @param   string  $glue
-     * @return  string
-     */
-    protected function argsToString($args, $condition = '=', $glue = ' AND ', $escape = '"') {
-        $query = array();
-        foreach ($args as $key => $value) {
-            $escape && $value = $escape . $value . $escape;
-            $query[] = $key . ' ' . trim($condition) . ' ' . $value . ' ';
-        }
-        return implode($glue, $query);
-    }
-
-    /**
-     * Prepare table name
-     *
-     * @param string $name
      * @return string
      */
-    protected function prepareTableName($name) {
-        return $this->config['prefix'] . $name;
-    }
-
-    /**
-     * Prepare values
-     *
-     * @param array $values
-     * @return string
-     */
-    protected function prepareValues(array $values, $isolator = '"') {
-        $result = array();
-        foreach ($values as $key => $value) {
-            $value = $this->escape($value);
-            $result[] = is_numeric($key) ? $isolator . $value . $isolator : $key . ' = ' . $isolator . $value . $isolator;
+    protected function buildQuery() {
+        $query = '';
+        foreach ($this->chain as $key => $value) {
+            if ($value) {
+                $query .= $key . ' ' . $value . ' ';
+            }
         }
-        return implode(', ', $result);
+        return $query;
     }
 
     /**
-     * SELECT subquery
+     * Выборка полей базы
      *
-     * @param   string|array $fields
-     * @param   boolean      $escape
-     * @return object   Self intsance.
+     * @param string|array $fields
      */
-    public function select($fields, $escape = FALSE) {
-        $this->fields OR $this->fields = $this->getFields($table);
-        $this->addQuery('select', $fields, $escape);
+    public function select($fields = '*') {
+        // Если подается массив полей, то он превращается в строку
+        if (is_array($fields)) {
+            $fields = implode(',', $fields);
+        }
+        $this->chain['SELECT'] = $fields;
         return $this;
     }
 
     /**
-     * FROM subquery
+     * Выбор таблицы
      *
-     * @param   string  $table
-     * @return object   Self intsance.
+     * @param string $table
+     * @return object
      */
     public function from($table) {
-        $this->_query['from'] = $table;
+        $this->chain['FROM'] = $table;
         return $this;
     }
 
     /**
-     * FIND IN SET subquery
-     *
-     * @param   string|array    $name
-     * @param   string $value
-     * @return object   Self intsance.
-     */
-    public function in_set($name, $set) {
-        $this->addQuery('in_set', array($name => $set));
-        return $this;
-    }
-
-    /**
-     * WHERE subquery
-     *
-     * @param   string|array    $name
-     * @param   string $value
-     * @return object   Self intsance.
-     */
-    public function where($name, $value = 1, $condition = ' = ') {
-        if (is_object($name)) {
-            $name = $name->toArray();
-        }
-        if (is_array($name)) {
-            $this->addQuery('where', $name, $condition);
-        } else {
-            $name .= ' ' . trim($condition);
-            $this->addQuery('where', array($name => $value), $condition);
-        }
-        return $this;
-    }
-
-    /**
-     * OR WHERE subquery
-     *
-     * @param   string|array    $name
-     * @param   string $value
-     * @return object   Self intsance.
-     */
-    public function or_where($name, $value = NULL, $condition = ' = ') {
-        if (is_array($name)) {
-            $this->addQuery('or_where', $name, $condition);
-        } else {
-            $name .= ' ' . trim($condition);
-            $this->addQuery('or_where', array($name => $value));
-        }
-        return $this;
-    }
-
-    /**
-     * WHERE IN subquery
-     *
-     * @param   string  $name
-     * @param   array   $values
-     * @return object   Self intsance.
-     */
-    public function where_in($name, $values) {
-        $this->addQuery('where_in', array($name => $values));
-        return $this;
-    }
-
-    /**
-     * WHERE NOT IN subquery
-     *
-     * @param   string  $name
-     * @param   array   $values
-     * @return object   Self intsance.
-     */
-    public function where_not_in($name, $values) {
-        $this->addQuery('where_not_in', array($name => $values));
-        return $this;
-    }
-
-    /**
-     * GROUP BY subquery
-     *
-     * @param   string|array  $name
-     * @return object   Self intsance.
-     */
-    public function group($name) {
-        $this->addQuery('group', $name);
-        return $this;
-    }
-
-    /**
-     * ORDER subquery
-     *
-     * @param   string|array  $name
-     * @return object   Self intsance.
-     */
-    public function order($name, $type = 'ASC') {
-        $this->addQuery('order', $name . ' ' . $type);
-        return $this;
-    }
-
-    /**
-     * HAVING subquery
-     *
-     * @param   string|array    $name
-     */
-    public function having($name) {
-        $this->addQuery('having', $name);
-        return $this;
-    }
-
-    /**
-     * JOIN subquery
+     * Кросс-выборка через JOIN
      *
      * @param string $table
-     * @param string|array $fields
-     * @param string $type
-     * @return object   Self intsance.
+     * @param string $on
+     * @return object
      */
-    public function join($table, $fields, $type = '') {
-        $type = strtoupper($type);
-        if (is_array($fields)) {
-            $fields = $this->argsToString($fields, '=', ' AND ', '');
-        }
-        $query = $type . ' JOIN ' . $table . ' ON ' . $fields;
-        $this->addQuery('join', $query);
+    public function join($table, $on = '', $type = 'INNER') {
+        $this->chain['JOIN'] .= ' ' . $type . ' JOIN ' . $this->tableName($table) . ' ON ' . $on;
         return $this;
     }
 
     /**
-     * LIKE subquery
+     * Условие выборки WHERE с правилом И (AND)
      *
-     * @param   string  $name
-     * @param   string  $value
-     * @return object   Self intsance.
+     * @param string|array $name
+     * @param mixed $value
+     * @param string $condition
+     * @return object
      */
-    public function like($name, $value, $type = 'before', $pattern = 'LIKE ') {
-        $value = $this->escape($value);
-        switch ($type) {
-            case 'both':
-                $like = '%' . $value . '%';
+    public function where($name = array(), $value = 1, $condition = ' = ', $join = ' AND ') {
+        if (is_array($name)) {
+            foreach ($name as $key => $value) {
+                $this->where($key, $value, $condition);
+            }
+        } else {
+            if ($this->chain['WHERE']) {
+                $this->chain['WHERE'] .= $join;
+            }
+            $this->chain['WHERE'] .= $name . ' ' . $condition . ' ' . $this->escape($value);
+        }
+    }
+
+    /**
+     * Условие выборки WHERE с правилом ИЛИ (OR)
+     *
+     * @param string|array $name
+     * @param mixed $value
+     * @param string $condition
+     * @return object
+     */
+    public function or_where($name = array(), $value = TRUE, $condition = ' = ') {
+        return $this->where($name, $value, $condition, 'OR');
+    }
+
+    /**
+     * Условие выборки LIKE с правилом И (AND)
+     *
+     * @param string|array $name
+     * @param mixed $value
+     * @param string $condition // BOTH, LEFT или RIGHT
+     * @return object
+     */
+    public function like($name = array(), $value = TRUE, $condition = 'BOTH', $join = 'AND', $action = ' LIKE ') {
+        switch ($condition) {
+            case 'LEFT':
+                $value = '%' . $value;
                 break;
-            case 'after':
-                $like = $value . '%';
+            case 'RIGHT':
+                $value .= '%';
                 break;
             default:
-            case 'before':
-                $like = '%' . $value;
+                $value = '%' . $value . '%';
         }
-        $this->addQuery('where', array($name . ' ' . $pattern => $like));
-        return $this;
+        return $this->where($name, $value, $action, $join);
     }
 
     /**
-     * OR LIKE subquery
+     * Условие выборки LIKE с правилом ИЛИ (OR)
      *
-     * @param   string  $name
-     * @param   string  $value
-     * @return object   Self intsance.
+     * @param string|array $name
+     * @param mixed $value
+     * @param string $condition // BOTH, LEFT или RIGHT
+     * @return object
      */
-    public function or_like($name, $value, $type = 'before', $pattern = 'LIKE ') {
-        $value = $this->escape($value);
-        switch ($type) {
-            case 'both':
-                $like = '%' . $value . '%';
-                break;
-            case 'after':
-                $like = $value . '%';
-                break;
-            default:
-            case 'before':
-                $like = '%' . $value;
-        }
-        $this->addQuery('or_where', array($name . ' ' . $pattern => $like));
-        return $this;
+    public function or_like($name = array(), $value = TRUE, $condition = 'BOTH') {
+        return $this->like($name, $value, $condition, 'OR');
     }
 
     /**
-     * NOT LIKE subquery
+     * Условие выборки NOT LIKE с правилом И (AND)
      *
-     * @param   string  $name
-     * @param   string  $value
-     * @return object   Self intsance.
+     * @param string|array $name
+     * @param mixed $value
+     * @param string $condition // BOTH, LEFT или RIGHT
+     * @return object
      */
-    public function not_like($name, $value, $type = 'before') {
-        return $this->like($name, $value, $type, 'NOT LIKE');
+    public function not_like($name = array(), $value = TRUE, $condition = 'BOTH') {
+        return $this->like($name, $value, $condition, 'AND', ' NOT LIKE ');
     }
 
     /**
-     * LIMIT subquery
+     * Порядок сортировки
      *
-     * @param   int $start
-     * @param   int $offset
-     * @return object   Self intsance.
+     * @param string $field
+     * @param string $dir
      */
-    public function limit($amount = 0, $offset = 0) {
-        $this->addQuery('limit', array($amount, $offset));
-        return $this;
+    public function order($field, $dir = 'ASC') {
+        if ($this->chain['ORDER BY'])
+            $this->chain['ORDER'] .= ',';
+        $this->chain['ORDER BY'] .= $field . ' ' . $dir;
     }
 
     /**
-     * Execute query
+     * Группировка элементов
      *
-     * @param   string  $table
-     * @param   int     $limit
-     * @param   int     $offset
-     * @return  object  Self instance.
+     * @param string $field
+     * @param string $dir
      */
-    public function get($table, $limit = 0, $offset = 0) {
-        $this->from($table);
-        $limit && $this->limit($limit, $offset);
-        $this->buildQuery();
-        $this->query($this->query);
-        $this->clear();
-        return $this;
+    public function group($field, $dir = 'ASC') {
+        if ($this->chain['GROUP BY'])
+            $this->chain['GROUP'] .= ',';
+        $this->chain['GROUP BY'] .= $field . ' ' . $dir;
     }
 
     /**
-     * Get where
+     * Лимитирование запрсоа
      *
-     * @param string $table
-     * @param array $where
      * @param int $limit
      * @param int $offset
-     * @return object   Self instance.
      */
-    public function get_where($table, $where, $limit = 0, $offset = 0) {
-        $this->where($where);
-        $this->get($table, $limit, $offset);
-        return $this;
+    public function limit($limit, $offset = NULL) {
+        $this->chain['LIMIT'] = $offset ? $offset . ' ,' . $limit : $limit;
     }
 
     /**
-     * Count rows
+     * Смена запроса
      *
-     * @param   string  $table
-     * @param   string  $field
+     * Иногда возникает необходимость временно спрятать уже составленные звенья запроса
+     *
+     * @param string $type Можно менять местами какие-то определенные звенья запроса
      */
-    public function count($table, $field = '*', $reset = FALSE) {
-        $this->swap('select');
-        $this->qr_flag = $reset;
-        $this->_query['select'] = array('COUNT(' . $field . ') as count');
-        if ($row = $this->get($table)->row()) {
-            $this->swap('select');
-            $this->qr_flag = TRUE;
-            return $row->count;
-        } else {
-            return NULL;
+    public function swap($type = NULL) {
+        if (NULL === $type) {
+            $buffer = $this->chain;
+            $this->chain = $this->swap_chain;
+            $this->swap_chain = $buffer;
+        } elseif (isset($this->chain[$type])) {
+            $buffer = $this->chain[$type];
+            $this->chain[$type] = $this->swap_chain[$type];
+            $this->swap_chain[$type] = $buffer;
         }
     }
 
     /**
-     * INSERT statement
+     * Получение количества результатов по запросу
      *
-     * @param   string  $table
-     * @param   array   $values
-     * @return  int     Last insert id.
+     * @param string $table Имя таблицы
+     * @param string $field Поля для выборки
+     * @param bool $reset Производить ли сброс цепочки
+     * @return  int|NULL
      */
-    public function insert($table, $values) {
-        $this->fields OR $this->fields = $this->getFields($table);
-        $this->from($table);
-        $this->addQuery('insert', $values);
-        $this->query();
-        return $this->getInsertId();
+    public function countAll($table, $field = '*', $reset = FALSE) {
+        $this->swap('select');
+        $this->chain['select'] = 'COUNT(' . $field . ') as count';
+        $row = $this->get($table)->row();
+        $this->swap('select');
+        $reset && $this->clear();
+        return $row ? $row->count : NULL;
     }
 
     /**
-     * Get last insert id
+     * Возвращает последний исполненый запрос
      *
-     * @return  int
+     * @return type
      */
-    abstract public function getInsertId();
-
-    /**
-     * UPDATE statement
-     *
-     * @param   string  $table
-     * @param   array   $values
-     * @param   string|array   $where
-     */
-    public function update($table, array $values, $where) {
-        $this->fields OR $this->fields = $this->getFields($table);
-        $this->from($table);
-        $this->addQuery('update', $values);
-        $this->where($where);
-        return $this->query();
+    public function last() {
+        return $this->queries->pop();
     }
 
     /**
-     * DELETE statement
+     * Получение всего результата запроса
      *
-     * @param   string  $table
-     * @param   string|array    $where
-     */
-    public function delete($table, $where = array()) {
-        $this->_query['delete'] = TRUE;
-        $this->from($table);
-        $where && $this->where($where);
-        return $this->query();
-    }
-
-    /**
-     * Add error
-     *
-     * @param type $error
-     */
-    public function error($error) {
-        array_push($this->errors, $error);
-    }
-
-    /**
-     * Result
-     *
-     * @return  Core_ArrayObject    Result.
+     * @reutrn  object|NULL
      */
     abstract public function result();
 
     /**
-     * Row
+     * Получение одной записи из результата запроса
      *
-     * @return  Core_ArrayObject    Row.
+     * @return  object|NULL
      */
     abstract public function row();
 
     /**
-     * Execute query
+     * Вставка данных
      *
-     * @param   string  $query
-     * @return  object
+     * @param string $table Имя таблицы
+     * @param array  $data Массив полей и значений
+     * @param string $type  Тип вставки. INSERT или REPLACE
+     * @return  int Номер вставленного элемента
      */
-    abstract public function query($query = '');
+    abstract public function insert($table, $data = array(), $type = 'INSERT');
 
     /**
-     * Build query
+     * Обновление данных
      *
-     * @return  string
+     * @param string $table Имя таблицы
+     * @param array  $data Массив полей и значений
+     * @param string $where  Условия обновления
      */
-    abstract public function buildQuery();
+    abstract public function update($table, $data = array(), $where = array());
 
     /**
-     * Start transaction
-     */
-    abstract public function transaction();
-
-    /**
-     * Commit transaction
-     */
-    abstract public function commit();
-
-    /**
-     * Escape value
-     *
-     * @param   string  $value
-     * @return  string
-     */
-    abstract public function escape($value);
-
-    /**
-     * Grab table for fields
-     *
-     * @param string $table
-     * @return array
-     */
-    public function getFields($table) {
-        $table OR $table = reset($this->_query['from']);
-        if (!$this->fields[$table] = cogear()->system_cache->read('database/' . $this->config['database'] . '/' . $table, TRUE)) {
-            if ($fields = $this->getFieldsQuery($table)) {
-                $this->fields[$table] = array();
-                foreach ($fields as $field) {
-                    $this->fields[$table][$field->Field] = $field->Type;
-                }
-                cogear()->system_cache->write('database/' . $this->config['database'] . '/' . $table, $this->fields[$table], array('db_fields'));
-            }
-        }
-        return $this->fields[$table];
-    }
-
-    /**
-     * Filter input assoc array corresponing to fields
+     * Удаление данных
      *
      * @param   string  $table
-     * @param   array   $values
+     * @param   array  $where
      */
-    protected function filterFields($table, $values) {
-        $result = array();
-        if (is_array($values)) {
-            $fields = isset($this->fields[$table]) ? $this->fields[$table] : $this->fields[$table] = $this->getFields($table);
-            foreach ($values as $key => $value) {
-                if (strpos($key, 'LIKE')) {
-                    $data = explode(' ', $key);
-                    $skey = $data[0];
-                } else {
-                    $skey = preg_replace('/[^\w_-]/', '', $key);
-                }
-                if (isset($fields[$skey])) {
-                    $type = preg_replace('/[^a-z]/', '', $fields[$skey]);
-                    switch ($type) {
-                        case 'int':
-                        case 'tinyint':
-                        case 'smallint':
-                        case 'mediumint':
-                        case 'bigint':
-                            $result[$key] = (int) $value;
-                            break;
-                        case 'float':
-                            $result[$key] = (float) $value;
-                            break;
-                        case 'double':
-                            $result[$key] = (double) $value;
-                            break;
-                        case 'date':
-                            $result[$key] = date('Y-m-d', strtotime($value));
-                            break;
-                        case 'time':
-                            $result[$key] = date('H:i:s', strtotime($value));
-                            break;
-                        case 'datetime':
-                        case 'timestamp':
-                            $result[$key] = date('Y-m-d H:i:s', strtotime($value));
-                            break;
-                        case 'year':
-                            $result[$key] = date('Y', strtotime($value));
-                            break;
-                        case 'char':
-                        case 'varchar':
-                            $result[$key] = $this->escape((string) $value);
-                            break;
-                        default:
-                            $result[$key] = $value;
-                    }
-                }
-            }
-        }
-        return $result;
-    }
+    abstract public function delete($table, $where = array());
 
     /**
-     * Get table fields query and result
-     *
-     * @return  Core_ArrayObject
-     */
-    abstract public function getFieldsQuery($table);
-
-    /**
-     * Disconnect from database
-     */
-    abstract protected function disconnect();
-
-    /**
-     * Close database connection
-     */
-    public function close() {
-        $this->disconnect();
-    }
-
-    /**
-     * Swap query
-     *
-     * @param string $type
-     */
-    public function swap($type = NULL) {
-        if (!$type) {
-            $buffer = $this->_query;
-            $this->_query = $this->_swap;
-            $this->_swap = $buffer;
-        } elseif (isset($this->_query[$type])) {
-            $buffer = $this->_query[$type];
-            $this->_query[$type] = $this->_swap[$type];
-            $this->_swap[$type] = $buffer;
-        }
-    }
-
-    /**
-     * Clear query
+     * Очищение звеньев запроса
      */
     public function clear() {
-        if ($this->qr_flag) {
-            $this->_query = array(
-                'select' => array(),
-                'insert' => array(),
-                'update' => array(),
-                'delete' => NULL,
-                'from' => array(),
-                'join' => array(),
-                'in_set' => array(),
-                'where' => array(),
-                'or_where' => array(),
-                'where_in' => array(),
-                'where_not_in' => array(),
-                'group' => array(),
-                'having' => array(),
-                'order' => array(),
-                'limit' => array(),
-            );
-        }
+        $this->chain = array(
+            'SELECT' => '*',
+            'FROM' => '',
+            'JOIN' => '',
+            'WHERE' => '',
+            'LIKE' => '',
+            'GROUP BY' => '',
+            'HAVING' => '',
+            'ORDER BY' => '',
+            'LIMIT' => '',
+        );
     }
 
-    /**
-     * Query time benchmark start
-     *
-     * @param string $query
-     */
-    public function bench($query, $time) {
-        $this->benchmark->append(new Core_ArrayObject(array('query' => $query, 'time' => $time)));
-        $this->queries->append($query);
-    }
-
-    /**
-     * Get errors
-     */
-    public function getErrors() {
-        return $this->errors;
-    }
-
-    /**
-     * Get queries
-     *
-     * @return type
-     */
-    public function getQueries() {
-        return $this->queries;
-    }
-
-    /**
-     * Get last query
-     *
-     * @return string
-     */
-    public function last() {
-        return $this->queries->offsetGet($this->queries->count() - 1);
-    }
-
-    /**
-     * Get queries
-     *
-     * @return array
-     */
-    public function getBenchmark() {
-        return $this->benchmark;
-    }
-
-    abstract public function create($table, $fields);
-
-    abstract public function truncate($table);
-
-    abstract public function drop($table);
-
-    abstract public function alter($table, $fields);
-}
-
-function dlq() {
-    return debug(cogear()->db->last());
 }

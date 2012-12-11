@@ -5,8 +5,8 @@
  *
  *
  *
- * @author      Dmitriy Belyaev <admin@cogear.ru>
- * @copyright   Copyright (c) 2010, Dmitriy Belyaev
+ * @author      Беляев Дмитрий <admin@cogear.ru>
+ * @copyright   Copyright (c) 2010, Беляев Дмитрий
  * @license     http://cogear.ru/license.html
  * @link        http://cogear.ru
  * @package     Core
@@ -49,7 +49,7 @@ class Session_Object extends Cache_Object {
     );
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param	array	$options
      */

@@ -2,13 +2,13 @@
 /**
  * Email validator
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Form
- * @version		$Id$
+ *         Form
+
  */
 class Form_Validate_Email extends Form_Validate_Abstract{
         /**
@@ -16,6 +16,6 @@ class Form_Validate_Email extends Form_Validate_Abstract{
          */
         public function validate($value){
             if(!$value) return TRUE;
-           return filter_var($value, FILTER_VALIDATE_EMAIL) ? TRUE : $this->element->addError(t('Please, provide correct e-mail address.'));
+           return filter_var($value, FILTER_VALIDATE_EMAIL) ? TRUE : $this->element->addError(t('Укажите корректный адрес электронной почты.'));
         }
 }

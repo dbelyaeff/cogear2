@@ -3,13 +3,13 @@
 /**
  * Sessions adapter file
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Session
- * @version		$Id$
+ *         Session
+
  */
 class Session_Adapter_File extends Cache_Adapter_File {
     protected $name;

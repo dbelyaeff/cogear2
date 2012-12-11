@@ -5,31 +5,27 @@
  *
  * Helps to keep things secure.
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Secure
  * @subpackage
- * @version		$Id$
+
  */
 class Secure_Gear extends Gear {
 
-    protected $name = 'Secure';
-    protected $description = 'Helps to keep things secure.';
-    protected $order = 0;
     protected $hooks = array(
         'gear.request' => 'checkRequest',
         'input.get' => 'filterInputGet',
     );
     protected $key;
     protected $salt;
-    protected $is_core = TRUE;
     /**
-     * Constructor
+     * Конструктор
      */
     public function __contsruct() {
-        parent::__construct();
+        parent::__construct($xml);
     }
 
     /**

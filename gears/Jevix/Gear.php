@@ -1,21 +1,13 @@
 <?php
 
 /**
- * Jevix gear
+ * Шестеренка Jebix
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Jevix_Gear extends Gear {
 
-    protected $name = 'Jevix';
-    protected $description = 'Clean html code';
-    protected $package = '';
-    protected $order = 0;
-    protected $is_core = TRUE;
 }

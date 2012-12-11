@@ -5,13 +5,13 @@
  *
  *
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 final class Cogear implements Interface_Singleton {
 
@@ -54,7 +54,7 @@ final class Cogear implements Interface_Singleton {
     public $system_cache;
 
     /**
-     * Constructor
+     * Конструктор
      */
     private function __construct() {
         $this->gears = new Core_ArrayObject();
@@ -148,8 +148,7 @@ final class Cogear implements Interface_Singleton {
      *  Load gears
      */
     public function loadGears() {
-        $gears = new Gears(GEARS);
-        $this->gears = $gears->filter(Gears::ENABLED);
+        $this->gears = new Gears($this->site->gears->extend($this->config->gears));
         foreach ($this->gears as $key=>$gear) {
             $check = $gear->checkRequiredGears();
             if ($check->success) {

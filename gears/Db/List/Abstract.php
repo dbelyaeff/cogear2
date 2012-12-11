@@ -3,13 +3,13 @@
 /**
  * Abstract database list
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 abstract class Db_List_Abstract extends Cogearable {
 
@@ -35,7 +35,7 @@ abstract class Db_List_Abstract extends Cogearable {
     );
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param array $options
      */

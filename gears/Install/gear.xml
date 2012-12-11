@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Install">
+    <name lang="ru">Установщик</name>
+    <description lang="ru">Установка системы.</description>
+</gear>

@@ -1,34 +1,22 @@
 <?php
 
 /**
- * Syndicate gear
+ * Шестерёнка Синдикации
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Syndicate_Gear extends Gear {
 
-    protected $name = 'Syndicate';
-    protected $description = 'Provite syndication feed.';
-    protected $package = '';
-    protected $order = 0;
     protected $hooks = array(
         'post.list' => 'hookFeed',
         'comments.list' => 'hookFeed',
         'theme.head.meta.after' => 'hookMeta',
         'response.send' => 'hookResponse',
     );
-    protected $routes = array(
-    );
-    protected $access = array(
-    );
     protected $code;
-    protected $is_core = TRUE;
     /**
      * Show feed
      */

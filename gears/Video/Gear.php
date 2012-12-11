@@ -1,22 +1,15 @@
 <?php
 
 /**
- * Video gear
+ * Шестерёнка Видео
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Video_Gear extends Gear {
 
-    protected $name = 'Video';
-    protected $description = 'Integrate video services';
-    protected $package = 'Video';
-    protected $order = 0;
     protected $hooks = array(
         'markitup.toolbar' => 'hookMarkitup',
         'post.render' => 'hookPostRender',
@@ -50,16 +43,16 @@ class Video_Gear extends Gear {
         if (!count($video[1]) && !count($media[1]) && !count($httpv[1])) {
             return;
         }
-        $matches[0] = array_merge_recursive($video[0],$media[0],$httpv[0]);
-        $matches[1] = array_merge_recursive($video[1],$media[1],$httpv[1]);
+        $matches[0] = array_merge_recursive($video[0], $media[0], $httpv[0]);
+        $matches[1] = array_merge_recursive($video[1], $media[1], $httpv[1]);
         $width = NULL;
         $height = NULL;
-        if($post instanceof Chat_Messages){
+        if ($post instanceof Chat_Messages) {
             $width = 300;
             $height = 225;
         }
-        for($i = 0; $i < sizeof($matches[1]); $i++){
-            $post->body = str_replace($matches[0][$i], Video_Embed::getCode($matches[1][$i],$width,$height),$post->body);
+        for ($i = 0; $i < sizeof($matches[1]); $i++) {
+            $post->body = str_replace($matches[0][$i], Video_Embed::getCode($matches[1][$i], $width, $height), $post->body);
         }
     }
 

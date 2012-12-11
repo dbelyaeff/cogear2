@@ -2,17 +2,17 @@
 /**
  *  Form Element Fieldset
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Form
- * @version		$Id$
+ *         Form
+
  */
 class Form_Element_Fieldset extends Form_Element_Group{
     /**
-     * Constructor
+     * Конструктор
      *
      * @param type $options
      */

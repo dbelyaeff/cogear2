@@ -126,7 +126,7 @@ class Mail_POP3 {
   private $error;     //  Error log array
 
   /**
-   * Constructor, sets the initial values
+   * Конструктор, sets the initial values
    * @access public
    * @return POP3
    */

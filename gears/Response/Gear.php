@@ -1,31 +1,25 @@
 <?php
 
 /**
- * Response gear
+ * Шестеренка Ответ
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Response_Gear extends Gear {
 
-    protected $name = 'Response';
-    protected $description = 'Send output to browser';
     protected $hooks = array(
         'exit' => 'send',
         '404' => 'notFound',
         'empty' => 'showEmpty',
     );
-    protected $is_core = TRUE;
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         cogear()->gears->Response OR $this->object(new Response_Object());
     }
 

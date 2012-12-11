@@ -17,7 +17,7 @@ if (!$item->teaser) {
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) ;
         if (!$item->preview) {
             if (access('page.edit.all') OR access('page.edit') && cogear()->user->id == $item->aid) {
-                $title->name .= '<a href="' . $item->getLink('edit') . '" class="sh" title="'.t('Edit').'"><i class="icon-pencil"></i></a>';
+                $title->name .= '<a href="' . $item->getLink('edit') . '" class="sh" title="'.t('Редактировать').'"><i class="icon-pencil"></i></a>';
             }
         }
         $title->name .= '</h2>';

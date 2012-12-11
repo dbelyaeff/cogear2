@@ -1,21 +1,15 @@
 <?php
 
 /**
- *  User gear
+ * Шестерёнка Пользователи
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class User_Gear extends Gear {
 
-    protected $name = 'User';
-    protected $description = 'Manage users.';
-    protected $order = -999;
     protected $current;
     protected $hooks = array(
         'post.insert' => 'hookPostCount',
@@ -42,7 +36,7 @@ class User_Gear extends Gear {
         'login' => array(0),
         'logout' => array(1, 100),
     );
-    protected $is_core = TRUE;
+
     /**
      * Access
      *
@@ -215,7 +209,6 @@ class User_Gear extends Gear {
      * @param object $menu
      */
     public function menu($name, $menu) {
-        d('User');
         switch ($name) {
             case 'user':
                 if ($this->user->id) {
@@ -228,25 +221,25 @@ class User_Gear extends Gear {
                     $menu->register(array(
                         'label' => $this->getName(),
                         'link' => $this->getLink(),
-                        'title' => t('Profile', 'User'),
+                        'title' => t('Профиль'),
                         'place' => 'left',
                         'active' => TRUE,
                         'title' => FALSE,
                     ));
                     $menu->register(array(
-                        'label' => t('Logout'),
+                        'label' => t('Выход'),
                         'link' => s('/user/logout'),
                         'place' => 'right',
                         'order' => 1000,
                     ));
                 } else {
                     $menu->register(array(
-                        'label' => t('Login'),
+                        'label' => t('Вход'),
                         'link' => l('/user/login'),
                         'place' => 'right',
                     ));
                     $menu->register(array(
-                        'label' => t('Register'),
+                        'label' => t('Регистрация'),
                         'link' => l('/user/register'),
                         'place' => 'right',
                     ));
@@ -255,40 +248,39 @@ class User_Gear extends Gear {
             case 'admin':
                 $menu->register(array(
                     'link' => l('/admin/user'),
-                    'label' => icon('user') . ' ' . t('Users', 'User.admin'),
+                    'label' => icon('user') . ' ' . t('Пользователи'),
                     'order' => 100,
                 ));
                 break;
         }
-        d();
     }
 
     /**
      * Show login page menu
      */
     public function showMenu() {
-        d('User');
+        ;
         new Menu_Auto(array(
                     'name' => 'user.login',
                     'template' => 'Bootstrap/templates/tabs',
                     'elements' => array(
                         'login' => array(
-                            'label' => t('Enter'),
+                            'label' => t('Войти'),
                             'link' => l('/user/login'),
                         ),
                         'lostpassword' => array(
-                            'label' => t('Lost password'),
+                            'label' => t('Забыли пароль?'),
                             'link' => l('/user/lostpassword'),
                             'access' => check_route('user/lostpassword'),
                         ),
                         'register' => array(
-                            'label' => t('Register'),
+                            'label' => t('Регистрация'),
                             'link' => l('/user/register'),
                         ),
                     ),
                     'render' => 'info',
                 ));
-        d();
+        ;
     }
 
     /**
@@ -302,7 +294,7 @@ class User_Gear extends Gear {
         $q && $tpl->value = $q;
         $tpl->show('info');
         Db_ORM::skipClear();
-        $q && $this->db->like('login',$q)->or_like('login',$q,'both')->or_like('login',$q,'after');
+        $q && $this->db->like('login', $q)->or_like('login', $q, 'both')->or_like('login', $q, 'after');
         $list = new User_List(array(
                     'name' => 'admin.users',
                     'base' => l('/admin/user/'),
@@ -339,43 +331,23 @@ class User_Gear extends Gear {
                 return;
             }
         }
-        page_header(t('Users', 'User'));
+        page_header(t('Users'));
         new Menu_Tabs(array(
                     'name' => 'users',
                     'multiple' => TRUE,
                     'elements' => array(
                         array(
-                            'label' => t('All'),
+                            'label' => t('Все'),
                             'link' => l('/users'),
                             'active' => 'new' != $this->input->get('type'),
                         ),
                         array(
-                            'label' => t('New'),
+                            'label' => t('Новые'),
                             'link' => l('/users') . e('type', 'new'),
                             'active' => $this->input->get('type') == 'new',
                         ),
-                        array(
-                            'label' => t('Negative'),
-                            'link' => l('/users') . e('filter', 'negative'),
-                            'class' => 'fl_r',
-                            'active' => $this->input->get('filter') == 'negative',
-                        ),
-                        array(
-                            'label' => t('Positive'),
-                            'link' => l('/users') . e('filter', 'positive'),
-                            'class' => 'fl_r',
-                            'active' => NULL === $this->input->get('filter') OR $this->input->get('filter') == 'positive',
-                        ),
                     )
                 ));
-        $this->db->order('rating', 'desc');
-        if ($this->input->get('filter') == 'negative') {
-            $where = array('rating <' => 0);
-            $order = array('rating', 'asc');
-        } else {
-            $where = array('rating >=' => 0);
-            $order = array('rating', 'desc');
-        }
         if ($this->input->get('type') == 'new') {
             $where['reg_date >'] = time() - 24 * 60 * 60 * 7;
         }
@@ -408,14 +380,14 @@ class User_Gear extends Gear {
         if ($user->id == 1) {
             $form->elements->delete->options->render = FALSE;
         }
-        
+
         if ($result = $form->result()) {
             if ($user->login != $result['login']) {
                 $redirect = Url::gear('user') . $result['login'];
             }
             if ($result->delete && access('User.delete', $user)) {
                 if ($user->delete()) {
-                    flash_success(t('User <b>%s</b> was deleted!', 'User', $user->login));
+                    flash_success(t('Пользователь <b>%s</b> был удалён!', $user->login));
                     redirect(l());
                 }
             }
@@ -426,7 +398,7 @@ class User_Gear extends Gear {
                 unset($user->password);
             }
             if ($user->update()) {
-                flash_success(t('User data saved!', 'User'), t('Success'));
+                flash_success(t('Изменения сохранены!'), t('Удача'));
                 redirect(l('/user/edit/' . $id));
             }
         }
@@ -454,7 +426,9 @@ class User_Gear extends Gear {
                     redirect($user->getLink());
                 }
             }
-            error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'));
+            $user->password = '';
+            $form->object($user);
+            error(t('Введены неверные данные.'), t('Ошибка авторизации'));
         }
         $form->show();
     }
@@ -479,7 +453,7 @@ class User_Gear extends Gear {
                 $user->hash = $this->secure->genHash(date('H d.m.Y') . $this->session->get('ip') . $user->password);
                 $user->save();
                 $user->login();
-                flash_success(t('You have been logged in be temporary link. Now you can change your password.', 'User.lostpassword'));
+                flash_success(t('Вы вошли по временной ссылке. Теперь вы можете поменять пароль.'));
                 redirect($user->getLink('edit'));
             } else {
                 error(t('Password recovery code has been already used.', 'User.lostpassword'));
@@ -492,7 +466,7 @@ class User_Gear extends Gear {
                 if (!$user->find()) {
                     $user->email = $result->login;
                     if (!$user->find()) {
-                        error(t('Wrong credentials.', 'User'), t('Authentification error', 'User'), 'growl');
+                        error(t('Wrong credentials.'), t('Authentification error'), 'growl');
                         $form->show();
                         return;
                     }
@@ -533,7 +507,7 @@ class User_Gear extends Gear {
             $user->hash = $code;
             if ($user->find()) {
                 $form = new Form('User/forms/verify');
-                
+
                 $form->email->setValue($user->email);
                 if ($result = $form->result()) {
                     $user->object()->extend($result);

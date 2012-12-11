@@ -1,25 +1,18 @@
 <?php
 
 /**
- * Sessions gear
+ * Шестерёнка Сессии
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Session_Gear extends Gear {
 
-    protected $name = 'Sessions';
-    protected $description = 'Handle sessions.';
-    protected $order = -1000;
     protected $hooks = array(
         //'dev.info' => 'trace',
     );
-    protected $is_core = TRUE;
 
     /**
      * Init

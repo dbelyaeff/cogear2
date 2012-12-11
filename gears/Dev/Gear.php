@@ -1,25 +1,15 @@
 <?php
 
 /**
- *  Benchmark Gear
+ *  Шестеренка «Разработка»
  *
- *
- *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2010, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Benchmark
- * @subpackage
- * @version		$Id$
  */
 class Dev_Gear extends Gear {
 
-    protected $name = 'Developer';
-    protected $description = 'Calculate cogear performance at current system configuration.';
-    protected $order = -10000;
-    protected $hooks = array(
-    );
     protected $access = array(
         'index' => array(1, 100),
     );
@@ -39,7 +29,7 @@ class Dev_Gear extends Gear {
     public function finish() {
         bench('done');
         $template = new Template('Dev/templates/results');
-        append('footer', $template->render());
+        append('footer', $template);
     }
 
     /**
@@ -75,7 +65,7 @@ class Dev_Gear extends Gear {
 }
 /**
  * Humanize benchmark
- * 
+ *
  * @param type $point
  * @param type $measure
  * @return type

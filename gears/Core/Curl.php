@@ -13,7 +13,7 @@ class Curl extends Core_ArrayObject{
         public $site = NULL;
         public $port = 80;
         /**
-        * Constructor
+        * Конструктор
         */
         public function curl($options = array()){
                 $this->init($options);

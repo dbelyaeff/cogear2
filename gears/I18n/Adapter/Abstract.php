@@ -3,13 +3,13 @@
 /**
  * Abstract i18n adapter
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          I18n
- * @version		$Id$
+ *         I18n
+
  */
 abstract class I18n_Adapter_Abstract extends Options {
 
@@ -17,6 +17,7 @@ abstract class I18n_Adapter_Abstract extends Options {
         'lang' => 'en',
     );
     protected $update_flag = TRUE;
+
     const SECTION_PREFIX = '#';
 
     /**
@@ -25,24 +26,9 @@ abstract class I18n_Adapter_Abstract extends Options {
      * @param   string  $text
      * @param   string  $section
      */
-    public function get($text, $section = NULL) {
-        if ($section) {
-            $section = $this->prepareSection($section);
-            if ($this->$section) {
-                if ($this->$section->$text) {
-                    return $this->$section->$text;
-                } elseif ($this->$section->$text == NULL) {
-//                    $this->set($text, '', $section);
-                }
-            } else {
-//                $this->set($text, '', $section);
-            }
-        } else {
-            if ($this->$text) {
-                return $this->$text;
-            } elseif ($this->$text == NULL) {
-//                $this->set($text, '', $section);
-            }
+    public function get($text) {
+        if ($this->$text) {
+            return $this->$text;
         }
         return $text;
     }

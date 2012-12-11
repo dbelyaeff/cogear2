@@ -1,24 +1,17 @@
 <?php
 /**
- * Input gear
+ * Шестеренка для обработки полученных данных
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Input_Gear extends Gear {
 
-    protected $name = 'Input';
-    protected $description = 'Catch user input';
-    protected $order = -998;
     protected $get = array();
     protected $post = array();
     protected $cookies = array();
-    protected $is_core = TRUE;
 
     /**
      * Init

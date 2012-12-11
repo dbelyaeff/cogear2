@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="I18n">
+    <name lang="ru">Интерпационализация</name>
+    <description lang="ru">Перевод интерфейса сайта на разные языки.</description>
+    <order>-1000</order>
+</gear>

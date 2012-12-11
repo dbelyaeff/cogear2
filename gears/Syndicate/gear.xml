@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Syndicate">
+    <name lang="ru">Синдикация</name>
+    <description lang="ru">Формирование RSS-потоков на сайте.</description>
+</gear>

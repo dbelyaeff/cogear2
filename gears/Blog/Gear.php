@@ -1,23 +1,15 @@
 <?php
 
 /**
- *  Blog gear
+ * Шестеренка блогов
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Blog_Gear extends Gear {
 
-    protected $name = 'Blog';
-    protected $description = 'Allow users to have their own blogs';
-    protected $package = 'Blog';
-    protected $order = 10;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'user.profile.fields' => 'hookUserProfile',
         'form.load.post' => 'hookPostForm',
@@ -347,10 +339,10 @@ class Blog_Gear extends Gear {
     }
 
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         // This hook must be placed earlier, because it deals with User init method which loads before Friends gear init
         hook('user.refresh', array($this, 'clear'));
     }
@@ -618,7 +610,7 @@ class Blog_Gear extends Gear {
                         'type' => Blog::$types['public']
                     ),
                     'per_page' => 20,
-                    'order' => array('rating','desc'),
+                    'order' => array('rating', 'desc'),
                 ));
     }
 
@@ -662,7 +654,8 @@ class Blog_Gear extends Gear {
      */
     public function check_status($bid) {
         if ($blog = session('blogs')) {
-            if(!is_array($blog)) return 0;
+            if (!is_array($blog))
+                return 0;
             return !empty($blog[$bid]) ? $blog[$bid] : 0;
         }
     }

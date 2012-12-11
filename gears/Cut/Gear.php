@@ -1,30 +1,19 @@
 <?php
 
 /**
- * Cut gear
+ * Шестерека «Кат»
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Cut_Gear extends Gear {
 
-    protected $name = 'Cut';
-    protected $description = 'Provite post cut functionality.';
-    protected $package = '';
-    protected $order = -100;
     protected $hooks = array(
         'markitup.toolbar' => 'hookMarkItUp',
         'post.render' => 'hookPostRender',
         'jevix' => 'hookJevix',
-    );
-    protected $routes = array(
-    );
-    protected $access = array(
     );
 
     /**
@@ -83,43 +72,4 @@ class Cut_Gear extends Gear {
             }
         }
     }
-
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-    }
-
-    /**
-     * Hook menu
-     *
-     * @param string $name
-     * @param object $menu
-     */
-    public function menu($name, $menu) {
-        switch ($name) {
-
-        }
-    }
-
-    /**
-     * Default dispatcher
-     *
-     * @param string $action
-     * @param string $subaction
-     */
-    public function index_action($action = '', $subaction = NULL) {
-
-    }
-
-    /**
-     * Custom dispatcher
-     *
-     * @param   string  $subaction
-     */
-    public function some_action($subaction = NULL) {
-
-    }
-
 }

@@ -7,7 +7,7 @@ class Image_Preset extends Core_ArrayObject {
     const DIR = '.presets';
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param string $name
      * @return boolean

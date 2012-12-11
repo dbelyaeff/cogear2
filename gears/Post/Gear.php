@@ -1,21 +1,17 @@
 <?php
 
 /**
- * Post gear
+ * Шестеренка «Пост»
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * Служит для публиации информации
+ *
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Post_Gear extends Gear {
 
-    protected $name = 'Post';
-    protected $description = 'Manage posts';
-    protected $order = 10;
     protected $hooks = array(
         'comment.insert' => 'hookCommentsRecount',
         'comment.update' => 'hookCommentsRecount',
@@ -34,7 +30,6 @@ class Post_Gear extends Gear {
     protected $routes = array(
         ':index' => 'front_action',
     );
-    protected $is_core = TRUE;
 
     /**
      * Access
@@ -59,7 +54,7 @@ class Post_Gear extends Gear {
                 }
                 if ($data) {
                     if (event('access.post.edit', $data)->check()) {
-                        
+
                     }
                 }
                 break;
@@ -121,7 +116,7 @@ class Post_Gear extends Gear {
     }
 
     /**
-     * Constructor
+     * Конструктор
      */
     public function init() {
         parent::init();
@@ -136,13 +131,12 @@ class Post_Gear extends Gear {
      * @param   object  $menu
      */
     public function menu($name, $menu) {
-        d('Post');
         switch ($name) {
             case 'user':
                 access('Post.create') && $menu->register(array(
                             'label' => icon('pencil icon-white'),
                             'link' => l('/post/create/'),
-                            'title' => t('Create post', 'Post'),
+                            'title' => t('Написать'),
                             'place' => 'left',
                             'access' => access('Post.create'),
                         ));
@@ -162,7 +156,6 @@ class Post_Gear extends Gear {
                 }
                 break;
         }
-        d();
     }
 
     /**

@@ -1,28 +1,21 @@
 <?php
 
 /**
- * Install gear
+ * Установщик
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Install
- * @version		$Id$
  */
 class Install_Gear extends Gear {
 
-    protected $name = 'Install';
-    protected $description = 'Help to install system.';
-    protected $order = 0;
-    protected $is_core = TRUE;
     /**
      * Init
      */
     public function init() {
         parent::init();
-        if (!config('installed')) {
+        if ($this->status() == Gears::ENABLED) {
             $this->router->bind(':index', array($this, 'index'), TRUE);
             if (!check_route('install', Router::STARTS)) {
                 redirect(l('/install'));
@@ -93,7 +86,7 @@ class Install_Gear extends Gear {
             case 'site':
                 append('content', '<p class="alert alert-info">' . t('Define basic settings for your site.', 'Install') . '</p>');
                 $form = new Form('Install/forms/site');
-                
+
                 if ($result = $form->result()) {
                     $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;

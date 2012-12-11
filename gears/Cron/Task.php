@@ -2,13 +2,13 @@
 /**
  * Cron task
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Cron
- * @subpackage          
- * @version		$Id$
+ *         
+
  */
 class Cron_Task extends Db_ORM{
     // Notice. All commented fields are represented by the identicaly named database fields in records.

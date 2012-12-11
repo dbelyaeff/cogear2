@@ -3,13 +3,13 @@
 /**
  * Abstract form element
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Form_Element_Abstract extends Options {
 
@@ -39,7 +39,7 @@ class Form_Element_Abstract extends Options {
     public $code = '';
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param array $options
      */

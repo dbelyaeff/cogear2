@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear>
+    <name lang="ru">Название шестеренки</name>
+    <description lang="ru">Описание шестеренки</description>
+    <author lang="ru">Беляев Дмитрий</author>
+    <package lang="ru">Ядро</package>
+    <email>admin@cogear.ru</email>
+    <site>http://cogear.ru</site>
+    <core>2.x</core>
+    <version>1.0</version>
+    <order>0</order>
+</gear>

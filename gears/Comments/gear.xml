@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Comments">
+    <name lang="ru">Комментарии</name>
+    <description lang="ru">Управление комментариями.</description>
+    <order>15</order>
+</gear>

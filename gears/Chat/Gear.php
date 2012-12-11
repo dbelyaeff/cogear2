@@ -1,22 +1,15 @@
 <?php
 
 /**
- * Chat gear
+ * Шестеренка Чат
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Chat_Gear extends Gear {
 
-    protected $name = 'Chat';
-    protected $description = 'Instant messenger';
-    protected $order = 20;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'chat_msg.insert' => 'hookMsgInsert',
         'chat_msg.update' => 'hookMsg',

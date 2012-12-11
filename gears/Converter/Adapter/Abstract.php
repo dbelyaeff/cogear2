@@ -3,18 +3,18 @@
 /**
  * Abstract converter
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 abstract class Converter_Adapter_Abstract extends Cogearable {
 
     /**
-     * Constructor
+     * Конструктор
      */
     public function __construct() {
         // Autoload converter options

@@ -1,0 +1,191 @@
+<?php
+
+/**
+ * Драйвер базы данных для работы через PDO
+ *
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
+ * @license		http://cogear.ru/license.html
+ * @link		http://cogear.ru
+ * @package		Core
+ */
+class Db_Driver_PDO extends Db_Driver_Abstract {
+
+    protected $driver = 'mysql';
+    protected $PDO;
+
+    /**
+     * Соединение с базой данных
+     */
+    public function connect() {
+        try {
+            $this->PDO = new PDO($this->driver . ':host=' . $this->options->host . ';dbname=' . $this->options->base, $this->options->user, $this->options->pass);
+        } catch (PDOException $e) {
+            fatal_error(t($e->getMessage()));
+        }
+    }
+
+    /**
+     * Рассоединение с базой данных
+     */
+    public function disconnect() {
+// PDO рассоединяется с базой автоматически
+    }
+
+    /**
+     * Прямое исполнение запроса
+     *
+     * @param string $query Запрос
+     * @return PDOStatement|bool
+     */
+    public function query($query) {
+        $this->queries->push($query);
+        $i = $this->queries->count();
+        bench('db.query.' . $i . '.start');
+        $this->result = $this->PDO->query($query);
+        bench('db.query.' . $i . '.end');
+        $this->clear();
+        return $this->result ? $this->result : FALSE;
+    }
+
+    /**
+     * Получение номера последней вставленной записи
+     *
+     * @return int
+     */
+    public function lastInsertId() {
+        return $this->PDO->lastInsertId();
+    }
+
+    /**
+     * Получние списка полей в таблице
+     *
+     * @param string  $table
+     * @return object|NULL
+     */
+    public function getFieldsQuery($table) {
+        return $this->query('SHOW COLUMNS FROM ' . $this->tableName($table, 'table')) ? $this->result() : NULL;
+    }
+
+    /**
+     * Получение всего результата запроса
+     *
+     * @reutrn  object|NULL
+     */
+    public function result() {
+        if ($this->result instanceof PDOStatement) {
+            if ($result = $this->result->fetchAll(PDO::FETCH_ASSOC)) {
+                return Core_ArrayObject::transform($result);
+            }
+            return FALSE;
+        }
+    }
+
+    /**
+     * Получение одной записи из результата запроса
+     *
+     * @return  object|NULL
+     */
+    public function row() {
+        if ($this->result instanceof PDOStatement) {
+            if ($result = $this->result->fetch(PDO::FETCH_ASSOC)) {
+                return Core_ArrayObject::transform($result);
+            }
+            return FALSE;
+        }
+    }
+
+    /**
+     * Экранирование данных
+     *
+     * @param   mixed   $data
+     */
+    public function escape($data) {
+        return $this->PDO->quote($data);
+    }
+
+    /**
+     * Функция для экранизации переменных
+     *
+     * @param   string  $name
+     * @return  string
+     */
+    public function addColon($name) {
+        return ':' . $name;
+    }
+
+    /**
+     * Вставка данных
+     *
+     * @param string $table Имя таблицы
+     * @param array  $data Массив полей и значений
+     * @param string $type  Тип вставки. INSERT или REPLACE
+     * @return  int Номер вставленного элемента
+     */
+    public function insert($table, $data = array(), $type = 'INSERT') {
+        $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
+        $PDOStatement = $this->PDO->prepare($query);
+        foreach ($data as $key => $value) {
+            $PDOStatement->bindParam(':' . $key, $value);
+        }
+        try {
+            if ($PDOStatement->execute()) {
+                return $this->PDO->lastInsertId();
+            } else {
+                return FALSE;
+            }
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * Обновление данных
+     *
+     * @param string $table Имя таблицы
+     * @param array  $data Массив полей и значений
+     * @param string $where  Условия обновления
+     */
+    public function update($table, $data = array(), $where = array()) {
+        $query = 'UPDATE ' . $this->tableName($table, 'table') . ' SET ';
+        $it = new CachingIterator(new ArrayIterator($data));
+        foreach ($it as $key => $value) {
+            $query .= $key . ' = :' . $key;
+            if ($it->hasNext())
+                $query . ', ';
+        }
+        if ($where) {
+            $this->where($where);
+            $query .= ' ' . $this->chain['WHERE'];
+        }
+        $PDOStatement = $this->PDO->prepare($query);
+        foreach ($data as $key => $value) {
+            $PDOStatement->bindParam(':' . $key, $value);
+        }
+        try {
+            return $PDOStatement->execute();
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * Удаление данных
+     *
+     * @param   string  $table
+     * @param   array   $where
+     */
+    public function delete($table, $where = array()) {
+        $query = 'DELETE FROM ' . $this->tableName($table, 'table');
+        if ($where) {
+            $this->where($where);
+            $query .= ' ' . $this->chain['WHERE'];
+        }
+        try {
+            return $PDOStatement->execute();
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+}

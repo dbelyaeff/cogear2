@@ -1,28 +1,15 @@
 <?php
 
 /**
- * Converter gear
+ * Шестеренка Конвертер.
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Converter_Gear extends Gear {
 
-    protected $name = 'Converter';
-    protected $description = 'Converter description';
-    protected $package = '';
-    protected $order = 0;
-    protected $hooks = array(
-    );
-    protected $routes = array(
-    );
-    protected $access = array(
-    );
     public static $adapters = array(
         'Converter_Adapter_Cogear' => "Cogear v1",
     );
@@ -58,7 +45,7 @@ class Converter_Gear extends Gear {
         switch ($name) {
             case 'admin':
                 $menu->register(array(
-                    'label' => icon('refresh') . ' ' . t('Converter', 'Converter'),
+                    'label' => icon('refresh') . ' ' . t('Конвертер'),
                     'link' => l('/admin/converter/'),
                     'order' => 10000,
                 ));
@@ -72,35 +59,35 @@ class Converter_Gear extends Gear {
      * @param type $subaction
      */
     public function admin($action = 'start', $subaction = NULL) {
-        d('Converter');
+       ;
         new Menu_Tabs(array(
                     'name' => 'converter',
                     'elements' => array(
                         'start' => array(
-                            'label' => t('1. Start'),
+                            'label' => t('1. Старт'),
                             'link' => '',
                             'active' => check_route('converter', Router::ENDS),
                         ),
                         'options' => array(
-                            'label' => t('2. Options'),
+                            'label' => t('2. Настройка'),
                             'link' => '',
 //                    'link' => l('/admin/converter/options'),
                             'active' => check_route('options', Router::ENDS),
                         ),
                         'process' => array(
-                            'label' => t('3. Process'),
+                            'label' => t('3. Конвертация'),
                             'link' => '',
 //                    'link' => l('/admin/converter/process'),
                             'active' => check_route('process', Router::ENDS),
                         ),
                         'finish' => array(
-                            'label' => t('4. Finish'),
+                            'label' => t('4. Финиш'),
                             'link' => '',
 //                    'link' => l('/admin/converter/finish'),
                             'active' => check_route('finish', Router::ENDS),
                         ),
                         'clear' => array(
-                            'label' => icon('remove') . ' ' . t('Reset'),
+                            'label' => icon('remove') . ' ' . t('Сброс'),
                             'class' => 'fl_r',
                             'link' => l('/admin/converter/clear'),
                         ),
@@ -118,14 +105,14 @@ class Converter_Gear extends Gear {
                             'name' => 'converter-adapter',
                             'elements' => array(
                                 'adapter' => array(
-                                    'label' => t('Choose to convert from'),
+                                    'label' => t('Выберите системы для конвертации'),
                                     'type' => 'select',
                                     'values' => self::$adapters,
                                 ),
                                 'actions' => array(
                                     'elements' => array(
                                         'submit' => array(
-                                            'label' => t('Start!'),
+                                            'label' => t('Поехали!'),
                                         )
                                     )
                                 )
@@ -144,7 +131,7 @@ class Converter_Gear extends Gear {
                             'name' => 'converter-options',
                             'elements' => array(
                                 'database' => array(
-                                    'label' => t('Database'),
+                                    'label' => t('База данных'),
                                     'type' => 'text',
                                     'placeholder' => 'mysql://username:password@host/database',
                                     'value' => 'mysql://root@localhost/cogear_one',
@@ -153,7 +140,7 @@ class Converter_Gear extends Gear {
                                 'actions' => array(
                                     'elements' => array(
                                         'submit' => array(
-                                            'label' => t('Convert!'),
+                                            'label' => t('Конвертировать!'),
                                         )
                                     )
                                 )
@@ -194,7 +181,7 @@ class Converter_Gear extends Gear {
                 redirect('/admin/converter');
                 break;
         }
-        d();
+       ;
     }
 
 }

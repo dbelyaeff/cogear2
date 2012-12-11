@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Wysiwyg">
+    <name lang="ru">Визуальный редактор</name>
+    <description lang="ru">Обеспечивает возможность исползовать специальные инстурменты для редактирования текста.</description>
+    <order>-10</order>
+</gear>

@@ -1,23 +1,16 @@
 <?php
 
 /**
- * Cron gear
+ * Шестеренка Cron
  *
- * Scheduler tasks.
+ * Планировщик задач.
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Cron
- * @version		$Id$
  */
 class Cron_Gear extends Gear {
-
-    protected $name = 'Cron';
-    protected $description = 'Perform periodial tasks.';
-    protected $order = 0;
 
     // Cron won't be start up for often than STEP value in seconds
 

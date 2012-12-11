@@ -1,4 +1,4 @@
-<?php d('User.widgets'); ?>
+<?php; ?>
 <h2><?php echo t('Online') ?></h2>
 <?php if ($data->counters->users): ?>
 <div class="online-widget-users">

@@ -1,27 +1,19 @@
 <?php
 
 /**
- * Notifications gear
+ * Шестерёнка «Оповещения»
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          messages
- * @version		$Id$
- *
  */
 class Notify_Gear extends Gear {
 
-    protected $name = 'Notifications';
-    protected $description = 'Handle with messages dialogs and windows.';
-    protected $order = -999;
     protected $template = 'Notify/templates/alert';
     protected $hooks = array(
         'ignite' => 'renderFlash',
     );
-    protected $is_core = TRUE;
 
     /**
      * Show message

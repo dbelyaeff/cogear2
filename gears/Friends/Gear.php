@@ -3,21 +3,16 @@
 /**
  * Friends gear
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Friends_Gear extends Gear {
 
-    protected $name = 'Friends';
-    protected $description = 'Manage friends';
-    protected $package = '';
-    protected $order = 10;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'user.navbar' => 'hookUserNavbar',
         'blog.follower.insert' => 'clear',
@@ -25,8 +20,6 @@ class Friends_Gear extends Gear {
         'blog.follower.delete' => 'clear',
         'table.render.users' => 'hookUsersTableRender',
 //        'user.profile.fields' => 'hookUserProfile',
-    );
-    protected $routes = array(
     );
     protected $access = array(
         'status' => 'access',
@@ -133,7 +126,7 @@ class Friends_Gear extends Gear {
      * @param   object  $menu
      */
     public function menu($name, $menu) {
-        d('Post');
+       ;
         switch ($name) {
             case 'user.profile.tabs':
                 $menu->register(array(
@@ -143,7 +136,7 @@ class Friends_Gear extends Gear {
                 ));
                 break;
         }
-        d();
+       ;
     }
 
     /**

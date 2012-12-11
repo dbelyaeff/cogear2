@@ -1,22 +1,14 @@
 <?php
 
 /**
- * Gears manager
+ * Шестеренка, управляющая другими шестеренками
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Gears
- * @version		$Id$
  */
 class Gears_Gear extends Gear {
-
-    protected $name = 'Gears manager';
-    protected $description = 'Manage and download gears.';
-    protected $order = 0;
-    protected $is_core = TRUE;
 
     /**
      * Menu hook
@@ -29,7 +21,7 @@ class Gears_Gear extends Gear {
             case 'admin':
                 $menu->register(array(
                     'link' => l('/admin/gears'),
-                    'label' => icon('cog  icon-white') . ' ' . t('Gears', 'Gears.admin'),
+                    'label' => icon('cog  icon-white') . ' ' . t('Шестеренки'),
                     'order' => 1,
                 ));
                 break;
@@ -56,23 +48,19 @@ class Gears_Gear extends Gear {
                     'name' => 'gears',
                     'elements' => array(
                         array(
-                            'label' => t('All') . ' (' . $gears->filter(Gears::EXISTS, TRUE)->count() . ')',
+                            'label' => t('Все') . ' (' . $gears->filter(Gears::EXISTS, TRUE)->count() . ')',
                             'link' => l('/admin/gears'),
                         ),
                         array(
-                            'label' => t('Enabled') . ' (' . $gears->filter(Gears::ENABLED, FALSE)->count() . ')',
+                            'label' => t('Активные') . ' (' . $gears->filter(Gears::ENABLED, FALSE)->count() . ')',
                             'link' => l('/admin/gears/enabled'),
                         ),
                         array(
-                            'label' => t('Installed') . ' (' . $gears->filter(Gears::INSTALLED, FALSE)->count() . ')',
+                            'label' => t('Неактивные') . ' (' . $gears->filter(Gears::DISABLED, FALSE)->count() . ')',
                             'link' => l('/admin/gears/installed'),
                         ),
                         array(
-                            'label' => t('Uploaded') . ' (' . $gears->filter(Gears::EXISTS, FALSE)->count() . ')',
-                            'link' => l('/admin/gears/uploaded'),
-                        ),
-                        array(
-                            'label' => t('Add'),
+                            'label' => t('Добавить'),
                             'class' => 'fl_r',
                             'link' => l('/admin/gears/add'),
                         ),
@@ -86,7 +74,7 @@ class Gears_Gear extends Gear {
                 $filter = Gears::ENABLED;
                 break;
             case 'installed':
-                $filter = Gears::INSTALLED;
+                $filter = Gears::DISABLED;
                 break;
             case 'uploaded':
                 $filter = Gears::EXISTS;

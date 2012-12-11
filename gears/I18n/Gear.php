@@ -1,56 +1,61 @@
 <?php
 
 /**
- * Internacionalization
+ * Интернационализация
  *
- * Translate site to different languages
+ * Перевод интерфейса системы на разные языки
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2010, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage  	Admin
- * @version		$Id$
  */
 class I18n_Gear extends Gear {
 
-    protected $name = 'Internacionalization';
-    protected $description = 'Translate site interface to different languages.';
-    protected $order = -1000;
     protected $domains = array();
     protected $lang;
     protected $locale;
-    protected $hooks = array('gear.init'=>'hookGearInit');
+    protected $hooks = array(
+        'gear.init' => 'hookGearInit',
+        'done' => 'hookDone',
+    );
+
     const EXT = '.php';
-    protected $is_core = TRUE;
     /**
-     * Hook gear init
+     * Хук done
+     */
+    public function hookDone(){
+        $this->response->header('charset','Content-Type: text/html; charset=utf-8');
+    }
+    /**
+     * Хук на инициализацию шестеренки
      *
      * @param type $Gear
      */
-    public function hookGearInit($Gear){
-        $file = $Gear->dir.DS.'lang'.DS.$this->lang.self::EXT;
-        if(is_dir(dirname($file)) && file_exists($file)){
-            if($data = Config::read($file)){
-                $this->import($data,$this->prepareSection($Gear->gear));
-            }
-        }
-    }
-    /**
-     * Constructor
+    /*
+      public function hookGearInit($Gear){
+      $file = $Gear->dir.DS.'lang'.DS.$this->lang.self::EXT;
+      if(is_dir(dirname($file)) && file_exists($file)){
+      if($data = Config::read($file)){
+      $this->import($data,$this->prepareSection($Gear->gear));
+      }
+      }
+      }
      */
-    public function __construct() {
+
+    /**
+     * Конструктор
+     */
+    public function __construct($xml) {
         $this->lang = config('i18n.lang', 'en');
         $this->locale = config('i18n.locale');
         $adapter = config('i18n.adapter', 'I18n_Adapter_File');
         $options = config('i18n');
         $this->object(new $adapter($options));
-        //$this->load();
         setlocale(LC_ALL, $this->locale);
-        date_default_timezone_set(config('i18n.timezone','Europe/Moscow'));
+        date_default_timezone_set(config('i18n.timezone', 'Europe/Moscow'));
         //hook('done', array($this->object, 'save'));
-        parent::__construct();
+        parent::__construct($xml);
     }
 
     /**
@@ -80,7 +85,7 @@ class I18n_Gear extends Gear {
     public function transliterate($text) {
         $data = new Core_ArrayObject();
         $data->text = $text;
-        event('i18n.transliterate',$data);
+        event('i18n.transliterate', $data);
         return $data->text;
     }
 
@@ -92,8 +97,7 @@ class I18n_Gear extends Gear {
      * @return string
      */
     public function translate($text, $domain = '') {
-        $domain OR $domain = $this->domain();
-        return $this->get($text, $domain);
+        return $this->get($text);
     }
 
     /**
@@ -138,12 +142,12 @@ class I18n_Gear extends Gear {
  * @param   mixed   $param_N
  * @return  string
  */
-function t($text, $domain = '') {
+function t($text) {
     $cogear = getInstance();
-    $result = $cogear->i18n->translate($text, $domain);
-    if (func_num_args() > 2) {
+    $result = $cogear->i18n->translate($text);
+    if (func_num_args() > 1) {
         $args = func_get_args();
-        $args = array_slice($args, 2);
+        $args = array_slice($args, 1);
         // Find all (one|some|many)  for creating correct plural forms
         preg_match_all('#\((.+)\)#imU', $result, $matches);
         if (sizeof($matches[0]) > 0) {
@@ -156,16 +160,6 @@ function t($text, $domain = '') {
         $result = call_user_func_array('sprintf', $args);
     }
     return $result;
-}
-
-/**
- * Set domain
- *
- * @param string $domain
- */
-function d($domain = '') {
-    $cogear = getInstance();
-    $cogear->i18n->setDomain($domain);
 }
 
 /**

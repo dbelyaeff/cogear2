@@ -1,33 +1,39 @@
 <?php
 
 /**
- * Theme gear
+ * Шестерёнка Темы
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Theme
- * @version		$Id$
  */
 class Theme_Gear extends Gear {
 
-    protected $name = 'Theme';
-    protected $description = 'Manage themes';
-    protected $order = -100;
     protected $hooks = array(
         'exit' => 'output',
     );
     public $regions;
+
     const SUFFIX = '_Theme';
-    protected $is_core = TRUE;
+
+    protected $defaults;
+
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->regions = new Core_ArrayObject();
-        parent::__construct();
+    }
+
+    /**
+     * Настройки по умолчанию для всех тем
+     *
+     * @return SimpleXMLObject
+     */
+    public function getDefaultSettings() {
+        return $this->defaults ? $this->defaults : $this->defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Theme' . DS . 'default.xml'));
     }
 
     /**
@@ -49,49 +55,48 @@ class Theme_Gear extends Gear {
      * @param string  $name
      * @param object $menu
      */
-    public function menu($name,$menu){
-        switch($name){
+    public function menu($name, $menu) {
+        switch ($name) {
             case 'admin':
                 $menu->register(array(
-                    'label' => icon('eye-open').' '.t('Theme','Theme'),
+                    'label' => icon('eye-open') . ' ' . t('Theme', 'Theme'),
                     'link' => l('/admin/theme'),
                     'order' => 200,
                 ));
                 break;
         }
     }
+
     /**
      * Admin dispatcher
      *
      * @param type $action
      */
-    public function admin($action = 'settings'){
+    public function admin($action = 'settings') {
         $form = new Form('Theme/forms/choose');
         $form->elements->theme->setValues($this->getThemes());
         $form->elements->theme->setValue(config('theme.current'));
-        if($result = $form->result()){
-            cogear()->set('theme.current',$result->theme);
+        if ($result = $form->result()) {
+            cogear()->set('theme.current', $result->theme);
         }
         $form->show();
     }
+
     /**
      * Get installed themes
      *
      * @return  array
      */
-    private function getThemes(){
-        $scan = glob(THEMES.DS.'*'.DS.'Theme'.EXT);
-        $themes = array();
-        foreach($scan as $file){
-            $theme_name = basename(dirname($file));
-            $class = Gears::pathToGear($file).'_Theme';
-            $theme = new $class;
-            if($theme instanceof Theme_Object){
-                $themes[$theme_name] = t($theme->name,'Themes');
-            }
+    private function getThemes() {
+        $files = glob(THEMES . DS . '*' . DS . 'theme.xml');
+        foreach ($files as $file) {
+            $xml = new SimpleXMLElement(file_get_contents($file));
+            $name = $xml->attributes()->name->__toString();
+            $themes[$name] = $xml;
         }
         return $themes;
     }
+
     /**
      * Catch output
      *
@@ -129,15 +134,17 @@ class Theme_Gear extends Gear {
      */
     public function choose($theme = NULL) {
         $theme OR $theme = config('theme.current', 'Default');
-        //set('theme.current','Your_Theme');
         $class = self::themeToClass($theme);
         if (!class_exists($class)) {
             error(t('Theme <b>%s</b> doesn\'t exist.', 'Theme', $theme));
             $class = 'Default_Theme';
+            $theme = 'Default';
+            $this->choose('Default');
         }
-        $this->object(new $class());
+        $xml = THEMES . DS . $theme . DS . 'theme.xml';
+        $config = new SimpleXMLElement(file_get_contents($xml));
+        $this->object(new $class($config));
         $this->object()->init();
-        $this->object()->enable();
     }
 
     /**

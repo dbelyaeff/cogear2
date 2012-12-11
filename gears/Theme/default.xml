@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear>
+    <name lang="ru">Название темы</name>
+    <description lang="ru">Описание темы</description>
+    <author lang="ru">Беляев Дмитрий</author>
+    <package lang="ru">Темы оформления</package>
+    <email>admin@cogear.ru</email>
+    <site>http://cogear.ru</site>
+    <core>2.x</core>
+    <version>1.0</version>
+    <order>0</order>
+    <screenshot>/img/screenshot.png</screenshot>
+</gear>

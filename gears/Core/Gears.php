@@ -1,39 +1,64 @@
 <?php
 
 /**
- * Gears class
+ * Класс Шестеренок
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Gears extends Core_ArrayObject {
 
     const GEAR = 'Gear';
-    const CORE = 0;
-    const EXISTS = 1;
-    const INSTALLED = 2;
-    const ENABLED = 3;
+    const DISABLED = 0;
+    const ENABLED = 1;
+
+    public static $defaults;
 
     /**
-     * Constructor
-     * @param type $path
+     * Конструктор
+     * @param string|array|Core_ArrayObject $path
      */
-    public function __construct($path = NULL) {
-        if (is_dir($path)) {
+    public function __construct($gears = NULL) {
+        if (is_array($gears) OR $gears instanceof Core_ArrayObject) {
+            $this->load($gears);
+        } else if (is_string($gears) && is_dir($path)) {
             $this->loadDir($path);
-            $this->uasort('Core_ArrayObject::sortByOrder');
+        }
+        $this->uasort('Core_ArrayObject::sortByOrder');
+    }
+
+    /**
+     * Настройки по умолчанию для всех шестеренок
+     *
+     * @return SimpleXMLObject
+     */
+    public static function getDefaultSettings() {
+        return self::$defaults ? self::$defaults : self::$defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Core' . DS . 'default.xml'));
+    }
+
+    /**
+     * Загрузка шестеренок из массива или Core_ArrayObject'а
+     *
+     * @param array|Core_ArrayObject $gears
+     */
+    public function load($gears = array()) {
+        foreach ($gears as $gear) {
+            $xml = GEARS . DS . $gear . DS . 'gear.xml';
+            if (file_exists($xml)) {
+                $this->charge($xml);
+            }
         }
     }
 
     /**
-     * Load gears from dir by path
+     * Загрузка шестеренок по указанному пути
      *
-     * @param type $path
+     * @param string $path
      */
     public function loadDir($path) {
         $gears = $this->find($path);
@@ -43,92 +68,31 @@ class Gears extends Core_ArrayObject {
     }
 
     /**
-     * Find gears in direcotry
+     * Поиск шестеренок в директории.
      *
      * @param string $dir
      */
     public function find($dir) {
-        $gears = glob($dir . DS . '*' . DS . self::GEAR . EXT);
-        if ($dive = glob($dir . DS . '*' . DS . '*' . DS . self::GEAR . EXT)) {
-            $gears = array_merge($gears, $dive);
-        }
+        $gears = glob($dir . DS . 'gear.xml');
         return $gears;
     }
 
     /**
-     * Simple method that turn gears on during loading process.
+     * Заряжает шестеренку
      *
      * @param   string $path
      * @return boolean
      */
-    public function charge($path) {
-        $gear = self::pathToGear($path);
-        $class = $gear . '_' . self::GEAR;
-        if ($class != 'Core_Gear') {
-            $this->$gear = new $class;
-        }
-    }
-
-    /**
-     * Filter gears
-     *
-     * @param int $type
-     * @return Gears
-     */
-    public function filter($type = self::CORE, $include_core = TRUE) {
-        $result = new self();
-        foreach ($this as $key => $gear) {
-            if ($include_core && $gear->is_core) {
-                $result->$key = $gear;
-                continue;
-            }
-            switch ($type) {
-                case self::INSTALLED:
-                    if ($gear->status() == self::INSTALLED) {
-                        $result->$key = $gear;
-                    }
-                    break;
-                case self::ENABLED:
-                    if ($gear->status() == self::ENABLED) {
-                        $result->$key = $gear;
-                    }
-                    break;
-                case self::EXISTS:
-                    if ($gear->status() == self::EXISTS && !$gear->is_core) {
-                        $result->$key = $gear;
-                    }
-                    break;
+    public function charge($xml) {
+        $file = file_get_contents($xml);
+        $config = new SimpleXMLElement($file);
+        if ($config instanceof SimpleXMLElement) {
+            $gear = $config->attributes()->name->__toString();
+            $class = $gear . '_' . self::GEAR;
+            if (class_exists($class)) {
+                $this->offsetSet($gear, new $class($config));
             }
         }
-        return $result;
-    }
-
-    /**
-     * Extract gear name from path
-     *
-     * @param string $path
-     * @return string
-     */
-    public static function pathToGear($path) {
-        $paths = array(
-            'gears' => GEARS . DS,
-            'alt_gears' => GEARS . DS . 'Core' . DS,
-            'themes' => THEMES . DS,
-        );
-        foreach ($paths as $explicit_path) {
-            if (strpos($path, $explicit_path) !== FALSE) {
-                $path = str_replace($explicit_path, '', $path);
-                continue;
-            }
-        }
-        $gear = str_replace(array(
-            DS . pathinfo($path, PATHINFO_BASENAME),
-            DS
-                ), array(
-            '',
-            '_'
-                ), $path);
-        return $gear;
     }
 
     /**
@@ -141,17 +105,6 @@ class Gears extends Core_ArrayObject {
         if (method_exists('Core_ArrayObject', $method)) {
             $this->uasort('Core_ArrayObject::' . $method);
         }
-    }
-
-    /**
-     * Prepare gear name from class
-     *
-     * @param   string  $class
-     * @return  string
-     */
-    public static function nameFromClass($class) {
-        $gear = str_replace('_Gear', '', $class);
-        return $gear;
     }
 
 }

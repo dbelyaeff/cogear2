@@ -1,25 +1,18 @@
 <?php
 
 /**
- * Roles gear
+ * Шестерёнка Роли
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Roles_Gear extends Gear {
 
-    protected $name = 'Roles';
-    protected $description = 'User roles';
-    protected $order = 0;
     protected $hooks = array(
         'user.verified' => 'hookSetDefaultRole',
     );
-    protected $is_core = TRUE;
     /**
      * Set default role after user if registered
      *
@@ -38,12 +31,13 @@ class Roles_Gear extends Gear {
  */
 function role($uid = null){
     if($uid){
-        $user = new User();
-        $user->id = $uid;
-        if($user->find()){
+        if($user = user($uid)){
             return $user->role;
         }
         return 0;
     }
-    return cogear()->user->role;
+    else if($user = user()){
+        return $user->role;
+    }
+    return 0;
 }

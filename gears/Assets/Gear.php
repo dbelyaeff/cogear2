@@ -1,28 +1,20 @@
 <?php
 
 /**
- *  Assets gear
+ * Шестеренка для управления подключаемыми JS и CSS файлами
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Assets_Gear extends Gear {
 
-    protected $name = 'Assets';
-    protected $description = 'Manage assets';
-    protected $order = -999;
-    protected $is_core = TRUE;
-
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->object(new Assets_Harvester());
         cogear()->assets = $this;
     }

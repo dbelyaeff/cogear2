@@ -4,13 +4,13 @@
  *
  * 
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2010, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Interface
- * @version		$Id$
+ *         Interface
+
  */
 interface Interface_Factory {
 	public static function factory($name,$options = array());

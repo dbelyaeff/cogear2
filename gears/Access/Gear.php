@@ -1,24 +1,16 @@
 <?php
 
 /**
- * Access control gear
+ * Шестеренка, управляющая правами доступа
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Access
- * @version		$Id$
  */
 class Access_Gear extends Gear {
 
-    protected $name = 'Access';
-    protected $description = 'Access control gear';
-    protected $is_core = TRUE;
     protected $rights;
-    protected $refresh_flag;
-    protected $order = -998;
     protected $hooks = array(
         'exit' => 'save',
         'gear.dispatch' => 'hookGearAccess',
@@ -67,10 +59,10 @@ class Access_Gear extends Gear {
     }
 
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->rights = new Core_ArrayObject();
     }
 
@@ -127,7 +119,7 @@ class Access_Gear extends Gear {
             // Remove gear name from arg
             $args[0] = substr($args[0], strpos($args[0], '.') + 1);
             return $this->rights->$rule->run($args);
-        } elseif ($this->rights->$rule === FALSE) {
+        } elseif (FALSE === $this->rights->$rule) {
             return FALSE;
         }
         return TRUE;

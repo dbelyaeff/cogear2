@@ -1,9 +1,10 @@
 <div class="well">
-<?php 
- $dev = new Stack(array('name'=>'dev.info'));
- $dev->append(t('<b>Generated in:</b> %.3f (second|seconds)','Dev',$data['time']));
- $dev->append(t('<b>Memory consumption:</b> %s','Dev',$data['memory']));
- echo $dev->render('<br/>');
-?>
+    <?php event('dev.trace');?>
+    <?php
+    $bench = bench();
+    $data = humanize_bench($bench['done']);
+    ?>
+    <p>
+    <?php echo t('<b>Система:</b> ').icon('time').' '.round($data['time'],3).' '.icon('asterisk').$data['memory']?>
 </div>
 

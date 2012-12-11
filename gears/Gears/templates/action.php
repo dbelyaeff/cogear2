@@ -1,4 +1,4 @@
-<?php d('Gears'); ?>
+<?php; ?>
 <div class="page-header"><h2><?php echo t('Please, wait…') ?></h2></div>
 <?php foreach ($gears as $gear): ?>
     <?php
@@ -48,7 +48,7 @@
     <div class="alert alert-<?php echo $type ?>">
         <b><?php echo t($gear->name) ?></b>
         <p><?php echo $result->message; ?></p>
-        <?php if ($gear->status() == Gears::INSTALLED): ?>
+        <?php if ($gear->status() == Gears::DISABLED): ?>
             <a href="<?php echo l('/admin/gears/') . '?do=enable&gears=' . $gear->gear; ?>" class="btn btn-primary"><?php echo t('Enable') ?></a>
         <?php endif; ?>
     </div>

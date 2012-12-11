@@ -1,22 +1,13 @@
 <?php
 
 /**
- * Pager gear
+ * Шестерёнка постраничной навигации
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Pager
- * @version		$Id$
  */
 class Pager_Gear extends Gear {
-
-    protected $name = 'Pager';
-    protected $description = 'Pagination system for grid view.';
-    protected $package = '';
-    protected $order = 0;
-    protected $is_core = TRUE;
 
 }

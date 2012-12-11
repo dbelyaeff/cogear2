@@ -3,13 +3,13 @@
 /**
  *  Form Element Input Ajaxed
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Form
- * @version		$Id$
+ *         Form
+
  */
 class File_Url_Element extends Form_Element_Abstract {
 

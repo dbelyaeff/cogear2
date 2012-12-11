@@ -3,13 +3,13 @@
 /**
  * File upload class
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage  	File
- * @version		$Id$
+ * 	File
+
  */
 class File_Upload extends Adapter {
 
@@ -92,7 +92,7 @@ class File_Upload extends Adapter {
      * @return type
      */
     private function uploadOne($file) {
-        d('File');
+       ;
         $file = new Core_ArrayObject($file);
         event('file.preupload', $file);
         $file['errors'] = array();
@@ -141,14 +141,14 @@ class File_Upload extends Adapter {
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
-            d();
+           ;
             if ($file['errors']) {
                 return $file;
             } else {
                 return $this->process($file);
             }
         }
-        d();
+       ;
         return FALSE;
     }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="User">
+    <name lang="ru">Пользователи</name>
+    <description lang="ru">Управления пользователями.</description>
+     <order>-999</order>
+</gear>

@@ -3,13 +3,13 @@
 /**
  * User avatar
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		User
  * @subpackage
- * @version		$Id$
+
  */
 class User_Avatar extends Object{
 
@@ -17,7 +17,7 @@ class User_Avatar extends Object{
     protected $user;
 
     /**
-     * Constructor
+     * Конструктор
      * 
      * @param string $file 
      */

@@ -3,29 +3,22 @@
 /**
  * Vote gear
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Vote_Gear extends Gear {
 
-    protected $name = 'Vote';
-    protected $description = 'Provide voting API';
-    protected $package = '';
-    protected $order = 0;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'post.before' => 'hookRenderVote',
         'comment.info' => 'hookRenderVote',
         'user.navbar' => 'hookUserNavbar',
         'blog.navbar.profile' => 'hookRenderVote',
 //        'table.render.users' => 'hookUsersTableRender',
-    );
-    protected $routes = array(
     );
     protected $access = array(
         'status' => 'access',

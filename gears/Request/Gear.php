@@ -1,26 +1,20 @@
 <?php
 
 /**
- * Request gear
+ * Шестерёнка Запрос
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Request_Gear extends Gear {
 
-    protected $name = 'Request';
-    protected $description = 'Manage browser input';
-    protected $is_core = TRUE;
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->object(new Request_Object());
         cogear()->request = $this;
     }

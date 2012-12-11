@@ -3,13 +3,13 @@
 /**
  * User navbar
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class User_Navbar extends Object {
 
@@ -39,7 +39,7 @@ class User_Navbar extends Object {
                             'link' => $user->getLink(),
                         ),
                         'edit' => array(
-                            'label' => t('Edit'),
+                            'label' => t('Редактировать'),
                             'link' => l('/user/edit/' . $user->id),
                             'access' => cogear()->router->check('user/edit'),
                         ),

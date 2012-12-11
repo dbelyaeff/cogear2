@@ -1,35 +1,27 @@
 <?php
 
 /**
- *  Errors gear
+ * Шестеренка "Ошибки"
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Errors_Gear extends Gear {
 
-    protected $name = 'Errors gear';
-    protected $description = 'Handle errors';
-    protected $order = 1;
-    protected $is_core = TRUE;
-
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         ini_set('display_errors', 1);
         ini_set('error_reporting', E_ALL);
         set_error_handler(array($this, 'showRawError'));
     }
 
     /**
-     * Init
+     * Инициализатор
      */
     public function init() {
         parent::init();
@@ -37,7 +29,7 @@ class Errors_Gear extends Gear {
     }
 
     /**
-     * Show error
+     * Показать ошибку
      *
      * @param string $text
      * @param string $title
@@ -45,7 +37,23 @@ class Errors_Gear extends Gear {
     public function show($text, $title = '') {
         error($text, $title = '');
     }
-
+    /**
+     * Отображение фатальной ошибки
+     *
+     * @param type $message
+     */
+    public function fatalError($message){
+        exit(template('Errors/templates/fatal',array('message'=>$message))->render());
+    }
+    /**
+     * Обработка "сырой" ошибки
+     *
+     * @param type $errno
+     * @param type $error
+     * @param type $file
+     * @param type $line
+     * @param type $context
+     */
     public function showRawError($errno, $error, $file, $line, $context) {
         echo '<pre>';
         echo <<<HTML
@@ -55,7 +63,7 @@ class Errors_Gear extends Gear {
 <b>Line:</b> $line
 ================= Context =================
 HTML;
-        debug($context);
+        var_dump($context);
         echo '
 ================= Context =================</pre>';
     }
@@ -81,6 +89,9 @@ HTML;
 
 }
 
+function fatal_error($message){
+    cogear()->errors->fatalError($message);
+}
 function _404() {
     $cogear = getInstance();
     $cogear->router->exec(array($cogear->errors, '_404'));

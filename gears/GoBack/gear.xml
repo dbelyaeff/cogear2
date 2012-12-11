@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="GoBack">
+    <name lang="ru">Назад</name>
+    <description lang="ru">Облегчает навигацию в формах.</description>
+</gear>

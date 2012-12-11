@@ -3,13 +3,13 @@
 /**
  * Form Manager
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Form_Object extends Object {
 
@@ -84,7 +84,7 @@ class Form_Object extends Object {
     const ENCTYPE_MULTIPART = 'multipart/form-data';
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param string|array $options
      */
@@ -119,7 +119,7 @@ class Form_Object extends Object {
             $config = $this->defaults->$name;
         }
         if ($config->label && !$config->placeholder && in_array($config->type, array('text', 'input', 'textarea', 'password', 'editor'))) {
-            $config->placeholder = t('Enter %s…', 'Form.placeholder', strtolower($config->label));
+            $config->placeholder = t('Введите %s…', mb_strtolower($config->label,'UTF8'));
         }
         $config->name = $name;
         if (strpos($name, '[]')) {

@@ -2,27 +2,27 @@
 
 return array(
     'name' => array(
-        'label' => t('Title', 'Form.elements'),
+        'label' => t('Название'),
         'type' => 'text',
         'validators' => array('Required', array('Length', 3)),
         'class' => 'ajaxed',
     ),
     'link' => array(
         'type' => 'text',
-        'label' => t('Link', 'Form.elements'),
+        'label' => t('Ссылка'),
         'validators' => array(array('Length', 3)),
         'filters' => array('Uri'),
-        'description' => t('This string will be used to form link. If empty field will be filled automatically.', 'Form.descriptions'),
-    ),
+        'description' => t('Параметр будет использован для формирования ссылки. Если оставить поле пустым, значение будет сгенерировано автоматически.'
+    )),
     'body' => array(
         'type' => 'editor',
-        'label' => t('Text', 'Form.elements'),
+        'label' => t('Текст'),
         'filters' => array('Jevix_Filter'),
         'validators' => array('Required', array('Length', 1)),
     ),
     'description' => array(
         'type' => 'editor',
-        'label' => t('Description', 'Form.elements'),
+        'label' => t('Описание'),
         'filters' => array('Jevix_Filter'),
         'validators' => array('Required', array('Length', 1)),
     ),
@@ -33,22 +33,22 @@ return array(
     'delete' => array(
         'type' => 'delete',
         'class' => 'fl_r',
-        'label' => t('Delete')
+        'label' => t('Удалить')
     ),
     'preview' => array(
         'type' => 'submit',
-        'class' => 'btn',
-        'label' => t('Preview', 'Form.elements'),
+        'class' => 'btn btn-inverse',
+        'label' => t('Предпросмотр'),
     ),
     'draft' => array(
         'type' => 'submit',
-        'class' => 'btn btn-success',
-        'label' => t('Draft', 'Form.elements'),
+        'class' => 'btn',
+        'label' => t('В черновики'),
     ),
     'publish' => array(
         'type' => 'submit',
         'class' => 'btn btn-primary',
-        'label' => t('Publish', 'Form.elements'),
+        'label' => t('Опубликовать'),
     ),
     'buttons' => array(
         'type' => 'group',
@@ -59,17 +59,17 @@ return array(
     ),
     'submit' => array(
         'type' => 'submit',
-        'label' => t('Send'),
+        'label' => t('Отправить'),
         'class' => 'btn btn-primary',
     ),
     'save' => array(
         'type' => 'submit',
-        'label' => t('Save'),
+        'label' => t('Сохранить'),
         'class' => 'btn btn-primary',
     ),
     'update' => array(
         'type' => 'submit',
-        'label' => t('Update'),
+        'label' => t('Обновить'),
         'class' => 'btn btn-primary',
     ),
 );

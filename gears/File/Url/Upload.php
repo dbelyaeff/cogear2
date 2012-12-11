@@ -3,13 +3,13 @@
 /**
  * File upload class
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage  	File
- * @version		$Id$
+ * 	File
+
  */
 class File_Url_Upload extends File_Upload {
 
@@ -34,7 +34,7 @@ class File_Url_Upload extends File_Upload {
      * @return type
      */
     private function uploadOne($path) {
-        d('File');
+       ;
         $file = new Core_ArrayObject();
         event('file_url.preupload', $file);
         $file['errors'] = array();
@@ -75,7 +75,7 @@ class File_Url_Upload extends File_Upload {
                 if (!$this->options->path) {
                     $file['errors'][] = t('Upload path is not defined.');
                 }
-                d();
+               ;
                 if ($file['errors']) {
                     unlink($file->path);
                     return $file;
@@ -87,7 +87,7 @@ class File_Url_Upload extends File_Upload {
                 }
             }
         }
-        d();
+       ;
         return FALSE;
     }
 

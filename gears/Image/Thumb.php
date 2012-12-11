@@ -3,13 +3,13 @@
 /**
  * Image Thumb class
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Image
  * @subpackage
- * @version		$Id$
+
  */
 class Image_Thumb extends Image_Object {
 
@@ -23,7 +23,7 @@ class Image_Thumb extends Image_Object {
     const DIR = '.thumbs';
     
     /**
-     * Constructor
+     * Конструктор
      * 
      * @param string $file
      * @param string $size 

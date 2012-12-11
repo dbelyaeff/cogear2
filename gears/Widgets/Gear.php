@@ -1,28 +1,18 @@
 <?php
 
 /**
- * Widgets gear
+ * Шестерёнка Виджеты
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Widgets_Gear extends Gear {
 
-    protected $name = 'Widgets';
-    protected $description = 'Widgets description';
-    protected $package = '';
-    protected $order = 1000;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'gear.dispatch.after' => 'hookDispatchAfter',
         'theme.region' => 'hookThemeRegion',
-    );
-    protected $routes = array(
     );
     protected $access = array(
         'index' => 'access',

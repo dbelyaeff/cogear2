@@ -2,17 +2,17 @@
 /**
  * Twitter boostrap navbar
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          Bootstrap
- * @version		$Id$
+ *         Bootstrap
+
  */
 class Bootstrap_Navbar extends Menu_Auto {
     /**
-     * Constructor
+     * Конструктор
      *
      * @param array $options
      */

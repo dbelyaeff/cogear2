@@ -4,17 +4,17 @@ return array(
     'name' => 'user-login',
     'elements' => array(
         'login' => array(
-            'label' => t('Login or e-mail', 'User'),
+            'label' => t('Имя пользователя или электронная почта'),
             'type' => 'text',
             'validators' => array('Required'),
         ),
         'password' => array(
-            'label' => t('Password', 'User'),
+            'label' => t('Пароль'),
             'type' => 'password',
             'validators' => array(array('Length', 3), 'AlphaNum', 'Required')
         ),
         'saveme' => array(
-            'text' => t('remember me'),
+            'text' => t('запомнить'),
             'type' => 'checkbox',
         ),
         'buttons' => array(
@@ -23,12 +23,12 @@ return array(
             'elements' => array(
                 'submit' => array(
                     'type' => 'submit',
-                    'label' => t('Login'),
+                    'label' => t('Войти'),
                     'class' => 'btn btn-primary',
                 ),
                 'lostpassword' => array(
                     'type' => 'link',
-                    'label' => t('Lost password'),
+                    'label' => t('Забыли пароль?'),
                     'link' => l('/user/lostpassword/'),
                     'class' => 'btn btn-mini',
                 ),

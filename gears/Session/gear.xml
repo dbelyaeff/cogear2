@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Session">
+    <name lang="ru">Сессии</name>
+    <description lang="ru">Работа с механизмом сессий.</description>
+    <order>-1000</order>
+</gear>

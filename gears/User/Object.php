@@ -3,13 +3,13 @@
 /**
  * User object
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class User_Object extends Db_Item {
 
@@ -201,7 +201,7 @@ class User_Object extends Db_Item {
                 $navbar->avatar = $this->getAvatarImage('avatar.profile');
                 $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName($param) . '</a></strong>';
                 if (access('User.edit', $this)) {
-                    $navbar->edit = '<a href="' . $this->getLink('edit') . '" class="sh" title="' . t('Edit') . '"><i class="icon-pencil"></i></a>';
+                    $navbar->edit = '<a href="' . $this->getLink('edit') . '" class="sh" title="' . t('Редактировать') . '"><i class="icon-pencil"></i></a>';
                 }
                 return $navbar->render();
                 break;

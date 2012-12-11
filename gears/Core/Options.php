@@ -3,13 +3,13 @@
 /**
  *  Options
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Options extends Core_ArrayObject {
 
@@ -22,7 +22,7 @@ class Options extends Core_ArrayObject {
     const SELF = 1;
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param array|ArrayObject $options
      * @param string $storage

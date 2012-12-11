@@ -1,23 +1,14 @@
 <?php
 
 /**
- * Admin gear
+ * Шестеренка Панели управления
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Admin_Gear extends Gear {
-
-    protected $name = 'Admin gear';
-    protected $description = 'Site control panel';
-    protected $required = array('Access');
-    protected $is_core = TRUE;
-    protected $order = -997;
     protected $access = array(
         'index' => array(1),
     );
@@ -29,13 +20,6 @@ class Admin_Gear extends Gear {
      */
     public function init() {
         parent::init();
-//        if (check_route('admin', Router::STARTS)) {
-//            $menu = new Menu_Auto(array(
-//                        'name' => 'admin',
-//                        'template' => 'Admin/templates/menu',
-//                        'render' => 'info',
-//                    ));
-//        }
         if (access('Admin')) {
             $this->menu = new Menu_Auto(array(
                         'name' => 'admin',
@@ -50,7 +34,6 @@ class Admin_Gear extends Gear {
      * Load assets - do not load everytime
      */
     public function loadAssets() {
-//
     }
 
     /**
@@ -70,7 +53,7 @@ class Admin_Gear extends Gear {
                                 ),
                             ),
                 ));
-        $this->menu->attach($this->bc);
+//        $this->menu->attach($this->bc);
     }
 
     /**
@@ -120,7 +103,6 @@ class Admin_Gear extends Gear {
             $args = array_slice($args, 1);
             $callback = array(cogear()->$gear, 'admin');
             $name = t(cogear()->$gear->gear, 'Gears');
-//            title($name);
             $this->router->exec($callback, $args);
         }
     }

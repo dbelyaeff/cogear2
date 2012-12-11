@@ -3,13 +3,13 @@
 /**
  * File Object
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class File_Object extends Adapter {
     /**
@@ -29,7 +29,7 @@ class File_Object extends Adapter {
     protected $path;
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param type $path
      * @param type $options

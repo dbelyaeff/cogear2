@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Admin">
+    <name lang="ru">Панель управления</name>
+    <description lang="ru">Служит для настройки системы.</description>
+    <order>-997</order>
+</gear>

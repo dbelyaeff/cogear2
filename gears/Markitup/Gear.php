@@ -1,29 +1,20 @@
 <?php
 
 /**
- * Markitup gear
+ * Шестеренка редактора MarkItUp
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Markitup_Gear extends Gear {
 
-    protected $name = 'Markitup';
-    protected $description = 'Markitup editor';
-    protected $package = 'Wysiwyg';
-    protected $order = 10;
-    protected $required = array('Wysiwyg');
-   
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         Wysiwyg_Gear::$editors[ 'markitup'] = 'Markitup_Editor';
     }
 

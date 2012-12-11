@@ -1,29 +1,22 @@
 <?php
 
 /**
- * Pages gear
+ * Шестерёнка Страницы
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
+
  */
 class Pages_Gear extends Gear {
 
-    protected $name = 'Pages';
-    protected $description = 'Pages manager';
-    protected $order = 0;
-    protected $version = '1.0-alpha';
     protected $routes = array(
         'page/:digit/?' => 'showPage',
     );
     protected $hooks = array(
         'router.run' => 'hookRouter',
     );
-//    protected $is_core = TRUE;
 
     /**
      * Hook router
@@ -109,7 +102,7 @@ class Pages_Gear extends Gear {
                             'active' => !check_route('admin/pages/create') && !check_route('admin/pages/edit', Router::STARTS),
                         ),
                         'edit' => array(
-                            'label' => icon('edit') . ' ' . t('Edit'),
+                            'label' => icon('edit') . ' ' . t('Редактировать'),
                             'link' => l('/admin/pages/edit'),
                             'class' => 'fl_r',
                             'access' => check_route('admin/pages/edit', Router::STARTS),

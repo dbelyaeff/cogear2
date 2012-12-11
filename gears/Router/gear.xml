@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Router">
+    <name lang="ru">Роутер</name>
+    <description lang="ru">Маршрутизация запроса.</description>
+    <order>-10000</order>
+</gear>

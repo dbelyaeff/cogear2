@@ -2,13 +2,13 @@
 /**
  * Abstract WYSIWYG editor
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
- * @subpackage          WYSIWYG
- * @version		$Id$
+ *         WYSIWYG
+
  */
 abstract class Wysiwyg_Abstract extends Form_Element_Textarea {
     protected static $is_loaded;

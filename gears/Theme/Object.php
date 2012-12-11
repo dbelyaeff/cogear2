@@ -1,34 +1,27 @@
 <?php
 
 /**
- * Theme Object
+ * Объект темы оформления
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage          Theme
- * @version		$Id$
  */
 abstract class Theme_Object extends Gear {
 
-    protected $name = 'Theme';
-    protected $description = 'Theme for cogear.';
-    protected $order = 100;
-    protected $package = 'Themes';
-    protected $screenshot = '/img/screenshot.png';
-    private static $is_rendered = FALSE;
     public static $layout = 'index';
-    public $theme;
+    protected $theme;
     protected $template;
 
     /**
-     * Constructor
+     * Конструктор
+     *
+     * @param SimpleXMLElement $xml
      */
-    public function __construct() {
-        parent::__construct();
-        $this->theme = Theme_Gear::classToTheme($this->gear);
+    public function __construct($xml) {
+        parent::__construct($xml, (array) $this->gears->Theme->getDefaultSettings());
+        $this->theme = $this->gear;
     }
 
     /**
@@ -43,13 +36,6 @@ abstract class Theme_Object extends Gear {
             $theme->init();
         }
         parent::init();
-    }
-
-    /**
-     * Activate
-     */
-    public function enable() {
-        $cogear = cogear();
     }
 
     /**
@@ -77,36 +63,9 @@ abstract class Theme_Object extends Gear {
      */
     public function render() {
         $this->input->get('splash') !== NULL && self::$layout = 'splash';
-        $this->template = new Template(THEMES.DS.$this->theme . DS . 'templates' . DS . self::$layout);
+        $this->template = new Template(THEMES . DS . $this->theme . DS . 'templates' . DS . self::$layout);
         $this->template->theme = $this;
         cogear()->response->object()->append($this->template->render());
-    }
-
-    /**
-     * Get theme name by path
-     *
-     * @param   string  $path
-     * @return  string|boolean  Gear name or FALSE if path is not correct.
-     */
-    public static function getNameFromPath($path) {
-        foreach (array(SITE . DS . THEMES_FOLDER, THEMES) as $dir) {
-            if (strpos($path, $dir) !== FALSE) {
-                is_file($path) && $path = dirname($path);
-                $path = str_replace($dir, '', $path);
-                $path = trim($path, DS);
-                $pieces = explode(DS, $path);
-                $gear_folder = '';
-                foreach ($pieces as $piece) {
-                    $gear_folder .= $piece . DS;
-                    $gear_name = str_replace(DS, '_', trim($gear_folder, DS));
-                    $gear_class = $gear_name . '_Theme';
-                    if (file_exists($dir . DS . $gear_folder . DS . 'Theme' . EXT) && class_exists($gear_class)) {
-                        return $gear_name;
-                    }
-                }
-            }
-        }
-        return FALSE;
     }
 
 }

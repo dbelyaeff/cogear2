@@ -1,75 +1,28 @@
 <?php
 
 /**
- * Database object
+ * Объект базы даных
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
+ * @package		Database
  */
-class Db_Object extends Object {
+class Db_Object implements Interface_Factory {
 
-    public $options = array(
-        'host' => 'localhost',
-        'user' => 'root',
-        'pass' => '',
-        'prefix' => '',
-        'database' => 'cogear',
-        'adapter' => '',
-    );
+    protected static $_instances = array();
 
     /**
-     * Constructor
-     */
-    public function __construct($options) {
-        parent::__construct();
-        if (is_string($options)) {
-            if (filter_var($options, FILTER_VALIDATE_URL)) {
-                if ($options = self::parseDSN($options)) {
-                    $this->options->extend($options);
-                }
-            } else {
-                error(t('Provided database DSN string is not correct!', 'Db.errors'));
-            }
-        } else {
-            $this->options->extend($options);
-        }
-        $this->object(new $this->options->adapter($this->options));
-    }
-
-    /**
-     * Check data source name
+     * Метод "фабрики", производящий эксземпляр объекта текущего класса
      *
-     * @param string $dsn
-     * @return boolean
+     * @param string $name
+     * @param array $options
+     * @param string $class
+     * @return object
      */
-    public static function parseDSN($dsn) {
-        $config = parse_url($dsn);
-        if (isset($config['query'])) {
-            parse_str($config['query'], $query);
-            $config = array_merge($config, $query);
-        }
-        if (!isset($config['host']))
-            $config['host'] = 'localhost';
-        if (!isset($config['user']))
-            $config['user'] = 'root';
-        if (!isset($config['pass']))
-            $config['pass'] = '';
-        if (!isset($config['prefix']))
-            $config['prefix'] = config('database.prefix', '');
-        $config['database'] = trim($config['path'], ' /');
-        $config['adapter'] = ucfirst($config['scheme']);
-        if (!class_exists($config['adapter'])) {
-            $config['adapter'] = 'Db_Driver_' . ucfirst($config['scheme']);
-            if (!class_exists($config['adapter'])) {
-                error(t('Database driver <b>%s</b> not found.', 'Database errors', ucfirst($config['scheme'])));
-                return FALSE;
-            }
-        }
-        return $config;
+    public static function factory($name, $options = array(), $class = __CLASS__) {
+        return isset(self::$_instances[$name]) ? self::$_instances[$name] : self::$_instances[$name] = new $class($options);
     }
+
 }

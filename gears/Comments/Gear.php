@@ -1,22 +1,15 @@
 <?php
 
 /**
- * Comments gear
+ * Шестеренка комментариев
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Comments_Gear extends Gear {
 
-    protected $name = 'Comments';
-    protected $description = 'Comments description';
-    protected $order = 15;
-    protected $version = '1.0-alpha';
     protected $hooks = array(
         'post.full.after' => 'hookPostComments',
         'form.init.post' => 'hookFormPost',
@@ -382,7 +375,7 @@ class Comments_Gear extends Gear {
             if (!$post->allow_comments) {
                 return error(t('Comments are disabled for this post.', 'Comment'));
             }
-            
+
             $pid = $this->input->post('pid', $pid);
             if ($pid) {
                 $form->pid->setValue($pid);
@@ -502,7 +495,7 @@ class Comments_Gear extends Gear {
                 $form->title->options->label = t('Edit %s comment', 'Comments', $user->getLink('avatar') . ' ' . $user->getLink('profile')) . ' ' . t('to <a href="%s">%s</a>', 'Comment', $post->getLink(), $post->name);
             }
             $form->publish->options->label = t('Update');
-            
+
             if ($result = $form->result()) {
                 if ($result->preview) {
                     append('info', '<div class="page-header"><h2>' . t('Preview') . '</h2></div>');

@@ -2,20 +2,20 @@
 /**
  * Widgets catalog
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 class Widgets_Catalog extends Options {
     public $widgets = array();
     protected $packages = array();
 
     /**
-     *  Constructor
+     *  Конструктор
      *
      * @param type $options
      */

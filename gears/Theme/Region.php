@@ -2,13 +2,13 @@
 /**
  * Theme region
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Theme
  * @subpackage
- * @version		$Id$
+
  */
 class Theme_Region extends Options{
     /**

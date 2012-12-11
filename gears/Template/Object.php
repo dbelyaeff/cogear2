@@ -1,17 +1,15 @@
 <?php
 
 /**
- *  Template object
+ *  Объект шаблона
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
+
  */
-class Template_Object extends Core_ArrayObject{
+class Template_Object extends Core_ArrayObject {
 
     protected $name = '';
     protected $path = '';
@@ -19,7 +17,7 @@ class Template_Object extends Core_ArrayObject{
     protected $vars = array();
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param string $name
      */
@@ -29,13 +27,13 @@ class Template_Object extends Core_ArrayObject{
         if (file_exists($path)) {
             $this->path = $path;
         } else {
-            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', 'Errors', $name, $path);
+            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', $name, $path);
             exit($message);
         }
     }
 
     /**
-     * Magic __set method to assign vars
+     * Магический метод для задания значения переменным
      *
      * @param string $name
      * @param mixed $value
@@ -45,7 +43,7 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Set variable
+     * Задание значения переменной
      *
      * @param string $name
      * @param mixed $value
@@ -62,14 +60,14 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Reset vaiables
+     * Сброс переменных шаблона
      */
     public function reset() {
         $this->vars = array();
     }
 
     /**
-     * Set variable
+     * Установка переменной
      *
      * @param string $name
      * @param mixed $value
@@ -80,7 +78,7 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Get variable
+     * Магический метод вызова переемнной
      *
      * @param   string  $name
      * @return mixed
@@ -90,7 +88,7 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Magic isset method
+     * Магический метод проверки свойства
      *
      * @param string $name
      * @return boolean
@@ -100,7 +98,7 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Get variable
+     * Вызов переменной
      *
      * @param   string  $name
      * @return mixed
@@ -110,7 +108,7 @@ class Template_Object extends Core_ArrayObject{
     }
 
     /**
-     * Bind variable
+     * Привязка переменной
      *
      * @param string $name
      * @param mixed $value
@@ -126,18 +124,30 @@ class Template_Object extends Core_ArrayObject{
         }
     }
 
-        /**
+    /**
+     * Рендер
      *
-     * @return type
+     * @return string
      */
-    public function render(){
-        if(!$this->path) return;
+    public function render() {
+        if (!$this->path)
+            return;
         ob_start();
         event('template.render.before', $this);
         extract($this->vars);
         include $this->path;
         event('template.render.after', $this);
-        return ob_get_clean();;
+        return ob_get_clean();
+        ;
+    }
+
+    /**
+     * Приведение к строке возвращяет результат рендеринга
+     *
+     * @return string
+     */
+    public function __toString() {
+        return $this->render();
     }
 
 }

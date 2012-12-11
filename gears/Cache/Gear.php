@@ -1,28 +1,25 @@
 <?php
+
 /**
- * Cache gear
+ * Шестеренка кеширования
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Cache
- * @subpackage
- * @version		$Id$
  */
 class Cache_Gear extends Gear {
-    protected $name = 'Cache';
-    protected $description = 'Perform caching.';
-    protected $package = 'Performance';
-    protected $is_core = TRUE;
+
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->object(new Cache_Object());
     }
+
 }
+
 /**
  * Caching alias
  *
@@ -32,11 +29,10 @@ class Cache_Gear extends Gear {
  * @param type $ttl
  * @return type
  */
-function cache($name,$value = '',$tags = array(),$ttl = 3600){
-    if($value){
-        return cogear()->cache->write($name,$value,$tags,$ttl);
-    }
-    else {
+function cache($name, $value = '', $tags = array(), $ttl = 3600) {
+    if ($value) {
+        return cogear()->cache->write($name, $value, $tags, $ttl);
+    } else {
         return cogear()->cache->read($name);
     }
 }

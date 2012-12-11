@@ -3,13 +3,13 @@
 /**
  * Menu Item
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Menu
  * @subpackage
- * @version		$Id$
+
  */
 class Menu_Item extends Options{
     public $options = array(

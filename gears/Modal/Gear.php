@@ -1,24 +1,18 @@
 <?php
 
 /**
- * Modal gear
+ * Шестерёнка модальных окон
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Modal_Gear extends Gear {
 
-    protected $name = 'Modal';
-    protected $description = 'Modal windows manager';
     protected $access = array(
         'menu' => TRUE,
     );
-    protected $is_core = TRUE;
 
     /**
      * Init

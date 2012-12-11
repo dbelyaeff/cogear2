@@ -5,20 +5,20 @@
  *
  * If you simpy call $config->prop and prop doesn't exists — it'll be new Recursive ArrayObject.
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2010, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Engine
  * @subpackage	Core
- * @version		$Id$
+
  */
 class Core_ArrayObject extends ArrayObject {
     const BEFORE = 0;
     const AFTER = 1;
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param	array
      */
@@ -133,7 +133,7 @@ class Core_ArrayObject extends ArrayObject {
     }
 
     /**
-     * Magic isset method
+     * Магический метод проверки свойства
      *
      * @param	string	$name	Variable name
      * @return	boolean

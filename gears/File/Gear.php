@@ -1,31 +1,20 @@
 <?php
 
 /**
- * File gear
+ * Шестеренка Файл
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class File_Gear extends Gear {
 
-    protected $name = 'File';
-    protected $description = 'Manage files';
-    protected $package = '';
-    protected $order = 0;
-    protected $hooks = array(
-//        'form.init.post' => 'hookPostForm',
-    );
-    protected $is_core = TRUE;
     /**
      * Construcotr
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         Form::$types['file'] = 'File_Element';
         Form::$types['file_url'] = 'File_Url_Element';
     }

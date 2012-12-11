@@ -1,27 +1,19 @@
 <?php
 
 /**
- * Router gear
+ * Шестерёнка Роутер
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Router_Gear extends Gear {
-
-    protected $name = 'Router';
-    protected $description = 'Manage routes';
-    protected $order = -1000;
-    protected $is_core = TRUE;
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         cogear()->gears->Router OR $this->object(new Router_Object());
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Converter">
+    <name lang="ru">Конвертер</name>
+    <description lang="ru">Для переезда с других движков.</description>
+</gear>

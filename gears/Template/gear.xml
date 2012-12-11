@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Template">
+    <name lang="ru">Шаблонизатор</name>
+    <description lang="ru">Работа с шаблонами.</description>
+</gear>

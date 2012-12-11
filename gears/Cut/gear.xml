@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Cut">
+    <name lang="ru">Кат</name>
+    <description lang="ru">Деления поста на краткую и полную версии.</description>
+    <order>-100</order>
+</gear>

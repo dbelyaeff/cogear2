@@ -1,24 +1,18 @@
 <?php
 
 /**
- * Mail gear
+ * Шестеренка «Почта»
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Mail_Gear extends Gear {
 
-    protected $name = 'Mail';
-    protected $description = 'Helps to send emails.';
     protected $hooks = array(
         'comment.published' => 'hookCommentPublished',
     );
-    protected $is_core = TRUE;
     /**
      * Hook comment publishing
      *

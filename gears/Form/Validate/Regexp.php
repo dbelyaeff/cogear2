@@ -2,13 +2,13 @@
 /**
  * Regexp validator
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage	Form
- * @version		$Id$
+
  */
 class Form_Validate_Regexp extends Form_Validate_Abstract{
 	/**
@@ -23,9 +23,9 @@ class Form_Validate_Regexp extends Form_Validate_Abstract{
          * @var
          */
         protected $error_msg;
-  
+
 	/**
-	 * Constructor
+	 * Конструктор
 	 *
 	 * @param	string	$regexp
 	 * @param	string	$error_msg
@@ -35,7 +35,7 @@ class Form_Validate_Regexp extends Form_Validate_Abstract{
 		if($error_msg){
 			$this->error_msg = $error_msg;
 		}
-	} 
+	}
 	/**
 	 * Validate
 	 *
@@ -43,8 +43,8 @@ class Form_Validate_Regexp extends Form_Validate_Abstract{
 	 */
 	public function validate($value){
 		if($value && !preg_match('#^'.$this->regexp.'$#iu',$value)){
-			return $this->element->addError($this->error_msg ? $this->error_msg : t('Field has incorrect value.'));
-		}		
+			return $this->element->addError($this->error_msg ? $this->error_msg : t('Указаное недопустимое значение.'));
+		}
 		return TRUE;
-	} 
-} 
+	}
+}

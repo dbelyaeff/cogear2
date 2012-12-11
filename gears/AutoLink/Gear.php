@@ -1,22 +1,15 @@
 <?php
 
 /**
- * AutoLink gear
+ * Шестеренка автоматической обработки ссылок
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class AutoLink_Gear extends Gear {
 
-    protected $name = 'AutoLink';
-    protected $description = 'Replace url address with link';
-    protected $package = '';
-    protected $order = 0;
     protected $hooks = array(
         'post.render' => 'hookRender',
         'chat.msg.render' => 'hookRender',

@@ -3,13 +3,13 @@
 /**
  * Gear
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  * @package		Core
  * @subpackage
- * @version		$Id$
+
  */
 abstract class Gear extends Object {
 
@@ -32,35 +32,28 @@ abstract class Gear extends Object {
      *
      * @var string
      */
-    protected $version = '1.0';
+    protected $version;
 
     /**
      * Core version
      *
      * @var type
      */
-    protected $core = '2.x';
-
-    /**
-     * If gear can be deactivated
-     *
-     * @var boolean
-     */
-    protected $is_core = FALSE;
+    protected $core;
 
     /**
      * Package
      *
      * @var string
      */
-    protected $package = 'Core';
+    protected $package;
 
     /**
      * Gear authors name
      *
      * @var string
      */
-    protected $author = 'Dmitriy Belyaev';
+    protected $author;
 
     /**
      * Gear email
@@ -68,14 +61,14 @@ abstract class Gear extends Object {
      * Contact email to resolve everything
      * @var string
      */
-    protected $email = 'admin@cogear.ru';
+    protected $email;
 
     /**
      * Gear website
      *
      * @var string
      */
-    protected $site = 'http://cogear.ru';
+    protected $site;
 
     /**
      * Path to class file
@@ -174,24 +167,45 @@ abstract class Gear extends Object {
     protected $routes = array();
 
     /**
-     * List of widgets classes for this gear
+     * Конструктор
      *
-     * @var array
+     * @param   SimpleXMLElement    $xml
      */
-    public $widgets;
-
-    /**
-     * Constructor
-     */
-    public function __construct() {
+    public function __construct($xml) {
+        $this->adoptXmlConfig($xml);
         $this->reflection = new ReflectionClass($this);
         $this->getPath();
         $this->getDir();
         $this->getFolder();
-        $this->getGear();
         $this->getBase();
         $this->getSettings();
         $this->file = new SplFileInfo($this->path);
+    }
+
+    /**
+     * Адоптирование конфига из XML-файла
+     *
+     * @param   SimpleXMLElement    $xml
+     * @param   array   $defaults
+     */
+    public function adoptXmlConfig(SimpleXMLElement $xml,$defaults = NULL) {
+        // Временная заглушка от неизвестного бага
+        if(FALSE == $xml instanceof SimpleXMLElement){
+            return;
+        }
+        $filtered = $xml->xpath('(//*[@lang=\'' . config('i18n.lang') . '\'] | //*[not(@lang)])');
+        // Установка настроек по умолчанию, если не переданого иного
+        $defaults OR $defaults = (array) Gears::getDefaultSettings();
+        // Загружаем настройки по умолчанию
+        $gear = new Core_ArrayObject($defaults);
+        // Накладываем поверх настройки из конфигурации шестеренки
+        $gear->extend((array) $filtered[0]);
+        // Присавиваем значения из настроек самой шестерёнке
+        foreach($gear as $key=>$value){
+            property_exists($this,$key) && $this->$key = $value;
+        }
+        $attribute = $xml->xpath('@name');
+        $this->gear = $attribute[0]->__toString();
     }
 
     /**
@@ -309,65 +323,36 @@ abstract class Gear extends Object {
      * @return int
      */
     public function status($value = NULL) {
-        /**
-         * State of Core gear cannot be changed
-         */
-        if ($this->is_core) {
-            return 0;
-        }
-        $gears = config('gears');
-        if (NULL === $value) {
-            return $gears->{$this->gear} ? $gears->{$this->gear} : Gears::EXISTS;
-        } else {
-            $gears->{$this->gear} = $value;
-            cogear()->set('gears', $gears);
+        if (Gears::ENABLED == $value) {
+            cogear()->config->gears->append($this->gear);
+        } else if (Gears::DISABLED == $value) {
+            $gears = cogear()->config->get('gears');
+            if ($key = $gears->findByValue($this->gear)) {
+                $gears->offsetUnset($key);
+                cogear()->set('gears', $gears);
+            }
+        } else if (NULL == $value) {
+            if (cogear()->site->get('gears')->{$this->gear}) {
+                return Gears::ENABLED;
+            } elseif (cogear()->config->get('gears')->{$this->gear}) {
+                return Gears::ENABLED;
+            }
+            return Gears::DISABLED;
         }
     }
 
     /**
-     * Install
-     */
-    public function install() {
-        $result = new Core_ArrayObject(array(
-                    'success' => TRUE,
-                    'message' => t('Gear has been successfully installed!', 'Gears'),
-                ));
-        if ($this->status() != Gears::EXISTS) {
-            $result->message = t('This gear has been already installed!', 'Gears');
-            $result->success = FALSE;
-        }
-        $this->status(Gears::INSTALLED);
-        return $result;
-    }
-
-    /**
-     * Uninstall
-     */
-    public function uninstall() {
-        $result = new Core_ArrayObject(array(
-                    'success' => TRUE,
-                    'message' => t('Gear has been successfully uninstalled!', 'Gears'),
-                ));
-        if ($this->status() != Gears::INSTALLED) {
-            $result->message = t('Cannot uninstall active gear!', 'Gears');
-            $result->success = FALSE;
-        }
-        $this->status(Gears::EXISTS);
-        return $result;
-    }
-
-    /**
-     * Activate
+     * Активация шестеренки
      */
     public function enable() {
         $result = new Core_ArrayObject(array(
                     'success' => TRUE,
-                    'message' => t('Gear has been successfully enabled!', 'Gears'),
+                    'message' => t('Шестеренка активирована!'),
                     'code' => 1,
                     'gears' => new Core_ArrayObject(),
                 ));
-        if ($this->status() != Gears::INSTALLED) {
-            $result->message = t('Cannot enable already enabled gear!', 'Gears');
+        if ($this->status() != Gears::DISABLED) {
+            $result->message = t('Шестеренка уже активирована!');
             $result->success = FALSE;
         }
         $check = $this->checkRequiredGears();
@@ -376,14 +361,14 @@ abstract class Gear extends Object {
             $gears_incomp_version = new Core_ArrayObject();
             foreach ($check->gears as $gear => $code) {
                 if (FALSE === $code) {
-                    $gears_required->append('<b>' . t($gear, 'Gears') . '</b>');
+                    $gears_required->append('<b>' . t($gear) . '</b>');
                 } else {
-                    $gears_incomp_version->append('<b>' . t($gear, 'Gears') . ' ' . $code . '</b>');
+                    $gears_incomp_version->append('<b>' . t($gear) . ' ' . $code . '</b>');
                 }
             }
             $result->message = '';
-            $gears_required->count() && $result->message .= t('Following gears are required to be enabled: ', 'Gears') . $gears_required->toString(", ") . "\n";
-            $gears_incomp_version->count() && $result->message .= t('Following gears are required to be specific version: ', 'Gears') . $gears_incomp_version->toString(", ");
+            $gears_required->count() && $result->message .= t('Следующие шестерёнки должны быть активированы: ') . $gears_required->toString(", ") . "\n";
+            $gears_incomp_version->count() && $result->message .= t('Следующие шестеренки должны быть соответствующих версий: ') . $gears_incomp_version->toString(", ");
             $result->success = FALSE;
         }
         $result->success && $this->status(Gears::ENABLED);
@@ -391,16 +376,16 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Deactivate
+     * Деактивация шестеренки
      */
     public function disable() {
         $result = new Core_ArrayObject(array(
                     'success' => TRUE,
-                    'message' => t('Gear has been successfully disabled!', 'Gears'),
+                    'message' => t('Шестеренка деактивирована!'),
                     'depends' => new Core_ArrayObject(),
                 ));
         if ($this->status() != Gears::ENABLED) {
-            $result->message = t('Cannot disable inactive gear!', 'Gears');
+            $result->message = t('Шестеренка уже деактивирована!', 'Gears');
             $result->success = FALSE;
         }
         foreach (cogear()->gears as $gear) {
@@ -411,9 +396,9 @@ abstract class Gear extends Object {
         }
         if ($result->depends->count()) {
             $result->success = FALSE;
-            $result->message = t('Cannot disable gear becase of following dependencies: ', 'Gears') . ' <b>' . implode('</b>, <b>', array_keys($result->depends->toArray())) . '</b>';
+            $result->message = t('Невозможно деактивировать шестеренку, потому что от неё зависят следующие шестеренки: ') . ' <b>' . implode('</b>, <b>', array_keys($result->depends->toArray())) . '</b>';
         }
-        $result->success && $this->status(Gears::EXISTS);
+        $result->success && $this->status(Gears::DISABLED);
         return $result;
     }
 
@@ -450,15 +435,6 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get Gear name
-     *
-     * @return  string
-     */
-    protected function getGear() {
-        return $this->gear ? $this->gear : $this->gear = Gears::nameFromClass($this->reflection->getName());
-    }
-
-    /**
      * Get base name
      */
     protected function getBase() {
@@ -478,23 +454,6 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get gear widgets
-     *
-     * @return  array
-     */
-//    public function widgets() {
-//        $this->widgets = new Core_ArrayObject($this->widgets);
-//        $dir = $this->dir . DS . 'Widget';
-//        if (is_dir($dir) && $files = glob($dir . DS . '*' . EXT)) {
-//            foreach ($files as $file) {
-//                $class = str_replace(array(EXT, dirname($this->dir) . DS, DS), array('', '', '_'), $file);
-//                !in_array($class, $this->widgets->toArray()) && $this->widgets->append($class);
-//            }
-//        }
-//        return $this->widgets;
-//    }
-
-    /**
      * Normalize relative path
      *
      * For example, under windows it look like \cogear\Theme\Default\, but wee need good uri to load css, js or anything else.
@@ -505,33 +464,6 @@ abstract class Gear extends Object {
     public static function normalizePath($path) {
         $path = str_replace(DS, '/', $path);
         return $path;
-    }
-
-    /**
-     * Get gear name by path
-     *
-     * @param   string  $path
-     * @return  string|boolean  Gear name or FALSE if path is not correct.
-     */
-    public static function getNameFromPath($path) {
-        foreach (array(GEARS, ENGINE) as $dir) {
-            if (strpos($path, $dir) !== FALSE) {
-                is_file($path) && $path = dirname($path);
-                $path = str_replace($dir, '', $path);
-                $path = trim($path, DS);
-                $pieces = explode(DS, $path);
-                $gear_folder = '';
-                foreach ($pieces as $piece) {
-                    $gear_folder .= $piece . DS;
-                    $gear_name = str_replace(DS, '_', trim($gear_folder, DS));
-                    $gear_class = $gear_name . '_Gear';
-                    if (file_exists($dir . DS . $gear_folder . DS . 'Gear' . EXT) && class_exists($gear_class)) {
-                        return $gear_name;
-                    }
-                }
-            }
-        }
-        return FALSE;
     }
 
     /**

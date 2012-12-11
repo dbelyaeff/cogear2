@@ -1,21 +1,15 @@
 <?php
 
 /**
- * Meta gear
+ * Шестерёнка Мета
  *
- * @author		Dmitriy Belyaev <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Dmitriy Belyaev
+ * @author		Беляев Дмитрий <admin@cogear.ru>
+ * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
- * @version		$Id$
  */
 class Meta_Gear extends Gear implements SplObserver {
 
-    protected $name = 'Meta';
-    protected $description = 'Meta information handler.';
-    protected $order = -10;
     public $info = array(
         'title' => array(),
         'keywords' => array(),
@@ -30,17 +24,16 @@ class Meta_Gear extends Gear implements SplObserver {
         'head' => 'hookHead',
         'response.send' => 'hookResponse',
     );
-    protected $is_core = TRUE;
 
     const SNIPPET = '<!-- meta -->';
     const PREPEND = 0;
     const APPEND = 1;
 
     /**
-     * Constructor
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($xml) {
+        parent::__construct($xml);
         $this->info = Core_ArrayObject::transform($this->info);
     }
 

@@ -1,29 +1,41 @@
 <?php
+
 /**
- * Cogear — simple and fast content management system.
+ * Когир — быстрый и легкий фреймфорк, написанный на языке веб-програмимрования PHP
  *
- * "Life is like development. But the last one never ends." — cogear founder Dmitriy Belyaev
+ * "Жизнь — как разработка. Только в отличие от первой последняя никогда не заканчивается." — основатель проекта, Беляев Дмитрий
  */
-
-define('START_MEMORY',  memory_get_usage());
-define('IGNITE', microtime());
-
+define('IGNITE', microtime(TRUE));
+define('START_MEMORY', memory_get_usage());
 /**
- * Little fast benchmark
- * 
+ * Маленький и быстрый бенчмарк. Утилита для тестирования производительности
+ *
  * @staticvar array $points
- * @param type $point
+ * @param string|NULL $point
  */
-function bench($point = NULL){
+function bench($point = NULL) {
     static $points = array();
-    if(!$point){
+    if (!$point) {
         return $points;
     }
+    if (strpos($point, '.end')) {
+        $point = substr($point, 0, strpos($point, '.end'));
+        if (isset($points[$point . '.start'])) {
+            $start_time = $points[$point . '.start']['time'];
+            $start_memory = $points[$point . '.start']['memory'];
+            unset($points[$point . '.start']);
+        }
+    } elseif (strpos($point, '.start')) {
+        $start_time = 0;
+        $start_memory = 0;
+    }
+    isset($start_time) OR $start_time = IGNITE;
+    isset($start_memory) OR $start_memory = START_MEMORY;
+
     isset($points[$point]) OR $points[$point] = array(
-        'time' => microtime() - IGNITE,
-        'memory' => memory_get_usage() - START_MEMORY,
+        'time' => microtime(TRUE) - $start_time,
+        'memory' => memory_get_usage() - $start_memory,
     );
-    
 }
 
 bench('ignite');
@@ -33,18 +45,19 @@ define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
 define('EXT', '.php');
 define('ROOT', realpath(dirname(__FILE__)));
-// For the future multisiting
+// Для мультисайтинга — на будущее
 define('SITE', ROOT);
-define('CACHE',ROOT.DS.'cache');
-define('GEARS', ROOT.DS.'gears');
-define('THEMES',ROOT.DS.'themes');
+define('CACHE', ROOT . DS . 'cache');
+define('GEARS', ROOT . DS . 'gears');
+define('THEMES', ROOT . DS . 'themes');
 define('UPLOADS', ROOT . DS . 'uploads');
 define('PHP_FILE_PREFIX', '<?php ' . "\n");
 
 ini_set('display_errors', 1);
 ini_set('error_reporting', E_ALL);
+
 /**
- * Search for file — layerd pancake ideology
+ * Поиск файлов
  *
  * @param string $file
  * @return string|array
@@ -62,22 +75,23 @@ function find($file) {
     }
     return FALSE;
 }
+
 /**
- * Autoload
+ * Автозагрузка
  *
  * @param   $class  Class name.
  * @return  boolean
  */
 function autoload($class) {
     $filename = str_replace('_', DS, $class);
-    if ($path = find($filename.EXT)) {
+    if ($path = find($filename . EXT)) {
         include $path;
         return TRUE;
     }
     return NULL;
 }
 
-// Register with autoload
+// Регистрация автозагрузчика
 spl_autoload_register('autoload');
 
 $cogear = Cogear::getInstance();

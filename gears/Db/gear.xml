@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gear name="Db">
+    <name lang="ru">Базы данных</name>
+    <description lang="ru">Работа с базами данных</description>
+</gear>
