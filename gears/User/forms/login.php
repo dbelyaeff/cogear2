@@ -5,6 +5,7 @@ return array(
     'elements' => array(
         'login' => array(
             'label' => t('Имя пользователя или электронная почта'),
+            'placeholder' => t('Укажите имя пользователя или адрес электронной почты…'),
             'type' => 'text',
             'validators' => array('Required'),
         ),

@@ -5,17 +5,16 @@ return array(
     'class' => 'form-horizontal',
     'elements' => array(
         'login' => array(
-            'label' => t('Login or email', 'User'),
+            'label' => t('Логин или элетропочта'),
+            'placeholder' => t('Укажите имя пользователя или адрес электронной почты…'),
             'type' => 'text',
             'validators' => array('Required'),
         ),
-        'buttons' => array(
-            'type' => 'group',
-            'class' => 'form-actions',
+        'actions' => array(
             'elements' => array(
                 'submit' => array(
                     'type' => 'submit',
-                    'label' => t('Renew password'),
+                    'label' => t('Сбросить пароль'),
                     'class' => 'btn btn-primary',
                 )
             ),

@@ -1,17 +1,12 @@
 <?php
 
 /**
- *  Image upload class
- *
- *
+ *  Класс загрузки изображения
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * 	Image
-
  */
 class Image_Upload extends File_Upload {
 
@@ -106,13 +101,13 @@ class Image_Upload extends File_Upload {
             }
         } else {
             // Resize
-            $this->options->resize && $image->resize($this->options->resize);
+            $this->options->resize && $image->action('resize', $this->options->resize);
             // Crop
-            $this->options->crop && $image->crop($this->options->crop);
+            $this->options->crop && $image->action('crop', $this->options->crop);
             // Size & Crop
-            $this->options->sizecrop && $image->sizecrop($this->options->sizecrop);
+            $this->options->sizecrop && $image->action('sizecrop', $this->options->sizecrop);
             // Watermark
-            $this->options->watermark && $image->watermark($this->options->watermark);
+            $this->options->watermark && $image->action('watermark', $this->options->watermark);
         }
         $image->save();
     }

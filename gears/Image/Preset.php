@@ -17,27 +17,33 @@ class Image_Preset extends Core_ArrayObject {
     }
 
     /**
-     * Apply preset to image
+     * Применяем пресет к изображению
      *
      */
     public function process() {
         if ($this->actions) {
             foreach ($this->actions as $action) {
-                if (is_object($action)) {
-                    $params = $action->toArray();
-                    $action = array_shift($params);
-                } else {
-                    $params = array($this->size);
-                }
-                $callback = new Callback(array($this->image, $action));
-                if($callback->check()){
-                    $callback->run($params);
-                }
+                $callback = $this->parseAction($action);
+                $callback->run();
             }
         }
         return $this;
     }
-
+    /**
+     * Преобразуем строку действия в реальный callback
+     *
+     * @param string $action
+     * @return  Callback
+     */
+    public function parseAction($action){
+        $callback = new Callback(array($this->image,'action'));
+        preg_match('#^(\w+)\((.+)\)$#',$action,$matches);
+        $action = $matches[1];
+        $params = explode(',',$matches[2]);
+        $args = array_merge($action,$params);
+        $callback->setArgs($args);
+        return $callback;
+    }
     /**
      * Build path
      */

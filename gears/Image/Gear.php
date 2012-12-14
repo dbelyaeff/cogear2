@@ -73,6 +73,12 @@ class Image_Gear extends Gear {
     }
 
     /**
+     *
+     */
+    public function index_action() {
+    }
+
+    /**
      * Access
      */
     public function upload_action() {

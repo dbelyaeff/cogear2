@@ -1,54 +1,78 @@
 <?php
+
 /**
- * Image Manipulation class
+ * Класс изображения
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Image
- * @subpackage
-
  */
+include dirname(__FILE__) . DS . 'lib' . DS . 'phpThumb' . DS . 'ThumbLib.inc' . EXT;
+
 class Image_Object extends Object {
+
     protected $file;
+
     /**
      * Конструктор
      *
-     * @param string $file
+     * @param type $file
+     * @param type $options
      */
-    public function __construct($file) {
-        $this->file = file_exists($file) ? $file : NULL;
-        $driver = config('image.driver', 'Image_Adapter_GD');
-        $this->object(new $driver($this->file));
+    public function __construct($file, $options = NULL) {
+        parent::__construct($options);
+        $this->object(PhpThumbFactory::create($this->file = $file));
     }
+
     /**
-     * Get image file
+     * Возврат пути файла
      *
-     * @return string
+     * @return type
      */
-    public function getFile(){
+    public function getFile() {
         return $this->file;
     }
+
     /**
-     * Get image info by path
+     * Действие над изображением.
      *
-     * @param string $path
-     * @return Core_ArrayObject
+     * Суть метода в том, чтобы ретранслировать действия на объект WideImage
+     *
+     * @param   string  $action
+     * @param   mixed
+     * .....
+     *
      */
-    public static function getInfo($path = NULL) {
-        if($path instanceof  self){
-            $path = $path->getFile()->path;
+    public function action() {
+        $args = func_get_args();
+// Если у нас значения переданы не как ('200','200'), а в виде строк '200x200'
+        if (is_string($args[1]) && preg_match('#[\d+]x[\d+]#', $args[1])) {
+            $size = explode('x', $args[1]);
+// Чтобы не делать array_slice просто по разному оперируем первой переменной — действием
+            $action = $args[0];
+            $args[0] = $size[0];
+            $args[1] = $size[1];
+        } else {
+            $action = array_shift($args);
         }
-        if(!file_exists($path)) return NULL;
-        $info = getimagesize($path);
-        return new Core_ArrayObject(array(
-            'width' => $info[0],
-            'height' => $info[1],
-            'type' => $info[2],
-            'attributes' => $info[3],
-            'mime' => $info['mime'],
-        ));
+        $callback = new Callback(array($this->object(), $action));
+        try {
+            $result = $callback->run($args);
+        } catch (Exception $e) {
+
+        }
+        return $result;
+    }
+
+    /**
+     * Сохранение изображения в файл
+     *
+     * @param type $destination
+     */
+    public function save($destination = NULL) {
+        $destination OR $destination = $this->file;
+        $this->object()->save($destination);
     }
 
 }
