@@ -41,7 +41,7 @@ class Admin_Gear extends Gear {
      */
     public function request() {
         parent::request();
-        title(t('Control Panel', 'Admin'));
+        title(t('Панель управления'));
         $this->bc = new Breadcrumb_Object(
                         array(
                             'name' => 'admin_breadcrumb',
@@ -49,7 +49,7 @@ class Admin_Gear extends Gear {
                             'elements' => array(
                                 array(
                                     'link' => l('/admin'),
-                                    'label' => icon('home') . ' ' . t('Control Panel', 'Admin'),
+                                    'label' => icon('home') . ' ' . t('Панель управления'),
                                 ),
                             ),
                 ));

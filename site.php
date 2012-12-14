@@ -1,36 +1,65 @@
-<?php
+<?php 
 return array (
-   // Настройки подключения к базе данных
-  'database' =>
+  'database' => 
   array (
     'driver' => 'Db_Driver_PDO_Mysql',
     'host' => 'localhost',
     'base' => 'cogear',
     'user' => 'root',
-    'pass' => '',
-    'port' => '3306',
-    'prefix' => '',
-
+    'pass' => NULL,
+    'port' => NULL,
+    'prefix' => NULL,
   ),
-  // Включенные по умолчанию шестерёнки
-  // Не рекомендуется менять значение этого элемента
-  'gears' => array('Access','Admin','Ajax','Assets','Bootstrap','Breadcrumb','Cache','DateTime','Db','Dev','Errors','File','Form','Gears','I18n','Icons','Image','Input','Jevix','Mail','Menu','Meta','Modal','Notify','Pager','Post','Request','Response','Router','Roles','Secure','Session','Table','Template','Theme','User','Zip','jQuery'),
-  // Разрешенные в uri символы
-  'permitted_uri_chars' => 'а-яa-z0-9\s_\.\-',
-  // Уникальный ключ сайта для генерации хешей системы защиты
-  'key' => 'ba96917974845ff8a6f178c9551c17c7',
-  // Основные параметры сайта
-  'site' =>
+  'gears' => 
   array (
-    // Базовое название сайта для вывода в заголовке
+    0 => 'Access',
+    1 => 'Admin',
+    2 => 'Ajax',
+    3 => 'Assets',
+    4 => 'Bootstrap',
+    5 => 'Breadcrumb',
+    6 => 'Cache',
+    7 => 'DateTime',
+    8 => 'Db',
+    9 => 'Dev',
+    10 => 'Errors',
+    11 => 'File',
+    12 => 'Form',
+    13 => 'Gears',
+    14 => 'I18n',
+    15 => 'Icons',
+    16 => 'Image',
+    17 => 'Input',
+    18 => 'Jevix',
+    19 => 'Mail',
+    20 => 'Menu',
+    21 => 'Meta',
+    22 => 'Modal',
+    23 => 'Notify',
+    24 => 'Pager',
+    25 => 'Post',
+    26 => 'Request',
+    27 => 'Response',
+    28 => 'Router',
+    29 => 'Roles',
+    30 => 'Secure',
+    31 => 'Session',
+    32 => 'Table',
+    33 => 'Template',
+    34 => 'Theme',
+    35 => 'User',
+    36 => 'Zip',
+    37 => 'jQuery',
+  ),
+  'permitted_uri_chars' => 'а-яa-z0-9\s_\.\-',
+  'key' => 'ba96917974845ff8a6f178c9551c17c7',
+  'site' => 
+  array (
     'name' => 'cogear',
-    // Режим разработки
     'development' => 1,
-    // Адрес сайта без http:// и www
     'url' => 'cogear.new',
   ),
-  // Параметры элемтроной почты
-  'mail' =>
+  'mail' => 
   array (
     'from' => 'admin@cogear.ru',
     'from_name' => 'cogear',

@@ -2,4 +2,7 @@
 <gear name="Roles">
     <name lang="ru">Роли</name>
     <description lang="ru">Управление ролями пользователей.</description>
+    <required>
+        <gear name="User"/>
+    </required>
 </gear>

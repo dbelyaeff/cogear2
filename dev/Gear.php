@@ -1,22 +1,15 @@
 <?php
 
 /**
- * Dev gear
+ * Шестрёнка
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Dev_Gear extends Gear {
 
-    protected $name = 'Dev';
-    protected $description = 'Dev description';
-    protected $package = '';
-    protected $order = 0;
     protected $hooks = array(
     );
     protected $routes = array(

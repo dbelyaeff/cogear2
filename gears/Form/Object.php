@@ -25,7 +25,6 @@ class Form_Object extends Object {
         'ajax' => FALSE,
     );
     protected $is_init;
-    protected $errors = 0;
     protected $counter = 0;
     public $ajaxed;
     public $result;
@@ -268,21 +267,4 @@ class Form_Object extends Object {
         event('form.render.after', $this);
         return $this->code;
     }
-
-    /**
-     *  Add error
-     */
-    public function error($error) {
-        $this->errors++;
-    }
-
-    /**
-     * Get number of errors
-     *
-     * @return int
-     */
-    public function errors() {
-        return $this->errors;
-    }
-
 }

@@ -73,13 +73,3 @@ class Dev_Gear extends Gear {
 function humanize_bench($point, $measure = NULL){
     return Dev_Gear::humanize($point,$measure);
 }
-/**
- * Temp debug
- *
- * @param type $data
- */
-function debug($data, $type = FALSE) {
-    echo '<pre class="well">';
-    $type ? var_export($data) : print_r($data);
-    echo '</pre>';
-}

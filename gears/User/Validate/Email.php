@@ -31,7 +31,7 @@ class User_Validate_Email extends Form_Validate_Abstract {
             if ($user->id == cogear()->user->id) {
                 return TRUE;
             }
-            $this->element->addError(t('Email is already taken!'));
+            $this->element->error(t('Email is already taken!'));
             return FALSE;
         }
         return TRUE;

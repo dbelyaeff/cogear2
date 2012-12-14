@@ -20,7 +20,7 @@ class Form_Validate_String_Ext extends Form_Validate_Abstract {
      */
     public function validate($value,$ext = NULL) {
         $real_ext = pathinfo($value,PATHINFO_EXTENSION);
-        return $ext == $real_ext ? TRUE : $this->element->addError(t('<b>%s</b> extension is expected.','Form_Validate',$ext));
+        return $ext == $real_ext ? TRUE : $this->element->error(t('<b>%s</b> extension is expected.','Form_Validate',$ext));
     }
 
 }

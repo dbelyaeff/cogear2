@@ -139,20 +139,6 @@ abstract class Gear extends Object {
     protected $is_requested;
 
     /**
-     * Required gears [version is optoinal]
-     *
-     * array(
-     *  'Phpinfo',
-     *   // or with version
-     *  'Phpinfo 1.1',
-     *   // or even with condition
-     *  'Phpinfo > 1.1',
-     * )
-     * @var array
-     */
-    protected $required = array();
-
-    /**
      * Hooks
      *
      * @var array
@@ -169,10 +155,11 @@ abstract class Gear extends Object {
     /**
      * Конструктор
      *
-     * @param   SimpleXMLElement    $xml
+     * @param   XmlConfig    $xml
      */
-    public function __construct($xml) {
-        $this->adoptXmlConfig($xml);
+    public function __construct($config) {
+        // Принимаем настройки их конфига и сохраняем их как свойства
+        parent::__construct($config,Options::SELF);
         $this->reflection = new ReflectionClass($this);
         $this->getPath();
         $this->getDir();
@@ -182,31 +169,7 @@ abstract class Gear extends Object {
         $this->file = new SplFileInfo($this->path);
     }
 
-    /**
-     * Адоптирование конфига из XML-файла
-     *
-     * @param   SimpleXMLElement    $xml
-     * @param   array   $defaults
-     */
-    public function adoptXmlConfig(SimpleXMLElement $xml,$defaults = NULL) {
-        // Временная заглушка от неизвестного бага
-        if(FALSE == $xml instanceof SimpleXMLElement){
-            return;
-        }
-        $filtered = $xml->xpath('(//*[@lang=\'' . config('i18n.lang') . '\'] | //*[not(@lang)])');
-        // Установка настроек по умолчанию, если не переданого иного
-        $defaults OR $defaults = (array) Gears::getDefaultSettings();
-        // Загружаем настройки по умолчанию
-        $gear = new Core_ArrayObject($defaults);
-        // Накладываем поверх настройки из конфигурации шестеренки
-        $gear->extend((array) $filtered[0]);
-        // Присавиваем значения из настроек самой шестерёнке
-        foreach($gear as $key=>$value){
-            property_exists($this,$key) && $this->$key = $value;
-        }
-        $attribute = $xml->xpath('@name');
-        $this->gear = $attribute[0]->__toString();
-    }
+
 
     /**
      * Initialize
@@ -255,86 +218,28 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Check gear to be ready for charge in chain
-     *
-     * @return  boolean
-     */
-    public function checkGear() {
-        $result = TRUE;
-        if (!$this->checkRequiredGears()) {
-            $result = FALSE;
-        }
-        return $result;
-    }
-
-    /**
-     * Check required gears
-     *
-     * Response codes
-     *
-     * 1 — gear is ok
-     * 0 — gear is not installed
-     * -1 — gear version is not compatible
-     *
-     * @return boolean
-     */
-    public function checkRequiredGears() {
-        $result = new Core_ArrayObject(array(
-                    'success' => TRUE,
-                    'gears' => new Core_ArrayObject(),
-                ));
-        if ($this->required) {
-            foreach ($this->required as $required_gear) {
-                $pieces = explode(' ', $required_gear);
-                $gear_name = $pieces[0];
-                $sizeof = sizeof($pieces);
-                $gear = cogear()->gears->$gear_name;
-                if (NULL === $gear) {
-                    $result->gears->$gear_name = FALSE;
-                    $result->success = FALSE;
-                    continue;
-                }
-                $result->gears->$gear_name = TRUE;
-                switch ($sizeof) {
-                    case 3:
-                        if (!version_compare($gear->version, $pieces[2], $pieces[1])) {
-                            $result->gears->$gear_name = $pieces[2];
-                            $result->success = FALSE;
-                            continue;
-                        }
-                        break;
-                    case 2:
-                        if (!version_compare($gear->version, $pieces[1], ' >= ')) {
-                            $result->gears->$gear_name = $pieces[1];
-                            $result->success = FALSE;
-                            continue;
-                        }
-                        break;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
      * Get or set gear state
      *
      * @param type $value
      * @return int
      */
     public function status($value = NULL) {
-        if (Gears::ENABLED == $value) {
-            cogear()->config->gears->append($this->gear);
-        } else if (Gears::DISABLED == $value) {
+        if (Gears::ENABLED === $value) {
+            $gears = config('gears');
+            if (NULL == $gears->findByValue($this->gear)) {
+                $gears->append($this->gear);
+                cogear()->set('gears', $gears);
+            }
+        } else if (Gears::DISABLED === $value) {
             $gears = cogear()->config->get('gears');
-            if ($key = $gears->findByValue($this->gear)) {
+            if (NULL !== ($key = $gears->findByValue($this->gear))) {
                 $gears->offsetUnset($key);
                 cogear()->set('gears', $gears);
             }
-        } else if (NULL == $value) {
-            if (cogear()->site->get('gears')->{$this->gear}) {
-                return Gears::ENABLED;
-            } elseif (cogear()->config->get('gears')->{$this->gear}) {
+        } else if (NULL === $value) {
+            if (NULL !== cogear()->site->gears->findByValue($this->gear)) {
+                return Gears::CORE;
+            } elseif (NULL !== cogear()->config->gears->findByValue($this->gear)) {
                 return Gears::ENABLED;
             }
             return Gears::DISABLED;

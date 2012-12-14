@@ -32,7 +32,7 @@ class Gears_Gear extends Gear {
      * Admin dispatcher
      *
      */
-    public function admin($action = 'all') {
+    public function admin($action = 'enabled') {
         $gears = new Gears(GEARS);
         if ($do = $this->input->post('do')) {
             $items = $this->input->post('gears');
@@ -48,16 +48,16 @@ class Gears_Gear extends Gear {
                     'name' => 'gears',
                     'elements' => array(
                         array(
-                            'label' => t('Все') . ' (' . $gears->filter(Gears::EXISTS, TRUE)->count() . ')',
-                            'link' => l('/admin/gears'),
+                            'label' => t('Активные') . ' (' . $gears->filter(Gears::ENABLED)->count() . ')',
+                            'link' => l('/admin/gears/'),
                         ),
                         array(
-                            'label' => t('Активные') . ' (' . $gears->filter(Gears::ENABLED, FALSE)->count() . ')',
-                            'link' => l('/admin/gears/enabled'),
+                            'label' => t('Неактивные') . ' (' . $gears->filter(Gears::DISABLED)->count() . ')',
+                            'link' => l('/admin/gears/disabled'),
                         ),
                         array(
-                            'label' => t('Неактивные') . ' (' . $gears->filter(Gears::DISABLED, FALSE)->count() . ')',
-                            'link' => l('/admin/gears/installed'),
+                            'label' => t('Ядро') . ' (' . $gears->filter(Gears::CORE)->count() . ')',
+                            'link' => l('/admin/gears/core'),
                         ),
                         array(
                             'label' => t('Добавить'),
@@ -73,14 +73,14 @@ class Gears_Gear extends Gear {
             case 'enabled':
                 $filter = Gears::ENABLED;
                 break;
-            case 'installed':
+            case 'disabled':
                 $filter = Gears::DISABLED;
                 break;
-            case 'uploaded':
-                $filter = Gears::EXISTS;
+            case 'core':
+                $filter = Gears::CORE;
                 break;
         }
-        isset($filter) && $gears = $gears->filter($filter, FALSE);
+        isset($filter) && $gears = $gears->filter($filter);
         if ($gears->count()) {
             $gears->ksort();
             $tpl = new Template('Gears/templates/table');

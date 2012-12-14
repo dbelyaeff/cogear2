@@ -16,13 +16,20 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
 
     /**
      * Соединение с базой данных
+     *
+     * @return  boolean Удалость или нет установить соединение с базой данных
      */
-    public function connect() {
-        try {
-            $this->PDO = new PDO($this->driver . ':host=' . $this->options->host . ';dbname=' . $this->options->base, $this->options->user, $this->options->pass);
-        } catch (PDOException $e) {
-            fatal_error(t($e->getMessage()));
+    public function connect($database = '') {
+        if(FALSE !== $database){
+            $database = ';dbname=' . ($database ? $database : $this->options->base);
         }
+        try {
+            $this->PDO = new PDO($this->driver . ':host=' . $this->options->host . $database, $this->options->user, $this->options->pass);
+        } catch (PDOException $e) {
+            $this->error($e->getMessage());
+            return $this->is_connected = FALSE;
+        }
+        return $this->is_connected = TRUE;
     }
 
     /**
@@ -101,7 +108,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @param   mixed   $data
      */
     public function escape($data) {
-        return $this->PDO->quote($data);
+        return  $this->PDO->quote($data);
     }
 
     /**

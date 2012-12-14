@@ -12,8 +12,8 @@ class Router_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
-        cogear()->gears->Router OR $this->object(new Router_Object());
+    public function __construct($config){
+        parent::__construct($config);
+        $this->object(new Router_Object());
     }
 }

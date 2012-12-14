@@ -5,20 +5,25 @@ return array(
     'elements' => array(
         'sitename' => array(
             'type' => 'text',
-            'label' => t('Site name').' *',
+            'label' => t('Название сайта'),
             'validators' => array('Required'),
             'value' => config('site.name'),
         ),
         'database' => array(
             'type' => 'text',
-            'label' => t('Database connection'),
-            'description' => t('Example: <b>mysql://root:password@localhost/database</b>.<br/>You can leave this field blank if you don\'t want to use Database gear.'),
-            'validators' => array('Db_Validate_DSN'),
-            'value' => config('database.dsn'),
+            'label' => t('Настройка соединения с базой данных'),
+            'placeholder' => 'mysql://root:password@localhost/database',
+            'description' => t('Пример: <b>mysql://root:password@localhost/database</b>.'),
+            'validators' => array('Db_Validate_DSN','Required'),
+            'value' => 'mysql://root@localhost/cogear',
+        ),
+        'create_db' => array(
+            'type' => 'checkbox',
+            'label' => t('Попытаться создать базу данных'),
         ),
         'save' => array(
             'type' => 'submit',
-            'label' => t('Next'),
+            'label' => t('Далее'),
             'class' => 'btn btn-primary',
         )
     )

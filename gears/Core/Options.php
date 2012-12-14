@@ -29,8 +29,10 @@ class Options extends Core_ArrayObject {
      */
     public function __construct($options = array(), $place = 0) {
         $this->options = new Core_ArrayObject($this->options);
-        if ($place) {
-            parent::__construct($options);
+        if (self::SELF == $place) {
+            foreach($options as $key=>$value){
+                $this->$key = $value;
+            }
         } else {
             $this->options->extend($options);
         }

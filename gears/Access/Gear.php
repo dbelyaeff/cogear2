@@ -61,8 +61,8 @@ class Access_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         $this->rights = new Core_ArrayObject();
     }
 

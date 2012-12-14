@@ -43,7 +43,7 @@ class Form_Validate_Regexp extends Form_Validate_Abstract{
 	 */
 	public function validate($value){
 		if($value && !preg_match('#^'.$this->regexp.'$#iu',$value)){
-			return $this->element->addError($this->error_msg ? $this->error_msg : t('Указаное недопустимое значение.'));
+			return $this->element->error($this->error_msg ? $this->error_msg : t('Указаное недопустимое значение.'));
 		}
 		return TRUE;
 	}

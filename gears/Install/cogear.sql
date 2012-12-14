@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `published` tinyint(1) NOT NULL,
   `ip` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=111 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Дамп данных таблицы `posts`

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="Access">
     <name lang="ru">Права доступа</name>
-    <description lang="ru">Управления правами доступа</description>
+    <description lang="ru">Управления правами доступа.</description>
     <package lang="ru">Права доступа</package>
     <order>-998</order>
+    <required>
+        <gear name="User"/>
+    </required>
 </gear>

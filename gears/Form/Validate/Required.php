@@ -21,10 +21,10 @@ class Form_Validate_Required extends Form_Validate_Abstract {
     public function validate($value) {
         if ($this->element->form->request) {
             if(is_array($value) && !$value){
-                return $this->element->addError(t('Поле обязательно к заполнению.'));
+                return $this->element->error(t('Поле обязательно к заполнению.'));
             }
             elseif (is_string($value) && trim($value) == '') {
-                return $this->element->addError(t('Поле обязательно к заполнению.'));
+                return $this->element->error(t('Поле обязательно к заполнению.'));
             }
         }
         return TRUE;

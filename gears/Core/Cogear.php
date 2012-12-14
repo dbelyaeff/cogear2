@@ -1,51 +1,44 @@
 <?php
 
 /**
- * Cogear itself
- *
- *
+ * Сущность Когира
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 final class Cogear implements Interface_Singleton {
 
     /**
-     * Instance
+     * Сущность
      *
      * @var object
      */
     private static $_instance;
 
     /**
-     * Events
+     * События
      */
-    public $events = array();
+    public $events;
 
     /**
-     * Instances of active gears
+     * Сушность шестерёнок
      *
-     * @var ArrayObject
+     * @var Gears
      */
     public $gears;
 
     /**
-     * Flag to update config file
+     * Флаг для остановки события
+     */
+    public $stop_event = FALSE;
+    /**
+     * Флаг загрузки шестерёнок
      *
      * @var boolean
      */
-    private $write_config = FALSE;
-
-    /**
-     * Stop current event execution flag
-     */
-    public $stop_event = FALSE;
-
+    private $gears_are_loaded = FALSE;
     /**
      * Settings and config
      */
@@ -57,7 +50,6 @@ final class Cogear implements Interface_Singleton {
      * Конструктор
      */
     private function __construct() {
-        $this->gears = new Core_ArrayObject();
         $this->events = new Core_ArrayObject();
     }
 
@@ -137,10 +129,6 @@ final class Cogear implements Interface_Singleton {
         if ($this->gears->$name) {
             return $this->gears->$name;
         }
-        $ucname = ucfirst($name);
-        if ($this->gears->$ucname) {
-            return $this->gears->$ucname;
-        }
         return NULL;
     }
 
@@ -148,16 +136,14 @@ final class Cogear implements Interface_Singleton {
      *  Load gears
      */
     public function loadGears() {
-        $this->gears = new Gears($this->site->gears->extend($this->config->gears));
-        foreach ($this->gears as $key=>$gear) {
-            $check = $gear->checkRequiredGears();
-            if ($check->success) {
-                $gear->init();
-            }
-            else {
-                $gear->disable();
-            }
+        if($this->gears_are_loaded) return;
+        $core_gears = clone $this->site->gears;
+        $this->gears = new Gears($core_gears->extend($this->config->gears));
+        foreach ($this->gears as $gear) {
+            $gear->init();
         }
+        // Ставим флажок
+        $this->gears_are_loaded = TRUE;
     }
 
     /**
@@ -189,44 +175,6 @@ final class Cogear implements Interface_Singleton {
     public function set($name, $value) {
         return $this->config->set($name, $value);
     }
-
-//    /**
-//     * Check for required gears
-//     *
-//     * @param   Gear $gear  Gear itself
-//     * @return  boolean
-//     */
-//    public function requiredCheck(Gear $gear) {
-//        if (!$required = $gear->info('required'))
-//            return TRUE;
-//        $errors = array();
-//        foreach ($required as $requirement) {
-//            $result = self::parseVersion($requirement);
-//            $size = sizeof($result);
-//            if (!$required_gear = $this->gears->$result[0]) {
-//                $errors[] = $requirement;
-//            } else {
-//                $version = $required_gear->info('version');
-//                if (3 == $size && !version_compare($version, $result[2], $result[1]) OR
-//                        2 == $size && !version_compare($version, $result[1], '>=')) {
-//                    $errors[] = $requirement;
-//                } else {
-//                    return TRUE;
-//                }
-//            }
-//        }
-//        $errors && systemError(t('Gear <b>%s</b> can\'t be loaded, due to the following requirements conditions: %s.', 'Loader', $gear->info('name'), '<b>' . implode('</b> ,<b>', $errors) . '</b>'), t('Gears requirements interruption', 'Loader'));
-//        return FALSE;
-//    }
-
-    /**
-     * Parse version from gear requirement string
-     * @param      $text
-     */
-    public static function parseVersion($text) {
-        return preg_split('[\s]', $text, 3, PREG_SPLIT_NO_EMPTY);
-    }
-
 }
 
 function getInstance() {

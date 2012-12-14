@@ -2,4 +2,7 @@
 <gear name="Menu">
     <name lang="ru">Меню</name>
     <description lang="ru">Работа с меню.</description>
+    <required>
+        <gear name="Access"/>
+    </required>
 </gear>

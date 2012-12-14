@@ -2,5 +2,8 @@
 <gear name="User">
     <name lang="ru">Пользователи</name>
     <description lang="ru">Управления пользователями.</description>
-     <order>-999</order>
+    <order>-999</order>
+    <require>
+        <gear name="Install" disabled="TRUE"/>
+    </require>
 </gear>

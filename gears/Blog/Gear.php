@@ -341,8 +341,8 @@ class Blog_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         // This hook must be placed earlier, because it deals with User init method which loads before Friends gear init
         hook('user.refresh', array($this, 'clear'));
     }

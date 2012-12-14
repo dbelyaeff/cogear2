@@ -11,7 +11,7 @@
  * @subpackage
 
  */
-abstract class Cogearable extends Options{
+abstract class Cogearable extends Errors {
     /**
      * Magic __get method
      *

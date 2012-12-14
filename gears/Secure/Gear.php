@@ -25,7 +25,7 @@ class Secure_Gear extends Gear {
      * Конструктор
      */
     public function __contsruct() {
-        parent::__construct($xml);
+        parent::__construct($config);
     }
 
     /**

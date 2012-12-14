@@ -13,9 +13,8 @@ class Request_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
-        $this->object(new Request_Object());
-        cogear()->request = $this;
+    public function __construct($config) {
+        parent::__construct($config);
+        $this->object(cogear()->request = new Request_Object());
     }
 }

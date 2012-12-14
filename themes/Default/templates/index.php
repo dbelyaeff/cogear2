@@ -4,7 +4,7 @@
         <?php echo theme('head') ?>
         <link rel="shortcut icon" href="/favicon.ico" />
     </head>
-    <body>
+    <body >
         <?php echo theme('before') ?>
         <div class="container" id="body">
             <div class="row">

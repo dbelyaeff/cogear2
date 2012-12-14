@@ -11,7 +11,7 @@
  * @subpackage
 
  */
-class Form_Element_Abstract extends Options {
+class Form_Element_Abstract extends Object {
 
     public $options = array(
         'name' => '',
@@ -29,12 +29,6 @@ class Form_Element_Abstract extends Options {
         'class' => 'form-element',
     );
 
-    /**
-     * Link to form instance
-     *
-     * @var object
-     */
-    public $errors = array();
     protected $value;
     public $code = '';
 
@@ -45,17 +39,6 @@ class Form_Element_Abstract extends Options {
      */
     public function __construct($options) {
         parent::__construct($options);
-        $this->errors = new Core_ArrayObject();
-    }
-
-    /**
-     * Add error
-     *
-     * @param   string  $error
-     */
-    public function addError($error) {
-        $this->errors->findByValue($error) OR $this->errors->append($error);
-        return FALSE;
     }
 
     /**
@@ -157,7 +140,7 @@ class Form_Element_Abstract extends Options {
     public function prepareOptions() {
         $this->options->required = $this->validators && $this->validators->findByValue('Required');
         $this->options->errors = $this->errors;
-        $this->options->errors->count() && $this->options->class .= ' error';
+        $this->options->errors && $this->options->class .= ' error';
         $this->options->id = $this->getId().'-element';
         if ($this->value) {
             $this->options->value = $this->value;

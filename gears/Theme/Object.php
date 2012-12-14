@@ -13,14 +13,15 @@ abstract class Theme_Object extends Gear {
     public static $layout = 'index';
     protected $theme;
     protected $template;
+    protected static $defaults;
 
     /**
      * Конструктор
      *
      * @param SimpleXMLElement $xml
      */
-    public function __construct($xml) {
-        parent::__construct($xml, (array) $this->gears->Theme->getDefaultSettings());
+    public function __construct($config) {
+        parent::__construct($config);
         $this->theme = $this->gear;
     }
 
@@ -36,6 +37,15 @@ abstract class Theme_Object extends Gear {
             $theme->init();
         }
         parent::init();
+    }
+
+    /**
+     * Настройки по умолчанию для всех тем
+     *
+     * @return SimpleXMLObject
+     */
+    public static function getDefaultSettings() {
+        return self::$defaults ? self::$defaults : self::$defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Theme' . DS . 'default.xml'));
     }
 
     /**

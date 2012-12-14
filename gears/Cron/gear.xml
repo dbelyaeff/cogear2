@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="Cron">
     <name lang="ru">Cron</name>
-    <description lang="ru">Выполнение заданий по расписанию</description>
+    <description lang="ru">Выполнение заданий по расписанию.</description>
 </gear>

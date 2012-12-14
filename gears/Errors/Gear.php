@@ -13,8 +13,8 @@ class Errors_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         ini_set('display_errors', 1);
         ini_set('error_reporting', E_ALL);
         set_error_handler(array($this, 'showRawError'));
@@ -78,7 +78,7 @@ HTML;
      * @param type $context
      */
     public function showError($errno, $error, $file, $line, $context) {
-        error(t('Error in file <b>%s</b> was found at line <b>%d</b>: <p><i>%s</i>', 'Errors', $file, $line, $error), t('Error'));
+        error(t('Ошибка в файле <b>%s</b> на строке <b>%d</b>: <p><i>%s</i>', $file, $line, $error,$context), t('Ошибка'));
     }
 
     public function _404() {

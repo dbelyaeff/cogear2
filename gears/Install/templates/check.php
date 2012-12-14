@@ -1,14 +1,15 @@
-<p class="alert alert-info"><?php echo  t('Before start system must check your server for requirements. <br/>Just look at the table below and follow the instructions.') ?></p>
+<p class="alert alert-info"><?php echo
+t('Прежде чем приступить к установке системы, ваш сервер должен быть проверен на соответствие с требованиями системы. <br/>Обратите внимание на таблицу ниже и следуйте инстуркциям.') ?></p>
 <?
 $success = TRUE;
 ?>
 <table id="requirements" class="table table-bordered table-striped">
     <thead>
     <th>#</th>
-    <th><?php echo  t('Name') ?></th>
-    <th><?php echo  t('Current') ?></th>
-    <th><?php echo  t('Required') ?></th>
-    <th><?php echo  t('Test') ?></th>
+    <th><?php echo  t('Параметр') ?></th>
+    <th><?php echo  t('Проверка') ?></th>
+    <th><?php echo  t('Требование') ?></th>
+    <th><?php echo  t('Тестирование') ?></th>
 </thead>
 <tbody>
     <?
@@ -19,13 +20,13 @@ $success = TRUE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>0.</td>
-        <td><?php echo  t('PHP Version') ?></td><td>
+        <td><?php echo  t('Версия PHP') ?></td><td>
             <?php echo  $php_version ?>
         </td><td>
             5.2.6
         </td>
         <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
 
@@ -35,9 +36,9 @@ $success = TRUE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>1.</td>
-        <td colspan="3"><?php echo  t('SPL Library') ?></td>
-        <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+        <td colspan="3"><?php echo  t('SPL-библиотека') ?></td>
+        <td>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
     <?
@@ -46,9 +47,9 @@ $success = TRUE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>2.</td>
-        <td colspan="3"><?php echo  t('Reflections') ?></td>
+        <td colspan="3"><?php echo  t('Reflections (Отражения)') ?></td>
         <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
     <?
@@ -57,9 +58,9 @@ $success = TRUE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>3.</td>
-        <td colspan="3"><?php echo  t('Filters') ?></td>
+        <td colspan="3"><?php echo  t('Фильтры') ?></td>
         <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
     <?
@@ -68,35 +69,35 @@ $success = TRUE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>4.</td>
-        <td colspan="3"><?php echo  t('Iconv extension') ?></td>
+        <td colspan="3"><?php echo  t('Iconv-расширение') ?></td>
         <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
-    
+
     <?
     if (isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO'])) {
         $passed = TRUE;
     }
     else {
         $passed = FALSE;
-    } 
+    }
     $success = $passed ? TRUE : FALSE;
     ?>
     <tr class="<?php echo  $passed ? 'success' : 'failure' ?>">
         <td>5.</td>
-        <td colspan="3"><?php echo  t('URL rewrite') ?></td>
+        <td colspan="3"><?php echo  t('Перезапись URL') ?></td>
         <td >
-            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  t($passed ? 'Passed' : 'Error') ?></span>
+            <span class="label label-<?php echo  $passed ? 'success' : 'important' ?>"><?php echo  $passed ? t('Успешно') : t('Ошибка') ?></span>
         </td>
     </tr>
 </tbody>
 </table>
 <? if ($success): ?>
     <p align="center">
-        <a href="<?php echo  l('install/site') ?>" class="btn btn-primary"><?php echo  t('Continue') ?></a>
+        <a href="<?php echo  l('install/site') ?>" class="btn btn-primary"><?php echo  t('Продолжить') ?></a>
     </p>
     <?else:?>
-    <?php echo error(t('Some of requirements are not satisfied.'))?>
-    <a href="javascript:window.reload()" class="btn btn-warning"><?php echo t('Reload')?></a>
+    <?php echo error(t('Некоторые из требования не были удовлетворены.'))?>
+    <a href="javascript:window.reload()" class="btn btn-warning"><?php echo t('Обновить')?></a>
 <? endif; ?>

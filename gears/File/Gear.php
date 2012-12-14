@@ -13,8 +13,8 @@ class File_Gear extends Gear {
     /**
      * Construcotr
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         Form::$types['file'] = 'File_Element';
         Form::$types['file_url'] = 'File_Url_Element';
     }

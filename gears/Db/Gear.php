@@ -9,6 +9,7 @@
  * @link		http://cogear.ru
  */
 class Db_Gear extends Gear {
+
     protected $hooks = array(
         'dev.trace' => 'hookTrace',
     );
@@ -16,10 +17,22 @@ class Db_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
+        cogear()->db = $this;
+    }
+
+    /**
+     * Инициализация
+     */
+    public function init() {
         $config = config('database');
-        $this->object(Db::factory('default', $config, $config->driver));
+        $db = Db::factory('system', $config);
+        if ($db->connect()) {
+            parent::init();
+            $this->object($db);
+        }
+        hook('done', array($db->object(), 'showErrors'));
     }
 
     /**
@@ -28,7 +41,7 @@ class Db_Gear extends Gear {
      * @param Stack $Stack
      */
     public function hookTrace() {
-        echo template('Db/templates/trace',array('queries'=>$this->queries));
+        echo template('Db/templates/trace', array('queries' => $this->queries));
     }
 
 }

@@ -55,7 +55,6 @@ define('PHP_FILE_PREFIX', '<?php ' . "\n");
 
 ini_set('display_errors', 1);
 ini_set('error_reporting', E_ALL);
-
 /**
  * Поиск файлов
  *
@@ -91,6 +90,19 @@ function autoload($class) {
     return NULL;
 }
 
+/**
+ * Маленький и быстрый дебаггер
+ *
+ * @param mixed     $data
+ * @param boolean   $type Выводить var_export или var_dump
+ */
+function debug($data, $type = FALSE) {
+    echo '<pre class="well">';
+    $type ? var_export($data) : var_dump($data);
+    echo '</pre>';
+}
+
+
 // Регистрация автозагрузчика
 spl_autoload_register('autoload');
 
@@ -99,3 +111,4 @@ $cogear->load();
 event('ignite');
 event('done');
 event('exit');
+

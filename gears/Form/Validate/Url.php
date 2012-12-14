@@ -16,6 +16,6 @@ class Form_Validate_Url extends Form_Validate_Abstract{
          */
         public function validate($value){
             if(!$value) return TRUE;
-           return filter_var($value, FILTER_VALIDATE_URL) ? TRUE : $this->element->addError(t('Укажите корректный URL.'));
+           return filter_var($value, FILTER_VALIDATE_URL) ? TRUE : $this->element->error(t('Укажите корректный URL.'));
         }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="AutoLink">
     <name lang="ru">Автоссылки</name>
-    <description lang="ru">Автоматическая обработка ссылок</description>
+    <description lang="ru">Автоматическая обработка ссылок.</description>
 </gear>

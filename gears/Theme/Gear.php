@@ -17,24 +17,16 @@ class Theme_Gear extends Gear {
 
     const SUFFIX = '_Theme';
 
-    protected $defaults;
+
 
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         $this->regions = new Core_ArrayObject();
     }
 
-    /**
-     * Настройки по умолчанию для всех тем
-     *
-     * @return SimpleXMLObject
-     */
-    public function getDefaultSettings() {
-        return $this->defaults ? $this->defaults : $this->defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Theme' . DS . 'default.xml'));
-    }
 
     /**
      * Init
@@ -141,9 +133,8 @@ class Theme_Gear extends Gear {
             $theme = 'Default';
             $this->choose('Default');
         }
-        $xml = THEMES . DS . $theme . DS . 'theme.xml';
-        $config = new SimpleXMLElement(file_get_contents($xml));
-        $this->object(new $class($config));
+        $xml = new XmlConfig(THEMES . DS . $theme . DS . 'theme.xml');
+        $this->object(new $class($xml->parse((array)Theme::getDefaultSettings())));
         $this->object()->init();
     }
 

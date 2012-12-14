@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="jQuery">
     <name lang="ru">jQuery</name>
-    <description lang="ru">Подключает популярный JavaScript-фреймворк</description>
+    <description lang="ru">Подключает популярный JavaScript-фреймворк.</description>
     <order>-1000</order>
 </gear>

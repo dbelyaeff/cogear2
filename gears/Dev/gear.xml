@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="Dev">
     <name lang="ru">Разработка</name>
-    <description lang="ru">Незаменимый помощник при разработке</description>
+    <description lang="ru">Незаменимый помощник при разработке.</description>
+    <required>
+        <gear name="Access"/>
+    </required>
     <order>-10000</order>
 </gear>

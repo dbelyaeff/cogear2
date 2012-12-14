@@ -76,6 +76,12 @@ abstract class Db_Driver_Abstract extends Object {
      * @var object
      */
     protected $result;
+    /**
+     * Флаг, который показывает есть ли соединение с базой
+     *
+     * @var boolean
+     */
+    protected $is_connected;
 
     /**
      * Констрктор
@@ -85,7 +91,6 @@ abstract class Db_Driver_Abstract extends Object {
     public function __construct($options) {
         parent::__construct($options);
         $this->queries = new SplStack();
-        $this->connect();
     }
 
     /**
@@ -112,12 +117,14 @@ abstract class Db_Driver_Abstract extends Object {
      * @return type
      */
     abstract public function getFieldsQuery($table);
+
     /**
      * Экранирование данных
      *
      * @param   mixed   $data
      */
     abstract public function escape($data);
+
     /**
      *  Получение информации о полях в таблице
      *
@@ -126,16 +133,44 @@ abstract class Db_Driver_Abstract extends Object {
      */
     public function getFields($table = NULL) {
         $table OR $table = $this->chain['FROM'];
-        if (!$this->tables[$table] = cogear()->system_cache->read('database/' . $this->options->base. '/' . $table, TRUE)) {
+        if (!$this->tables[$table] = cogear()->system_cache->read('database/' . $this->options->base . '/' . $table, TRUE)) {
             if ($fields = $this->getFieldsQuery($table)) {
                 $this->tables[$table] = array();
                 foreach ($fields as $field) {
                     $this->tables[$table][$field->Field] = $field->Type;
                 }
-                cogear()->system_cache->write('database/' . $this->options->base. '/' . $table, $this->tables[$table], array('db_fields'));
+                cogear()->system_cache->write('database/' . $this->options->base . '/' . $table, $this->tables[$table], array('db_fields'));
             }
         }
         return $this->tables[$table];
+    }
+
+    /**
+     * Импорт в базу данных
+     *
+     * @param type $file
+     */
+    public function import($file) {
+        if (!file_exists($file)) {
+            error(t("Файл <b>%s</b> не существует.", $file));
+        }
+        $data = file_get_contents($file);
+        if ($result = $this->query($data)) {
+            success(t("Дамп базы данных <b>%s</b> успешно импортирован!", basename($file)));
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * Экспорт базы данных
+     *
+     * @param string $file
+     * @param array $options
+     */
+    public function export($file, $options = array()) {
+        // @todo Написать метод
     }
 
     /**
@@ -148,6 +183,7 @@ abstract class Db_Driver_Abstract extends Object {
     protected function tableName($value) {
         return $this->options->prefix . $value;
     }
+
     /**
      * Исполнение запроса в базу данных
      *

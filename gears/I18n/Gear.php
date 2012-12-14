@@ -46,7 +46,7 @@ class I18n_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
+    public function __construct($config) {
         $this->lang = config('i18n.lang', 'en');
         $this->locale = config('i18n.locale');
         $adapter = config('i18n.adapter', 'I18n_Adapter_File');
@@ -54,8 +54,7 @@ class I18n_Gear extends Gear {
         $this->object(new $adapter($options));
         setlocale(LC_ALL, $this->locale);
         date_default_timezone_set(config('i18n.timezone', 'Europe/Moscow'));
-        //hook('done', array($this->object, 'save'));
-        parent::__construct($xml);
+        parent::__construct($config);
     }
 
     /**
@@ -97,7 +96,8 @@ class I18n_Gear extends Gear {
      * @return string
      */
     public function translate($text, $domain = '') {
-        return $this->get($text);
+        return $text;
+//        return $this->get($text);
     }
 
     /**
@@ -143,8 +143,7 @@ class I18n_Gear extends Gear {
  * @return  string
  */
 function t($text) {
-    $cogear = getInstance();
-    $result = $cogear->i18n->translate($text);
+    $result = cogear()->i18n->translate($text);
     if (func_num_args() > 1) {
         $args = func_get_args();
         $args = array_slice($args, 1);

@@ -32,8 +32,8 @@ class Meta_Gear extends Gear implements SplObserver {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         $this->info = Core_ArrayObject::transform($this->info);
     }
 

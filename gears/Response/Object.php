@@ -170,6 +170,7 @@ function redirect($url = NULL) {
     }
     $url OR $url = Url::link();
     event('done');
+    event('exit');
     header('Location: ' . $url);
     exit;
 }

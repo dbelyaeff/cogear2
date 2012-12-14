@@ -1,6 +1,6 @@
-<?php echo t('<p class="alert alert-warning">Welcome to <b>Cogear framework</b>! Thank you for choosing this product. It\'s a small and fast PHP-framework which provides wide functionality and flexibiliry for your work.
-    <p class="alert alert-success"> <b>Cogear framework</b> is developed by a group of enthusiasts, so we try to do our best. If you want to enhance this system and improve your programming and team-working skills, we offer you to join our community. It\'s easy, just visit oficial site — <a href="http://cogear.org">http://cogear.org</a>.
-    <p class="alert alert-info">Right now you are one step to go. Just press the button below and ignite your site engine.</p>')?>
+<?php echo t('<p class="alert alert-warning">Добро пожаловать в установщик PHP-фреймворка <b>Когир</b>! Спасибо вам за то, что выбрали наш продукт. Это быстрый и простой фреймворк, который обеспечит вас необходимым функционалом для разработки веб-приложений.
+    <p class="alert alert-success"> <b>Когир</b> разрабатывается группой этнутизастов, поэтому мы делаем все, что в наших силах. Если вам по душе наша система, то приглашаем вас внести свой вклад в её развития. Подробности на официальном сайте — <a href="http://cogear.ru">http://cogear.ru</a>.
+    <p class="alert alert-info">Сейчас вы находитесь в одном шаге от установки. Просто нажмите на кнопку ниже.</p>')?>
 <p align="center">
-    <a class="btn btn-primary" href="<?php echo l('/install/check')?>" class="button"><?php echo t('Start!')?></a>
+    <a class="btn btn-primary" href="<?php echo l('/install/check')?>" class="button"><?php echo t('Установить!')?></a>
 </p>

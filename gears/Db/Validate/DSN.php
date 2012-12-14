@@ -17,13 +17,13 @@ class Db_Validate_DSN extends Form_Validate_Abstract {
 
     /**
      * Validate user email.
-     * 
-     * @param string $value 
+     *
+     * @param string $value
      */
     public function validate($value = NULL, $type = 0) {
         if ($value OR $type) {
-            if (!cogear()->Db->checkDSN($value)){
-                $this->element->addError(t('Look at the database errors and fix them.', 'Db.errors'));
+            if (!Db::parseDSN($value)){
+                $this->element->error(t('Обратите внимание на ошибки и устраните их.'));
                 return FALSE;
             }
             return TRUE;

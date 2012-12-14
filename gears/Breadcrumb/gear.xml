@@ -4,5 +4,6 @@
     <description lang="ru">Вывод блока иерархической навигации.</description>
     <required>
         <gear name="Menu"/>
+        <gear name="User"/>
     </required>
 </gear>

@@ -101,7 +101,7 @@ class Db_ORM extends Object {
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
         $this->primary = $primary ? $primary : $first;
-        $this->cache_path = $this->db->options->database.'.'.$this->table;
+        $this->cache_path = $this->db->options->database . '.' . $this->table;
         $this->object(new Core_ArrayObject());
     }
 
@@ -174,7 +174,7 @@ class Db_ORM extends Object {
      */
     public function __call($name, $args) {
         $callback = array($this->db, $name);
-        if(!$args){
+        if (!$args) {
             $args = array($this->table);
         }
         if (is_callable($callback)) {
@@ -209,17 +209,17 @@ class Db_ORM extends Object {
      * @param type $id
      * @param type $object
      */
-    public function cache($id,$object = NULL){
+    public function cache($id, $object = NULL) {
         $path = $this->cache_path;
         self::$cached OR self::$cached = new Core_ArrayObject();
-        if($object){
+        if ($object) {
             self::$cached->$path OR self::$cached->$path = new Core_ArrayObject();
             self::$cached->$path->$id = $object;
-        }
-        else {
+        } else {
             return self::$cached->$path && self::$cached->$path->$id ? self::$cached->$path->$id : NULL;
         }
     }
+
     /**
      * Find row
      *
@@ -239,7 +239,7 @@ class Db_ORM extends Object {
             if ($result = $this->db->get($this->table)->row()) {
                 event('Db_ORM.find', $this, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
-                $this->cache($result->{$this->primary},$this->object);
+                $this->cache($result->{$this->primary}, $this->object);
                 $this->clear();
                 return TRUE;
             }
@@ -260,7 +260,7 @@ class Db_ORM extends Object {
             foreach ($result as &$element) {
                 event('Db_ORM.findAll', $this, $result);
                 $element = $this->filterData($element, self::FILTER_OUT);
-                $this->cache($element->{$this->primary},$element);
+                $this->cache($element->{$this->primary}, $element);
             }
             $this->clear();
         }

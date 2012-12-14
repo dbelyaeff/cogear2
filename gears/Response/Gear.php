@@ -18,9 +18,10 @@ class Response_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
-        cogear()->gears->Response OR $this->object(new Response_Object());
+    public function __construct($config) {
+        parent::__construct($config);
+        $this->object(new Response_Object());
+//        hook('exit',array($this->object(),'send'));
     }
 
     /**

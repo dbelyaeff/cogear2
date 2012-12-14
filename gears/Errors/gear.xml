@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gear name="Errors">
     <name lang="ru">Ошибки</name>
-    <description lang="ru">Обработчик ошибок</description>
-    <order>1</order>
+    <description lang="ru">Обработчик ошибок.</description>
+    <order>-1000</order>
 </gear>

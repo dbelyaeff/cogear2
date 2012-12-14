@@ -16,6 +16,6 @@ class Form_Validate_Email extends Form_Validate_Abstract{
          */
         public function validate($value){
             if(!$value) return TRUE;
-           return filter_var($value, FILTER_VALIDATE_EMAIL) ? TRUE : $this->element->addError(t('Укажите корректный адрес электронной почты.'));
+           return filter_var($value, FILTER_VALIDATE_EMAIL) ? TRUE : $this->element->error(t('Укажите корректный адрес электронной почты.'));
         }
 }

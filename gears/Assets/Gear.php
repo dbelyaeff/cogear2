@@ -13,8 +13,8 @@ class Assets_Gear extends Gear {
     /**
      * Конструктор
      */
-    public function __construct($xml) {
-        parent::__construct($xml);
+    public function __construct($config) {
+        parent::__construct($config);
         $this->object(new Assets_Harvester());
         cogear()->assets = $this;
     }

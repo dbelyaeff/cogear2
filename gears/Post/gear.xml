@@ -3,4 +3,7 @@
     <name lang="ru">Пост</name>
     <description lang="ru">Служит для публиации и редактирования материалов на сайте.</description>
     <order>10</order>
+    <require>
+        <gear name="User"/>
+    </require>
 </gear>

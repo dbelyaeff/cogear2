@@ -21,11 +21,11 @@ class Form_Validate_Length extends Form_Validate_Abstract {
         if(!$value) return TRUE;
         $length = strlen($value);
         if ($from && $to && ($length > $to OR $length < $from)) {
-            return $this->element->addError(t('Поле должно иметь значение длиной от %d до %d симолов.', $from, $to));
+            return $this->element->error(t('Поле должно иметь значение длиной от %d до %d симолов.', $from, $to));
         } elseif ($from && $length < $from) {
-            return $this->element->addError(t('Поле должно иметь значение длинее, чем %d символов.', $from));
+            return $this->element->error(t('Поле должно иметь значение длинее, чем %d символов.', $from));
         } elseif ($to && $length > $to) {
-            return $this->element->addError(t('Поле должно иметь значение не длиннее, чем %d символов.', $to));
+            return $this->element->error(t('Поле должно иметь значение не длиннее, чем %d символов.', $to));
         }
         return TRUE;
     }
