@@ -1,21 +1,16 @@
 <?php
 
 /**
- * Abstract Cache class
- *
- *
+ * Абстрактный класс кеша
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- *         Cache
-
  */
-abstract class Cache_Adapter_Abstract extends Options {
+abstract class Cache_Driver_Abstract extends Object {
 
-    abstract public function read($name, $force=NULL);
+    abstract public function read($name);
 
     abstract public function write($name, $value, $tags=NULL, $ttl=NULL);
 

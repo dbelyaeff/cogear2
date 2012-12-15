@@ -55,9 +55,10 @@ class Session_Object extends Cache_Object {
      */
     public function __construct($options) {
         $defaults = array(
-            'adapter' => 'Session_Adapter_File',
+            'driver' => Cache_Driver_Memcache::check() ? 'Session_Driver_Memcache' : 'Session_Driver_File',
             'save_path' => CACHE . DS . 'sessions',
             'path' => CACHE . DS . 'sessions',
+            'prefix' => 'sessions',
             'cookie_domain' => '.' . config('site.url', cogear()->request->get('HTTP_HOST')),
             'session_expire' => 3600,
         );

@@ -33,12 +33,14 @@ final class Cogear implements Interface_Singleton {
      * Флаг для остановки события
      */
     public $stop_event = FALSE;
+
     /**
      * Флаг загрузки шестерёнок
      *
      * @var boolean
      */
     private $gears_are_loaded = FALSE;
+
     /**
      * Settings and config
      */
@@ -59,7 +61,11 @@ final class Cogear implements Interface_Singleton {
     public function load() {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
         $this->config = new Config(ROOT . DS . 'config' . EXT);
-        $this->system_cache = new Cache_Object(array('path' => CACHE . DS . 'system'));
+        $this->system_cache = Cache::factory('system', array(
+                    'driver' => Cache_Driver_Memcache::check() ? 'Cache_Driver_Memcache' : 'Cache_Driver_File',
+                    'prefix' => 'system',
+                    'path' => CACHE . DS . 'system'
+                ));
         defined('SITE_URL') OR define('SITE_URL', config('site.url'));
         if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
             $array = explode('/', SITE_URL, 2);
@@ -136,7 +142,8 @@ final class Cogear implements Interface_Singleton {
      *  Load gears
      */
     public function loadGears() {
-        if($this->gears_are_loaded) return;
+        if ($this->gears_are_loaded)
+            return;
         $core_gears = clone $this->site->gears;
         $this->gears = new Gears($core_gears->extend($this->config->gears));
         foreach ($this->gears as $gear) {
@@ -175,6 +182,7 @@ final class Cogear implements Interface_Singleton {
     public function set($name, $value) {
         return $this->config->set($name, $value);
     }
+
 }
 
 function getInstance() {

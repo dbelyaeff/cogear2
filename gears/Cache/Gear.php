@@ -15,7 +15,11 @@ class Cache_Gear extends Gear {
      */
     public function __construct($config) {
         parent::__construct($config);
-        $this->object(new Cache_Object());
+        $this->object(Cache::factory('normal',array(
+            'driver' => Cache_Driver_Memcache::check() ? 'Cache_Driver_Memcache' : 'Cache_Driver_File',
+            'path' => CACHE,
+            'prefix' => 'normal',
+        )));
     }
 
 }

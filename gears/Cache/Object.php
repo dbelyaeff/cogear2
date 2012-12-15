@@ -11,7 +11,21 @@
  * @subpackage
 
  */
-class Cache_Object extends Object {
+class Cache_Object extends Object implements Interface_Factory {
+
+    protected static $_instances = array();
+
+    /**
+     * Метод "фабрики", производящий эксземпляр объекта текущего класса
+     *
+     * @param string $name
+     * @param array $options
+     * @param string $class
+     * @return object
+     */
+    public static function factory($name, $options = array(), $class = __CLASS__) {
+        return isset(self::$_instances[$name]) ? self::$_instances[$name] : self::$_instances[$name] = new $class($options);
+    }
 
     /**
      * Initiate cache
@@ -19,14 +33,11 @@ class Cache_Object extends Object {
      * @param array $options
      */
     public function __construct($options = array()) {
-        $defaults = array(
-            'adapter' => 'Cache_Adapter_File',
-            'path' => CACHE . DS
-        );
-        $options = array_merge($defaults, $options);
         parent::__construct($options);
-        if (class_exists($options['adapter'])) {
-            $this->object(new $options['adapter']($options));
+        try {
+            $this->object(new $this->options->driver($options));
+        } catch (Exception $e) {
+            error($e->getMessage());
         }
     }
 

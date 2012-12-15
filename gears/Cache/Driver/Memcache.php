@@ -1,26 +1,19 @@
 <?php
 
 /**
- * File cache
- *
- *
+ * Кеш через Memcached
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
-class Cache_Adapter_File extends Cache_Adapter_Abstract {
+class Cache_Driver_Memcache extends Cache_Driver_Abstract {
 
-    /**
-     * Flag indicates cache state
-     *
-     * @var boolean
-     */
-    protected $enabled = TRUE;
+    public $options = array(
+        'host' => '127.0.0.1',
+        'port' => '11211',
+    );
 
     /**
      * Конструктор
@@ -29,24 +22,32 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract {
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        File::mkdir($this->options->path);
+        if (!self::check()) {
+            throw new Exception(t('Работа с кешем через Memcached невозможна, ибо он отключен на сервере.'));
+        } else {
+            $this->object(new Memcache());
+            if (FALSE == $this->connect($this->options->host, $this->options->port)) {
+                throw new Exception(t('Не удалётся соединиться с сервером Memcached по адресу %s:%d', $this->options->host, $this->options->port));
+            }
+        }
+    }
+
+    /**
+     * Проверяет, работает ли мемкеша на сервере
+     */
+    public static function check() {
+        return class_exists('Memcache');
     }
 
     /**
      * Read from cache
      *
      * @param string $name
-     * @param boolean $force
      * @return mixed|NULL
      */
-    public function read($name, $force = FALSE) {
+    public function read($name) {
         $name = $this->prepareKey($name);
-        $path = $this->options->path . DS . $name;
-        if (file_exists($path)) {
-            $data = Config::read($path, Config::AS_ARRAY);
-            if ($force) {
-                return $data['value'];
-            }
+        if (NULL !== ($data = $this->get($name))) {
             if ($data['ttl'] && time() > $data['ttl']) {
                 return NULL;
             } elseif (isset($data['tags']) && is_array($data['tags'])) {
@@ -81,8 +82,7 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract {
                 $this->write('tags/' . $tag, '', array());
             }
         }
-        File::mkdir(dirname($this->options->path . DS . $name));
-        file_put_contents($this->options->path . DS . $name, PHP_FILE_PREFIX . 'return ' . var_export($data, TRUE) . ';');
+        $this->set($name,$data);
     }
 
     /**
@@ -91,28 +91,26 @@ class Cache_Adapter_File extends Cache_Adapter_Abstract {
      * @param string $name
      */
     public function remove($name) {
-        $file = $this->options->path . DS . $this->prepareKey($name);
-        file_exists($file) && unlink($file);
+        $this->delete($this->prepareKey($name));
     }
 
     /**
      * Clear cache folder
      */
     public function clear() {
-        if ($result = glob($this->options->path . DS . '*' . EXT)) {
-            foreach ($result as $path) {
-                unlink($path);
-            }
-        }
+        $this->flush();
     }
 
     /**
-     *  Prepare filaname for cache
+     * Подготавливает ключ для записи.
+     *
+     * Обратите внимание, что на одном Memcached-сервере могут работать разные сайты.
+     *
      * @param string $name
      * @return string
      */
     protected function prepareKey($name) {
-        $name = str_replace('/', DS, $name . EXT);
+        $name = md5(config('site.name')).'_'.$this->options->prefix.'_'.$name;
         return $name;
     }
 
