@@ -33,8 +33,8 @@ class Cache_Gear extends Gear {
  * @param type $ttl
  * @return type
  */
-function cache($name, $value = '', $tags = array(), $ttl = 3600) {
-    if ($value) {
+function cache($name, $value = NULL, $tags = array(), $ttl = 3600) {
+    if ($value !== NULL) {
         return cogear()->cache->write($name, $value, $tags, $ttl);
     } else {
         return cogear()->cache->read($name);
