@@ -76,6 +76,11 @@ class Image_Gear extends Gear {
      *
      */
     public function index_action() {
+//        $image = new Image(UPLOADS.DS.'1.jpg');
+//        $image->resize('128','128','crop')->save(UPLOADS.DS.'3.jpg');
+////        append('content','<img src="/uploads/1.jpg"/>');
+////        append('content','<img src="/uploads/2.jpg"/>');
+//        append('content','<img src="/uploads/3.jpg"/>');
     }
 
     /**

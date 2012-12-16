@@ -18,8 +18,8 @@ class User_Avatar extends Object{
 
     /**
      * Конструктор
-     * 
-     * @param string $file 
+     *
+     * @param string $file
      */
     public function __construct($file = NULL) {
         $this->file = $file && file_exists(UPLOADS . DS . $file) ? $file : config('user.avatar.default', 'avatars/0/avatar.jpg');
@@ -27,20 +27,19 @@ class User_Avatar extends Object{
 
     /**
      * Get avatar file
-     * 
-     * @return  string 
+     *
+     * @return  string
      */
     public function getFile(){
-        return UPLOADS.DS.$this->file;
+        return UPLOADS.$this->file;
     }
     /**
      * Render avatar
-     *  
-     * @param string $file 
+     *
+     * @param string $file
      */
     public function render($preset = 'avatar.small') {
-        $file = UPLOADS.'/'.$this->file;
-        return HTML::img(Url::toUri(image_preset($preset, $file)), $this->object()->login, array('class' => 'avatar'));
+        return HTML::img(Url::toUri(image_preset($preset,$this->getFile())), $this->object()->login, array('class' => 'avatar'));
     }
 
     /**
