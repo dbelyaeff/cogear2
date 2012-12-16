@@ -3,6 +3,7 @@
 return array(
     'gears' =>
     array(
+        'Install'
     ),
     'i18n' =>
     array(
@@ -40,56 +41,56 @@ return array(
             array(
                 'avatar' =>
                 array(
-                    0 => 'adaptiveResize(128,128)',
+                    0 => 'resize(128,128,crop)',
                 ),
                 'profile' =>
                 array(
-                    0 => 'adaptiveResize(64,64)',
+                    0 => 'resize(64,64,crop)',
                 ),
                 'small' =>
                 array(
-                    0 => 'adaptiveResize(32,32)',
+                    0 => 'resize(32,32,crop)',
                 ),
                 'tiny' =>
                 array(
-                    0 => 'adaptiveResize(24,24)',
+                    0 => 'resize(24,24,crop)',
                 ),
             ),
             'post' =>
             array(
                 'large' => array(
-                    0 => 'resize(700)',
+                    0 => 'resize(700,500,width)',
                 )
             ),
             'avatar' =>
             array(
                 'navbar' =>
                 array(
-                    0 => 'adaptiveResize(38,38)',
+                    0 => 'resize(38,38,crop)',
                 ),
                 'comment' =>
                 array(
-                    0 => 'adaptiveResize(28,28)',
+                    0 => 'resize(28,28,crop)',
                 ),
                 'small' =>
                 array(
-                    0 => 'adaptiveResize(24,24)',
+                    0 => 'resize(24,24,crop)',
                 ),
                 'tiny' =>
                 array(
-                    0 => 'adaptiveResize(16,16)',
+                    0 => 'resize(16,16,crop)',
                 ),
                 'post' =>
                 array(
-                    0 => 'adaptiveResize(24,24)',
+                    0 => 'resize(24,24,crop)',
                 ),
                 'profile' =>
                 array(
-                    0 => 'adaptiveResize(32,32)',
+                    0 => 'resize(32,32,crop)',
                 ),
                 'photo' =>
                 array(
-                    0 => 'adaptiveResize(200,200)',
+                    0 => 'resize(200,200,width)',
                 ),
             ),
         ),
