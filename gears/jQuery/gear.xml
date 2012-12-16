@@ -2,5 +2,5 @@
 <gear name="jQuery">
     <name lang="ru">jQuery</name>
     <description lang="ru">Подключает популярный JavaScript-фреймворк.</description>
-    <order>-1000</order>
+    <order>-99999</order>
 </gear>
