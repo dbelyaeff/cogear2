@@ -80,7 +80,7 @@ class Image_Upload extends File_Upload {
                     $this->postProcess($file);
                 }
             } else {
-                $this->postProcess($file);
+                $this->postProcess($result);
             }
         }
         return $result;
@@ -92,22 +92,12 @@ class Image_Upload extends File_Upload {
      * @param type $file
      */
     public function postProcess($file) {
-//        $this->getInfo($file);
         $image = new Image($file->path);
         if ($this->options->preset) {
             $preset = new Image_Preset($this->options->preset);
             if ($preset->load()) {
                 $preset->image($image)->process();
             }
-        } else {
-            // Resize
-            $this->options->resize && $image->action('resize', $this->options->resize);
-            // Crop
-            $this->options->crop && $image->action('crop', $this->options->crop);
-            // Size & Crop
-            $this->options->sizecrop && $image->action('sizecrop', $this->options->sizecrop);
-            // Watermark
-            $this->options->watermark && $image->action('watermark', $this->options->watermark);
         }
         $image->save();
     }

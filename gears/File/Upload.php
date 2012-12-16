@@ -92,7 +92,6 @@ class File_Upload extends Adapter {
      * @return type
      */
     private function uploadOne($file) {
-       ;
         $file = new Core_ArrayObject($file);
         event('file.preupload', $file);
         $file['errors'] = array();
@@ -145,7 +144,7 @@ class File_Upload extends Adapter {
             if ($file['errors']) {
                 return $file;
             } else {
-                return $this->process($file);
+                return $this->file = $this->process($file);
             }
         }
        ;

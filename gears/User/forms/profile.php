@@ -10,7 +10,7 @@ return array(
                 'avatar' => array(
                     'label' => t('Avatar', 'User'),
                     'type' => 'image',
-                    'preset' => 'avatar.photo',
+                    'preset' => 'avatar.profile',
                     'path' => UPLOADS . DS . 'avatars' . DS . cogear()->user->id,
                     'overwrite' => TRUE,
                     'rename' => cogear()->user->id,

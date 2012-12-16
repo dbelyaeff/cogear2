@@ -151,24 +151,25 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * Обновление данных
      *
      * @param string $table Имя таблицы
-     * @param array  $data Массив полей и значений
+     * @param array  $ Массив полей и значений
      * @param string $where  Условия обновления
      */
     public function update($table, $data = array(), $where = array()) {
         $query = 'UPDATE ' . $this->tableName($table, 'table') . ' SET ';
-        $it = new CachingIterator(new ArrayIterator($data));
+        $it = $data instanceof Core_ArrayObject ? $data->getInnerIterator() : new ArrayIterator($data);
+        $it = new CachingIterator($it);
         foreach ($it as $key => $value) {
             $query .= $key . ' = :' . $key;
             if ($it->hasNext())
-                $query . ', ';
+                $query .= ', ';
         }
         if ($where) {
             $this->where($where);
-            $query .= ' ' . $this->chain['WHERE'];
+            $query .= ' WHERE ' . $this->chain['WHERE'];
         }
         $PDOStatement = $this->PDO->prepare($query);
         foreach ($data as $key => $value) {
-            $PDOStatement->bindParam(':' . $key, $value);
+            $PDOStatement->bindValue(':' . $key, $value);
         }
         try {
             return $PDOStatement->execute();
