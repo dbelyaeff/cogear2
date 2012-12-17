@@ -1,3 +1,6 @@
+body {
+    padding-top: 40px;
+}
 #install_menu ul li{
     list-style: none;
 }
