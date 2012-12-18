@@ -17,6 +17,7 @@ class User_Object extends Db_Item {
     public $dir;
     protected $template = 'User.list';
     public $avatar;
+    protected $navbar;
 
     /**
      * Init user as current
@@ -311,7 +312,7 @@ class User_Object extends Db_Item {
      * User navbar
      */
     public function navbar() {
-        if (!$this->navbar OR !$this->navbar->count()) {
+        if (!$this->navbar) {
             $this->navbar = new User_Navbar();
             $this->navbar->object($this);
         }

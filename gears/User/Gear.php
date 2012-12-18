@@ -129,7 +129,7 @@ class User_Gear extends Gear {
      * @param type $uid
      */
     public function hookPostCount() {
-        $this->user->object()->update(
+        user()->update(
                 array(
                     'drafts' => $this->db->where(array('aid' => $this->user->id, 'published' => 0))->countAll('posts', 'id', TRUE),
                     'posts' => $this->db->where(array('aid' => $this->user->id, 'published' => 1))->countAll('posts', 'id', TRUE),
