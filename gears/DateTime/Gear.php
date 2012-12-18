@@ -51,7 +51,7 @@ class DateTime_Gear extends Gear {
             return t('менее минуты назад');
         }
         elseif($time >= strtotime('-1 hours')){
-            return t('%d (минуту|минут|минуты) назад',date('m')-date('m',strtotime(date('H-00',$time))));
+            return t('%d (минуту|минуты|минут) назад',date('m')-date('m',strtotime(date('H-00',$time))));
         }
         elseif($time >= strtotime('today')){
             return t('Сегодня в %s',  date('H:i',$time));
