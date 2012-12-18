@@ -31,7 +31,7 @@ class Menu_Object extends Observer {
      * @param array $options
      */
     public function __construct($options) {
-        // Принимаем настройки 
+        // Принимаем настройки
         parent::__construct($options);
         // Подкрепляем шестеренку Мета в качестве слушателя Listener (паттерн ООП Observer)
         $this->attach(cogear()->gears->Meta);
@@ -45,8 +45,6 @@ class Menu_Object extends Observer {
                 $this->register($item->toArray());
             }
         }
-        // Активируем один из пунктов, если задана соотетствующая настрйока
-        $this->autoactive && $this->setActive();
     }
 
     /**
@@ -82,7 +80,7 @@ class Menu_Object extends Observer {
             if (NULL != $item->options->active) {
                 $last_active = $key;
                 event('menu.active', $item, $this);
-            } 
+            }
             // Если же в настройках пусто, то проверяем через роутер совпадение uri
             else if (cogear()->router->check(trim($item->link, ' /'))) {
                 $item->options->active = TRUE;
@@ -93,7 +91,7 @@ class Menu_Object extends Observer {
         // Если активных нет или же могут быть несколько элементов — выходим
         if (!$last_active OR $this->multiple)
             return;
-        
+
         // Отменяем все, кроме последнего активного
         foreach ($this as $key => $item) {
             if ($item->options->active) {
@@ -112,7 +110,7 @@ class Menu_Object extends Observer {
 
     /**
      * Фильтруем элементы, согласно условиям.
-     * 
+     *
      * Возвращаем выборку отобранных элементов.
      *
      * @param   array   $conditions
@@ -144,6 +142,8 @@ class Menu_Object extends Observer {
         if ($this->count()) {
             // Сортируем
             $this->uasort('Core_ArrayObject::sortByOrder');
+            // Активируем один из пунктов, если задана соотетствующая настрйока
+            $this->autoactive && $this->setActive();
         }
         // Если не пустой или сказано, что может быть показан пустым
         if ($this->count() OR $this->options->show_empty) {
