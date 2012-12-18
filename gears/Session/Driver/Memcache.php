@@ -41,12 +41,7 @@ class Session_Driver_Memcache extends Cache_Driver_Memcache {
      * @param int $ttl
      */
     public function gc($ttl) {
-        $dir = new DirectoryIterator($this->path);
-        foreach ($dir as $file) {
-            if (!$file->isDot() && $file->getMTime() + $ttl < time()) {
-                @unlink($file->getPathname());
-            }
-        }
+       
     }
 
 }
