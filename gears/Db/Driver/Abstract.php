@@ -398,12 +398,12 @@ abstract class Db_Driver_Abstract extends Object {
      * @return  int|NULL
      */
     public function countAll($table, $field = '*', $reset = FALSE) {
-        $this->swap('select');
+        $this->swap('SELECT');
         $this->select('COUNT(' . $field . ') as count');
         $this->autoclear = FALSE;
         $row = $this->get($table)->row();
         $this->autoclear = TRUE;
-        $this->swap('select');
+        $this->swap('SELECT');
         $reset && $this->clear();
         return $row ? $row->count : NULL;
     }

@@ -139,7 +139,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $exec_data[':'.$key] = $value;
         }
         try {
-            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),$PDOStatement->queryString));
+            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),(string)$PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
@@ -179,7 +179,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $exec_data[':'.$key] = $value;
         }
         try {
-            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),$PDOStatement->queryString));
+            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),(string)$PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
