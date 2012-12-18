@@ -32,8 +32,11 @@ class Gears_Gear extends Gear {
      * Admin dispatcher
      *
      */
-    public function admin($action = 'enabled') {
-        $gears = new Gears(GEARS);
+    public function admin($action = 'all') {
+        $gears = new Gears(GEARS,array(
+            'remove' => FALSE,
+            'charge' => TRUE
+        ));
         if ($do = $this->input->post('do')) {
             $items = $this->input->post('gears');
             $do_gears = array_keys($items);
@@ -48,8 +51,12 @@ class Gears_Gear extends Gear {
                     'name' => 'gears',
                     'elements' => array(
                         array(
-                            'label' => t('Активные') . ' (' . $gears->filter(Gears::ENABLED)->count() . ')',
+                            'label' => t('Все') . ' (' . $gears->count() . ')',
                             'link' => l('/admin/gears/'),
+                        ),
+                        array(
+                            'label' => t('Активные') . ' (' . $gears->filter(Gears::ENABLED)->count() . ')',
+                            'link' => l('/admin/gears/enabled'),
                         ),
                         array(
                             'label' => t('Неактивные') . ' (' . $gears->filter(Gears::DISABLED)->count() . ')',
@@ -101,7 +108,11 @@ class Gears_Gear extends Gear {
     public function admin_action($do, $do_gears) {
         $tpl = new Template('Gears/templates/action');
         $tpl->do = $do;
-        $all_gears = new Gears(GEARS);
+        $all_gears = new Gears(GEARS,array(
+            'remove' => FALSE,
+            'charge' => TRUE,
+            'check' => TRUE,
+        ));
         $gears = new Core_ArrayObject();
         foreach ($do_gears as $key => $gear) {
             $gears->$key = $all_gears->$gear;
@@ -115,15 +126,13 @@ class Gears_Gear extends Gear {
      */
     public function admin_add() {
         $form = new Form('Gears/forms/add');
-        if ($this->zip && $result = $form->result()) {
+        if ($result = $form->result()) {
             $file = $result->file ? $result->file : $result->url;
             if (TRUE === $this->zip->open($file->path)) {
                 $this->zip->extractTo(GEARS);
                 $this->zip->close();
-                success(t('Gears has been successfully installed!', 'Gears'));
+                success(t('Шестерёнка была загружена!'));
             }
-        } else {
-            warning(t('You must activete Zip gear to upload new gears.'));
         }
 
         $form->show();

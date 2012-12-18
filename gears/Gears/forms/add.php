@@ -1,12 +1,10 @@
 <?php
-d('Gears');
-
 return array(
     'name' => 'gears-add',
-    'title' => t('Add gears'),
+    'title' => t('Загрузить шестерёнку'),
     'elements' => array(
         'file' => array(
-            'label' => t('From disk'),
+            'label' => t('С диска'),
             'type' => 'file',
             'allowed_types' => array('zip','tar.gz'),
             'maxsize' => 3072,
@@ -19,7 +17,7 @@ return array(
         ),
         'url' => array(
             'type' => 'file_url',
-            'label' => t('From url'),
+            'label' => t('С Интернета'),
             'allowed_types' => array('zip','tar.gz'),
             'maxsize' => 3072,
             'path' => UPLOADS.DS.'gears',
@@ -30,7 +28,7 @@ return array(
             'elements' => array(
                 'submit' => array(
                     'type' => 'submit',
-                    'label' => t('Upload'),
+                    'label' => t('Загрузить'),
                 )
             )
         )
