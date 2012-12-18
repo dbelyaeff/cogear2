@@ -96,7 +96,7 @@ class Post_Gear extends Gear {
         $post = new Post();
         $post->id = $Comment->post_id;
         if ($post->find()) {
-            $post->update(array('comments' => $this->db->where(array('post_id' => $post->id, 'published' => 1))->count('comments', 'id', TRUE)));
+            $post->update(array('comments' => $this->db->where(array('post_id' => $post->id, 'published' => 1))->countAll('comments', 'id', TRUE)));
         }
     }
 
@@ -143,15 +143,17 @@ class Post_Gear extends Gear {
                 break;
             case 'user.profile.tabs':
                 $menu->register(array(
-                    'label' => t('Posts') . ' <sup>' . $menu->object()->posts . '</sup>',
+                    'label' => t('Публикации') . ' <sup>' . $menu->object()->posts . '</sup>',
                     'link' => $menu->object()->getLink() . '/posts/',
                     'order' => 2,
+                    'title' => t('Публикации'),
                 ));
                 if ($menu->object()->id == $this->user->id) {
                     $menu->register(array(
-                        'label' => t('Drafts') . ' <sup>' . $this->user->drafts . '</sup>',
+                        'label' => t('Черновики') . ' <sup>' . $this->user->drafts . '</sup>',
                         'link' => $menu->object()->getLink() . '/drafts/',
                         'order' => 2.1,
+                        'title' => t('Черновики'),
                     ));
                 }
                 break;
@@ -267,12 +269,12 @@ class Post_Gear extends Gear {
                 }
                 if ($post->save()) {
                     $this->session->remove('draft');
-                    flash_success(t($post->published ? 'Post published!' : 'Post saved to drafts!'), NULL, 'growl');
+                    flash_success($post->published ? t('Пост опубликован!') : t('Сохранено в черновиках!'), NULL, 'growl');
                     redirect($post->getLink());
                 }
             }
         } else {
-//            $form->object($post);
+            $form->object($post);
         }
         // Remove 'delete' button from create post form
         $form->elements->offsetUnset('delete');
@@ -290,16 +292,13 @@ class Post_Gear extends Gear {
         $this->widgets = NULL;
         $form = new Form('Post/forms/post');
         $form->object($post);
-        $form->elements->title->options->label = t('Edit post');
+        $form->elements->title->options->label = t('Редактирование публикации');
         if ($result = $form->result()) {
             $post->object()->extend($result);
             if ($result->delete && access('Post.delete', $post)) {
-                $blog = new Blog();
-                $blog->id = $post->bid;
-                $blog->find();
                 if ($post->delete()) {
-                    flash_success(t('Post has been deleted!'));
-                    redirect($blog->getLink());
+                    flash_success(t('Пост удалён!'));
+                    redirect(user()->getLink());
                 }
             }
             if ($result->preview) {
@@ -311,7 +310,7 @@ class Post_Gear extends Gear {
                 if (Ajax::is() && $this->input->get('autosave')) {
                     $post->update();
                     $ajax = new Ajax();
-                    $ajax->message(t('Post saved!', 'Post'));
+                    $ajax->message(t('Пост сохранён!', 'Post'));
                     $ajax->send();
                 }
                 if ($result->draft) {
@@ -322,10 +321,10 @@ class Post_Gear extends Gear {
                 if ($post->save()) {
                     if ($post->published) {
                         $link = l($post->getLink());
-                        flash_success(t('Post is published!', 'Post'), NULL, 'growl');
+                        flash_success(t('Пост опубликован!'), NULL, 'growl');
                     } else {
                         $link = l($post->getLink());
-                        flash_success(t('Post is saved to drafts! %s', 'Post'), NULL, 'growl');
+                        flash_success(t('Сохранено в черновиках!'), NULL, 'growl');
                     }
                     redirect($post->getLink());
                 }
@@ -372,11 +371,8 @@ class Post_Gear extends Gear {
         $post = new Post();
         $post->id = $post_id;
         if ($post->find() && access('Post.delete.all')) {
-            $blog = new Blog();
-            $blog->id = $post->bid;
-            $blog->find();
             if ($post->delete()) {
-                $message = t('Post has been deleted', 'Post');
+                $message = t('Пост удалён');
                 if (Ajax::is()) {
                     $data['success'] = TRUE;
                     $data['messages'] = array(
@@ -385,15 +381,14 @@ class Post_Gear extends Gear {
                             'body' => $message,
                         )
                     );
-                    $ref = $this->response->get('referer');
-                    $data['redirect'] = $blog->getLink();
+                    $data['redirect'] = server('referer');
                     $ajax = new Ajax();
                     $ajax->json($data);
                 }
                 $post = new Post();
                 $post->id = $post->post_id;
                 flash_success($message);
-                redirect($blog->getLink());
+                back(-2);
             }
         }
     }
