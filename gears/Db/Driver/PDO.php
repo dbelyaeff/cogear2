@@ -44,6 +44,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * Прямое исполнение запроса
      *
      * @param string $query Запрос
+     * @param boolean  $clear Очищать ли чепочку запроса
      * @return PDOStatement|bool
      */
     public function query($query) {
@@ -52,7 +53,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         bench('db.query.' . $i . '.start');
         $this->result = $this->PDO->query($query);
         bench('db.query.' . $i . '.end');
-        $this->clear();
+        $this->autoclear && $this->clear();
         return $this->result ? $this->result : FALSE;
     }
 
@@ -133,14 +134,15 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
     public function insert($table, $data = array(), $type = 'INSERT') {
         $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(',',array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
         $PDOStatement = $this->PDO->prepare($query);
+        $exec_data = array();
         foreach ($data as $key => $value) {
-            $PDOStatement->bindValue(':' . $key, $value);
+            $exec_data[':'.$key] = $value;
         }
         try {
-            $this->queries->push($PDOStatement->queryString);
+            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),$PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
-            if ($PDOStatement->execute()) {
+            if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
                 return $this->PDO->lastInsertId();
             } else {
@@ -172,14 +174,15 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $query .= ' WHERE ' . $this->chain['WHERE'];
         }
         $PDOStatement = $this->PDO->prepare($query);
+       $exec_data = array();
         foreach ($data as $key => $value) {
-            $PDOStatement->bindValue(':' . $key, $value);
+            $exec_data[':'.$key] = $value;
         }
         try {
-            $this->queries->push($PDOStatement->queryString);
+            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),$PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
-            if ($PDOStatement->execute()) {
+            if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
                 return $PDOStatement->rowCount();
             }
