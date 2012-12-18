@@ -43,26 +43,32 @@ $(document).ready(function(){
             }
         });
     });
-    $('form select').each(function(){
-        if($(this).attr('data-source')){
-            $(this).ajaxChosen({
-                method: 'GET',
-                url: $(this).attr('data-source'),
-                dataType: 'json'
-            }, function (data) {
-                var terms = {};
-
-                $.each(data, function (i, val) {
-                    terms[i] = val;
-                });
-
-                return terms;
-            });
-        } else {
-            $(this).chosen({
-                no_results_text: t("No results matched","Form")
-            });
-        }
+//    $('form select').each(function(){
+//        if($(this).attr('data-source')){
+//            $(this).ajaxChosen({
+//                method: 'GET',
+//                url: $(this).attr('data-source'),
+//                dataType: 'json'
+//            }, function (data) {
+//                var terms = {};
+//
+//                $.each(data, function (i, val) {
+//                    terms[i] = val;
+//                });
+//
+//                return terms;
+//            });
+//        } else {
+//            $(this).chosen({
+//                no_results_text: t("No results matched","Form")
+//            });
+//        }
+//    });
+    $('.delete input').on('click',function(){
+       if(!confirm(t('Вы действительно хотите это сделать?'))){
+           return false;
+       }
+       return true;
     });
 });
 $(document).on('keyup','form input[data-source].ajaxed,form textarea[data-source].ajaxed',function(event){

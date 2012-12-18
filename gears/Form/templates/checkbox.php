@@ -1,2 +1,1 @@
-<label class="checkbox inline"><input type="checkbox" name="<?php echo $element->name?>" <?php if($element->checked){ echo 'checked="checked"';}?>> <?php echo $element->text?></label>
-<?php $element->label = NULL?>
+<label class="checkbox"><input type="checkbox" name="<?php echo $element->name?>" <?php if($element->checked){ echo 'checked="checked"';}?>> <?php echo $element->text?></label>

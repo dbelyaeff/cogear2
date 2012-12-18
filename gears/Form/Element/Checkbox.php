@@ -38,6 +38,8 @@ class Form_Element_Checkbox extends Form_Element_Abstract{
     public function prepareOptions() {
         $this->options->checked = $this->options->value ? 'checked' : '';
         parent::prepareOptions();
+        $this->options->text = $this->options->label;
+        $this->options->label = NULL;
         return $this->options;
     }
 }
