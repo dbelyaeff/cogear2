@@ -82,9 +82,9 @@ class Theme_Gear extends Gear {
     private function getThemes() {
         $files = glob(THEMES . DS . '*' . DS . 'theme.xml');
         foreach ($files as $file) {
-            $xml = new SimpleXMLElement(file_get_contents($file));
-            $name = $xml->attributes()->name->__toString();
-            $themes[$name] = $xml;
+            $xml = new XmlConfig($file);
+            $config = $xml->parse();
+            $themes[$config->gear] = $config->name;
         }
         return $themes;
     }
