@@ -82,6 +82,12 @@ abstract class Db_Driver_Abstract extends Object {
      * @var boolean
      */
     protected $is_connected;
+    /**
+     * Автоматическая очистка цепочки запроса
+     *
+     * @var type
+     */
+    protected $autoclear = TRUE;
 
     /**
      * Констрктор
@@ -393,8 +399,10 @@ abstract class Db_Driver_Abstract extends Object {
      */
     public function countAll($table, $field = '*', $reset = FALSE) {
         $this->swap('select');
-        $this->chain['select'] = 'COUNT(' . $field . ') as count';
+        $this->select('COUNT(' . $field . ') as count');
+        $this->autoclear = FALSE;
         $row = $this->get($table)->row();
+        $this->autoclear = TRUE;
         $this->swap('select');
         $reset && $this->clear();
         return $row ? $row->count : NULL;
