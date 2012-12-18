@@ -68,7 +68,7 @@ class I18n_Gear extends Gear {
             case 'admin':
                 $menu->register(array(
                     'link' => l('/admin/i18n'),
-                    'label' => icon('comment') . ' ' . t('Language', 'I18n.admin'),
+                    'label' => icon('comment') . ' ' . t('Язык'),
                     'order' => 200,
                 ));
                 break;
