@@ -131,8 +131,8 @@ class User_Gear extends Gear {
     public function hookPostCount() {
         $this->user->object()->update(
                 array(
-                    'drafts' => $this->db->where(array('aid' => $this->user->id, 'published' => 0))->count('posts', 'id', TRUE),
-                    'posts' => $this->db->where(array('aid' => $this->user->id, 'published' => 1))->count('posts', 'id', TRUE),
+                    'drafts' => $this->db->where(array('aid' => $this->user->id, 'published' => 0))->countAll('posts', 'id', TRUE),
+                    'posts' => $this->db->where(array('aid' => $this->user->id, 'published' => 1))->countAll('posts', 'id', TRUE),
         ));
     }
 
@@ -151,7 +151,7 @@ class User_Gear extends Gear {
                 return;
             }
         }
-        $User->update(array('comments' => $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->count('comments', 'id', TRUE)));
+        $User->update(array('comments' => $this->db->select('*')->where(array('aid' => $User->id, 'published' => 1))->countAll('comments', 'id', TRUE)));
     }
 
     /**
@@ -474,16 +474,16 @@ class User_Gear extends Gear {
                 $recover = l('/user/lostpassword/' . $user->hash, TRUE);
                 $mail = new Mail(array(
                             'name' => 'register.lostpassword',
-                            'subject' => t('Password recovery on %s', 'Mail.lostpassword', config('site.url')),
-                            'body' => t('You password recovery has been requeset on http://%s from IP-address <b>%s</b>.
-                                    <p>If you know nothing about this action, just leave it unnoticed or contact site administration.
-                                    <p>To recover password, click following link:<p>
-                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $this->session->get('ip'), $recover, $recover),
+                            'subject' => t('Восстановление пароля на сайте %s', config('site.url')),
+                            'body' => t('Было запрошено восстановление вашего пароля на сайте http://%s с IP-адреса <b>%s</b>.
+                                    <p>Если не вы были инициатором этого действия, оставьте письм без внимания или обратитесь к администрации сайта.
+                                    <p>Чтобы пройти процедуру восстановления пароля, перейдите по разовой ссылке:<p>
+                            <a href="%s">%s</a>', config('site.url'), $this->session->get('ip'), $recover, $recover),
                         ));
                 $mail->to($user->email);
                 if ($mail->send()) {
                     $user->save();
-                    success(t('Follow the instructions that were send to your email.', 'Mail.lostpassword', $user->email));
+                    success(t('Следуйте инструкциям, отправленным на ваш почтовый ящик.', $user->email));
                 }
             }
             else
@@ -496,10 +496,10 @@ class User_Gear extends Gear {
      */
     public function register_action($code = NULL) {
         if (!config('user.register.enabled', TRUE)) {
-            return warning('Registration is turned off by site admin');
+            return warning(t('Регистрация отключена администрацией сайта.'));
         }
         if ($this->isLogged()) {
-            return warning('You are already logged in!', 'Authorization');
+            return warning('Вы уже авторизированы!');
         }
         $this->showMenu();
         if ($code) {
@@ -518,14 +518,14 @@ class User_Gear extends Gear {
                     if ($user->save()) {
                         event('user.verified', $user);
                         if ($user->login()) {
-                            flash_success(t('Registration is complete!', 'User.register'));
+                            flash_success(t('Регистрация завершена!'));
                             redirect($user->getLink());
                         }
                     }
                 }
                 $form->show();
             } else {
-                error(t('Registration code was not found.', 'User.register'));
+                error(t('Регистрационный код не найден.'));
             }
         } else {
             $form = new Form('User/forms/register');
@@ -538,16 +538,16 @@ class User_Gear extends Gear {
                     $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
                                 'name' => 'register.verify',
-                                'subject' => t('Registraion on %s', 'Mail.registration', config('site.url')),
-                                'body' => t('You have been successfully registered on http://%s. <br/>
-                            Please, click following link to procceed email verification:<p>
-                            <a href="%s">%s</a>', 'Mail.registration', config('site.url'), $verify_link, $verify_link),
+                                'subject' => t('Регистрация на сайте %s',config('site.url')),
+                                'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
+                            Пожалуйста, перейдите по ссылке ниже, для того чтобы подтвердить данный почтовый ящик:<p>
+                            <a href="%s">%s</a>', config('site.url'), $verify_link, $verify_link),
                             ));
                     $mail->to($user->email);
                     if ($mail->send()) {
                         $user->save();
                         event('user.confirmation', $user);
-                        success(t('Confirmation letter has been successfully send to <b>%s</b>. Follow the instructions.', 'Mail.registration', $user->email));
+                        success(t('Письмо с подтвержденим регистрации было отправлено на почтовый адрес <b>%s</b>. Следуйте инструкциям.',$user->email));
                     }
                 } else {
                     $user->save();

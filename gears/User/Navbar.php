@@ -35,7 +35,7 @@ class User_Navbar extends Object {
                     'title' => 4,
                     'elements' => array(
                         'profile' => array(
-                            'label' => t('Profile', 'User'),
+                            'label' => t('Профиль'),
                             'link' => $user->getLink(),
                         ),
                         'edit' => array(

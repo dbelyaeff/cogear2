@@ -3,11 +3,11 @@
     $fields = new Stack(array('name' => 'user.profile.fields'));
     $fields->object($user);
     $fields->append(array(
-        'label' => t('Registered', 'User'),
+        'label' => t('Зарегистрирован'),
         'value' => df($user->reg_date),
     ));
     $fields->append(array(
-        'label' => t('Last visit', 'User'),
+        'label' => t('Последнее посещение'),
         'value' => df($user->last_visit),
     ));
     $fields->init();
