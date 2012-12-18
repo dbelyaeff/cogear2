@@ -24,17 +24,17 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
     public function __construct($options = array()) {
         parent::__construct($options);
         if (!self::check()) {
-            throw new Exception(t('Работа с кешем через Memcached невозможна, ибо он отключен на сервере.'));
+            throw new Exception(t('Работа с кэшем через Memcached невозможна, ибо он отключен на сервере.'));
         } else {
             $this->object(new Memcache());
             if (FALSE == $this->connect($this->options->host, $this->options->port)) {
-                throw new Exception(t('Не удалётся соединиться с сервером Memcached по адресу %s:%d', $this->options->host, $this->options->port));
+                throw new Exception(t('Не удаётся соединиться с сервером Memcached по адресу %s:%d', $this->options->host, $this->options->port));
             }
         }
     }
 
     /**
-     * Проверяет, работает ли мемкеша на сервере
+     * Проверяет, работает ли мемкэша на сервере
      */
     public static function check() {
         return class_exists('Memcache');
@@ -111,7 +111,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = md5(config('site.name')).'_'.$this->options->prefix.'_'.$name;
+        $name = md5(cogear()->secure->genHash(config('site.url'))).'_'.$this->options->prefix.'_'.$name;
         return $name;
     }
 
