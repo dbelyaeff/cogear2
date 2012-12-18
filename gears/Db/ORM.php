@@ -20,7 +20,11 @@ class Db_ORM extends Object {
      */
     protected static $cached = array();
     protected $cache_path = '';
-
+    /**
+     * Флаг кеширования
+     * @var type
+     */
+    protected $caching = TRUE;
     /**
      * Table name
      *
@@ -204,19 +208,39 @@ class Db_ORM extends Object {
     }
 
     /**
-     * Local cache method
+     * Кеширование объектов
      *
      * @param type $id
      * @param type $object
      */
-    public function cache($id, $object = NULL) {
-        $path = $this->cache_path;
-        self::$cached OR self::$cached = new Core_ArrayObject();
-        if ($object) {
-            self::$cached->$path OR self::$cached->$path = new Core_ArrayObject();
-            self::$cached->$path->$id = $object;
+    public function cache($id, $object = NULL,$tags = array(), $ttl = 3600) {
+        // Возможность переключения кеширования
+        if(is_bool($id)){
+            $this->caching = $id;
+            return;
+        }
+        // Если кеширования выключено — возвращаем NULL
+        if(!$this->caching){
+            return NULL;
+        }
+        // Если работает Мемкеш
+        if (Cache_Driver_Memcache::check()) {
+            $key = $this->table.'.'.$id;
+            if($object){
+                return cache($key,$object,$tags,$ttl);
+            }
+            else {
+                return cache($key);
+            }
         } else {
-            return self::$cached->$path && self::$cached->$path->$id ? self::$cached->$path->$id : NULL;
+            $path = $this->cache_path;
+            self::$cached OR self::$cached = new Core_ArrayObject();
+            if ($object) {
+                self::$cached->$path OR self::$cached->$path = new Core_ArrayObject();
+                self::$cached->$path->$id = $object;
+            } else {
+                return self::$cached->$path && self::$cached->$path->$id ? self::$cached->$path->$id : NULL;
+            }
         }
     }
 
@@ -341,7 +365,10 @@ class Db_ORM extends Object {
             $data = $this->getData();
         }
         event('Db_ORM.insert', $this, $data);
-        return $this->object()->{$this->primary} = $this->db->insert($this->table, $data);
+        if($result = $this->object()->{$this->primary} = $this->db->insert($this->table, $data)){
+            $this->cache($result,$this->object());
+        }
+        return $result;
     }
 
     /**
@@ -357,7 +384,10 @@ class Db_ORM extends Object {
             $data = $this->getData();
         }
         event('Db_ORM.update', $this, $data);
-        return $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}));
+        if($result = $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}))){
+            $this->cache($this->{$this->primary},$this->object());
+        }
+        return $result;
     }
 
     /**
@@ -379,6 +409,8 @@ class Db_ORM extends Object {
             $result = $this->db->delete($this->table) ? TRUE : FALSE;
             event('Db_ORM.delete', $this, $data, $result);
         }
+        // Чистим кеш
+        $this->cache($this->{$this->primary},FALSE,array(),0);
         $this->clear();
         return $result;
     }

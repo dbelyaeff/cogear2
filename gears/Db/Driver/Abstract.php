@@ -273,6 +273,11 @@ abstract class Db_Driver_Abstract extends Object {
             if ($this->chain['WHERE']) {
                 $this->chain['WHERE'] .= $join;
             }
+            if(strpos($name,' ')){
+                $where = explode(' ',$name,2);
+                $name = $where[0];
+                $condition = $where[1];
+            }
             $this->chain['WHERE'] .= $name . ' ' . $condition . ' ' . $this->escape($value);
         }
         return $this;
