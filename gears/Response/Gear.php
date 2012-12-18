@@ -12,31 +12,12 @@ class Response_Gear extends Gear {
 
     protected $hooks = array(
         'exit' => 'send',
-        '404' => 'notFound',
-        'empty' => 'showEmpty',
     );
     /**
      * Конструктор
      */
     public function __construct($config) {
         parent::__construct($config);
-        $this->object(new Response_Object());
-//        hook('exit',array($this->object(),'send'));
-    }
-
-    /**
-     * Not found
-     */
-    public function notFound(){
-        $this->request();
-        $tpl = new Template('Response/templates/404');
-        $tpl->show();
-    }
-    /**
-     * Not found
-     */
-    public function showEmpty(){
-        $this->request();
-        warning(t('Nothing found','Response'),NULL,'content');
+        $this->object(Response::getInstance());
     }
 }

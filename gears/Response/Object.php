@@ -1,17 +1,22 @@
 <?php
 
 /**
- * Output
+ * Ответ
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
-class Response_Object extends Core_ArrayObject {
+class Response_Object extends Core_ArrayObject implements Interface_Singleton {
+
+    /**
+     * Сущность
+     *
+     * @var object
+     */
+    private static $_instance;
+
     /**
      * HTTP codes
      *
@@ -84,12 +89,30 @@ class Response_Object extends Core_ArrayObject {
      * @var boolean
      */
     private $headers_sent = FALSE;
+
     /**
      * Output
      *
      * @var type
      */
     public $output = '';
+
+    /**
+     * Clone
+     */
+    private function __clone() {
+
+    }
+
+    /**
+     * Get instance
+     *
+     * @return Cogear
+     */
+    public static function getInstance() {
+        return self::$_instance instanceof self ? self::$_instance : self::$_instance = new self();
+    }
+
     /**
      * Конструктор
      */
@@ -149,16 +172,16 @@ class Response_Object extends Core_ArrayObject {
         foreach ($this as $value) {
             $this->output .= $value;
         }
-        event('response.send',$this);
+        event('response.send', $this);
         $this->sendHeaders();
         echo $this->output;
-        event('response.send.after',$this);
+        event('response.send.after', $this);
     }
 
     /**
      * Clear the response
      */
-    public function clear(){
+    public function clear() {
         $this->exchangeArray(array());
     }
 
@@ -175,13 +198,12 @@ function redirect($url = NULL) {
     exit;
 }
 
-
 function back() {
     $referer = cogear()->request->get('HTTP_REFERER');
-    $referer = str_replace('http://'.config('site.url'),'',$referer);
-    $referer = ltrim($referer,'/');
+    $referer = str_replace('http://' . config('site.url'), '', $referer);
+    $referer = ltrim($referer, '/');
     $uri = cogear()->router->getUri();
-    if($uri != $referer){
-        redirect(l('/'.$referer));
+    if ($uri != $referer) {
+        redirect(l('/' . $referer));
     }
 }
