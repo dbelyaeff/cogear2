@@ -70,16 +70,16 @@ class Admin_Gear extends Gear {
                     'elements' => array(
                         array(
                             'link' => l('/admin'),
-                            'label' => icon('home') . ' ' . t('Dashboard', 'Admin'),
+                            'label' => icon('home') . ' ' . t('Главная'),
                         ),
-//                        array(
-//                            'link' => l('/admin/clear/session'),
-//                            'label' => icon('remove') . ' ' . t('Clear session', 'Admin'),
-//                            'order' => '0.1',
-//                        ),
+                       array(
+                            'link' => l('/admin/clear/session'),
+                            'label' => icon('remove') . ' ' . t('Сбросить сессию'),
+                            'order' => '0.1',
+                        ),
                         array(
                             'link' => l('/admin/clear/cache'),
-                            'label' => icon('trash') . ' ' . t('Clear system cache', 'Admin'),
+                            'label' => icon('trash') . ' ' . t('Сбросить кеш'),
                             'access' => access('Admin'),
                             'order' => '0.2',
                         )
@@ -87,7 +87,7 @@ class Admin_Gear extends Gear {
                 ));
                 $menu->register(array(
                     'link' => l('/admin/site'),
-                    'label' => icon('inbox') . ' ' . t('Site', 'Admin'),
+                    'label' => icon('inbox') . ' ' . t('Сайт'),
                     'order' => 1000,
                 ));
                 break;
@@ -101,8 +101,7 @@ class Admin_Gear extends Gear {
         if ($args = $this->router->getArgs()) {
             $gear = ucfirst($args[0]);
             $args = array_slice($args, 1);
-            $callback = array(cogear()->$gear, 'admin');
-            $name = t(cogear()->$gear->gear, 'Gears');
+            $callback = array($this->gears->$gear, 'admin');
             $this->router->exec($callback, $args);
         }
     }
@@ -116,10 +115,10 @@ class Admin_Gear extends Gear {
         switch ($action) {
             case 'session':
                 $this->session->remove();
-                flash_success(t('Session is flushed', 'Admin'));
+                flash_success(t('Сессия сброшена'));
                 break;
             case 'cache':
-                flash_success(t('System cache has been reset.', 'Admin'));
+                flash_success(t('Системный кеш сброшен.'));
                 $this->system_cache->clear();
                 break;
         }
