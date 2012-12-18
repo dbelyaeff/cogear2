@@ -269,6 +269,7 @@ abstract class Db_Driver_Abstract extends Object {
             }
             $this->chain['WHERE'] .= $name . ' ' . $condition . ' ' . $this->escape($value);
         }
+        return $this;
     }
 
     /**

@@ -20,7 +20,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @return  boolean Удалость или нет установить соединение с базой данных
      */
     public function connect($database = '') {
-        if(FALSE !== $database){
+        if (FALSE !== $database) {
             $database = ';dbname=' . ($database ? $database : $this->options->base);
         }
         try {
@@ -109,7 +109,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @param   mixed   $data
      */
     public function escape($data) {
-        return  $this->PDO->quote($data);
+        return $this->PDO->quote($data);
     }
 
     /**
@@ -131,13 +131,17 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @return  int Номер вставленного элемента
      */
     public function insert($table, $data = array(), $type = 'INSERT') {
-        $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
+        $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(',',array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
         $PDOStatement = $this->PDO->prepare($query);
         foreach ($data as $key => $value) {
-            $PDOStatement->bindParam(':' . $key, $value);
+            $PDOStatement->bindValue(':' . $key, $value);
         }
         try {
+            $this->queries->push($PDOStatement->queryString);
+            $i = $this->queries->count();
+            bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute()) {
+                bench('db.query.' . $i . '.end');
                 return $this->PDO->lastInsertId();
             } else {
                 return FALSE;
@@ -172,7 +176,16 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $PDOStatement->bindValue(':' . $key, $value);
         }
         try {
-            return $PDOStatement->execute();
+            $this->queries->push($PDOStatement->queryString);
+            $i = $this->queries->count();
+            bench('db.query.' . $i . '.start');
+            if ($PDOStatement->execute()) {
+                bench('db.query.' . $i . '.end');
+                return $PDOStatement->rowCount();
+            }
+            else {
+                return FALSE;
+            }
         } catch (PDOException $e) {
             $this->error($e->getMessage());
         }
@@ -185,16 +198,12 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @param   array   $where
      */
     public function delete($table, $where = array()) {
-        $query = 'DELETE FROM ' . $this->tableName($table, 'table');
+        $query = 'DELETE FROM ' . $this->tableName($table);
         if ($where) {
             $this->where($where);
-            $query .= ' ' . $this->chain['WHERE'];
+            $query .= ' WHERE ' . $this->chain['WHERE'];
         }
-        try {
-            return $PDOStatement->execute();
-        } catch (PDOException $e) {
-            $this->error($e->getMessage());
-        }
+        return $this->query($query);
     }
 
 }
