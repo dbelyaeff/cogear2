@@ -151,6 +151,18 @@ abstract class Gear extends Object {
      * @var routes
      */
     protected $routes = array();
+    /**
+     * Зависимости
+     *
+     * @var array
+     */
+    protected $required;
+    /**
+     * От кого зависит
+     *
+     * @var array
+     */
+    protected $depends;
 
     /**
      * Конструктор
@@ -159,7 +171,7 @@ abstract class Gear extends Object {
      */
     public function __construct($config) {
         // Принимаем настройки их конфига и сохраняем их как свойства
-        parent::__construct($config,Options::SELF);
+        parent::__construct($config, Options::SELF);
         $this->reflection = new ReflectionClass($this);
         $this->getPath();
         $this->getDir();
@@ -168,8 +180,6 @@ abstract class Gear extends Object {
         $this->getSettings();
         $this->file = new SplFileInfo($this->path);
     }
-
-
 
     /**
      * Initialize
@@ -225,13 +235,13 @@ abstract class Gear extends Object {
      */
     public function status($value = NULL) {
         if (Gears::ENABLED === $value) {
-            $gears = config('gears');
+            $gears = cogear()->config->gears;
             if (NULL == $gears->findByValue($this->gear)) {
                 $gears->append($this->gear);
                 cogear()->set('gears', $gears);
             }
         } else if (Gears::DISABLED === $value) {
-            $gears = cogear()->config->get('gears');
+            $gears = cogear()->config->gears;
             if (NULL !== ($key = $gears->findByValue($this->gear))) {
                 $gears->offsetUnset($key);
                 cogear()->set('gears', $gears);
@@ -260,23 +270,31 @@ abstract class Gear extends Object {
             $result->message = t('Шестеренка уже активирована!');
             $result->success = FALSE;
         }
-        $check = $this->checkRequiredGears();
-        if (TRUE !== $check->success) {
+        if ($this->required && FALSE === $this->required->success) {
             $gears_required = new Core_ArrayObject();
             $gears_incomp_version = new Core_ArrayObject();
-            foreach ($check->gears as $gear => $code) {
-                if (FALSE === $code) {
-                    $gears_required->append('<b>' . t($gear) . '</b>');
-                } else {
-                    $gears_incomp_version->append('<b>' . t($gear) . ' ' . $code . '</b>');
+            $gears_incomp = new Core_ArrayObject();
+            foreach ($this->required->gear as $gear) {
+                // Несовместимые шестерйнки
+                if (Gears::ERROR_INCOMP === $gear->success) {
+                    $gears_incomp->append($gear->name);
+                }
+                // Шестерёнки неправильных версий
+                if (Gears::ERROR_VERSION === $gear->success) {
+                    $gears_incomp_version->append($gear->name);
+                }
+                // Необходимые шестерёнки
+                if (Gears::ERROR_REQUIRED === $gear->success) {
+                    $gears_required->append($gear->name);
                 }
             }
-            $result->message = '';
-            $gears_required->count() && $result->message .= t('Следующие шестерёнки должны быть активированы: ') . $gears_required->toString(", ") . "\n";
-            $gears_incomp_version->count() && $result->message .= t('Следующие шестеренки должны быть соответствующих версий: ') . $gears_incomp_version->toString(", ");
+            $gears_required->count() && $result->message = t('Следующие шестерёнки должны быть активированы: ') . '<span class="label label-important">'. $gears_required->toString("</span> <span class='label label-important'>") . "</span>";
+            $gears_incomp_version->count() && $result->message .= '<br/>'.t('Следующие шестеренки должны быть соответствующих версий: ') . '<span class="label label-important">'. $gears_incomp_version->toString("</span> <span class='label label-important'>") . "</span>";
+            $gears_incomp->count() && $result->message .= t('Следующие шестеренки должны быть отключены: ') . '<span class="label label-important">'. $gears_incomp->toString("</span> <span class='label label-important'>") . "</span>";
             $result->success = FALSE;
         }
         $result->success && $this->status(Gears::ENABLED);
+        event('gear.enable',$this,$result);
         return $result;
     }
 
@@ -287,23 +305,18 @@ abstract class Gear extends Object {
         $result = new Core_ArrayObject(array(
                     'success' => TRUE,
                     'message' => t('Шестеренка деактивирована!'),
-                    'depends' => new Core_ArrayObject(),
                 ));
         if ($this->status() != Gears::ENABLED) {
             $result->message = t('Шестеренка уже деактивирована!', 'Gears');
             $result->success = FALSE;
         }
-        foreach (cogear()->gears as $gear) {
-            $check = $gear->checkRequiredGears();
-            if ($check->gears->{$this->gear}) {
-                $result->depends->{$gear->gear} = TRUE;
-            }
-        }
-        if ($result->depends->count()) {
+        if ($this->depends) {
             $result->success = FALSE;
-            $result->message = t('Невозможно деактивировать шестеренку, потому что от неё зависят следующие шестеренки: ') . ' <b>' . implode('</b>, <b>', array_keys($result->depends->toArray())) . '</b>';
+            $result->message = t('Невозможно деактивировать шестеренку, потому что от неё зависят следующие шестеренки: ') . '<span class="label label-important">'. $this->depends->toString("</span> <span class='label label-important'>") . "</span>";
+            //. ' <b>' . implode('</b>, <b>', array_keys($this->depends->toArray())) . '</b>';
         }
         $result->success && $this->status(Gears::DISABLED);
+        event('gear.disable',$this,$result);
         return $result;
     }
 

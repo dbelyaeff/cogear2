@@ -15,6 +15,13 @@ class Gears extends Options {
     const ENABLED = 1;
     const CORE = 2;
 
+    /**
+     *
+     */
+    const ERROR_INCOMP = -2;
+    const ERROR_VERSION = -1;
+    const ERROR_REQUIRED = 0;
+
     public static $defaults;
     public $options = array(
         // Проверять ли на совместимость шестерёнки
@@ -40,6 +47,7 @@ class Gears extends Options {
         }
         $this->init();
     }
+
     /**
      * Волшебный метод __get
      *
@@ -50,13 +58,14 @@ class Gears extends Options {
      * @param string $name
      * @return  mixed
      */
-    public function __get($name){
+    public function __get($name) {
         $ucname = ucfirst($name);
-        if($this->offsetExists($ucname)){
+        if ($this->offsetExists($ucname)) {
             return $this->offsetGet($ucname);
         }
         return NULL;
     }
+
     /**
      * Настройки по умолчанию для всех шестеренок
      *
@@ -104,6 +113,22 @@ class Gears extends Options {
     }
 
     /**
+     * Invoke gear
+     *
+     * @param type $gear
+     */
+    public static function invoke($gear) {
+        strpos($gear, 'gear.xml') OR $gear = GEARS . DS . $gear . DS . 'gear.xml';
+        if (file_exists($gear)) {
+            $xml = new XmlConfig($gear);
+            $gear = $xml->attributes()->name->__toString();
+            $class = $gear . '_' . self::GEAR;
+            return new $class($xml->parse());
+        }
+        return NULL;
+    }
+
+    /**
      * Фильтрация шестерёнок. Активные или неактивные, или шестерёнки ядра
      *
      * @param int $type
@@ -131,20 +156,18 @@ class Gears extends Options {
         // Проверка на совместимость
         if ($this->options->check) {
             // Внимание! Важно проверить несколько раз. Потому что зависимости могут быть у шестерёнок, идущих друг после друга.
-//            $this->check();
-//            $this->check();
-//            $this->check();
+            $this->check();
+            $this->check();
+            $this->check();
         }
-//        debug($this);
-//        die();
+
         $this->options->sort && $this->uasort('Core_ArrayObject::sortByOrder');
         if ($this->options->charge) {
             foreach ($this as $gear => $options) {
                 $class = $gear . '_' . self::GEAR;
                 if (class_exists($class)) {
                     $this->$gear = new $class($options);
-                }
-                else {
+                } else {
                     $this->offsetUnset($gear);
                 }
             }
@@ -161,22 +184,45 @@ class Gears extends Options {
                 $info->required->success = TRUE;
                 foreach ($info->required->gear as $req_gear) {
                     $req_gear->success = TRUE;
-                    if ($this->offsetExists($req_gear->name)) {
-                        if ($req_gear->disabled) {
-                            $req_gear->success = -2;
-                            $info->required->success = FALSE;
-                        } else if ($req_gear->version) {
-                            if ($req_gear->condition && !version_compare($this->{$req_gear->name}->version, $req_gear->version, $req_gear->condition)) {
-                                $req_gear->success = -1;
-                                $info->required->success = FALSE;
-                            } else if (version_compare($this->{$req_gear->name}->version, $req_gear->version, ' < ')) {
-                                $req_gear->success = 0;
+                    // Проверяем статус шестерёнки
+                    switch (gear_status($req_gear->name)) {
+                        case Gears::ENABLED:
+                            // Если шестерёнка включена (нам же нужно, чтобы была выключена)
+                            if ($req_gear->disabled) {
+                                $req_gear->success = self::ERROR_INCOMP;
                                 $info->required->success = FALSE;
                             }
-                        }
-                    } else {
-                        $req_gear->success = FALSE;
-                        $info->required->success = FALSE;
+                        case Gears::CORE:
+                            // Если такая шестерёнка вообще существует в списке загруженных
+                            if ($this->offsetExists($req_gear->name)) {
+                                // Если указана версия шестерёнки
+                                if ($req_gear->version) {
+                                    // Версия с условием
+                                    if ($req_gear->condition && !version_compare($this->{$req_gear->name}->version, $req_gear->version, $req_gear->condition)) {
+                                        $req_gear->success = self::ERROR_VERSION;
+                                        $info->required->success = FALSE;
+                                    }
+                                    // Версия без условия
+                                    elseif (version_compare($this->{$req_gear->name}->version, $req_gear->version, ' < ')) {
+                                        $req_gear->success = self::ERROR_REQUIRED;
+                                        $info->required->success = FALSE;
+                                    }
+                                }
+                            } else {
+                                $req_gear->success = self::ERROR_REQUIRED;
+                                $info->required->success = FALSE;
+                            }
+                            if (gear_status($name) == Gears::ENABLED) {
+                                $this->{$req_gear->name}->depends OR $this->{$req_gear->name}->depends = new Core_ArrayObject();
+                                $this->{$req_gear->name}->depends->findByValue($name) !== NULL OR $this->{$req_gear->name}->depends->append($name);
+                            }
+                            break;
+                        case Gears::DISABLED:
+                        default:
+                            if (!$req_gear->disabled) {
+                                $req_gear->success = self::ERROR_REQUIRED;
+                                $info->required->success = FALSE;
+                            }
                     }
                     if (FALSE === $info->required->success) {
                         $remove->append($name);
@@ -203,4 +249,19 @@ class Gears extends Options {
         }
     }
 
+}
+
+/**
+ * Проверяет статус шестерёнки
+ *
+ * @param string $name
+ * @return int
+ */
+function gear_status($name) {
+    if (NULL !== cogear()->site->gears->findByValue($name)) {
+        return Gears::CORE;
+    } elseif (NULL !== cogear()->config->gears->findByValue($name)) {
+        return Gears::ENABLED;
+    }
+    return Gears::DISABLED;
 }

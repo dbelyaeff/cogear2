@@ -59,7 +59,6 @@ class XmlConfig extends Object {
         }
         return $result;
     }
-
     /**
      * Адоптирование конфига из XML-файла
      *
