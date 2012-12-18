@@ -1,6 +1,6 @@
-<?php 
+<?php
 return array (
-  'database' => 
+  'database' =>
   array (
     'driver' => 'Db_Driver_PDO_Mysql',
     'host' => 'localhost',
@@ -10,7 +10,7 @@ return array (
     'port' => NULL,
     'prefix' => NULL,
   ),
-  'gears' => 
+  'gears' =>
   array (
     0 => 'Access',
     1 => 'Admin',
@@ -23,43 +23,44 @@ return array (
     8 => 'Db',
     9 => 'Dev',
     10 => 'Errors',
-    11 => 'File',
-    12 => 'Form',
-    13 => 'Gears',
-    14 => 'I18n',
-    15 => 'Icons',
-    16 => 'Image',
-    17 => 'Input',
-    18 => 'Jevix',
-    19 => 'Mail',
-    20 => 'Menu',
-    21 => 'Meta',
-    22 => 'Modal',
-    23 => 'Notify',
-    24 => 'Pager',
-    25 => 'Post',
-    26 => 'Request',
-    27 => 'Response',
-    28 => 'Router',
-    29 => 'Roles',
-    30 => 'Secure',
-    31 => 'Session',
-    32 => 'Table',
-    33 => 'Template',
-    34 => 'Theme',
-    35 => 'User',
-    36 => 'Zip',
-    37 => 'jQuery',
+    11 => 'Fancybox',
+    12 => 'File',
+    13 => 'Form',
+    14 => 'Gears',
+    15 => 'I18n',
+    16 => 'Icons',
+    17 => 'Image',
+    18 => 'Input',
+    19 => 'Jevix',
+    20 => 'Mail',
+    21 => 'Menu',
+    22 => 'Meta',
+    23 => 'Modal',
+    24 => 'Notify',
+    25 => 'Pager',
+    26 => 'Post',
+    27 => 'Request',
+    28 => 'Response',
+    29 => 'Router',
+    30 => 'Roles',
+    31 => 'Secure',
+    32 => 'Session',
+    33 => 'Table',
+    34 => 'Template',
+    35 => 'Theme',
+    36 => 'User',
+    37 => 'Zip',
+    38 => 'jQuery',
   ),
   'permitted_uri_chars' => 'а-яa-z0-9\s_\.\-',
   'key' => 'ba96917974845ff8a6f178c9551c17c7',
-  'site' => 
+  'site' =>
   array (
     'name' => 'cogear',
     'development' => 1,
     'url' => 'cogear.new',
   ),
-  'mail' => 
+  'mail' =>
   array (
     'from' => 'admin@cogear.ru',
     'from_name' => 'cogear',
