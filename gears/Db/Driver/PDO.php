@@ -132,14 +132,15 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @return  int Номер вставленного элемента
      */
     public function insert($table, $data = array(), $type = 'INSERT') {
-        $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(',',array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
+        $query = 'INSERT INTO ' . $this->tableName($table, 'table') . '(' . implode(',', array_keys($data)) . ') VALUES(' . implode(',', array_map(array($this, 'addColon'), array_keys($data))) . ');';
         $PDOStatement = $this->PDO->prepare($query);
         $exec_data = array();
         foreach ($data as $key => $value) {
-            $exec_data[':'.$key] = $value;
+            $exec_data[':' . $key] = $value;
         }
+        $this->autoclear && $this->clear();
         try {
-            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),(string)$PDOStatement->queryString));
+            $this->queries->push(str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
@@ -173,20 +174,20 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $this->where($where);
             $query .= ' WHERE ' . $this->chain['WHERE'];
         }
+        $this->autoclear && $this->clear();
         $PDOStatement = $this->PDO->prepare($query);
-       $exec_data = array();
+        $exec_data = array();
         foreach ($data as $key => $value) {
-            $exec_data[':'.$key] = $value;
+            $exec_data[':' . $key] = $value;
         }
         try {
-            $this->queries->push(str_replace(array_keys($exec_data),  array_values($exec_data),(string)$PDOStatement->queryString));
+            $this->queries->push(str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
             $i = $this->queries->count();
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
                 return $PDOStatement->rowCount();
-            }
-            else {
+            } else {
                 return FALSE;
             }
         } catch (PDOException $e) {
