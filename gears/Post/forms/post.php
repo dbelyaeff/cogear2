@@ -4,7 +4,7 @@ return array(
     'name' => 'post',
     'elements' => array(
         'title' => array(
-            'label' => t('Создание публиации'),
+            'label' => t('Создание публикации'),
         ),
         'name' => array(
             'data-source' => l('/post/ajax/name'),
