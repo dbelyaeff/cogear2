@@ -14,6 +14,6 @@ class Router_Gear extends Gear {
      */
     public function __construct($config){
         parent::__construct($config);
-        $this->object(new Router_Object());
+        $this->object(Router::getInstance());
     }
 }

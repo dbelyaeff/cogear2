@@ -11,7 +11,14 @@
  * @subpackage
 
  */
-class Router_Object extends Options {
+class Router_Object extends Options implements Interface_Singleton {
+
+    /**
+     * Сущность
+     *
+     * @var object
+     */
+    private static $_instance;
 
     /**
      * Routes
@@ -79,15 +86,33 @@ class Router_Object extends Options {
             '\s*',
         )
     );
+
     /**
      * Url delimiter
      *
      * @const
      */
+
     const DELIM = '/';
     const STARTS = 0;
     const ENDS = 1;
     const BOTH = 2;
+
+    /**
+     * Clone
+     */
+    private function __clone() {
+
+    }
+
+    /**
+     * Get instance
+     *
+     * @return Cogear
+     */
+    public static function getInstance() {
+        return self::$_instance instanceof self ? self::$_instance : self::$_instance = new self();
+    }
 
     /**
      * Конструктор
@@ -106,8 +131,8 @@ class Router_Object extends Options {
      */
     public function sanitizePath($path) {
         $cogear = getInstance();
-        if(strpos($path,'?') !== FALSE){
-            $path = substr($path,0,strpos($path,'?'));
+        if (strpos($path, '?') !== FALSE) {
+            $path = substr($path, 0, strpos($path, '?'));
         }
         // Sanitize unwanted data from the path
         $path = urldecode($path);
@@ -136,7 +161,7 @@ class Router_Object extends Options {
     public function bind($route, $callback, $prepend = FALSE) {
         if (!$this->routes->$route) {
             if ($prepend) {
-                $this->routes->prepend($callback,$route);
+                $this->routes->prepend($callback, $route);
             } else {
                 $this->routes[$route] = $callback;
             }
@@ -192,8 +217,8 @@ class Router_Object extends Options {
         if (strpos($uri, $site) !== FALSE) {
             $uri = str_replace($site, '', $uri);
         }
-        if(defined('FOLDER')){
-            $uri = str_replace(FOLDER.'/','',$uri);
+        if (defined('FOLDER')) {
+            $uri = str_replace(FOLDER . '/', '', $uri);
         }
         if (!$uri) {
             return $this->uri ? FALSE : TRUE;
