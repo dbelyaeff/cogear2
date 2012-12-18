@@ -276,7 +276,7 @@ class Db_ORM extends Object {
         if ($data = $this->getData()) {
             $this->db->object()->where($data);
         }
-        return $this->db->object()->count($this->table, $this->table . '.' . $this->primary, $reset);
+        return $this->db->object()->countAll($this->table, $this->table . '.' . $this->primary, $reset);
     }
 
     /**

@@ -12,7 +12,39 @@ class Db_Gear extends Gear {
 
     protected $hooks = array(
         'dev.trace' => 'hookTrace',
+        'gear.enable' => 'hookGearEnable',
+        'gear.disable' => 'hookGearDisable',
     );
+
+    /**
+     * Хук на включение шестерёнки
+     *
+     * @param Gear $Gear
+     * @param Core_ArrayObject $result
+     */
+    public function hookGearEnable($Gear, $result) {
+        if ($result->success) {
+            $install_dump = $Gear->getDir() . DS . 'install' . DS . 'install.sql';
+            if (file_exists($install_dump)) {
+                $this->import($install_dump);
+            }
+        }
+    }
+
+    /**
+     * Хук на выключение шестерёнки
+     *
+     * @param Gear $Gear
+     * @param Core_ArrayObject $result
+     */
+    public function hookGearDisable($Gear, $result) {
+        if ($result->success) {
+            $install_dump = $Gear->getDir() . DS . 'install' . DS . 'uninstall.sql';
+            if (file_exists($install_dump)) {
+                $this->import($install_dump);
+            }
+        }
+    }
 
     /**
      * Конструктор
