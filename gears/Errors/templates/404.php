@@ -1,2 +1,2 @@
-<h1><?php echo t('Page is not found')?></h1>
-<p><?php echo t('The page you are currently looking for wasn\'t found on the server.')?></p>
+<h1><?php echo t('Страница не найдена')?></h1>
+<p><?php echo t('Страница, которую вы пытаетесь просмотреть, не найдена на сайте.')?></p>

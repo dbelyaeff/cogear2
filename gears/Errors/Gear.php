@@ -10,6 +10,11 @@
  */
 class Errors_Gear extends Gear {
 
+    protected $hooks = array(
+        '404' => 'notFound',
+        'empty' => 'showEmpty',
+    );
+
     /**
      * Конструктор
      */
@@ -37,14 +42,16 @@ class Errors_Gear extends Gear {
     public function show($text, $title = '') {
         error($text, $title = '');
     }
+
     /**
      * Отображение фатальной ошибки
      *
      * @param type $message
      */
-    public function fatalError($message){
-        exit(template('Errors/templates/fatal',array('message'=>$message))->render());
+    public function fatalError($message) {
+        exit(template('Errors/templates/fatal', array('message' => $message))->render());
     }
+
     /**
      * Обработка "сырой" ошибки
      *
@@ -78,21 +85,29 @@ HTML;
      * @param type $context
      */
     public function showError($errno, $error, $file, $line, $context) {
-        error(t('Ошибка в файле <b>%s</b> на строке <b>%d</b>: <p><i>%s</i>', $file, $line, $error,$context), t('Ошибка'));
+        error(t('Ошибка в файле <b>%s</b> на строке <b>%d</b>: <p><i>%s</i>', $file, $line, $error, $context), t('Ошибка'));
     }
 
-    public function _404() {
-        $this->response->header('Status', '404 ' . Response::$codes[404]);
+    /**
+     * Not found
+     */
+    public function notFound() {
+        $this->request();
+        cogear()->response->header('Status', '404 ' . Response_Object::$codes[404]);
         $tpl = new Template('Errors/templates/404');
         $tpl->show();
     }
 
+    /**
+     * Not found
+     */
+    public function showEmpty() {
+        $this->request();
+        template('Errors/templates/empty')->show();
+    }
+
 }
 
-function fatal_error($message){
+function fatal_error($message) {
     cogear()->errors->fatalError($message);
-}
-function _404() {
-    $cogear = getInstance();
-    $cogear->router->exec(array($cogear->errors, '_404'));
 }
