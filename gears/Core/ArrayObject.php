@@ -290,6 +290,14 @@ class Core_ArrayObject extends ArrayObject {
         }
         return $result instanceof self ? $result->getArrayCopy() : $result;
     }
+    /**
+     * Переводит содержимое в JSON
+     *
+     * @return JSON
+     */
+    public function toJSON(){
+        return json_encode($this->toArray());
+    }
 
     /**
      * Returns data in serialized form
