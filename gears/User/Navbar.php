@@ -32,11 +32,12 @@ class User_Navbar extends Object {
         $tabs = new Menu_Tabs(array(
                     'name' => 'user.profile.tabs',
                     'render' => FALSE,
-                    'title' => 4,
+                    'title' => TRUE,
                     'elements' => array(
                         'profile' => array(
                             'label' => t('Профиль'),
                             'link' => $user->getLink(),
+                            'title' => t('Профиль'),
                         ),
                         'edit' => array(
                             'label' => t('Редактировать'),

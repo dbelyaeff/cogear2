@@ -194,13 +194,13 @@ class User_Object extends Db_Item {
     /**
      * Show user
      */
-    public function render($type = NULL, $param = NULL) {
+    public function render($type = NULL, $param = 'avatar.profile') {
         switch ($type) {
             case 'list':
                 $navbar = new Stack(array('name' => 'user.navbar'));
                 $navbar->object($this);
-                $navbar->avatar = $this->getAvatarImage('avatar.profile');
-                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName($param) . '</a></strong>';
+                $navbar->avatar = $this->getAvatarImage($param);
+                $navbar->name = '<strong><a href="' . $this->getLink() . '">' . $this->getName(NULL) . '</a></strong>';
                 if (access('User.edit', $this)) {
                     $navbar->edit = '<a href="' . $this->getLink('edit') . '" class="sh" title="' . t('Редактировать') . '"><i class="icon-pencil"></i></a>';
                 }

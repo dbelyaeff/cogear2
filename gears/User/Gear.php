@@ -221,10 +221,9 @@ class User_Gear extends Gear {
                     $menu->register(array(
                         'label' => $this->getName(),
                         'link' => $this->getLink(),
-                        'title' => t('Профиль'),
+                        'title' => FALSE,
                         'place' => 'left',
                         'active' => TRUE,
-                        'title' => FALSE,
                     ));
                     $menu->register(array(
                         'label' => t('Выход'),
@@ -288,13 +287,12 @@ class User_Gear extends Gear {
      */
     public function admin() {
         $q = $this->input->get('q');
-
         $tpl = new Template('Search/templates/form');
         $tpl->action = l('/admin/user/');
         $q && $tpl->value = $q;
         $tpl->show('info');
         Db_ORM::skipClear();
-        $q && $this->db->like('login', $q)->or_like('login', $q, 'both')->or_like('login', $q, 'after');
+//        $q && $this->db->like('login', $q)->or_like('login', $q, 'both')->or_like('login', $q, 'after');
         $list = new User_List(array(
                     'name' => 'admin.users',
                     'base' => l('/admin/user/'),

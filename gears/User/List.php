@@ -42,22 +42,22 @@ class User_List extends Db_List_Table {
         } else {
             return $this->setFields(array(
                         'login' => array(
-                            'label' => t('Login', 'User'),
+                            'label' => t('Имя пользователя'),
                             'callback' => new Callback(array($this, 'prepareFields')),
                         ),
                         'posts' => array(
-                            'label' => t('Posts', 'User'),
+                            'label' => t('Публикаций'),
                             'callback' => new Callback(array($this, 'prepareFields')),
                             'class' => 't_c w10',
                         ),
                         'comments' => array(
-                            'label' => t('Comments', 'User'),
+                            'label' => t('Комментариев'),
                             'callback' => new Callback(array($this, 'prepareFields')),
                             'class' => 't_c w10',
-                            'access' => FALSE,
+                            'access' => (boolean)$this->gears->Comments,
                         ),
                         'reg_date' => array(
-                            'label' => t('Registered', 'User'),
+                            'label' => t('Зарегистрирован'),
                             'callback' => new Callback(array($this, 'prepareFields')),
                         ),
                     ));
@@ -73,7 +73,7 @@ class User_List extends Db_List_Table {
     public function prepareFields($user, $key) {
         switch ($key) {
             case 'login':
-                return $user->render('list');
+                return $user->render('list','avatar.small');
                 break;
             case 'reg_date':
                 return df($user->reg_date, 'd M Y');
