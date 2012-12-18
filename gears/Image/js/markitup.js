@@ -2,10 +2,10 @@ function showImageUpload(){
     $.fancybox({
         href: '#form-image-upload',
         maxWidth	: 600,
-        maxHeight	: 300,
+        maxHeight	: 180,
         fitToView	: false,
         width		: 600,
-        height		: 300,
+        height		: 190,
         autoSize	: false,
         openEffect	: 'elastic',
         closeEffect	: 'elastic',

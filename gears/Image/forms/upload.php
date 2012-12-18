@@ -6,19 +6,17 @@ return array(
     'class' => 'horizontal',
     'elements' => array(
         'title' => array(
-            'type' => 'div',
-            'class' => 'page-header',
-            'label' => '<h1>'.t('Upload image','Image').'</h1>'
+            'label' => '<h1>'.t('Загрузка изображений').'</h1>'
         ),
         'image' => array(
             'type' => 'image',
-            'label' => t('Choose from disk','Image'),
+            'label' => t('Выберите файл с диска'),
             'maxsize' => '100Kb',
         ),
         'dragndrop' => array(
             'type' => 'div',
             'class' => 'well t_c',
-            'label' => t('or<p><b>Drag and drop your images here</b>','Image'),
+            'label' => t('или<p><b>Перетащите его мышкой на это поле.</b>'),
         ),
     ),
 );
