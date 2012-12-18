@@ -104,7 +104,7 @@ class Request_Object {
             $this->is_ajax = TRUE;
         }
         if(!empty($this->server['HTTP_REFERER'])){
-            $this->referer = 'REFERER';
+            $this->referer = $this->server['HTTP_REFERER'];
         }
     }
     /**
