@@ -286,13 +286,16 @@ class Post_Gear extends Gear {
      * Edit action
      */
     public function edit_action($id = NULL) {
-        if (!$post = post($id)) {
+        $post = new Post();
+        $post->id  = $id;
+        $post->cache(FALSE);
+        if (!$post->find()) {
             return event('404');
         }
-        $this->widgets = NULL;
         $form = new Form('Post/forms/post');
         $form->object($post);
         $form->elements->title->options->label = t('Редактирование публикации');
+        event('post.edit',$post,$form);
         if ($result = $form->result()) {
             $post->object()->extend($result);
             if ($result->delete && access('Post.delete', $post)) {
