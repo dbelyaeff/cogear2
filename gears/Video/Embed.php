@@ -13,7 +13,7 @@
 class Video_Embed  {
     protected static $services = array(
       'youtube' => array(
-          'pattern' => '#youtube\.com/watch\?.*v=([^&]*)#',
+          'pattern' => '#youtube\.com/watch\?.*v=([\w_-]*)#',
           'code' => '<iframe width="%width%" height="%height%" src="http://www.youtube.com/embed/%snippet%?wmode=opaque" frameborder="0" allowfullscreen></iframe>,'
       )
     );
@@ -28,7 +28,7 @@ class Video_Embed  {
             if(preg_match($config['pattern'],$url,$matches)){
                 return str_replace(
                         array('%width%','%height%','%snippet%'),
-                        array($width ? $width : config('video.width', 720),$height ? $height : config('video.height',480),$matches[1]),
+                        array($width ? $width : config('video.width', 640),$height ? $height : config('video.height',360),$matches[1]),
                         $config['code']);
             }
         }
