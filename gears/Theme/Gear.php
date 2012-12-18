@@ -51,7 +51,7 @@ class Theme_Gear extends Gear {
         switch ($name) {
             case 'admin':
                 $menu->register(array(
-                    'label' => icon('eye-open') . ' ' . t('Theme', 'Theme'),
+                    'label' => icon('eye-open') . ' ' . t('Внешний вид'),
                     'link' => l('/admin/theme'),
                     'order' => 200,
                 ));
