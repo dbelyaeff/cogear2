@@ -70,7 +70,7 @@ class Jevix_Filter extends Form_Filter_Abstract {
         $jevix->cfgSetAutoBrMode(TRUE);
 
 // 12. Включаем или выключаем режим автоматического определения ссылок. (по умолчанию включен)
-        $jevix->cfgSetAutoLinkMode(TRUE);
+        $jevix->cfgSetAutoLinkMode(FALSE);
 // 13. Отключаем типографирование в определенном теге
         $jevix->cfgSetTagNoTypography('code');
         event('jevix', $jevix);
