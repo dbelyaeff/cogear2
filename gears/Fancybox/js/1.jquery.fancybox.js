@@ -10,7 +10,7 @@
  *
  */
 
-(function (window, document, $, undefined) {
+jQuery(function ($) {
 	"use strict";
 
 	var W = $(window),
@@ -1460,4 +1460,4 @@
 		F.defaults.fixed = $.support.fixedPosition || (!($.browser.msie && $.browser.version <= 6) && !isTouch);
 	});
 
-}(window, document, jQuery));
+});

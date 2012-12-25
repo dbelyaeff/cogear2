@@ -18,7 +18,7 @@
  *     position - 'top' or 'bottom'
  *
  */
-(function ($) {
+jQuery(function ($) {
 	//Shortcut for fancyBox object
 	var F = $.fancybox;
 
@@ -154,4 +154,4 @@
 		}
 	}
 
-}(jQuery));
+});

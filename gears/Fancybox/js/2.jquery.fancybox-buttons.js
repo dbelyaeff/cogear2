@@ -3,19 +3,19 @@
  * version: 1.0.2
  * @requires fancyBox v2.0 or later
  *
- * Usage: 
+ * Usage:
  *     $(".fancybox").fancybox({
  *         buttons: {
  *             position : 'top'
  *         }
  *     });
- * 
+ *
  * Options:
  *     tpl - HTML template
  *     position - 'top' or 'bottom'
- * 
+ *
  */
-(function ($) {
+jQuery(function ($) {
 	//Shortcut for fancyBox object
 	var F = $.fancybox;
 
@@ -112,4 +112,4 @@
 		}
 	};
 
-}(jQuery));
+});
