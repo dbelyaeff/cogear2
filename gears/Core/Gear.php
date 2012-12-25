@@ -151,12 +151,14 @@ abstract class Gear extends Object {
      * @var routes
      */
     protected $routes = array();
+
     /**
      * Зависимости
      *
      * @var array
      */
     protected $required;
+
     /**
      * От кого зависит
      *
@@ -196,10 +198,8 @@ abstract class Gear extends Object {
      * Load assets
      */
     protected function loadAssets() {
-        $scripts = $this->dir . DS . 'js';
-        $styles = $this->dir . DS . 'css';
-        is_dir($scripts) && $this->assets->addScriptsFolder($scripts);
-        is_dir($styles) && $this->assets->addStylesFolder($styles);
+        $this->assets->js->loadDir($this->dir . DS . 'js');
+        $this->assets->css->loadDir($this->dir . DS . 'css');
     }
 
     /**
@@ -288,13 +288,13 @@ abstract class Gear extends Object {
                     $gears_required->append($gear->name);
                 }
             }
-            $gears_required->count() && $result->message = t('Следующие шестерёнки должны быть активированы: ') . '<span class="label label-important">'. $gears_required->toString("</span> <span class='label label-important'>") . "</span>";
-            $gears_incomp_version->count() && $result->message .= '<br/>'.t('Следующие шестеренки должны быть соответствующих версий: ') . '<span class="label label-important">'. $gears_incomp_version->toString("</span> <span class='label label-important'>") . "</span>";
-            $gears_incomp->count() && $result->message .= t('Следующие шестеренки должны быть отключены: ') . '<span class="label label-important">'. $gears_incomp->toString("</span> <span class='label label-important'>") . "</span>";
+            $gears_required->count() && $result->message = t('Следующие шестерёнки должны быть активированы: ') . '<span class="label label-important">' . $gears_required->toString("</span> <span class='label label-important'>") . "</span>";
+            $gears_incomp_version->count() && $result->message .= '<br/>' . t('Следующие шестеренки должны быть соответствующих версий: ') . '<span class="label label-important">' . $gears_incomp_version->toString("</span> <span class='label label-important'>") . "</span>";
+            $gears_incomp->count() && $result->message .= t('Следующие шестеренки должны быть отключены: ') . '<span class="label label-important">' . $gears_incomp->toString("</span> <span class='label label-important'>") . "</span>";
             $result->success = FALSE;
         }
         $result->success && $this->status(Gears::ENABLED);
-        event('gear.enable',$this,$result);
+        event('gear.enable', $this, $result);
         return $result;
     }
 
@@ -312,11 +312,11 @@ abstract class Gear extends Object {
         }
         if ($this->depends) {
             $result->success = FALSE;
-            $result->message = t('Невозможно деактивировать шестеренку, потому что от неё зависят следующие шестеренки: ') . '<span class="label label-important">'. $this->depends->toString("</span> <span class='label label-important'>") . "</span>";
+            $result->message = t('Невозможно деактивировать шестеренку, потому что от неё зависят следующие шестеренки: ') . '<span class="label label-important">' . $this->depends->toString("</span> <span class='label label-important'>") . "</span>";
             //. ' <b>' . implode('</b>, <b>', array_keys($this->depends->toArray())) . '</b>';
         }
         $result->success && $this->status(Gears::DISABLED);
-        event('gear.disable',$this,$result);
+        event('gear.disable', $this, $result);
         return $result;
     }
 
