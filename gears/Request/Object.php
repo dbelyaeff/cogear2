@@ -1,20 +1,17 @@
 <?php
 
 /**
- * Request
+ * Объект Запроса
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Request_Object {
 
     /**
-     * Server info
+     * Информация о сервере
      *
      * @var array
      */
@@ -30,25 +27,31 @@ class Request_Object {
     );
 
     /**
-     * Request method
+     * Метод запроса
      *
      * @var  string
      */
     private $method = 'GET';
     /**
-     * Request protocol
+     * Протокол запроса
      *
      * @var  string
      */
     private $protocol = 'http';
     /**
-     * Referer
+     * Хост из конфига сайта
+     *
+     * @var type
+     */
+    private $host;
+    /**
+     * Реферер
      *
      * @var  string
      */
     private $referrer = '';
     /**
-     * If request is ajaxed
+     * Если запрос аяксовый
      *
      * @var boolean
      */
@@ -58,38 +61,11 @@ class Request_Object {
      * Конструктор
      */
     public function __construct() {
+        // Вызываем статический класс, чтобы дальше работал его метод-ссылка l();
+        $this->host = Url::link();
         $string_filter = array(FILTER_SANITIZE_SPECIAL_CHARS, FILTER_SANITIZE_STRING);
         $path_filter = array(FILTER_SANITIZE_URL, FILTER_FLAG_PATH_REQUIRED);
         $this->server = $_SERVER;
-//        filter_input_array(INPUT_SERVER, array(
-//                    'HTTP_HOST' => FILTER_SANITIZE_URL,
-//                    'HTTP_USER_AGENT' => $string_filter,
-//                    'HTTP_ACCEPT' => $string_filter,
-//                    'HTTP_ACCEPT_LANGUAGE' => $string_filter,
-//                    'HTTP_ACCEPT_CHARSET' => $string_filter,
-//                    'HTTP_ACCEPT_ENCODING' => $string_filter,
-//                    'SERVER_SIGNATURE' => $string_filter,
-//                    'SERVER_SOFTWARE' => $string_filter,
-//                    'SERVER_NAME' => $string_filter,
-//                    'SERVER_ADDR' => FILTER_VALIDATE_IP,
-//                    'SERVER_PORT' => FILTER_SANITIZE_NUMBER_INT,
-//                    'REMOTE_ADDR' => FILTER_VALIDATE_IP,
-//                    'HTTP_CLIENT_IP' => FILTER_VALIDATE_IP,
-//                    'HTTP_X_FORWARDED_FOR' => FILTER_VALIDATE_IP,
-//                    'SERVER_PROTOCOL' => $string_filter,
-//                    'DOCUMENT_ROOT' => $path_filter,
-//                    'SERVER_ADMIN' => FILTER_SANITIZE_EMAIL,
-//                    'SCRIPT_FILENAME' => $path_filter,
-//                    'PATH_INFO' => $string_filter,
-//                    'QUERY_STRING' => $string_filter,
-//                    'REQUEST_URI' => $string_filter,
-//                    'SCRIPT_NAME' => $path_filter,
-//                    'PHP_SELF' => $path_filter,
-//                    'HTTP_REFERER' => FILTER_VALIDATE_URL,
-//                    'REQUEST_METHOD' => FILTER_SANITIZE_STRING,
-//                    'HTTPS' => FILTER_VALIDATE_BOOLEAN,
-//                    'HTTP_X_REQUESTED_WITH' =>  FILTER_SANITIZE_STRING,
-//                ));
         foreach(array('HTTP_X_FORWARDED_FOR','HTTP_CLIENT_IP','REMOTE_ADDR') as $ip){
             if(isset($this->server[$ip])){
                 $this->ip = $this->server[$ip];
