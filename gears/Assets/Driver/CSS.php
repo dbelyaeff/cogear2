@@ -16,15 +16,34 @@ class Assets_Driver_CSS extends Assets_Driver_Abstract {
      * @param string $dir
      * @param string $ext
      */
-    public function loadDir($dir,$ext = 'css') {
+    public function loadDir($dir, $ext = 'css') {
         parent::loadDir($dir, $ext);
     }
+
+    /**
+     * Заменяет относительные адреса на абсолютные
+     *
+     * @param type $file
+     * @return type
+     */
+    public function parse($file) {
+        $content = parent::parse($file);
+        $style_dir = File::pathToUri(dirname($file));
+        $content = preg_replace('#(url\([\'|\"]?)(\.?/)?#', '$1$2' . $style_dir . '/', $content);
+        $content = preg_replace('#(url\([\'|\"]?)\.\./#', '$1' . dirname($style_dir) . '/', $content);
+        return $content;
+    }
+
     /**
      * Вывод скриптов
      */
     public function output() {
-        foreach($this as $style){
-            echo HTML::style(File::pathToUri($style))."\n";
+        if ($this->glue) {
+            echo HTML::style(File::pathToUri($this->glue()));
+        } else {
+            foreach ($this as $style) {
+                echo HTML::style(File::pathToUri($style)) . "\n";
+            }
         }
     }
 

@@ -30,8 +30,8 @@ class Assets_Gear extends Gear {
         parent::__construct($config);
         // Важно повесить хук именно таким образом, чтобы информация выводилась до остальных скриптов
         hook('head',array($this,'hookHead'));
-        $this->js = Assets::factory('js', config('assets.js'));
-        $this->css = Assets::factory('css', config('assets.css'));
+        $this->js = Assets::factory('scripts', config('assets.js'));
+        $this->css = Assets::factory('styles', config('assets.css'));
     }
 
 }

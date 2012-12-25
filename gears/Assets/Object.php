@@ -37,6 +37,7 @@ class Assets_Object extends Object implements Interface_Factory {
      */
     public static function factory($name, $options = array(), $class = __CLASS__ ) {
 //        $class = isset($options['driver']) && class_exists($options['driver']) ? $options['driver'] : 'Assets_Driver_JS';
+        $options['name'] = $name;
         return isset(self::$_instances[$name]) ? self::$_instances[$name] : self::$_instances[$name] = new $class($options);
     }
 

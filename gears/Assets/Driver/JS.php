@@ -14,8 +14,12 @@ class Assets_Driver_JS extends Assets_Driver_Abstract {
      * Вывод скриптов
      */
     public function output() {
-        foreach($this as $script){
-            echo HTML::script(File::pathToUri($script))."\n";
+        if ($this->glue) {
+            echo HTML::script(File::pathToUri($this->glue()));
+        } else {
+            foreach ($this as $script) {
+                echo HTML::script(File::pathToUri($script)) . "\n";
+            }
         }
     }
 
