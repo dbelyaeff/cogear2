@@ -1,6 +1,20 @@
 <?php
 
 return array(
+    'assets' => array(
+        'js' => array(
+            'glue' => TRUE,
+            'filename' => 'scripts.js',
+            'driver' => 'Assets_Driver_JS',
+            'render' => 'head',
+        ),
+        'css' => array(
+            'glue' => TRUE,
+            'filename' => 'styles.css',
+            'driver' => 'Assets_Driver_CSS',
+            'render' => 'head',
+        ),
+    ),
     'gears' =>
     array(
         'Install'
@@ -58,15 +72,16 @@ return array(
             ),
             'post' =>
             array(
-                'large' => array(
-                    0 => 'resize(700,500,width)',
-                )
+                'large' =>
+                array(
+                    0 => 'resize(700,500,height,down)',
+                ),
             ),
             'avatar' =>
             array(
                 'navbar' =>
                 array(
-                    0 => 'resize(38,38,crop)',
+                    0 => 'resize(36,36,crop)',
                 ),
                 'comment' =>
                 array(
@@ -86,7 +101,7 @@ return array(
                 ),
                 'profile' =>
                 array(
-                    0 => 'resize(32,32,crop)',
+                    0 => 'resize(64,64,crop)',
                 ),
                 'photo' =>
                 array(
@@ -150,6 +165,6 @@ return array(
     ),
     'wysiwyg' =>
     array(
-        'editor' => 'markitup',
+        'editor' => 'redactor',
     ),
 );
