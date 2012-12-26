@@ -9,5 +9,7 @@
     <core>2.x</core>
     <version>1.0</version>
     <order>0</order>
-    <screenshot>/img/screenshot.png</screenshot>
+    <logo>img/logo.png</logo>
+    <favicon>img/logo.png</favicon>
+    <screenshot>img/screenshot.png</screenshot>
 </gear>

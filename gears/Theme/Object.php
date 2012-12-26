@@ -10,7 +10,6 @@
  */
 abstract class Theme_Object extends Gear {
 
-    public static $layout = 'index';
     protected $theme;
     protected $template;
     protected static $defaults;
@@ -23,6 +22,7 @@ abstract class Theme_Object extends Gear {
     public function __construct($config) {
         parent::__construct($config);
         $this->theme = $this->gear;
+        $this->template = new Template(THEMES . DS . $this->theme . DS . 'templates' . DS . 'index'.EXT);
     }
 
     /**
@@ -63,8 +63,9 @@ abstract class Theme_Object extends Gear {
      * @param string $template
      * @return string
      */
-    public function layout($template) {
-        $this->layout = $template;
+    public function template($template) {
+        strpos($template,'/') OR $template = THEMES . DS . $this->theme . DS . 'templates' . DS . $template;
+        $this->template = new Template($template);
         return $this;
     }
 
@@ -72,8 +73,6 @@ abstract class Theme_Object extends Gear {
      * Render theme
      */
     public function render() {
-        $this->input->get('splash') !== NULL && self::$layout = 'splash';
-        $this->template = new Template(THEMES . DS . $this->theme . DS . 'templates' . DS . self::$layout);
         $this->template->theme = $this;
         cogear()->response->object()->append($this->template->render());
     }

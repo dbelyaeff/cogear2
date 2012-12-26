@@ -11,13 +11,32 @@
 class Theme_Gear extends Gear {
 
     protected $hooks = array(
+        'logo' => 'hookLogo',
+        'head' => 'hookFavicon',
         'exit' => 'output',
     );
     public $regions;
 
     const SUFFIX = '_Theme';
 
+    /**
+     * Выводит логотип сайта
+     */
+    public function hookLogo() {
+        $theme = $this->object();
+        if ($theme->logo) {
+            echo "<a href=" . l() . "><img src=\"" . l($theme->folder) . '/' . $theme->logo . "\"></a>";
+        }
+    }
 
+    /**
+     * Добавляем иконку сайта в шапку
+     */
+    public function hookFavicon() {
+        $theme = $this->object();
+        $favicon = $theme->favicon ? l($theme->folder).'/'.$theme->favicon : l('/favicon.ico');
+        echo '<link rel="shortcut icon" href="'.$favicon.'">';
+    }
 
     /**
      * Конструктор
@@ -26,7 +45,6 @@ class Theme_Gear extends Gear {
         parent::__construct($config);
         $this->regions = new Core_ArrayObject();
     }
-
 
     /**
      * Init
@@ -134,7 +152,7 @@ class Theme_Gear extends Gear {
             $this->choose('Default');
         }
         $xml = new XmlConfig(THEMES . DS . $theme . DS . 'theme.xml');
-        $this->object(new $class($xml->parse((array)Theme::getDefaultSettings())));
+        $this->object(new $class($xml->parse((array) Theme::getDefaultSettings())));
         $this->object()->init();
     }
 
