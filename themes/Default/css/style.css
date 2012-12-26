@@ -1,4 +1,4 @@
-body{
+body.theme-Default{
     color: #222;
     background: url(../img/bg.png) repeat top left;
 }
@@ -9,10 +9,4 @@ body{
 }
 #content{
     padding: 20px;
-}
-body#splash{
-    padding:5px;
-}
-body#splash .page-header{
-    margin: 0 0;
 }
