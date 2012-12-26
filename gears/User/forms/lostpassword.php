@@ -2,7 +2,6 @@
 
 return array(
     'name' => 'user-lostpassword',
-    'class' => 'form-horizontal',
     'elements' => array(
         'login' => array(
             'label' => t('Логин или элетропочта'),

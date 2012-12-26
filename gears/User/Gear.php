@@ -79,11 +79,6 @@ class User_Gear extends Gear {
         parent::init();
         $this->object(new User_Object());
         $this->object()->init();
-        new Bootstrap_Navbar(array(
-                    'name' => 'user',
-                    'class' => 'navbar-inverse',
-                    'render' => 'before',
-                ));
     }
 
     /**
@@ -258,22 +253,21 @@ class User_Gear extends Gear {
      * Show login page menu
      */
     public function showMenu() {
-        ;
         new Menu_Auto(array(
                     'name' => 'user.login',
                     'template' => 'Bootstrap/templates/tabs',
                     'elements' => array(
                         'login' => array(
-                            'label' => t('Войти'),
+                            'label' => icon('lock').' '.t('Войти'),
                             'link' => l('/user/login'),
                         ),
                         'lostpassword' => array(
-                            'label' => t('Забыли пароль?'),
+                            'label' => icon('wrench').' '.t('Забыли пароль?'),
                             'link' => l('/user/lostpassword'),
                             'access' => check_route('user/lostpassword'),
                         ),
                         'register' => array(
-                            'label' => t('Регистрация'),
+                            'label' => icon('ok').' '.t('Регистрация'),
                             'link' => l('/user/register'),
                         ),
                     ),
@@ -407,6 +401,7 @@ class User_Gear extends Gear {
      * Login form show
      */
     public function login_action() {
+        $this->theme->template('User/templates/login');
         $this->showMenu();
         $form = new Form('User/forms/login');
         if ($data = $form->result()) {
@@ -443,6 +438,7 @@ class User_Gear extends Gear {
      * Lost password recovery
      */
     public function lostpassword_action($code = NULL) {
+        $this->theme->template('User/templates/login');
         $this->showMenu();
         if ($code) {
             $user = new User();
@@ -493,6 +489,7 @@ class User_Gear extends Gear {
      * User registration
      */
     public function register_action($code = NULL) {
+        $this->theme->template('User/templates/login');
         if (!config('user.register.enabled', TRUE)) {
             return warning(t('Регистрация отключена администрацией сайта.'));
         }

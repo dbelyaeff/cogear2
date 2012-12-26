@@ -1,11 +1,11 @@
 <?php
 return array(
             'name' => 'user-register',
-            'class' => 'form-horizontal',
             'elements' => array(
                 'email' => array(
-                    'label' => t('E-Mail','User'),
+                    'label' => t('Электронная почта'),
                     'type' => 'text',
+                    'placeholder' => t('Укажите адрес электронной почты…'),
                     'validators' => array('Email','Required','User_Validate_EmailReg'),
                 ),
                 'actions' => array(
@@ -14,7 +14,7 @@ return array(
                     'elements' => array(
                         'submit' => array(
                             'type' => 'submit',
-                            'label' => t('Register'),
+                            'label' => t('Зарегистрироваться'),
                             'class' => 'btn btn-primary',
                         ),
                     )

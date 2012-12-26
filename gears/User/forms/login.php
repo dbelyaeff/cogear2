@@ -15,7 +15,7 @@ return array(
             'validators' => array(array('Length', 3), 'AlphaNum', 'Required')
         ),
         'saveme' => array(
-            'text' => t('запомнить'),
+            'label' => t('запомнить'),
             'type' => 'checkbox',
         ),
         'buttons' => array(
