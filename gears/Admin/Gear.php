@@ -26,7 +26,8 @@ class Admin_Gear extends Gear {
                         'template' => 'Admin/templates/menu',
                         'render' => 'before',
                     ));
-            parent::loadAssets();
+//            parent::loadAssets();
+            css($this->folder.DS.'css'.DS.'menu.css','head');
         }
     }
 
@@ -138,10 +139,8 @@ class Admin_Gear extends Gear {
         ));
         if ($result = $form->result()) {
             $result->name && cogear()->site->set('site.name', $result->name);
-            $result->url && cogear()->site->set('site.url', $result->url);
             $result->dev && cogear()->site->set('site.development', $result->dev);
-            $result->date_format && cogear()->site->set('date.format', $result->date_format);
-            success(t('Data is saved!', 'Form'));
+            success(t('Настройки успешно сохранены!'));
         }
         $form->show();
     }
