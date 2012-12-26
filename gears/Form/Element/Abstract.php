@@ -11,7 +11,7 @@
  * @subpackage
 
  */
-class Form_Element_Abstract extends Object {
+class Form_Element_Abstract extends Errors_Handler {
 
     public $options = array(
         'name' => '',
@@ -28,8 +28,8 @@ class Form_Element_Abstract extends Object {
         'validators' => array(),
         'class' => 'form-element',
     );
-
     protected $value;
+    protected $errors = array();
     public $code = '';
 
     /**
@@ -66,7 +66,7 @@ class Form_Element_Abstract extends Object {
             $class = $class[0];
         }
         class_exists($class) OR $class = 'Form_' . $suffix . '_' . $class;
-        if(!class_exists($class)){
+        if (!class_exists($class)) {
             return NULL;
         }
         $callback = array($class, $args);
@@ -113,7 +113,7 @@ class Form_Element_Abstract extends Object {
      * @return
      */
     public function result() {
-        if($this->options->disabled){
+        if ($this->options->disabled) {
             return $this->value ? $this->value : TRUE;
         }
         $method = strtolower($this->form->method);
@@ -139,9 +139,10 @@ class Form_Element_Abstract extends Object {
      */
     public function prepareOptions() {
         $this->options->required = $this->validators && $this->validators->findByValue('Required');
-        $this->options->errors = $this->errors;
-        $this->options->errors && $this->options->class .= ' error';
-        $this->options->id = $this->getId().'-element';
+        if ($this->getErrors()) {
+            $this->options->class .= ' error';
+        }
+        $this->options->id = $this->getId() . '-element';
         if ($this->value) {
             $this->options->value = $this->value;
         } else {
@@ -159,8 +160,8 @@ class Form_Element_Abstract extends Object {
         $tpl = new Template($this->options->template);
         $tpl->assign($this->options);
         $this->code = $tpl->render();
-        event('form.element.render',$this);
-        event('form.element.'.$this->options->type.'.render',$this);
+        event('form.element.render', $this);
+        event('form.element.' . $this->options->type . '.render', $this);
         $this->decorate();
         return $this->code;
     }
@@ -170,12 +171,13 @@ class Form_Element_Abstract extends Object {
      */
     protected function decorate() {
         if ($this->options->wrapper) {
-            event('form.element.decorate',$this);
-            event('form.element.'.$this->options->type.'.decorate',$this);
+            event('form.element.decorate', $this);
+            event('form.element.' . $this->options->type . '.decorate', $this);
             $tpl = new Template($this->options->wrapper);
             $tpl->assign($this->options);
             $tpl->code = $this->code;
             $this->code = $tpl->render();
         }
     }
+
 }
