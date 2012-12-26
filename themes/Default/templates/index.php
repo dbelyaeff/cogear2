@@ -2,14 +2,14 @@
 <html lang="ru">
     <head>
         <?php echo theme('head') ?>
-        <link rel="shortcut icon" href="/favicon.ico" />
     </head>
-    <body >
+    <body class="theme-<?php echo $theme->theme?>">
+        <?php echo new User_Menu()?>
         <?php echo theme('before') ?>
         <div class="container" id="body">
             <div class="row">
                 <div class="span12" id="header">
-                    <div class="span4"><a href="<?php echo l(); ?>"><img src="<?php echo l($theme->folder) ?>/img/logo.png"/></a></div>
+                    <div class="span4"> <?php echo theme('logo') ?></div>
                     <?php echo theme('header') ?>
                 </div>
             </div>
