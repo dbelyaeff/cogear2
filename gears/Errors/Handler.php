@@ -9,7 +9,6 @@
  * @link		http://cogear.ru
  */
 class Errors_Handler extends Options {
-
     protected $errors;
 
     /**
@@ -26,7 +25,7 @@ class Errors_Handler extends Options {
      *
      * @param mixed $data
      */
-    protected function error($data) {
+    public function error($data) {
         $this->errors OR $this->errors = new Core_ArrayObject();
         $this->errors->append($data);
     }
