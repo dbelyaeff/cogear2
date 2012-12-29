@@ -9,7 +9,7 @@
         <div class="container" id="body">
             <div class="row">
                 <div class="span12" id="header">
-                    <div class="span4"> <?php echo theme('logo') ?></div>
+                    <div class="span5"> <?php echo theme('logo') ?></div>
                     <?php echo theme('header') ?>
                 </div>
             </div>
