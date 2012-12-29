@@ -1,18 +1,23 @@
 <?php
 
 return array(
+    'router' => array(
+        'index' => 'Post',
+    ),
     'assets' => array(
         'js' => array(
             'glue' => TRUE,
             'filename' => 'scripts.js',
             'driver' => 'Assets_Driver_JS',
             'render' => 'head',
+            'refresh' => 60,
         ),
         'css' => array(
             'glue' => TRUE,
             'filename' => 'styles.css',
             'driver' => 'Assets_Driver_CSS',
             'render' => 'head',
+            'refresh' => 60,
         ),
     ),
     'gears' =>

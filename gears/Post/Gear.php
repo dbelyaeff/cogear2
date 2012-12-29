@@ -28,7 +28,6 @@ class Post_Gear extends Gear {
         'ajax' => 'access',
     );
     protected $routes = array(
-        ':index' => 'front_action',
     );
 
     /**
@@ -134,9 +133,8 @@ class Post_Gear extends Gear {
         switch ($name) {
             case 'user':
                 access('Post.create') && $menu->register(array(
-                            'label' => icon('pencil icon-white'),
+                            'label' => icon('pencil').' '.t('Написать'),
                             'link' => l('/post/create/'),
-                            'title' => t('Написать'),
                             'place' => 'left',
                             'access' => access('Post.create'),
                         ));
