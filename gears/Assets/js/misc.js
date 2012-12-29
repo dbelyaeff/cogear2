@@ -7,7 +7,7 @@ $(document).ready(function(){
         smoothScroll();
     });
     $(window).hashchange();
-    $('[title]').tooltip({
+    if($('[title]')) $('[title]').tooltip({
         placement: 'bottom'
     });
 })
