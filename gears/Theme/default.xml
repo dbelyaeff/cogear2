@@ -10,6 +10,6 @@
     <version>1.0</version>
     <order>0</order>
     <logo>img/logo.png</logo>
-    <favicon>img/logo.png</favicon>
+    <favicon>img/favicon.ico</favicon>
     <screenshot>img/screenshot.png</screenshot>
 </gear>
