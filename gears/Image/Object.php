@@ -29,5 +29,12 @@ class Image_Object extends Object {
         parent::__construct();
         $this->object(new $this->options->driver($file, $options));
     }
-
+    /**
+     * Генерирует путь для загрузки изображений
+     */
+    public static function uploadPath(){
+        $dir = user()->dir() . '/images/' . date('Y/m/d');
+        is_dir($dir) OR File::mkdir($dir);
+        return $dir;
+    }
 }

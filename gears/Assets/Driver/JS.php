@@ -11,6 +11,17 @@
 class Assets_Driver_JS extends Assets_Driver_Abstract {
 
     /**
+     * Заменяет относительные адреса на абсолютные
+     *
+     * @param type $file
+     * @return type
+     */
+    public function parse($file) {
+        $content = parent::parse($file);
+        return $content;
+    }
+
+    /**
      * Вывод скриптов
      */
     public function output() {

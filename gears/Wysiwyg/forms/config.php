@@ -1,15 +1,15 @@
 <?php
 return array(
     'name' => 'editor-config',
-    'title' => t('Wysiwyg settings','Wysiwyg'),
+    'title' => t('Настройки редактора'),
     'elements' => array(
         'type' => array(
-            'label' => t('Choose an editor:','Wysiwyg'),
+            'label' => t('Выберите редактор:'),
             'type' => 'select',
         ),
         'submit' => array(
             'type' => 'submit',
-            'label' => t('Save'),
+            'label' => t('Сохранить'),
         )
     ),
 );

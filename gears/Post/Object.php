@@ -100,6 +100,7 @@ class Post_Object extends Db_Item {
         event('post.render', $this);
         if (!$this->teaser) {
             $this->views++;
+            $this->cache(FALSE);
             $this->update(array('views' => $this->views));
         }
         return parent::render($template);

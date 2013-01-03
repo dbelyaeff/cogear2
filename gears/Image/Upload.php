@@ -20,10 +20,6 @@ class Image_Upload extends File_Upload {
             'width' => 0,
             'height' => 0,
         ),
-        'resize' => '',
-        'crop' => '',
-        'sizecrop' => '',
-        'watermark' => '',
         'overwrite' => TRUE,
         'name' => 'image',
         'maxsize' => '100Kb',
@@ -109,12 +105,12 @@ class Image_Upload extends File_Upload {
      */
     protected function process($file) {
         if ($file = parent::process($file)) {
-            $this->getInfo($file->path);
-            if ($this->options->max->width && $this->options->max->height && !$this->checkMax($this->options->max->width, $this->options->max->height)
-                    OR $this->options->min->width && $this->options->min->height && !$this->checkMin($this->options->min->width, $this->options->min->height)) {
-                @unlink($file->path);
-                $this->uploaded = FALSE;
-            }
+//            $this->getInfo($file->path);
+//            if ($this->options->max->width && $this->options->max->height && !$this->checkMax($this->options->max->width, $this->options->max->height)
+//                    OR $this->options->min->width && $this->options->min->height && !$this->checkMin($this->options->min->width, $this->options->min->height)) {
+//                @unlink($file->path);
+//                $this->uploaded = FALSE;
+//            }
         }
         return $file;
     }

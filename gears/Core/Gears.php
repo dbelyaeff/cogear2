@@ -41,7 +41,13 @@ class Gears extends Options {
     public function __construct($gears = NULL, $options = array()) {
         parent::__construct($options);
         if (is_array($gears) OR $gears instanceof Core_ArrayObject) {
-            $this->load($gears);
+            // На будущее — возможность закешировать обработку шестерёнок
+//            if ($gears = cogear()->system_cache->get('gears')) {
+//                $this->extend($gears->toArray());
+//            } else {
+                $this->load($gears);
+//                cogear()->system_cache->set('gears', $this);
+//            }
         } else if (is_string($gears) && is_dir($gears)) {
             $this->loadDir($gears);
         }

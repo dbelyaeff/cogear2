@@ -48,7 +48,7 @@ class Cut_Gear extends Gear {
                 'name' => t('Cut'),
                 'key' => 'Q',
                 'className' => 'markItUpCut',
-                'replaceWith' => '<cut text="[![Cut]!]"/>',
+                'replaceWith' => '[cut text="[![Cut]!]"]',
                 'order' => 20,
             ));
         }

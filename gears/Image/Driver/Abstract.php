@@ -53,10 +53,10 @@ abstract class Image_Driver_Abstract extends Options {
                 $this->info->mime = $info[3];
                 $this->create();
             } else {
-                throw new Exception(t('Указанный файл не является изображением: <b>%s</b>', $file));
+                throw new Exception(t('Указанный файл не является изображением: %s', $file));
             }
         } else {
-            throw new Exception(t('Изображение не существует: <b>%s</b>', $file));
+            throw new Exception(t('Изображение не существует: %s', $file));
         }
     }
 

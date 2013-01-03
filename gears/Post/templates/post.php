@@ -18,7 +18,7 @@ if (!$item->published && !$item->preview) {
         <?php
         $title = new Stack(array('name' => 'post.title'));
         $title->object($item);
-        $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '"><h2>' . $item->name . '</a>' : $item->name) . '</h2>';
+        $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '">' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
             if (access('Post.delete', $item)) {
                 $title->delete = '<a class="post-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';
@@ -51,8 +51,6 @@ if (!$item->published && !$item->preview) {
         $info = new Stack(array('name' => 'post.info'));
         $info->object($item);
         $info->time = '<span class="post-time">' . df($item->created_date) . '</span>';
-        $info->author = $user->getLink('avatar', 'avatar.post');
-        $info->author_link = $user->getLink('profile');
         echo $info->render();
         ?>
     </div>

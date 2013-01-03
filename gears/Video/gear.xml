@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Video">
-    <name lang="ru">Видео</name>
-    <description lang="ru">Интеграция видео на сайте.</description>
-    <order>-100</order>
-</gear>

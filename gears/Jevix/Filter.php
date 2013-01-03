@@ -73,6 +73,7 @@ class Jevix_Filter extends Form_Filter_Abstract {
         $jevix->cfgSetAutoLinkMode(FALSE);
 // 13. Отключаем типографирование в определенном теге
         $jevix->cfgSetTagNoTypography('code');
+//        $jevix->cfgSetTagNoTypography('pre');
         event('jevix', $jevix);
         $errors = array();
         $result = $jevix->parse($value, $errors);

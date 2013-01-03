@@ -8,20 +8,11 @@ img.avatar{
 .navbar .container{
     position: relative;
 }
-.navbar .avatar{
-    position: absolute;
-    top: 0;
-    left: -25px;
-}
+
 .navbar .badge{
     padding: 1px 5px 2px;
 }
-.user_navbar .avatar{
-    vertical-align: middle;
-}
-.user_navbar strong a{
-    font-size: 1.5em;
-}
+
 .profile .nav{
     margin: 5px 0;
 }

@@ -2,4 +2,5 @@
 <gear name="Jevix">
     <name lang="ru">Jevix</name>
     <description lang="ru">Фильтрация HTML-кода.</description>
+    <order>0</order>
 </gear>

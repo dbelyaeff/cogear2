@@ -26,15 +26,15 @@ class Wysiwyg_Gear extends Gear {
      * Control Panel
      */
     public function admin() {
-        $form = new Form("Wysiwyg.config");
+        $form = new Form("Wysiwyg/forms/config");
         $options = new Core_ArrayObject;
         $options->editor = config('wysiwyg.editor');
-        $form->elements->type->setValues(self::$editors );
+        $form->type->setValues(self::$editors );
         $form->object($options);
         if ($result = $form->result()) {
             if (isset(self::$editors[$result['type']])) {
                 cogear()->set('wysiwyg.editor', $result['type']);
-                success('Configuration saved successfully.');
+                success(t('Конфигурация успешно сохранена.'));
             }
         }
         append('content', $form->render());

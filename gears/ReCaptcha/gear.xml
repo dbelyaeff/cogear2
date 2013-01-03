@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="ReCaptcha">
-    <name lang="ru">ReCaptcha</name>
-    <description lang="ru">Система защиты от ботов.</description>
-</gear>

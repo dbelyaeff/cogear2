@@ -21,7 +21,7 @@ class Gears_Gear extends Gear {
             case 'admin':
                 $menu->register(array(
                     'link' => l('/admin/gears'),
-                    'label' => icon('cog  icon-white') . ' ' . t('Шестеренки'),
+                    'label' => icon('cog') . ' ' . t('Шестеренки'),
                     'order' => 1,
                 ));
                 break;

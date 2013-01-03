@@ -18,12 +18,21 @@ class Markitup_Gear extends Gear {
         Wysiwyg_Gear::$editors[ 'markitup'] = 'Markitup_Editor';
     }
 
-
     /**
-     * Skip assets loading
+     * Пропускаем автозагрузку скриптов и стилей
      */
     public function loadAssets() {
 //        parent::loadAssets();
     }
+    /**
+     * Активация шестерёнки
+     *
+     * @return type
+     */
+    public function enable(){
+        config('wysiwyg.editor','markitup');
+        return parent::enable();
+    }
+
 
 }

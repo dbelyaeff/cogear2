@@ -3,6 +3,6 @@
     <name lang="ru">Роли</name>
     <description lang="ru">Управление ролями пользователей.</description>
     <required>
-        <gear name="User"/>
+        <gear name="User" version="1.0"/>
     </required>
 </gear>

@@ -110,11 +110,12 @@ class Meta_Gear extends Gear implements SplObserver {
 }
 
 function title($text, $position = NULL) {
-    $text = trim(preg_replace('#\<.*?\>#imsU', '', strip_tags($text)));
-    if ($position) {
-        cogear()->meta->info->title->inject($text,$position);
-    } else {
-        cogear()->meta->info->title->prepend($text);
+    if ($text = trim(preg_replace('#\<.*?\>#imsU', '', strip_tags($text)))) {
+        if ($position) {
+            cogear()->meta->info->title->inject($text, $position);
+        } else {
+            cogear()->meta->info->title->prepend($text);
+        }
     }
     return TRUE;
 }

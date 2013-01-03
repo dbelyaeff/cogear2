@@ -30,25 +30,20 @@ class User_Navbar extends Object {
         $user = $this->object();
         $tpl->navbar = $user->render('list');
         $tabs = new Menu_Tabs(array(
-                    'name' => 'user.profile.tabs',
+                    'name' => 'profile.tabs',
                     'render' => FALSE,
                     'title' => TRUE,
                     'elements' => array(
-                        'profile' => array(
-                            'label' => t('Профиль'),
-                            'link' => $user->getLink(),
-                            'title' => t('Профиль'),
-                        ),
+ 
                         'edit' => array(
                             'label' => t('Редактировать'),
                             'link' => l('/user/edit/' . $user->id),
-                            'access' => cogear()->router->check('user/edit'),
+                            'access' => cogear()->router->check('profile/edit'),
                         ),
                     ),
                 ));
         $tabs->object($user);
         $tpl->tabs = $tabs;
-        event('user.navbar.render', $user, $this);
         return $tpl->render();
     }
 

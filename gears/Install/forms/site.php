@@ -20,6 +20,7 @@ return array(
         'create_db' => array(
             'type' => 'checkbox',
             'label' => t('Попытаться создать базу данных'),
+            'style' => '',
         ),
         'save' => array(
             'type' => 'submit',

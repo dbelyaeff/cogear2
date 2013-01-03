@@ -93,7 +93,7 @@ class Image_Gear extends Gear {
                         'allowed_types' => array('png', 'jpg', 'gif'),
                         'maxsize' => '100Kb',
                         'overwrite' => TRUE,
-                        'path' => File::mkdir($this->user->dir() . '/images/' . date('Y/m/d/')),
+                        'path' => Image::uploadPath(),
                         'preset' => 'post.large',
                     ));
             $files = $image->upload();

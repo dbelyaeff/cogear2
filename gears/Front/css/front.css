@@ -1,7 +1,0 @@
-.sh.promoted i{
-    visibility: visible;
-    opacity: 0.2;
-}
-.sh.promoted:hover i{
-    opacity: 0.8;
-}

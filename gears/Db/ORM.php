@@ -219,8 +219,8 @@ class Db_ORM extends Object {
             $this->caching = $id;
             return;
         }
-        // Если кеширования выключено — возвращаем NULL
-        if(!$this->caching){
+        // Если кеширования выключено и происходит запись — возвращаем NULL
+        if(!$this->caching && NULL === $object){
             return NULL;
         }
         // Если работает Мемкеш

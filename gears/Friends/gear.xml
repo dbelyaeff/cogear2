@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Friends">
-    <name lang="ru">Друзья</name>
-    <description lang="ru">Система связей между пользователями.</description>
-    <order>10</order>
-</gear>

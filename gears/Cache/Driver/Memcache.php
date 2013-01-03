@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Кеш через Memcached
+ * Кеш через Memcache
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
@@ -24,17 +24,17 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
     public function __construct($options = array()) {
         parent::__construct($options);
         if (!self::check()) {
-            throw new Exception(t('Работа с кэшем через Memcached невозможна, ибо он отключен на сервере.'));
+            throw new Exception(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
         } else {
             $this->object(new Memcache());
             if (FALSE == $this->connect($this->options->host, $this->options->port)) {
-                throw new Exception(t('Не удаётся соединиться с сервером Memcached по адресу %s:%d', $this->options->host, $this->options->port));
+                throw new Exception(t('Не удаётся соединиться с сервером Memcache по адресу %s:%d', $this->options->host, $this->options->port));
             }
         }
     }
 
     /**
-     * Проверяет, работает ли мемкэша на сервере
+     * Проверяет, работает ли мемкеша на сервере
      */
     public static function check() {
         return class_exists('Memcache');

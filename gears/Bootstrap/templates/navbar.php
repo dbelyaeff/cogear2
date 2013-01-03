@@ -1,5 +1,4 @@
 <div class="navbar <?php echo $menu->class?>" id="navbar-<?php echo $menu->name?>">
-    <div class="navbar-inner">
         <div class="container">
             <?php if ($brand = $menu->filter(array('place' => 'brand'))): ?>
                 <?php foreach ($brand as $item): ?>
@@ -21,5 +20,4 @@
                 </ul>
             <?php endif; ?>
         </div>
-    </div>
 </div>

@@ -13,7 +13,6 @@ class User_Menu extends Bootstrap_Navbar {
     public function __construct($options = array()) {
         $defaults = new Core_ArrayObject(array(
                     'name' => 'user',
-                    'class' => 'navbar-inverse',
                     'render' => FALSE,
                 ));
         $options && $defaults->extend($options);

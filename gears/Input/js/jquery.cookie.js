@@ -7,7 +7,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.opensource.org/licenses/GPL-2.0
  */
-(function($) {
+jQuery(function($) {
     $.cookie = function(key, value, options) {
 
         // key and at least value given, set cookie...
@@ -52,4 +52,4 @@
         }
         return null;
     };
-})(jQuery);
+});

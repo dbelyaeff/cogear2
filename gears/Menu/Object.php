@@ -163,5 +163,13 @@ class Menu_Object extends Observer {
     public function output() {
         echo $this->render();
     }
+    /**
+     * Приведение к строке
+     *
+     * @return type
+     */
+    public function __toString() {
+        return $this->render();
+    }
 
 }

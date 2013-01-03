@@ -1,4 +1,4 @@
-<div id="admin-menu" class="navbar navbar-fixed-top navbar-inverse">
+<div id="admin-menu" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <ul class="nav">
             <?php foreach ($menu as $element): ?>

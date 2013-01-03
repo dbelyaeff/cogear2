@@ -207,34 +207,28 @@ class User_Gear extends Gear {
         switch ($name) {
             case 'user':
                 if ($this->user->id) {
+//                    $menu->register(array(
+//                        'label' => $this->getAvatarImage('avatar.navbar'),
+//                        'link' => $this->getLink(),
+//                        'place' => 'left',
+//                        'title' => FALSE,
+//                    ));
+//                    $menu->register(array(
+//                        'label' => $this->getName(),
+//                        'link' => NULL,//$this->getLink(),
+//                        'title' => FALSE,
+//                        'place' => 'right',
+//                    ));
                     $menu->register(array(
-                        'label' => $this->getAvatarImage('avatar.navbar'),
-                        'link' => $this->getLink(),
-                        'place' => 'left',
-                        'title' => FALSE,
-                    ));
-                    $menu->register(array(
-                        'label' => $this->getName(),
-                        'link' => $this->getLink(),
-                        'title' => FALSE,
-                        'place' => 'left',
-                        'active' => TRUE,
-                    ));
-                    $menu->register(array(
-                        'label' => t('Выход'),
+                        'label' => icon('eject'),
                         'link' => s('/user/logout'),
                         'place' => 'right',
                         'order' => 1000,
                     ));
                 } else {
                     $menu->register(array(
-                        'label' => t('Вход'),
+                        'label' => icon('lock'),
                         'link' => l('/user/login'),
-                        'place' => 'right',
-                    ));
-                    $menu->register(array(
-                        'label' => t('Регистрация'),
-                        'link' => l('/user/register'),
                         'place' => 'right',
                     ));
                 }
@@ -298,60 +292,7 @@ class User_Gear extends Gear {
         $list->show();
     }
 
-    /**
-     * Dispatcher
-     * @param string $action
-     */
-    public function index_action($action = 'index', $subaction = NULL) {
-        $this->show_action($action);
-    }
 
-    /**
-     * Show user profile
-     *
-     * @param string $login
-     */
-    public function show_action($login = NULL) {
-        if ($login) {
-            $user = new User_Object();
-            $user->login = $login;
-            if ($user->find()) {
-                $user->navbar()->show();
-                $tpl = new Template('User/templates/profile');
-                $tpl->user = $user;
-                $tpl->show();
-                return;
-            }
-        }
-        page_header(t('Users'));
-        new Menu_Tabs(array(
-                    'name' => 'users',
-                    'multiple' => TRUE,
-                    'elements' => array(
-                        array(
-                            'label' => t('Все'),
-                            'link' => l('/users'),
-                            'active' => 'new' != $this->input->get('type'),
-                        ),
-                        array(
-                            'label' => t('Новые'),
-                            'link' => l('/users') . e('type', 'new'),
-                            'active' => $this->input->get('type') == 'new',
-                        ),
-                    )
-                ));
-        if ($this->input->get('type') == 'new') {
-            $where['reg_date >'] = time() - 24 * 60 * 60 * 7;
-        }
-        $users = new User_List(array(
-                    'name' => 'user',
-                    'per_page' => config('User.per_page', 20),
-                    'where' => $where,
-                    'order' => $order,
-                    'render' => FALSE,
-                ));
-        $users->show();
-    }
 
     /**
      * Edit action
@@ -410,13 +351,13 @@ class User_Gear extends Gear {
             $user->hashPassword();
             if ($user->find() && $user->login()) {
                 $data->saveme && $user->remember();
-                redirect($user->getLink());
+                redirect();
             } else {
                 $user->email = $user->login;
                 $user->object()->offsetUnset('login');
                 if ($user->find() && $user->login()) {
                     $data->saveme && $user->remember();
-                    redirect($user->getLink());
+                    redirect();
                 }
             }
             $user->password = '';

@@ -25,12 +25,14 @@ class File_Upload extends Adapter {
      * @var string
      */
     protected $uri;
+
     /**
      * If one file has been uploaded
      *
      * @var type
      */
     protected $uploaded;
+
     /**
      * Configuration parameters
      *
@@ -56,6 +58,7 @@ class File_Upload extends Adapter {
      * @var type
      */
     public $errors = array();
+
     /**
      * Upload file
      *
@@ -67,20 +70,19 @@ class File_Upload extends Adapter {
         if (!isset($_FILES[$this->name]))
             return FALSE;
         $files = $_FILES[$this->name];
-        if(is_array($files['name'])){
+        if (is_array($files['name'])) {
             $files_upload = array();
-            for($i = 0; $i < sizeof($files['name']);$i++){
-                foreach($files as $key=>$value){
+            for ($i = 0; $i < sizeof($files['name']); $i++) {
+                foreach ($files as $key => $value) {
                     $files_upload[$i][$key] = $files[$key][$i];
                 }
             }
             $result = array();
-            foreach($files_upload as $file){
+            foreach ($files_upload as $file) {
                 $result[] = $this->uploadOne($file);
             }
             return $result;
-        }
-        else{
+        } else {
             return $this->uploadOne($files);
         }
     }
@@ -140,14 +142,13 @@ class File_Upload extends Adapter {
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
-           ;
             if ($file['errors']) {
                 return $file;
             } else {
                 return $this->file = $this->process($file);
             }
         }
-       ;
+        ;
         return FALSE;
     }
 
@@ -159,12 +160,13 @@ class File_Upload extends Adapter {
     protected function process($file) {
         if (file_exists($file->path) && $this->options->overwrite == FALSE) {
             $filename = pathinfo($file->name, PATHINFO_FILENAME);
-            $file->path = str_replace($filename, time().'_'.$filename, $file->path);
+            $file->path = str_replace($filename, time() . '_' . $filename, $file->path);
         }
-        move_uploaded_file($file->tmp_name, $file->path);
-        $this->uploaded = TRUE;
-        $file->uri_full = File::pathToUri($file->path, ROOT);
-        $file->uri = File::pathToUri($file->path, UPLOADS);
+        if (move_uploaded_file($file->tmp_name, $file->path)) {
+            $this->uploaded = TRUE;
+            $file->uri_full = File::pathToUri($file->path, ROOT);
+            $file->uri = File::pathToUri($file->path, UPLOADS);
+        }
         return $file;
     }
 
@@ -177,7 +179,7 @@ class File_Upload extends Adapter {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.','File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
+            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.', 'File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
             return FALSE;
         }
         return TRUE;
