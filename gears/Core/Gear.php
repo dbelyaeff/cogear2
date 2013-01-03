@@ -394,32 +394,4 @@ abstract class Gear extends Object {
         }
         $this->is_requested = TRUE;
     }
-
-    /**
-     * Диспатчер
-     *
-     * Параметры — передаваемые элементы uri
-     */
-    public function index() {
-        if (!$args = func_get_args()) {
-            $args[] = 'index';
-        }
-        if (!event('gear.dispatch', $this, $args)->check()) {
-            return;
-        }
-        if (method_exists($this, $args[0] . '_action')) {
-            $params = array_slice($args,1);
-            event($this->gear.'.'.$args[0],$this,$params);
-            $result = call_user_func_array(array($this, $args[0] . '_action'), $params);
-            event($this->gear.'.'.$args[0].'.after',$this,$params);
-        } elseif (method_exists($this, 'index_action')) {
-            event($this->gear.'.index',$this,$args);
-            call_user_func_array(array($this, 'index_action'), $args);
-            event($this->gear.'.index.after',$this,$args);
-        } else {
-            event('404');
-        }
-        event('gear.dispatch.after', $this, $args);
-    }
-
 }
