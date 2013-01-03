@@ -9,6 +9,7 @@
  * @link		http://cogear.ru
  */
 class Admin_Gear extends Gear {
+
     protected $access = array(
         'index' => array(1),
     );
@@ -27,7 +28,7 @@ class Admin_Gear extends Gear {
                         'render' => 'before',
                     ));
 //            parent::loadAssets();
-            css($this->folder.DS.'css'.DS.'menu.css','head');
+            css($this->folder . DS . 'css' . DS . 'menu.css', 'head');
         }
     }
 
@@ -35,10 +36,11 @@ class Admin_Gear extends Gear {
      * Load assets - do not load everytime
      */
     public function loadAssets() {
+
     }
 
     /**
-     * Load assets only if requested
+     * Получение запроса
      */
     public function request() {
         parent::request();
@@ -54,7 +56,6 @@ class Admin_Gear extends Gear {
                                 ),
                             ),
                 ));
-//        $this->menu->attach($this->bc);
     }
 
     /**
@@ -73,7 +74,7 @@ class Admin_Gear extends Gear {
                             'link' => l('/admin'),
                             'label' => icon('home') . ' ' . t('Главная'),
                         ),
-                       array(
+                        array(
                             'link' => l('/admin/clear/session'),
                             'label' => icon('remove') . ' ' . t('Сбросить сессию'),
                             'order' => '0.1',
@@ -96,15 +97,30 @@ class Admin_Gear extends Gear {
     }
 
     /**
-     * Dispatch request
+     * Обработка запроса
      */
-    public function index_action() {
-        if ($args = $this->router->getArgs()) {
-            $gear = ucfirst($args[0]);
-            $args = array_slice($args, 1);
-            $callback = array($this->gears->$gear, 'admin');
-            $this->router->exec($callback, $args);
+    public function index_action($gear = NULL) {
+        if(!$gear){
+            return $this->dashboard_action();
         }
+        else {
+            $args = $this->router->getArgs();
+            $gear = ucfirst($args[1]);
+            $args = array_slice($args, 2);
+            $callback = new Callback(array($this->gears->$gear, 'admin_action'));
+            if($callback->check()){
+                $callback->run($args);
+            }
+            else {
+                event('404');
+            }
+        }
+    }
+    /**
+     * Показывает главную страницу панели управления
+     */
+    public function dashboard_action(){
+
     }
 
     /**
