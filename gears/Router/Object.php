@@ -121,7 +121,7 @@ class Router_Object extends Options implements Interface_Singleton {
         $this->uri = $this->sanitizePath(server('uri'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
-        $this->bind(':index',array(config('router.defaults.gear','Post'),config('router.defaults.action','index_action')));
+        $this->bind(':index', array(config('router.defaults.gear', 'Post'), config('router.defaults.action', 'index_action')));
         hook('ignite', array($this, 'run'));
     }
 
@@ -254,7 +254,7 @@ class Router_Object extends Options implements Interface_Singleton {
         foreach ($this->routes as $route => $callback) {
             $route = str_replace(
                     $this->rules['from'], $this->rules['to'], $route);
-           $clean_route = $route;
+            $clean_route = $route;
             if (strpos($route, '^') === FALSE) {
                 $route = '^' . $route;
             }
@@ -263,8 +263,9 @@ class Router_Object extends Options implements Interface_Singleton {
             }
             $regexp = '|' . $route . '|isU';
             if (preg_match($regexp, $this->uri, $this->matches)) {
-                $this->args = array_slice($this->matches,1);
-                if ($this->exec($callback, $this->args)) {
+                $this->args = array_slice($this->matches, 1);
+                $callback = new Callback($callback,$this->args);
+                if ($this->exec($callback)) {
                     return;
                 }
             }
@@ -277,22 +278,20 @@ class Router_Object extends Options implements Interface_Singleton {
      * Execute callback
      *
      */
-    public function exec($callback, $args = array()) {
-        if ($callback = Callback::prepare($callback)) {
-            if (!event('router.exec', $this,$callback)->check()) {
-                return FALSE;
-            }
-            $this->callback = new Callback($callback);
-            event('callback.before', $this);
-            event($callback[0]->gear.'.'.$callback[1],$callback[0],$args);
-            method_exists($callback[0], 'request') && $callback[0]->request();
-            $this->callback->setArgs($args);
-            $result = $this->callback->run();
-            event($callback[0]->gear.'.'.$callback[1].'.after',$callback[0],$args,$result);
-            event('callback.after', $this);
-            return TRUE;
+    public function exec(Callback $callback) {
+        if (!event('router.exec', $this, $callback)->check()) {
+            return FALSE;
         }
-        return FALSE;
+        $gear = $callback->getCallback(0);
+        $gear_name = $gear->gear;
+        $method = $callback->getCallback(1);
+        event('callback.before', $this);
+        $event = $gear_name. '.' . $method;
+        hook($event,array($gear,'request'));
+        event($event, $gear, $method,$callback->getArgs());
+        $callback->run();
+        event('callback.after', $this);
+        return TRUE;
     }
 
 }
@@ -303,7 +302,7 @@ class Router_Object extends Options implements Interface_Singleton {
  * @param type $route
  * @param type $callback
  */
-function route($route, $callback, $prepend = FALSE) {
+function bind_route($route, $callback, $prepend = FALSE) {
     cogear()->router->bind($route, $callback, $prepend);
 }
 

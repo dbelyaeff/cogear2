@@ -17,3 +17,20 @@ class Router_Gear extends Gear {
         $this->object(Router::getInstance());
     }
 }
+/**
+ * Ярлык для объекта пути
+ *
+ * @param int $id
+ * @param string    $param
+ * @return  mixed
+ */
+function route($id = NULL, $param = 'id') {
+    if ($id) {
+        $route = new Router_Route();
+        $route->$param = $id;
+        if ($route->find()) {
+            return $route;
+        }
+    }
+    return $id ? NULL : new Router_Route();
+}
