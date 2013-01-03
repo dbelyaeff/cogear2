@@ -13,7 +13,6 @@ class User_Gear extends Gear {
     protected $current;
     protected $hooks = array(
         'post.insert' => 'hookPostCount',
-        'post.update' => 'hookPostCount',
         'post.delete' => 'hookPostCount',
         'friends.insert' => 'hookFriends',
         'friends.delete' => 'hookFriends',
@@ -263,6 +262,7 @@ class User_Gear extends Gear {
                         'register' => array(
                             'label' => icon('ok').' '.t('Регистрация'),
                             'link' => l('/user/register'),
+                            'access' => config('user.register.active',FALSE),
                         ),
                     ),
                     'render' => 'info',
@@ -273,7 +273,7 @@ class User_Gear extends Gear {
     /**
      * Show admin page
      */
-    public function admin() {
+    public function admin_action() {
         $q = $this->input->get('q');
         $tpl = new Template('Search/templates/form');
         $tpl->action = l('/admin/user/');
@@ -431,7 +431,7 @@ class User_Gear extends Gear {
      */
     public function register_action($code = NULL) {
         $this->theme->template('User/templates/login');
-        if (!config('user.register.enabled', TRUE)) {
+        if (!config('user.register.active', FALSE)) {
             return warning(t('Регистрация отключена администрацией сайта.'));
         }
         if ($this->isLogged()) {
