@@ -13,7 +13,7 @@
         }
     }
 ?>
-<?php echo t('<b>База данных:</b> %d <i class="icon icon-time"></i> %.3f<i class="icon icon-asterisk"></i>%s', $queries->count(),$total_time,File::fromBytes($memory)); ?> <?php if($queries->count()):?><a href="#db-trace-queries" id="db-trace-queries-handler" class="btn btn-mini"><i class="icon icon-eye-open"></i></a>
+<?php echo t('<b>База данных:</b> %d <i class="icon icon-time"></i> %.3f<i class="icon icon-asterisk"></i>%s', $queries->count(),$total_time,File::fromBytes($memory)); ?> <?php if($queries->count()):?><a id="db-trace-queries-handler" class="btn btn-mini"><i class="icon icon-eye-open"></i></a>
 <div id="db-trace-queries" class="well" style="display:none;">
     <?php foreach ($queries as $key=>$query): ?>
         <?php echo icon('time').' '. round($db_bench[$key]['time'],4).' '.icon('asterisk').' '.$db_bench[$key]['memory']?>
