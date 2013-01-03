@@ -35,6 +35,12 @@ class User_Gear extends Gear {
         'login' => array(0),
         'logout' => array(1, 100),
     );
+    protected $routes = array(
+        'login' => 'login_action',
+        'logout' => 'logout_action',
+        'lostpassword' => 'lostpassword_action',
+        'register' => 'register_action',
+    );
 
     /**
      * Access
@@ -220,14 +226,14 @@ class User_Gear extends Gear {
 //                    ));
                     $menu->register(array(
                         'label' => icon('eject'),
-                        'link' => s('/user/logout'),
+                        'link' => s('/logout'),
                         'place' => 'right',
                         'order' => 1000,
                     ));
                 } else {
                     $menu->register(array(
                         'label' => icon('lock'),
-                        'link' => l('/user/login'),
+                        'link' => l('/login'),
                         'place' => 'right',
                     ));
                 }
@@ -252,16 +258,16 @@ class User_Gear extends Gear {
                     'elements' => array(
                         'login' => array(
                             'label' => icon('lock').' '.t('Войти'),
-                            'link' => l('/user/login'),
+                            'link' => l('/login'),
                         ),
                         'lostpassword' => array(
                             'label' => icon('wrench').' '.t('Забыли пароль?'),
-                            'link' => l('/user/lostpassword'),
-                            'access' => check_route('user/lostpassword'),
+                            'link' => l('/lostpassword'),
+                            'access' => check_route('lostpassword'),
                         ),
                         'register' => array(
                             'label' => icon('ok').' '.t('Регистрация'),
-                            'link' => l('/user/register'),
+                            'link' => l('/register'),
                             'access' => config('user.register.active',FALSE),
                         ),
                     ),
@@ -432,10 +438,10 @@ class User_Gear extends Gear {
     public function register_action($code = NULL) {
         $this->theme->template('User/templates/login');
         if (!config('user.register.active', FALSE)) {
-            return warning(t('Регистрация отключена администрацией сайта.'));
+            return error(t('Регистрация отключена администрацией сайта.'));
         }
         if ($this->isLogged()) {
-            return warning('Вы уже авторизированы!');
+            return error('Вы уже авторизированы!');
         }
         $this->showMenu();
         if ($code) {
