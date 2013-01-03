@@ -90,8 +90,10 @@ class Form_Object extends Object {
     public function __construct($options) {
         $this->elements = new Core_ArrayObject();
         if (is_string($options)) {
-            if (!$config = Config::read(Gear::preparePath($options))) {
-                return error(t('Cannot read form config <b>%s</b>.', '', $options));
+            $path = Gear::preparePath($options);
+            if (!$config = Config::read($path)) {
+                error(t('Не могу прочитать файл конфигурации формы по адресу <b>%s</b>.', $path));
+                $options = $this->options;
             } else {
                 $options = $config;
             }
@@ -118,7 +120,7 @@ class Form_Object extends Object {
             $config = $this->defaults->$name;
         }
         if ($config->label && !$config->placeholder && in_array($config->type, array('text', 'input', 'textarea', 'password', 'editor'))) {
-            $config->placeholder = t('Введите %s…', mb_strtolower($config->label,'UTF8'));
+            $config->placeholder = t('Введите %s…', mb_strtolower($config->label, 'UTF8'));
         }
         $config->name = $name;
         if (strpos($name, '[]')) {
@@ -164,12 +166,14 @@ class Form_Object extends Object {
             return;
         event('form.init', $this);
         event('form.init.' . $this->options->name, $this);
-        foreach ($this->options->elements as $name => $config) {
-            $this->addElement($name, $config);
-        }
-        if ($this->callback && $callback = Cogear::prepareCallback($this->callback)) {
-            if ($this->result = $this->result()) {
-                call_user_func_array($callback, array($this));
+        if ($this->options->elements) {
+            foreach ($this->options->elements as $name => $config) {
+                $this->addElement($name, $config);
+            }
+            if ($this->callback && $callback = Cogear::prepareCallback($this->callback)) {
+                if ($this->result = $this->result()) {
+                    call_user_func_array($callback, array($this));
+                }
             }
         }
         $this->is_init = TRUE;
@@ -185,13 +189,13 @@ class Form_Object extends Object {
     public function object($data = NULL) {
         $result = parent::object($data);
         if ($data) {
-            if($data instanceof Object){
+            if ($data instanceof Object) {
                 $data = $data->object();
             }
             foreach ($data as $key => $value) {
                 $this->elements->$key && $this->elements->$key->setValue($value);
             }
-            event('form.attach', $this,$data);
+            event('form.attach', $this, $data);
         }
         return $result;
     }
@@ -267,4 +271,5 @@ class Form_Object extends Object {
         event('form.render.after', $this);
         return $this->code;
     }
+
 }

@@ -157,6 +157,7 @@ abstract class Gear extends Object {
      * @var array
      */
     protected $depends;
+
     /**
      * Здесь могут храниться настройки шестрёнки
      *
@@ -379,10 +380,7 @@ abstract class Gear extends Object {
                 $path = GEARS . DS . $path;
             }
         }
-        if (file_exists($path)) {
-            return $path;
-        }
-        return NULL;
+        return $path;
     }
 
     /**
@@ -394,4 +392,5 @@ abstract class Gear extends Object {
         }
         $this->is_requested = TRUE;
     }
+
 }
