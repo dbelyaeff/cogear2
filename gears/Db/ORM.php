@@ -104,7 +104,7 @@ class Db_ORM extends Object {
         $this->class = $this->reflection->getName();
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
-        $this->primary = $primary ? $primary : $first;
+        $this->primary OR $this->primary = $primary ? $primary : $first;
         $this->cache_path = $this->db->options->database . '.' . $this->table;
         $this->object(new Core_ArrayObject());
     }
