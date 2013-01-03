@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Theme">
-    <name lang="ru">Темы оформления</name>
-    <description lang="ru">Управления внешним видом сайта.</description>
-    <order>-100</order>
-</gear>

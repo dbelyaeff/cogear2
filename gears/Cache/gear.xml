@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Cache">
-    <name lang="ru">Кеш</name>
-    <description lang="ru">Кеширование данных.</description>
-    <package lang="ru">Производительность</package>
-</gear>

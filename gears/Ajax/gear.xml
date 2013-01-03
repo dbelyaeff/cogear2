@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Ajax">
-    <name lang="ru">AJAX</name>
-    <description lang="ru">Для асинхронных запросов на языка JavaScript.</description>
-</gear>

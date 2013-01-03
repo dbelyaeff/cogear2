@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Menu">
-    <name lang="ru">Меню</name>
-    <description lang="ru">Работа с меню.</description>
-    <required>
-        <gear name="Access"/>
-    </required>
-</gear>

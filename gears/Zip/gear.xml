@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Zip">
-    <name lang="ru">Архиватор ZIP</name>
-    <description lang="ru">Распаковщик архивов.</description>
-</gear>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Request">
-    <name lang="ru">Запрос</name>
-    <description lang="ru">Обрабатывает полученный от бразуера пользователя запрос.</description>
-    <order>-10001</order>
-</gear>

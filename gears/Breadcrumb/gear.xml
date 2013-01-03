@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Breadcrumb">
-    <name lang="ru">«Хлебные крошки»</name>
-    <description lang="ru">Вывод блока иерархической навигации.</description>
-    <required>
-        <gear name="Menu"/>
-        <gear name="User"/>
-    </required>
-</gear>

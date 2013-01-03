@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Assets">
-    <name lang="ru">Управления скриптами и стилями</name>
-    <description lang="ru">Вывод JavaScript и CSS на страницу.</description>
-    <order>-999</order>
-</gear>

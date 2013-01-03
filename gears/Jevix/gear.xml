@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gear name="Jevix">
-    <name lang="ru">Jevix</name>
-    <description lang="ru">Фильтрация HTML-кода.</description>
-    <order>0</order>
-</gear>
