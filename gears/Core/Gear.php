@@ -178,7 +178,6 @@ abstract class Gear extends Object {
         $this->getPath();
         $this->getDir();
         $this->getFolder();
-        $this->getBase();
         $this->file = new SplFileInfo($this->path);
     }
 
@@ -186,7 +185,7 @@ abstract class Gear extends Object {
      * Initialize
      */
     public function init() {
-        $this->routes[$this->base . ':maybe'] = 'index';
+        $this->routes[$this->gear . ':maybe'] = 'index';
         $this->loadAssets();
         $this->hooks();
         $this->routes();
@@ -349,15 +348,6 @@ abstract class Gear extends Object {
             $this->getDir();
         $this->folder = str_replace(array(ROOT, DS), array('', '/'), $this->dir);
         return self::normalizePath($this->dir);
-    }
-
-    /**
-     * Get base name
-     */
-    protected function getBase() {
-        $cogear = getInstance();
-        $base = str_replace('_', '/', strtolower($this->gear));
-        return $this->base ? $this->base : $this->base = $cogear->get($this->gear . '.base', $base);
     }
 
     /**

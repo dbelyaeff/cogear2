@@ -45,7 +45,7 @@ class Gears extends Options {
 //            if ($gears = cogear()->system_cache->get('gears')) {
 //                $this->extend($gears->toArray());
 //            } else {
-                $this->load($gears);
+            $this->load($gears);
 //                cogear()->system_cache->set('gears', $this);
 //            }
         } else if (is_string($gears) && is_dir($gears)) {
@@ -78,7 +78,7 @@ class Gears extends Options {
      * @return SimpleXMLObject
      */
     public static function getDefaultSettings() {
-        return self::$defaults ? self::$defaults : self::$defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Core' . DS . 'default.xml'));
+        return self::$defaults ? self::$defaults : self::$defaults = new Config(GEARS . DS . 'Core' . DS . 'defaults' . EXT);
     }
 
     /**
@@ -88,12 +88,8 @@ class Gears extends Options {
      */
     public function load($gears = array()) {
         foreach ($gears as $gear) {
-            // Если в массиве у нас названия шестерёнок, а не пути к конфигам — правим
-            strpos($gear, 'gear.xml') OR $gear = GEARS . DS . $gear . DS . 'gear.xml';
-            if (file_exists($gear)) {
-                $xml = new XmlConfig($gear);
-                $gear = $xml->attributes()->name->__toString();
-                $this->offsetSet($gear, $xml->parse());
+            if ($config = $this->loadConfig($gear)) {
+                $this->offsetSet($config->gear, $config);
             }
         }
     }
@@ -114,22 +110,19 @@ class Gears extends Options {
      * @param string $dir
      */
     public function find($dir) {
-        $gears = glob($dir . DS . '*' . DS . 'gear.xml');
+        $gears = glob($dir . DS . '*' . DS . 'info' . EXT);
         return $gears;
     }
 
     /**
-     * Invoke gear
+     * Загружает конфиг шестерёнки
      *
      * @param type $gear
      */
-    public static function invoke($gear) {
-        strpos($gear, 'gear.xml') OR $gear = GEARS . DS . $gear . DS . 'gear.xml';
+    public static function loadConfig($gear) {
+        strpos($gear, 'info' . EXT) OR $gear = GEARS . DS . $gear . DS . 'info' . EXT;
         if (file_exists($gear)) {
-            $xml = new XmlConfig($gear);
-            $gear = $xml->attributes()->name->__toString();
-            $class = $gear . '_' . self::GEAR;
-            return new $class($xml->parse());
+            return new Config($gear);
         }
         return NULL;
     }
@@ -169,11 +162,17 @@ class Gears extends Options {
 
         $this->options->sort && $this->uasort('Core_ArrayObject::sortByOrder');
         if ($this->options->charge) {
-            foreach ($this as $gear => $options) {
+            $remove = array();
+            foreach ($this as $gear => $config) {
                 $class = $gear . '_' . self::GEAR;
                 if (class_exists($class)) {
-                    $this->$gear = new $class($options);
+                    $this->$gear = new $class($config);
                 } else {
+                    array_push($remove,$gear);
+                }
+            }
+            if($remove){
+                foreach($remove as $gear){
                     $this->offsetUnset($gear);
                 }
             }
@@ -188,7 +187,7 @@ class Gears extends Options {
         foreach ($this as $name => $info) {
             if ($info->required) {
                 $info->required->success = TRUE;
-                foreach ($info->required->gear as $req_gear) {
+                foreach ($info->required->gears as $req_gear) {
                     $req_gear->success = TRUE;
                     // Проверяем статус шестерёнки
                     switch (gear_status($req_gear->name)) {
@@ -231,7 +230,7 @@ class Gears extends Options {
                             }
                     }
                     if (FALSE === $info->required->success) {
-                        $remove->append($name);
+                        $remove->append($info->gear);
                     }
                 }
             }

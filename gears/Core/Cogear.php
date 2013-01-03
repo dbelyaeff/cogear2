@@ -35,13 +35,6 @@ final class Cogear implements Interface_Singleton {
     public $stop_event = FALSE;
 
     /**
-     * Флаг загрузки шестерёнок
-     *
-     * @var boolean
-     */
-    private $gears_are_loaded = FALSE;
-
-    /**
      * Settings and config
      */
     public $site;
@@ -72,7 +65,11 @@ final class Cogear implements Interface_Singleton {
             $folder = array_pop($array);
             define('FOLDER', $folder);
         }
-        hook('ignite', array($this, 'loadGears'));
+        $core_gears = clone $this->site->gears;
+        $this->gears = new Gears($core_gears->extend($this->config->gears));
+        foreach ($this->gears as $gear) {
+            $gear->init();
+        }
     }
 
     /**
@@ -132,25 +129,10 @@ final class Cogear implements Interface_Singleton {
      * @return mixed
      */
     public function __get($name) {
-        if ($this->gears->$name) {
+        if ($this->gears && $this->gears->$name) {
             return $this->gears->$name;
         }
         return NULL;
-    }
-
-    /**
-     *  Load gears
-     */
-    public function loadGears() {
-        if ($this->gears_are_loaded)
-            return;
-        $core_gears = clone $this->site->gears;
-        $this->gears = new Gears($core_gears->extend($this->config->gears));
-        foreach ($this->gears as $gear) {
-            $gear->init();
-        }
-        // Ставим флажок
-        $this->gears_are_loaded = TRUE;
     }
 
     /**
