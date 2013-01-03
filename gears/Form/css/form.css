@@ -34,3 +34,6 @@ fieldset legend{
 .input-reset{
     position: absolute;
 }
+label {
+    cursor: pointer;
+}
