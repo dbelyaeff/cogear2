@@ -34,7 +34,7 @@
                                 <br/>
                                 <strong><?php echo t('Зависимости'); ?>:</strong>
                                 <?php
-                                foreach ($gear->required->gear as $info) {
+                                foreach ($gear->required->gears as $info) {
                                     if (TRUE === $info->success) {
                                         if ($info->disabled) {
                                             $output->append('<span class="label label-inverse" title="' . t('Требование выполнено (шестерёнка отключена)') . '">' . $info->name . ($info->version ? ' ' . $info->version : '') . '</span>');

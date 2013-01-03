@@ -32,7 +32,7 @@ class Gears_Gear extends Gear {
      * Admin dispatcher
      *
      */
-    public function admin($action = 'all') {
+    public function admin_action($action = 'all') {
         $gears = new Gears(GEARS,array(
             'remove' => FALSE,
             'charge' => TRUE
@@ -44,7 +44,7 @@ class Gears_Gear extends Gear {
             $do_gears = explode(',', $this->input->get('gears'));
         }
         if ($do) {
-            $this->admin_action($do, $do_gears);
+            $this->admin_doaction($do, $do_gears);
             return;
         }
         $menu = new Menu_Tabs(array(
@@ -105,7 +105,7 @@ class Gears_Gear extends Gear {
      * @param type $do
      * @param type $gears
      */
-    public function admin_action($do, $do_gears) {
+    public function admin_doaction($do, $do_gears) {
         $tpl = new Template('Gears/templates/action');
         $tpl->do = $do;
         $all_gears = new Gears(GEARS,array(
