@@ -25,7 +25,7 @@ class Wysiwyg_Gear extends Gear {
     /**
      * Control Panel
      */
-    public function admin() {
+    public function admin_action() {
         $form = new Form("Wysiwyg/forms/config");
         $options = new Core_ArrayObject;
         $options->editor = config('wysiwyg.editor');

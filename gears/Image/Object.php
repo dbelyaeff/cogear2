@@ -15,7 +15,7 @@ class Image_Object extends Object {
      *
      * @var array
      */
-    public $options = array(
+    protected $options = array(
         'driver' => 'Image_Driver_GD',
     );
 

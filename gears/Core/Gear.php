@@ -165,11 +165,17 @@ abstract class Gear extends Object {
      * @var array
      */
     protected $depends;
+    /**
+     * Здесь могут храниться настройки шестрёнки
+     *
+     * @var array
+     */
+    protected $options = array();
 
     /**
      * Конструктор
      *
-     * @param   XmlConfig    $xml
+     * @param   Config    $config
      */
     public function __construct($config) {
         // Принимаем настройки их конфига и сохраняем их как свойства
@@ -389,18 +395,19 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Notify gear that it's requested by uri
+     * Метод, который вызывается, когда роутер обращается к шестерёнке
      */
     public function request() {
-        $this->is_requested = TRUE;
         if (FALSE === event('gear.request', $this)->check()) {
             return;
         }
+        $this->is_requested = TRUE;
     }
 
     /**
-     * Dispatcher
-     * @param string $action
+     * Диспатчер
+     *
+     * Параметры — передаваемые элементы uri
      */
     public function index() {
         if (!$args = func_get_args()) {

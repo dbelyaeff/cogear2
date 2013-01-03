@@ -13,7 +13,7 @@
  */
 class Form_Object extends Object {
 
-    public $options = array(
+    protected $options = array(
         'name' => '',
         'method' => 'POST',
         'action' => '',

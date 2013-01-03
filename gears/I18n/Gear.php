@@ -117,7 +117,7 @@ class I18n_Gear extends Gear {
     /**
      * Control Panel
      */
-    public function admin($action = NULL) {
+    public function admin_action($action = NULL) {
         switch ($action) {
             default:
                 $form = new Form('I18n/forms/admin');

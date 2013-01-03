@@ -8,12 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  */
-class Dev_Gear extends Gear {
-
-    protected $name = 'Dev';
-    protected $description = 'Dev description';
-    protected $package = '';
-    protected $order = 0;
+class Pages_Gear extends Gear {
     protected $hooks = array(
     );
     protected $routes = array(
@@ -21,57 +16,57 @@ class Dev_Gear extends Gear {
     protected $access = array(
     );
 
-    /**
-     * Acccess
-     *
-     * @param string $rule
-     * @param object $Item
-     */
-    public function access($rule, $Item = NULL) {
-        switch ($rule) {
-            case 'create':
-                return TRUE;
-                break;
-        }
-        return FALSE;
-    }
+//    /**
+//     * Acccess
+//     *
+//     * @param string $rule
+//     * @param object $Item
+//     */
+//    public function access($rule, $Item = NULL) {
+//        switch ($rule) {
+//            case 'create':
+//                return TRUE;
+//                break;
+//        }
+//        return FALSE;
+//    }
 
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-    }
+//    /**
+//     * Init
+//     */
+//    public function init() {
+//        parent::init();
+//    }
 
-    /**
-     * Hook menu
-     *
-     * @param string $name
-     * @param object $menu
-     */
-    public function menu($name, $menu) {
-        switch ($name) {
+//    /**
+//     * Hook menu
+//     *
+//     * @param string $name
+//     * @param object $menu
+//     */
+//    public function menu($name, $menu) {
+//        switch ($name) {
+//
+//        }
+//    }
 
-        }
-    }
-
-    /**
-     * Default dispatcher
-     *
-     * @param string $action
-     * @param string $subaction
-     */
-    public function index_action($action = '', $subaction = NULL) {
-
-    }
-
-    /**
-     * Custom dispatcher
-     *
-     * @param   string  $subaction
-     */
-    public function some_action($subaction = NULL) {
-
-    }
+//    /**
+//     * Default dispatcher
+//     *
+//     * @param string $action
+//     * @param string $subaction
+//     */
+//    public function index_action($action = '', $subaction = NULL) {
+//
+//    }
+//
+//    /**
+//     * Custom dispatcher
+//     *
+//     * @param   string  $subaction
+//     */
+//    public function some_action($subaction = NULL) {
+//
+//    }
 
 }

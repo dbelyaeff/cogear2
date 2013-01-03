@@ -16,7 +16,7 @@ abstract class Db_Driver_Abstract extends Object {
      *
      * @var array
      */
-    public $options = array(
+    protected $options = array(
         'host' => 'localhost',
         'base' => 'cogear',
         'user' => 'root',

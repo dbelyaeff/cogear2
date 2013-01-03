@@ -13,7 +13,7 @@
  */
 class User_Widgets_Online extends Widgets_Widget {
 
-    public $options = array(
+    protected $options = array(
         'class' => 'well online-widget',
         'limit' => 10,
         'render' => 'sidebar',

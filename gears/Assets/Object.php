@@ -22,7 +22,7 @@ class Assets_Object extends Object implements Interface_Factory {
      *
      * @var type
      */
-    public $options = array(
+    protected $options = array(
         'driver' => 'Assets_Driver_JavaScript',
         'glue' => TRUE,
     );

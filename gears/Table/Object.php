@@ -15,7 +15,7 @@ class Table_Object extends Object {
      *
      * @var array
      */
-    public $options = array(
+    protected $options = array(
         'name' => 'name',
         'class' => 'table',
         'fields' => array(),

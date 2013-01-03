@@ -13,7 +13,7 @@
  */
 class Form_Element_Abstract extends Errors_Handler {
 
-    public $options = array(
+    protected $options = array(
         'name' => '',
         'label' => '',
         'description' => '',

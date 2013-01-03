@@ -13,7 +13,7 @@
  */
 class Mail_Object extends Object{
 
-    public $options = array(
+    protected $options = array(
         'name' => '',
         'from' => '',
         'from_name' => '',

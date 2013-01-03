@@ -10,7 +10,7 @@
  */
 abstract class Assets_Driver_Abstract extends Object {
 
-    public $options = array(
+    protected $options = array(
         'glue' => TRUE,
         'render' => 'head',
         'refresh' => 0,

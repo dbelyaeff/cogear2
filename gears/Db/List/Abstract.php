@@ -14,7 +14,7 @@
 abstract class Db_List_Abstract extends Cogearable {
 
     protected $class;
-    public $options = array(
+    protected $options = array(
         'name' => 'list',
         'page' => 0,
         'per_page' => 5,

@@ -13,7 +13,7 @@
  */
 class Pager_Object extends Pager_Abstract {
 
-    public $options = array(
+    protected $options = array(
         'current' => 0,
         'count' => 0,
         'per_page' => 5,

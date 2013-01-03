@@ -14,7 +14,7 @@
 class Post_List extends Db_List_Abstract {
 
     protected $class = 'Post';
-    public $options = array(
+    protected $options = array(
         'page' => 0,
         'per_page' => 5,
         'base' => '',

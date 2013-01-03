@@ -13,7 +13,7 @@
  */
 class User_Navbar extends Object {
 
-    public $options = array(
+    protected $options = array(
         'render' => 'info',
     );
 

@@ -23,7 +23,7 @@ class Gears extends Options {
     const ERROR_REQUIRED = 0;
 
     public static $defaults;
-    public $options = array(
+    protected $options = array(
         // Проверять ли на совместимость шестерёнки
         'check' => TRUE,
         // Удалять ли те, которые проверку не прошли
@@ -89,7 +89,8 @@ class Gears extends Options {
     public function load($gears = array()) {
         foreach ($gears as $gear) {
             if ($config = $this->loadConfig($gear)) {
-                $this->offsetSet($config->gear, $config);
+                $defaults = clone self::getDefaultSettings();
+                $this->offsetSet($config->gear, $defaults->extend($config));
             }
         }
     }

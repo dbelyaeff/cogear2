@@ -13,7 +13,7 @@
  */
 abstract class I18n_Adapter_Abstract extends Options {
 
-    public $options = array(
+    protected $options = array(
         'lang' => 'en',
     );
     protected $update_flag = TRUE;

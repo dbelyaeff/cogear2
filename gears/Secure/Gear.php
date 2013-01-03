@@ -21,12 +21,6 @@ class Secure_Gear extends Gear {
     );
     protected $key;
     protected $salt;
-    /**
-     * Конструктор
-     */
-    public function __contsruct() {
-        parent::__construct($config);
-    }
 
     /**
      * Encrypt data

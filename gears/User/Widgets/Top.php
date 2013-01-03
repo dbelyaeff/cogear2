@@ -13,7 +13,7 @@
  */
 class User_Widgets_Top extends Widgets_Widget {
 
-    public $options = array(
+    protected $options = array(
         'class' => 'well user-widget',
         'limit' => 10,
         'render' => 'sidebar',

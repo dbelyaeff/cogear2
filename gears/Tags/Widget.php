@@ -13,7 +13,7 @@
  */
 class Tags_Widget extends Widgets_Widget {
 
-    public $options = array(
+    protected $options = array(
         'class' => 'well tags-widget',
         'limit' => 50,
         'render' => 'sidebar',

@@ -18,7 +18,7 @@ class Options extends Core_ArrayObject {
      *
      * @var array
      */
-    public $options = array();
+    protected $options = array();
     const SELF = 1;
 
     /**
@@ -28,7 +28,7 @@ class Options extends Core_ArrayObject {
      * @param string $storage
      */
     public function __construct($options = array(), $place = 0) {
-        $this->options = new Core_ArrayObject($this->options);
+        $this->options = new Core_ArrayObject((array)$this->options);
         if (self::SELF == $place) {
             foreach($options as $key=>$value){
                 $this->$key = $value;

@@ -12,7 +12,7 @@
 
  */
 class Menu_Item extends Options{
-    public $options = array(
+    protected $options = array(
         'link' => '',
         'label' => '',
         'level' => 0,

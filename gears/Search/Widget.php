@@ -13,7 +13,7 @@
  */
 class Search_Widget extends Widgets_Widget {
 
-    public $options = array(
+    protected $options = array(
         'class' => 'search-widget',
         'render' => 'sidebar',
         'order' => -1,

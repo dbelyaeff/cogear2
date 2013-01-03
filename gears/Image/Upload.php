@@ -10,7 +10,7 @@
  */
 class Image_Upload extends File_Upload {
 
-    public $options = array(
+    protected $options = array(
         'allowed_types' => 'jpg,png,gif,ico',
         'min' => array(
             'width' => 0,

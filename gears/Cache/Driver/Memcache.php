@@ -10,7 +10,7 @@
  */
 class Cache_Driver_Memcache extends Cache_Driver_Abstract {
 
-    public $options = array(
+    protected $options = array(
         'host' => '127.0.0.1',
         'port' => '11211',
         'prefix' => 'memcache',

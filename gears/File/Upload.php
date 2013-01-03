@@ -44,7 +44,7 @@ class File_Upload extends Adapter {
      *
      * @var array
      */
-    public $options = array(
+    protected $options = array(
         'name' => 'file',
         'allowed_types' => array(),
         'maxsize' => '',

@@ -15,7 +15,7 @@ class User_List extends Db_List_Table {
 
     protected $class = 'User';
     protected $fields;
-    public $options = array(
+    protected $options = array(
         'name' => 'user-list',
         'page' => 0,
         'per_page' => 5,
