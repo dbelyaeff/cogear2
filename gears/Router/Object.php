@@ -121,7 +121,7 @@ class Router_Object extends Options implements Interface_Singleton {
         $this->uri = $this->sanitizePath(server('uri'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
-        $this->bind(':index',array(config('router.index','Post'),'index'));
+        $this->bind(':index',array(config('router.defaults.gear','Post'),config('router.defaults.action','index_action')));
         hook('ignite', array($this, 'run'));
     }
 
@@ -279,14 +279,16 @@ class Router_Object extends Options implements Interface_Singleton {
      */
     public function exec($callback, $args = array()) {
         if ($callback = Callback::prepare($callback)) {
-            if (!event('router.exec', $callback)->check()) {
-                return;
+            if (!event('router.exec', $this,$callback)->check()) {
+                return FALSE;
             }
             $this->callback = new Callback($callback);
             event('callback.before', $this);
+            event($callback[0]->gear.'.'.$callback[1],$callback[0],$args);
             method_exists($callback[0], 'request') && $callback[0]->request();
             $this->callback->setArgs($args);
-            $this->callback->run();
+            $result = $this->callback->run();
+            event($callback[0]->gear.'.'.$callback[1].'.after',$callback[0],$args,$result);
             event('callback.after', $this);
             return TRUE;
         }
