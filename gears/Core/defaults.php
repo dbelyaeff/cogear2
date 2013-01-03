@@ -10,7 +10,4 @@ return array(
     'core' => '2.x',
     'version' => '1.0',
     'order' => 0,
-    'access' => array(
-        'admin' => array(1),
-    ),
 );
