@@ -248,27 +248,22 @@ class Router_Object extends Options implements Interface_Singleton {
      * Run dispatched request
      */
     public function run() {
-        $cogear = getInstance();
         if (!event('router.run', $this)->check()) {
             return;
         }
         foreach ($this->routes as $route => $callback) {
             $route = str_replace(
                     $this->rules['from'], $this->rules['to'], $route);
-            $clean_route = $route;
+           $clean_route = $route;
             if (strpos($route, '^') === FALSE) {
                 $route = '^' . $route;
             }
             if (strpos($route, '$') === FALSE) {
                 $route .= '$';
             }
-            $regexp = '#' . $route . '#isU';
+            $regexp = '|' . $route . '|isU';
             if (preg_match($regexp, $this->uri, $this->matches)) {
-                $args = array();
-                $root = trim(substr($clean_route, 0, strpos($clean_route, '(')), self::DELIM);
-                $exclude = strpos($root, self::DELIM) ? preg_split(self::DELIM, $root, -1, PREG_SPLIT_NO_EMPTY) : (array) $root;
-                $this->args = array_merge($args, array_diff_assoc($this->segments, $exclude));
-                // We have a nice method in hooks to prepare callback
+                $this->args = array_slice($this->matches,1);
                 if ($this->exec($callback, $this->args)) {
                     return;
                 }
