@@ -2,7 +2,10 @@
 return array (
   'router' =>
   array (
-    'index' => 'Post',
+    'defaults' => array(
+        'gear'=> 'Post',
+        'action' => 'index_action',
+        ),
   ),
   'assets' =>
   array (
@@ -27,7 +30,7 @@ return array (
   ),
   'gears' =>
   array (
-    'Install'
+     'Install',
   ),
   'i18n' =>
   array (
@@ -49,6 +52,7 @@ return array (
     'refresh' => 60,
     'register' =>
     array (
+      'active' => false,
       'verification' => true,
     ),
     'avatar' =>
