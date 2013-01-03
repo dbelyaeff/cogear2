@@ -121,7 +121,7 @@ class Router_Object extends Options implements Interface_Singleton {
         $this->uri = $this->sanitizePath(server('uri'));
         $this->segments = $this->parseSegments($this->uri);
         $this->routes = new Core_ArrayObject($this->routes);
-        $this->bind(':index',array(config('router.index','Post'),'front_action'));
+        $this->bind(':index',array(config('router.index','Post'),'index'));
         hook('ignite', array($this, 'run'));
     }
 
