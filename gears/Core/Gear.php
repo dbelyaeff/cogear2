@@ -410,15 +410,18 @@ abstract class Gear extends Object {
             return;
         }
         if (method_exists($this, $args[0] . '_action')) {
-            call_user_func_array(array($this, $args[0] . '_action'), array_slice($args, 1));
+            $params = array_slice($args,1);
+            event($this->gear.'.'.$args[0],$this,$params);
+            $result = call_user_func_array(array($this, $args[0] . '_action'), $params);
+            event($this->gear.'.'.$args[0].'.after',$this,$params);
         } elseif (method_exists($this, 'index_action')) {
+            event($this->gear.'.index',$this,$args);
             call_user_func_array(array($this, 'index_action'), $args);
+            event($this->gear.'.index.after',$this,$args);
         } else {
             event('404');
         }
-        if (!event('gear.dispatch.after', $this, $args)->check()) {
-            return;
-        }
+        event('gear.dispatch.after', $this, $args);
     }
 
 }
