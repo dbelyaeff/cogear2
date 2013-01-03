@@ -125,14 +125,6 @@ abstract class Gear extends Object {
     protected $file;
 
     /**
-     * Simple uri name
-     * It can be set in configuration, but if empty — will be default gear_name
-     *
-     * @var string
-     */
-    protected $base;
-
-    /**
      * If gear is requested by router
      * @var boolean
      */
@@ -191,7 +183,6 @@ abstract class Gear extends Object {
      * Initialize
      */
     public function init() {
-        $this->routes[$this->gear . ':maybe'] = 'index';
         $this->loadAssets();
         $this->hooks();
         $this->routes();
