@@ -36,6 +36,9 @@ class Event extends Core_ArrayObject {
     public function run($args) {
         self::$current = $this;
         foreach ($this as $callback) {
+            if (FALSE === flash('event.' . $this->name)) {
+                return FALSE;
+            }
             $result = $callback->run($args);
             if (NULL !== $result) {
                 $this->results->append($result);
