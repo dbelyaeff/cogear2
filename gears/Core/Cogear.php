@@ -109,14 +109,19 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     * Run event
+     * Исполение события
+     *
      * @param string $name
      * @param mixed $arg_1
-     * вЂ¦
+     * …
      * @param mixed $arg_N
      * @return  boolean
      */
     public function event($name) {
+        // Внешне может быть установлено прерывание события
+        if(FALSE === flash('event.'.$name)){
+            return;
+        }
         $args = func_get_args();
         $args = array_slice($args, 1);
         return $this->events->$name ? $this->events->$name->run($args) : new Event($name);
@@ -201,7 +206,7 @@ function config($name = NULL, $default_value = NULL) {
  */
 function flash($key,$value = NULL){
     static $storage = array();
-    if($value){
+    if(NULL !== $value){
         $storage[$key] = $value;
     }
     elseif(array_key_exists($key, $storage)){
