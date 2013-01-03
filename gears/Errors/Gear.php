@@ -92,6 +92,9 @@ HTML;
      * Not found
      */
     public function notFound() {
+        if(flash('stop.404')){
+            return;
+        }
         $this->request();
         cogear()->response->header('Status', '404 ' . Response_Object::$codes[404]);
         $tpl = new Template('Errors/templates/404');
