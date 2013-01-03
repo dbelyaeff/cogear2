@@ -191,3 +191,20 @@ function config($name = NULL, $default_value = NULL) {
     $cogear = getInstance();
     return $cogear->get($name, $default_value);
 }
+/**
+ * Хранение одноразовых пеерменных
+ *
+ * @staticvar array $storage
+ * @param string $key
+ * @param mixed $value
+ * @return mixed
+ */
+function flash($key,$value = NULL){
+    static $storage = array();
+    if($value){
+        $storage[$key] = $value;
+    }
+    elseif(array_key_exists($key, $storage)){
+        return $storage[$key];
+    }
+}
