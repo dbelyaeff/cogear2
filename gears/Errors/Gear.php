@@ -98,7 +98,7 @@ HTML;
         $this->request();
         cogear()->response->header('Status', '404 ' . Response_Object::$codes[404]);
         $tpl = new Template('Errors/templates/404');
-        $tpl->show();
+        $tpl->show('info');
     }
 
     /**
