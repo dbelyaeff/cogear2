@@ -11,14 +11,14 @@
 class Dev_Gear extends Gear {
 
     protected $access = array(
-        'index' => array(1, 100),
+        '*' => array(1),
     );
     /**
      * Init
      */
     public function init() {
         parent::init();
-        if (access('Dev') && config('site.development')) {
+        if (access('Dev.*')) {
             hook('done', array($this, 'finish'));
         }
     }

@@ -13,23 +13,19 @@ class Access_Gear extends Gear {
     protected $rights;
     protected $hooks = array(
         'exit' => 'save',
-        'gear.dispatch' => 'hookGearAccess',
+        'router.exec' => 'hookRouterExec',
         'menu.auto.init' => 'hookMenuAuto',
         '403' => 'hookAccessDenied'
     );
 
     /**
-     * Hook router
+     * Хук Роутера
      *
      * @param object $Router
+     * @param Callback $callback
      */
-    public function hookGearAccess($Gear, $args) {
-        $gear = $Gear->gear;
-        $args && $method = array_shift($args);
-        if (!access($gear, $args)) {
-            event('403');
-            return FALSE;
-        } elseif (!access($gear . '.' . $method, $args)) {
+    public function hookRouterExec($Router, $callback) {
+        if (!access($callback[0]->gear . '.*') OR !access($callback[0]->gear . '.' . str_replace('_action', '', $callback[1]))) {
             event('403');
             return FALSE;
         }
@@ -42,7 +38,7 @@ class Access_Gear extends Gear {
      * @param object $Menu
      */
     public function hookMenuAuto($Gear, $Menu) {
-        if (!access($Gear->gear)) {
+        if (!access($Gear->gear . '.*')) {
             return FALSE;
         } elseif (!access($Gear->gear . '.menu')) {
             return FALSE;
@@ -54,6 +50,8 @@ class Access_Gear extends Gear {
      * Show access denied page
      */
     public function hookAccessDenied() {
+        flash('stop.404', TRUE);
+        $this->request();
         $tpl = new Template('Access/templates/denied');
         $tpl->show();
     }
@@ -74,14 +72,7 @@ class Access_Gear extends Gear {
         foreach (cogear()->gears as $gear) {
             if (is_array($gear->access)) {
                 foreach ($gear->access as $rule => $rights) {
-                    // Set name for rule
-                    // 'index' action is equal to gear name
-                    // blog.index = blog
-                    if ($rule == 'index') {
-                        $name = $gear->gear;
-                    } else {
-                        $name = $gear->gear . '.' . $rule;
-                    }
+                    $name = $gear->gear . '.' . $rule;
                     // Array of user roles
                     if (is_array($rights)) {
                         if (in_array(role(), $rights)) {
@@ -111,15 +102,17 @@ class Access_Gear extends Gear {
      * @return boolean
      */
     public function check($rule) {
-//        if ($this->user->id == 1) {
-//            return TRUE;
-//        }
+        event('Access.check', $rule);
+        if (flash('Access')) {
+            flash('Access', FALSE);
+            return TRUE;
+        }
         if ($this->rights->$rule instanceof Callback) {
             $args = func_get_args();
             // Remove gear name from arg
             $args[0] = substr($args[0], strpos($args[0], '.') + 1);
             return $this->rights->$rule->run($args);
-        } elseif (FALSE === $this->rights->$rule) {
+        } elseif (FALSE == $this->rights->$rule) {
             return FALSE;
         }
         return TRUE;
