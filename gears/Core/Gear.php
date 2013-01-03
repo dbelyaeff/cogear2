@@ -179,7 +179,6 @@ abstract class Gear extends Object {
         $this->getDir();
         $this->getFolder();
         $this->getBase();
-        $this->getSettings();
         $this->file = new SplFileInfo($this->path);
     }
 
@@ -359,16 +358,6 @@ abstract class Gear extends Object {
         $cogear = getInstance();
         $base = str_replace('_', '/', strtolower($this->gear));
         return $this->base ? $this->base : $this->base = $cogear->get($this->gear . '.base', $base);
-    }
-
-    /**
-     * Get default settings
-     */
-    public function getSettings() {
-        $path = $this->dir . DS . 'settings' . EXT;
-        if (file_exists($path) && !config($this->gear)) {
-            $this->config->load($path, $this->gear);
-        }
     }
 
     /**
