@@ -207,4 +207,5 @@ function flash($key,$value = NULL){
     elseif(array_key_exists($key, $storage)){
         return $storage[$key];
     }
+    return NULL;
 }
