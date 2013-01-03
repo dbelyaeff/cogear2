@@ -11,6 +11,7 @@
 class Dev_Gear extends Gear {
 
     protected $hooks = array(
+        'menu' => 'hookMenu',
     );
     protected $routes = array(
     );
@@ -45,7 +46,7 @@ class Dev_Gear extends Gear {
      * @param string $name
      * @param object $menu
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
 
         }

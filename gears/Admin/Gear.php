@@ -10,10 +10,16 @@
  */
 class Admin_Gear extends Gear {
 
-    protected $access = array(
-        'index' => array(1),
+    protected $routes = array(
+        'admin' => 'dashboard_action',
+        'admin/clear/(\w+)' => 'clear_action',
     );
-    protected $menu;
+    protected $access = array(
+        '*' => array(1),
+    );
+    protected $hooks = array(
+        'menu' => 'hookMenu',
+    );
     public $bc;
 
     /**
@@ -21,13 +27,12 @@ class Admin_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        if (access('Admin')) {
-            $this->menu = new Menu_Auto(array(
+        if (access('Admin.*')) {
+            new Menu_Auto(array(
                         'name' => 'admin',
                         'template' => 'Admin/templates/menu',
                         'render' => 'before',
                     ));
-//            parent::loadAssets();
             css($this->folder . DS . 'css' . DS . 'menu.css', 'head');
         }
     }
@@ -45,7 +50,7 @@ class Admin_Gear extends Gear {
     public function request() {
         parent::request();
         title(t('Панель управления'));
-        $this->bc = new Breadcrumb_Object(
+        new Breadcrumb_Object(
                         array(
                             'name' => 'admin_breadcrumb',
                             'title' => FALSE,
@@ -61,7 +66,7 @@ class Admin_Gear extends Gear {
     /**
      * Add Control Panel to user panel
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
                 $menu->register(array(
@@ -100,26 +105,25 @@ class Admin_Gear extends Gear {
      * Обработка запроса
      */
     public function index_action($gear = NULL) {
-        if(!$gear){
+        if (!$gear) {
             return $this->dashboard_action();
-        }
-        else {
+        } else {
             $args = $this->router->getArgs();
             $gear = ucfirst($args[1]);
             $args = array_slice($args, 2);
             $callback = new Callback(array($this->gears->$gear, 'admin_action'));
-            if($callback->check()){
+            if ($callback->check()) {
                 $callback->run($args);
-            }
-            else {
+            } else {
                 event('404');
             }
         }
     }
+
     /**
      * Показывает главную страницу панели управления
      */
-    public function dashboard_action(){
+    public function dashboard_action() {
 
     }
 

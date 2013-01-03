@@ -24,18 +24,6 @@ class Install_Gear extends Gear {
     }
 
     /**
-     * Initializing menu system
-     *
-     * @param type $name
-     * @param type $menu
-     */
-    public function menu($name, $menu) {
-        if ($name == 'install') {
-
-        }
-    }
-
-    /**
      * Request
      */
     public function request() {

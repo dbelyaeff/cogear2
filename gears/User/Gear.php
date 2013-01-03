@@ -25,7 +25,7 @@ class User_Gear extends Gear {
         'assets.js.global' => 'hookGlobalScripts',
         'user.update' => 'hookUserUpdate',
         'done' => 'hookDone',
-        'widgets' => 'hookWidgets',
+        'menu' => 'hookMenu',
     );
     protected $access = array(
         'edit' => 'access',
@@ -208,7 +208,7 @@ class User_Gear extends Gear {
      * @param string $name
      * @param object $menu
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'user':
                 if ($this->user->id) {

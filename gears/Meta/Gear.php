@@ -101,7 +101,7 @@ class Meta_Gear extends Gear implements SplObserver {
      *
      * @param string $element
      */
-    public function menuTitleHook($item, $menu) {
+    public function hookMenuTitleHook($item, $menu) {
         if ($menu->title && FALSE !== $item->title) {
             title($item->label);
         }

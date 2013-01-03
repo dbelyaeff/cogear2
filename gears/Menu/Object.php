@@ -137,7 +137,8 @@ class Menu_Object extends Observer {
      */
     public function render() {
         // Событие
-        event('menu.render', $this);
+        event('menu',$this->name,$this);
+        event('menu.'.$this->name,$this);
         // Если не пустой
         if ($this->count()) {
             // Сортируем

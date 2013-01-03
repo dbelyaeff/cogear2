@@ -14,7 +14,6 @@ class Access_Gear extends Gear {
     protected $hooks = array(
         'exit' => 'save',
         'router.exec' => 'hookRouterExec',
-        'menu.auto.init' => 'hookMenuAuto',
         '403' => 'hookAccessDenied'
     );
 
@@ -25,32 +24,17 @@ class Access_Gear extends Gear {
      * @param Callback $callback
      */
     public function hookRouterExec($Router, $callback) {
-        if (!access($callback[0]->gear . '.*') OR !access($callback[0]->gear . '.' . str_replace('_action', '', $callback[1]))) {
+        if (!access($callback[0]->gear . '.*') && !access($callback[0]->gear . '.' . str_replace('_action', '', $callback[1]))) {
             event('403');
             return FALSE;
         }
     }
 
     /**
-     * Hook menu auto
-     *
-     * @param object $Gear
-     * @param object $Menu
-     */
-    public function hookMenuAuto($Gear, $Menu) {
-        if (!access($Gear->gear . '.*')) {
-            return FALSE;
-        } elseif (!access($Gear->gear . '.menu')) {
-            return FALSE;
-        }
-        return TRUE;
-    }
-
-    /**
      * Show access denied page
      */
     public function hookAccessDenied() {
-        flash('stop.404', TRUE);
+        flash('event.404', FALSE);
         $this->request();
         $tpl = new Template('Access/templates/denied');
         $tpl->show();

@@ -18,15 +18,18 @@ class I18n_Gear extends Gear {
     protected $hooks = array(
         'gear.init' => 'hookGearInit',
         'done' => 'hookDone',
+        'menu' => 'hookMenu',
     );
 
     const EXT = '.php';
+
     /**
      * Хук done
      */
-    public function hookDone(){
-        $this->response->header('charset','Content-Type: text/html; charset=utf-8');
+    public function hookDone() {
+        $this->response->header('charset', 'Content-Type: text/html; charset=utf-8');
     }
+
     /**
      * Хук на инициализацию шестеренки
      *
@@ -63,7 +66,7 @@ class I18n_Gear extends Gear {
      * @param string $name
      * @param object $menu
      */
-    public function menu($name, &$menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
                 $menu->register(array(

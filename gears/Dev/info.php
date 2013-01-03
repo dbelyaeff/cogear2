@@ -1,17 +1,17 @@
-<?php 
+<?php
 return array (
   'gear' => 'Dev',
   'name' => 'Разработка',
   'description' => 'Незаменимый помощник при разработке.',
-  'required' => 
+  'required' =>
   array (
-    'gears' => 
+    'gears' =>
     array (
-      0 => 
+      0 =>
       array (
         'name' => 'Access',
       ),
     ),
   ),
-  'order' => '-10000',
+  'order' => '0',
 );

@@ -17,8 +17,10 @@ class Post_Gear extends Gear {
         'comment.update' => 'hookCommentsRecount',
         'comment.delete' => 'hookCommentsRecount',
         'user.delete' => 'hookUserDelete',
+        'menu' => 'hookMenu',
     );
     protected $access = array(
+        'index' => TRUE,
         'create' => 'access',
         'edit' => 'access',
         'delete' => 'access',
@@ -28,6 +30,7 @@ class Post_Gear extends Gear {
         'ajax' => 'access',
     );
     protected $routes = array(
+        'post/(\d+)' => 'index_action',
     );
 
     /**
@@ -129,11 +132,11 @@ class Post_Gear extends Gear {
      * @param   string  $name
      * @param   object  $menu
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'user':
                 access('Post.create') && $menu->register(array(
-                            'label' => icon('pencil').' '.t('Написать'),
+                            'label' => icon('pencil') . ' ' . t('Написать'),
                             'link' => l('/post/create/'),
                             'place' => 'left',
                             'access' => access('Post.create'),
@@ -159,18 +162,6 @@ class Post_Gear extends Gear {
     }
 
     /**
-     * Show front page
-     */
-    public function front_action($page = 0) {
-        $posts = new Post_List(array(
-                    'name' => 'front.posts',
-                    'base' => l(),
-                    'per_page' => config('User.posts.per_page', 5),
-                    'where' => array('published' => 1),
-                ));
-    }
-
-    /**
      * Default dispatcher
      *
      * @param string $action
@@ -178,7 +169,13 @@ class Post_Gear extends Gear {
      */
     public function index_action($id = '', $subaction = NULL) {
         if (!$id) {
-            return $this->create_action();
+            $posts = new Post_List(array(
+                        'name' => 'front.posts',
+                        'base' => l(),
+                        'per_page' => config('User.posts.per_page', 5),
+                        'where' => array('published' => 1),
+                    ));
+            return;
         } else {
             $post = new Post();
             $post->id = $id;
@@ -285,7 +282,7 @@ class Post_Gear extends Gear {
      */
     public function edit_action($id = NULL) {
         $post = new Post();
-        $post->id  = $id;
+        $post->id = $id;
         $post->cache(FALSE);
         if (!$post->find()) {
             return event('404');
@@ -293,7 +290,7 @@ class Post_Gear extends Gear {
         $form = new Form('Post/forms/post');
         $form->object($post);
         $form->elements->title->options->label = t('Редактирование публикации');
-        event('post.edit',$post,$form);
+        event('post.edit', $post, $form);
         if ($result = $form->result()) {
             $post->object()->extend($result);
             if ($result->delete && access('Post.delete', $post)) {

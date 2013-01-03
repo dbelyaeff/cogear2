@@ -10,13 +10,17 @@
  */
 class Gears_Gear extends Gear {
 
+    protected $hooks = array(
+        'menu' => 'hookMenu',
+    );
+
     /**
      * Menu hook
      *
      * @param string $name
      * @param object $menu
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
                 $menu->register(array(
@@ -33,10 +37,10 @@ class Gears_Gear extends Gear {
      *
      */
     public function admin_action($action = 'all') {
-        $gears = new Gears(GEARS,array(
-            'remove' => FALSE,
-            'charge' => TRUE
-        ));
+        $gears = new Gears(GEARS, array(
+                    'remove' => FALSE,
+                    'charge' => TRUE
+                ));
         if ($do = $this->input->post('do')) {
             $items = $this->input->post('gears');
             $do_gears = array_keys($items);
@@ -108,11 +112,11 @@ class Gears_Gear extends Gear {
     public function admin_doaction($do, $do_gears) {
         $tpl = new Template('Gears/templates/action');
         $tpl->do = $do;
-        $all_gears = new Gears(GEARS,array(
-            'remove' => FALSE,
-            'charge' => TRUE,
-            'check' => TRUE,
-        ));
+        $all_gears = new Gears(GEARS, array(
+                    'remove' => FALSE,
+                    'charge' => TRUE,
+                    'check' => TRUE,
+                ));
         $gears = new Core_ArrayObject();
         foreach ($do_gears as $key => $gear) {
             $gears->$key = $all_gears->$gear;

@@ -120,7 +120,7 @@ final class Cogear implements Interface_Singleton {
     public function event($name) {
         // Внешне может быть установлено прерывание события
         if(FALSE === flash('event.'.$name)){
-            return;
+            return FALSE;
         }
         $args = func_get_args();
         $args = array_slice($args, 1);
