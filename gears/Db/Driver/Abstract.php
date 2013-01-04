@@ -47,7 +47,17 @@ abstract class Db_Driver_Abstract extends Object {
      *
      * @var type
      */
-    protected $swap_chain;
+    protected $swap_chain =  array(
+        'SELECT' => '*',
+        'FROM' => '',
+        'JOIN' => '',
+        'WHERE' => '',
+        'LIKE' => '',
+        'GROUP BY' => '',
+        'HAVING' => '',
+        'ORDER BY' => '',
+        'LIMIT' => '',
+    );
 
     /**
      * Схема таблиц в базе данных
@@ -348,8 +358,9 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $dir
      */
     public function order($field, $dir = 'ASC') {
-        if ($this->chain['ORDER BY'])
-            $this->chain['ORDER'] .= ',';
+        if ($this->chain['ORDER BY']){
+            $this->chain['ORDER BY'] .= ',';
+        }
         $this->chain['ORDER BY'] .= $field . ' ' . $dir;
     }
 
@@ -361,7 +372,7 @@ abstract class Db_Driver_Abstract extends Object {
      */
     public function group($field, $dir = 'ASC') {
         if ($this->chain['GROUP BY'])
-            $this->chain['GROUP'] .= ',';
+            $this->chain['GROUP BY'] .= ',';
         $this->chain['GROUP BY'] .= $field . ' ' . $dir;
     }
 
@@ -467,7 +478,7 @@ abstract class Db_Driver_Abstract extends Object {
      * Очищение звеньев запроса
      */
     public function clear() {
-        $this->chain = array(
+        $this->swap_chain = $this->chain = array(
             'SELECT' => '*',
             'FROM' => '',
             'JOIN' => '',
