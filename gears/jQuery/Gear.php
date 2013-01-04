@@ -9,5 +9,4 @@
  * @link		http://cogear.ru
  */
 class jQuery_Gear extends Gear {
-
 }
