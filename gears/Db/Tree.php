@@ -165,4 +165,24 @@ class Db_Tree extends Db_Item {
         return $parents;
     }
 
+    /**
+     * Метод собирающий из текущей таблицы значения для выпадающего списка формы
+     *
+     * @param type $exclude
+     * @return array
+     */
+    public function getSelectValues(){
+        $this->id && $this->where($this->primary, $this->id, ' != ');
+        $result = array('');
+        $reflection = new ReflectionClass($this);
+        $class = $reflection->getName();
+        $object = new $class();
+        if($items = $object->findAll()){
+            foreach($items as $item){
+                $result[$item->id] = str_repeat('  ', $item->level).$item->name;
+            }
+        }
+        return $result;
+    }
+
 }
