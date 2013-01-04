@@ -224,24 +224,19 @@ class Router_Object extends Options implements Interface_Singleton {
         if (!$uri) {
             return $this->uri ? FALSE : TRUE;
         }
-        switch ($type) {
+        $regexp = preg_quote($uri);
+        switch($type){
             case self::STARTS:
-                if (strpos($this->uri, $uri) === 0) {
-                    return TRUE;
-                }
+                $regexp = '^'.$regexp;
                 break;
             case self::ENDS:
-                if (strpos($this->uri, $uri) == (strlen($this->uri) - strlen($uri))) {
-                    return TRUE;
-                }
+                $regexp .= '$';
                 break;
             case self::BOTH:
-                if (strpos($this->uri, $uri) !== FALSE && strlen($this->uri) == strlen($uri)) {
-                    return TRUE;
-                }
+                $regexp = '^'.$regexp.'$';
                 break;
         }
-        return FALSE;
+        return preg_match('#'.$regexp.'#', $this->uri);
     }
 
     /**
@@ -263,7 +258,7 @@ class Router_Object extends Options implements Interface_Singleton {
             }
             $regexp = '|' . $route . '|isU';
             if (preg_match($regexp, $this->uri, $this->matches)) {
-                $this->args = array_slice($this->matches, 1);
+                $this->args = $this->prepareArgs(array_slice($this->matches, 1));
                 $callback = new Callback($callback,$this->args);
                 if ($this->exec($callback)) {
                     return;
@@ -273,7 +268,18 @@ class Router_Object extends Options implements Interface_Singleton {
         event('404');
         return;
     }
-
+    /**
+     * Очищает аргументы от шелухи
+     *
+     * @param array $args
+     * @return array
+     */
+    private function prepareArgs($args){
+        foreach($args as &$arg){
+            $arg = trim($arg,'/');
+        }
+        return $args;
+    }
     /**
      * Execute callback
      *
