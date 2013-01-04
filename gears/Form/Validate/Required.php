@@ -7,9 +7,6 @@
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage	Form
-
  */
 class Form_Validate_Required extends Form_Validate_Abstract {
 
