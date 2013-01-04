@@ -224,7 +224,7 @@ class Router_Object extends Options implements Interface_Singleton {
         if (!$uri) {
             return $this->uri ? FALSE : TRUE;
         }
-        $regexp = preg_quote($uri,'#');
+        $regexp = $uri;
         switch($type){
             case self::STARTS:
                 $regexp = '^'.$regexp;
@@ -236,7 +236,7 @@ class Router_Object extends Options implements Interface_Singleton {
                 $regexp = '^'.$regexp.'$';
                 break;
         }
-        return preg_match('#'.$regexp.'#', $this->uri);
+        return (bool)preg_match('#'.$regexp.'#', $this->uri);
     }
 
     /**
