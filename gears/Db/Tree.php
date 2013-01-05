@@ -18,8 +18,9 @@ class Db_Tree extends Db_Item {
     protected $thread_field = 'thread';
     protected $level_field = 'level';
     protected $parent_field = 'pid';
-    protected $object_field = 'post_id';
+    protected $object_field = NULL;
     public $order = self::FORWARD;
+
     const FORWARD = 1;
     const BACKWARD = -1;
     const DELIM = '.';
@@ -49,10 +50,27 @@ class Db_Tree extends Db_Item {
     public function insert($data = NULL) {
         if ($id = parent::insert($data)) {
             $this->branching();
-            parent::update(array($this->thread_field => $this->{$this->thread_field},$this->level_field => $this->{$this->level_field}));
+            parent::update(array($this->thread_field => $this->{$this->thread_field}, $this->level_field => $this->{$this->level_field}));
         }
         return $id;
     }
+
+//    /**
+//     * Update data
+//     *
+//     * @param type $data
+//     * @return  int
+//     */
+//    public function update($data = NULL) {
+//        if ($result = parent::update($data)) {
+//            $old_thread = $this->{$this->thread_field};
+//            $this->branching();
+//            if ($old_thread != $this->{$this->thread_field}) {
+//                parent::update(array($this->thread_field => $this->{$this->thread_field}, $this->level_field => $this->{$this->level_field}));
+//            }
+//        }
+//        return $result;
+//    }
 
     /**
      * Delete
@@ -77,11 +95,11 @@ class Db_Tree extends Db_Item {
      */
     public function branching() {
         if ($this->{$this->parent_field}) {
-            $parent = new $this->class($this->table,$this->primary,$this->db);
+            $parent = new $this->class($this->table, $this->primary, $this->db);
             $parent->{$this->primary} = $this->{$this->parent_field};
             if ($parent->find()) {
                 $obj = new $this->class;
-                $obj->{$this->object_field} = $this->{$this->object_field};
+                $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
                 $obj->{$this->parent_field} = $this->{$this->parent_field};
                 switch ($this->order) {
                     case self::FORWARD:
@@ -98,7 +116,7 @@ class Db_Tree extends Db_Item {
             }
         } else {
             $obj = new $this->class;
-            $obj->{$this->object_field} = $this->{$this->object_field};
+            $this->object_field &&  $obj->{$this->object_field} = $this->{$this->object_field};
             $obj->{$this->parent_field} = 0;
             $this->{$this->level_field} = 0;
             $this->{$this->thread_field} = str_pad($obj->count(TRUE), 3, 0, STR_PAD_LEFT);
@@ -116,7 +134,7 @@ class Db_Tree extends Db_Item {
      */
     public function getChilds() {
         $obj = new $this->class;
-        $obj->{$this->object_field} = $this->{$this->object_field};
+        $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
         switch ($this->order) {
             case self::FORWARD:
                 $data = $this->{$this->thread_field};
@@ -139,25 +157,24 @@ class Db_Tree extends Db_Item {
      */
     public function getParents() {
         $obj = new $this->class;
-        $obj->{$this->object_field} = $this->{$this->object_field};
-        $threads = explode(self::DELIM,$this->{$this->thread_field});
+        $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
+        $threads = explode(self::DELIM, $this->{$this->thread_field});
         $parents = array();
-        if(sizeof($threads) > 0){
+        if (sizeof($threads) > 0) {
             $current = '';
-            foreach($threads as $thread){
-                if(!$current){
+            foreach ($threads as $thread) {
+                if (!$current) {
                     $current = $thread;
+                } else {
+                    $current .= self::DELIM . $thread;
                 }
-                else {
-                    $current .= self::DELIM.$thread;
-                }
-                if($current == $this->{$this->thread_field}){
+                if ($current == $this->{$this->thread_field}) {
                     continue;
                 }
                 $parent = new $this->class;
                 $parent->{$this->thread_field} = $current;
-                $parent->{$this->object_field} = $this->{$this->object_field};
-                if($parent->find()){
+                $this->object_field && $parent->{$this->object_field} = $this->{$this->object_field};
+                if ($parent->find()) {
                     $parents[] = $parent;
                 }
             }
@@ -171,15 +188,15 @@ class Db_Tree extends Db_Item {
      * @param type $exclude
      * @return array
      */
-    public function getSelectValues(){
+    public function getSelectValues() {
         $this->id && $this->where($this->primary, $this->id, ' != ');
         $result = array('');
         $reflection = new ReflectionClass($this);
         $class = $reflection->getName();
         $object = new $class();
-        if($items = $object->findAll()){
-            foreach($items as $item){
-                $result[$item->id] = str_repeat('  ', $item->level).$item->name;
+        if ($items = $object->findAll()) {
+            foreach ($items as $item) {
+                $result[$item->id] = str_repeat('--', $item->level) . ' ' . $item->name;
             }
         }
         return $result;
