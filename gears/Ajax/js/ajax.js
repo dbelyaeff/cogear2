@@ -11,7 +11,7 @@ Ajax_Loader.prototype = {
     },
     className: 'ajax-loader',
     init: function(){
-      this.el = $('<img src="'+l('/engine/Ajax/img/1x1.gif')+'" alt=""/>');
+      this.el = $('<i/>');
       this.type(this.options.defaultClass)
     },
     type: function(type){
