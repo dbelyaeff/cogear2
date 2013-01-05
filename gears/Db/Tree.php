@@ -93,34 +93,39 @@ class Db_Tree extends Db_Item {
      *
      * @return string
      */
-    public function branching() {
+    public function branching($count = FALSE) {
         if ($this->{$this->parent_field}) {
             $parent = new $this->class($this->table, $this->primary, $this->db);
             $parent->{$this->primary} = $this->{$this->parent_field};
             if ($parent->find()) {
-                $obj = new $this->class;
-                $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
-                $obj->{$this->parent_field} = $this->{$this->parent_field};
+                if (FALSE == $count) {
+                    $obj = new $this->class;
+                    $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
+                    $obj->{$this->parent_field} = $this->{$this->parent_field};
+                }
                 switch ($this->order) {
                     case self::FORWARD:
                         $data = $parent->{$this->thread_field};
-                        $count = $obj->count(TRUE);
+                        if(FALSE === $count) $count = $obj->count(TRUE);
                         break;
                     case self::BACKWARD:
                         $data = str_replace('/', '', $parent->{$this->thread_field});
-                        $count = 1000 - $obj->count(TRUE);
+                        $count = 1000 - (FALSE === $count  ? $obj->count(TRUE) : $count);
                         break;
                 }
-                $this->{$this->thread_field} = $data . self::DELIM . str_pad($count, 3, 0, STR_PAD_LEFT);
+                $this->{$this->thread_field} = $data . self::DELIM .$count;// str_pad($count, 3, 0, STR_PAD_LEFT);
                 $this->{$this->level_field} = 1 + $parent->{$this->level_field};
             }
         } else {
-            $obj = new $this->class;
-            $this->object_field &&  $obj->{$this->object_field} = $this->{$this->object_field};
-            $obj->{$this->parent_field} = 0;
+            if (FALSE === $count) {
+                $obj = new $this->class;
+                $this->object_field && $obj->{$this->object_field} = $this->{$this->object_field};
+                $obj->{$this->parent_field} = 0;
+                $count = $obj->count(TRUE);
+            }
             $this->{$this->level_field} = 0;
-            $this->{$this->thread_field} = str_pad($obj->count(TRUE), 3, 0, STR_PAD_LEFT);
-            $this->{$this->thread_field} = str_pad($this->{$this->thread_field}, 25, ' ', STR_PAD_LEFT);
+            $this->{$this->thread_field} = $count; // str_pad($count, 3, 0, STR_PAD_LEFT);
+//            $this->{$this->thread_field} = str_pad($this->{$this->thread_field}, 25, ' ', STR_PAD_LEFT);
         }
         if ($this->order == self::BACKWARD) {
             $this->{$this->thread_field} .= '/';
