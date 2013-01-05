@@ -281,7 +281,7 @@ abstract class Db_Driver_Abstract extends Object {
             }
         } else {
             if ($this->chain['WHERE']) {
-                $this->chain['WHERE'] .= $join;
+                $this->chain['WHERE'] .= ' '.trim($join).' ';
             }
             if(strpos($name,' ')){
                 $where = explode(' ',$name,2);
@@ -313,7 +313,7 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $condition // BOTH, LEFT или RIGHT
      * @return object
      */
-    public function like($name = array(), $value = TRUE, $condition = 'BOTH', $join = 'AND', $action = ' LIKE ') {
+    public function like($name = array(), $value = TRUE, $condition = 'BOTH', $join = ' AND ', $action = ' LIKE ') {
         switch ($condition) {
             case 'LEFT':
                 $value = '%' . $value;
