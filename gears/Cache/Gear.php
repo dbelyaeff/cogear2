@@ -10,12 +10,25 @@
  */
 class Cache_Gear extends Gear {
 
+    protected $hooks = array(
+        'dev.trace' => 'hookTrace',
+    );
+
     /**
      * Конструктор
      */
     public function __construct($config) {
         parent::__construct($config);
-        $this->object(Cache::factory('normal',config('cache')));
+        $this->object(Cache::factory('normal', config('cache')));
+    }
+
+    /**
+     * Вывод отладочной информации в подвал темы
+     *
+     * @param Stack $Stack
+     */
+    public function hookTrace() {
+        echo template('Cache/templates/trace');
     }
 
 }
