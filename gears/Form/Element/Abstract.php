@@ -39,6 +39,19 @@ class Form_Element_Abstract extends Errors_Handler {
      */
     public function __construct($options) {
         parent::__construct($options);
+        /**
+         * Если вдруг элементы названы иначе
+         */
+        foreach($options as $key=>$option){
+            switch($key){
+                case 'filter':
+                    $this->filters = $this->options->filter;
+                    break;
+                case 'validate':
+                    $this->validators = $this->options->validate;
+                    break;
+            }
+        }
     }
 
     /**
@@ -138,7 +151,7 @@ class Form_Element_Abstract extends Errors_Handler {
      * @return array
      */
     public function prepareOptions() {
-        $this->options->required = $this->validators && $this->validators->findByValue('Required');
+        $this->options->required = $this->validators && strpos($this->validators->__toString(),'Required') != -1;
         if ($this->getErrors()) {
             $this->options->class .= ' error';
         }
