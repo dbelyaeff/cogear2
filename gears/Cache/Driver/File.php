@@ -27,7 +27,7 @@ class Cache_Driver_File extends Cache_Driver_Abstract {
      * @return mixed|NULL
      */
     public function read($name) {
-        if(FALSE == $this->enabled){
+        if(FALSE === $this->options->enabled){
             return FALSE;
         }
         $name = $this->prepareKey($name);
