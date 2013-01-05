@@ -9,7 +9,14 @@
  * @link		http://cogear.ru
  */
 abstract class Cache_Driver_Abstract extends Object {
-
+    /**
+     * Настройки по умолчанию
+     *
+     * @var array
+     */
+    protected $options = array(
+        'enabled' => TRUE,
+    );
     abstract public function read($name);
 
     abstract public function write($name, $value, $tags=NULL, $ttl=NULL);

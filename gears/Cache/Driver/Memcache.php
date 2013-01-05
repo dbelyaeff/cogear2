@@ -47,6 +47,9 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return mixed|NULL
      */
     public function read($name) {
+        if (FALSE == $this->enabled) {
+            return FALSE;
+        }
         $name = $this->prepareKey($name);
         if (NULL !== ($data = $this->get($name))) {
             if ($data['ttl'] && time() > $data['ttl']) {
@@ -83,7 +86,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
                 $this->write('tags/' . $tag, '', array());
             }
         }
-        $this->set($name,$data);
+        $this->set($name, $data);
     }
 
     /**
@@ -111,7 +114,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = md5(cogear()->secure->genHash(config('site.url'))).'_'.$this->options->prefix.'_'.$name;
+        $name = md5(cogear()->secure->genHash(config('site.url'))) . '_' . $this->options->prefix . '_' . $name;
         return $name;
     }
 
