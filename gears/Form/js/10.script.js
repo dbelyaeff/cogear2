@@ -33,37 +33,17 @@ function validateForm($id,data){
     });
 }
 $(document).ready(function(){
-    $('body').on('click','form .error',function(){
-        $group  = $(this);
-        $element = $('.form-element',$group);
-        $element.off('change.error').one('change.error',function(){
-            if($group.hasClass('error')){
-                $group.removeClass('error');
-                $group.find('.help-inline').remove();
-            }
-        });
+    $('form').on('click','.error',function(){
+        $(this).removeClass('error');
+//        $group  = $(this);
+//        $element = $('.form-element',$group);
+//        $element.off('change.error').one('change.error',function(){
+//            if($group.hasClass('error')){
+//                $group.removeClass('error');
+//                $group.find('.help-inline').remove();
+//            }
+//        });
     });
-//    $('form select').each(function(){
-//        if($(this).attr('data-source')){
-//            $(this).ajaxChosen({
-//                method: 'GET',
-//                url: $(this).attr('data-source'),
-//                dataType: 'json'
-//            }, function (data) {
-//                var terms = {};
-//
-//                $.each(data, function (i, val) {
-//                    terms[i] = val;
-//                });
-//
-//                return terms;
-//            });
-//        } else {
-//            $(this).chosen({
-//                no_results_text: t("No results matched","Form")
-//            });
-//        }
-//    });
     $('.delete input').on('click',function(){
        if(!confirm(t('Вы действительно хотите это сделать?'))){
            return false;
@@ -71,22 +51,22 @@ $(document).ready(function(){
        return true;
     });
 });
-$(document).on('keyup','form input[data-source].ajaxed,form textarea[data-source].ajaxed',function(event){
-    $el = $(this);
-    $source = $el.attr('data-source');
-    if($source){
-        $.ajax({
-            url: $source,
-            type: 'POST',
-            data: 'value='+$el.val(),
-            globalLoader: false,
-            dataType: 'json',
-            beforeSend: function(){
-                $el.loading();
-            },
-            complete: function(){
-                $el.loading();
-            }
-        });
-    }
-})
+//$(document).on('keyup','form input[data-source].ajaxed,form textarea[data-source].ajaxed',function(event){
+//    $el = $(this);
+//    $source = $el.attr('data-source');
+//    if($source){
+//        $.ajax({
+//            url: $source,
+//            type: 'POST',
+//            data: 'value='+$el.val(),
+//            globalLoader: false,
+//            dataType: 'json',
+//            beforeSend: function(){
+//                $el.loading();
+//            },
+//            complete: function(){
+//                $el.loading();
+//            }
+//        });
+//    }
+//})
