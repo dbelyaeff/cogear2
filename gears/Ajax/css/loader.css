@@ -3,6 +3,7 @@ i.ajax-loader{
     border: 0px solid transparent;
     vertical-align: baseline;
     z-index: 10000;
+    display: inline-block;
 }
 .ajax-loader.top-right{
     position: absolute;
