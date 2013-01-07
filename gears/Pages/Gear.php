@@ -9,64 +9,319 @@
  * @link		http://cogear.ru
  */
 class Pages_Gear extends Gear {
+
     protected $hooks = array(
+        '404' => 'hook404',
+//        'router.run' => 'hookRouterRun',
+        'menu.admin' => 'hookAdminMenu',
     );
     protected $routes = array(
+        'admin/pages' => 'admin_action',
+        'admin/pages/create' => 'admin_createdit',
+        'admin/pages/(\d+)' => 'admin_createdit',
+        'admin/pages/ajax/(\w+)' => 'admin_ajax',
+        'admin/pages/ajax/(\w+)/(\w+)' => 'admin_ajax',
+        'admin/pages/test/?' => 'admin_test',
     );
     protected $access = array(
+        'admin' => array(1),
+        'admin_createdit' => array(1),
+        'admin_ajax' => array(1),
+        'admin_test' => array(1),
+        'show' => TRUE,
     );
 
-//    /**
-//     * Acccess
-//     *
-//     * @param string $rule
-//     * @param object $Item
-//     */
-//    public function access($rule, $Item = NULL) {
-//        switch ($rule) {
-//            case 'create':
-//                return TRUE;
-//                break;
-//        }
-//        return FALSE;
-//    }
+    /**
+     * Обработка 404 ошибки
+     *
+     * Предложение пользователю создать страницу
+     */
+    public function hook404() {
+        if ($this->hookRouterRun($this->Router, TRUE)) {
+            flash('event.404', FALSE);
+        } else {
+            if (access('Pages.admin')) {
+                append('content', template('Pages/templates/invitation'));
+            }
+        }
+    }
 
-//    /**
-//     * Init
-//     */
-//    public function init() {
-//        parent::init();
-//    }
+    /**
+     * Хук роутера
+     *
+     * Если мы находим в кеше или в базе занятый путь, вызываем Callback по нему
+     *
+     * @param object $Router
+     */
+    public function hookRouterRun($Router, $success = FALSE) {
+        $uri = $Router->getUri();
+        if ($route = route($uri, 'route')) {
+            if ($callback = $route->decodeCallback($route->callback)) {
+                $Router->exec($callback);
+                return $success;
+            }
+        }
+    }
 
-//    /**
-//     * Hook menu
-//     *
-//     * @param string $name
-//     * @param object $menu
-//     */
-//    public function menu($name, $menu) {
-//        switch ($name) {
-//
-//        }
-//    }
+    /**
+     * Создает элемент в админском меню
+     *
+     * @param Menu $menu
+     */
+    public function hookAdminMenu($menu) {
+        $menu->register(array(
+            'link' => l('/admin/pages'),
+            'label' => icon('list') . ' ' . t('Страницы'),
+            'order' => 2,
+        ));
+    }
 
-//    /**
-//     * Default dispatcher
-//     *
-//     * @param string $action
-//     * @param string $subaction
-//     */
-//    public function index_action($action = '', $subaction = NULL) {
-//
-//    }
-//
-//    /**
-//     * Custom dispatcher
-//     *
-//     * @param   string  $subaction
-//     */
-//    public function some_action($subaction = NULL) {
-//
-//    }
+    /**
+     * Создаёт меню панели управления страницами
+     *
+     * На всякий случай метод сделан в виде хука
+     */
+    public function hookPagesAdminMenu() {
+        new Menu_Tabs(array(
+                    'name' => 'pages.admin',
+                    'render' => 'info',
+                    'elements' => array(
+                        array(
+                            'label' => icon('list') . ' ' . t('Список'),
+                            'link' => l('/admin/pages'),
+                            'active' => l('/admin/pages'),
+                        ),
+                        array(
+                            'label' => icon('pencil') . ' ' . t('Создать'),
+                            'link' => l('/admin/pages/create'),
+                            'access' => check_route('admin/pages(/create)?'),
+                            'class' => 'fl_r',
+                        ),
+                        array(
+                            'label' => icon('pencil') . ' ' . t('Редактирование'),
+                            'link' => l('/admin/pages/' . $this->router->getSegments(3)),
+                            'active' => check_route('admin/pages/(\d+)'),
+                            'access' => check_route('admin/pages/(\d+)'),
+                            'class' => 'fl_r',
+                        ),
+                    ),
+                ));
+    }
 
+    /**
+     * Показ страницы
+     *
+     * @param type $id
+     */
+    public function show_action($id) {
+        if ($page = page($id)) {
+            $page->show();
+        }
+    }
+
+    /**
+     * Панель управления страницами
+     */
+    public function admin_action() {
+        $this->hookPagesAdminMenu();
+        $tree = new Db_Tree_DDList(array(
+                    'class' => 'Pages_Object',
+                    'saveUri' => l('/admin/pages/ajax/saveDBtree'),
+                ));
+    }
+
+    /**
+     * Создание страницы
+     */
+    public function admin_createdit($id = NULL) {
+        $this->hookPagesAdminMenu();
+        js($this->folder . '/js/inline/autolink_from_select.js');
+        $form = new Form('Pages/forms/page');
+        if ($id && $page = page($id)) {
+            $page->link = $page->getLink();
+            $form->object($page);
+        } else {
+            $page = page();
+            $form->pid->setValue($this->input->get('pid', 0));
+        }
+        $form->pid->setValues($page->getSelectValues());
+        if ($result = $form->result()) {
+            // Заполняем объект страницы
+            $page->object()->extend($result);
+            $refresh = TRUE;
+            // Если у страницы уже установлен путь, и он находится в базе
+            if ($page->route) {
+                // Если равны, то обновлять не надо
+                $refresh = ($route->route != $page->getLink());
+            }
+            // Если путь не указан или не существует
+            if ($refresh) {
+                // Создаём новый путь
+                $route = route();
+                $route->route = trim($page->link, '/');
+                // На всякий случай, если такой путь уже есть
+                if (!$route->find()) {
+                    // Сохраняем его
+                    $route->insert();
+                } else {
+                    $route->update();
+                }
+                // Обновляем id
+                $page->route = $route->id;
+            }
+            // Сохранение страницы
+            if ($page->save()) {
+                if ($refresh) {
+                    $route->callback = $route->encodeCallback(array($this, 'show_action'), array($page->id));
+                    $route->update();
+                }
+                flash_success(t('Страница успещно сохранена'));
+                redirect(l('/admin/pages'));
+            }
+        }
+        $form->show();
+    }
+
+    /**
+     * Ajax интерцептор
+     *
+     * @param string $action
+     * @param mixed $param
+     */
+    public function admin_ajax($action = 'getLink', $param = NULL) {
+        $ajax = new Ajax();
+        switch ($action) {
+            case 'getLink':
+                if ($page = page($param)) {
+                    $ajax->success = TRUE;
+                    $ajax->link = trim($page->getLink(), '/');
+                } else {
+                    $ajax->success = FALSE;
+                }
+                break;
+            case 'saveDBtree':
+                if ($pages = $this->rebuildPagesTree($this->input->post('items'))) {
+                    $ajax->success = TRUE;
+                    $ajax->message(t('Структура сохранена!'));
+                } else {
+                    $ajax->success = FALSE;
+                    $ajax->message(t('Не удалось сохранить структуру'), 'error', t('Ошибка'));
+                }
+                break;
+        }
+        $ajax->json();
+    }
+
+    public function admin_test() {
+        $items = array(
+            0 =>
+            array(
+                'id' => '1',
+                'children' =>
+                array(
+                    0 =>
+                    array(
+                        'id' => '6',
+                        'children' =>
+                        array(
+                            0 =>
+                            array(
+                                'id' => '7',
+                            ),
+                            1 =>
+                            array(
+                                'id' => '8',
+                            ),
+                            2 =>
+                            array(
+                                'id' => '10',
+                            ),
+                        ),
+                    ),
+                    1 =>
+                    array(
+                        'id' => '2',
+                        'children' =>
+                        array(
+                            0 =>
+                            array(
+                                'id' => '3',
+                            ),
+                            1 =>
+                            array(
+                                'id' => '4',
+                            ),
+                            2 =>
+                            array(
+                                'id' => '5',
+                            ),
+                        ),
+                    ),
+                    2 =>
+                    array(
+                        'id' => '11',
+                        'children' =>
+                        array(
+                            0 =>
+                            array(
+                                'id' => '12',
+                            ),
+                            1 =>
+                            array(
+                                'id' => '13',
+                            ),
+                            2 =>
+                            array(
+                                'id' => '14',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $this->rebuildPagesTree($items);
+    }
+
+    /**
+     * Перестраивает иерархиую страниц из полученного через Ajax массива вида:
+     *
+     * @param array $items
+     */
+    private function rebuildPagesTree($items, $parent_id = 0) {
+        $i = 0;
+//        debug($items);
+//        die();
+        foreach ($items as $item) {
+            $page = new Page();
+            $page->id = $item['id'];
+            if ($page->find()) {
+                $page->pid = $parent_id;
+                $page->branching(++$i);
+                $page->update();
+                if (isset($item['children'])) {
+                    $this->rebuildPagesTree($item['children'], $page->id);
+                }
+            }
+        }
+        return TRUE;
+    }
+
+}
+
+/**
+ * Ярлык для страницы
+ *
+ * @param int $id
+ * @param string    $param
+ * @return  mixed
+ */
+function page($id = NULL, $param = 'id') {
+    if ($id) {
+        $page = new Page();
+        $page->$param = $id;
+        if ($page->find()) {
+            return $page;
+        }
+    }
+    return $id ? NULL : new Page();
 }
