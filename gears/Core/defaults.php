@@ -2,7 +2,7 @@
 
 return array(
     'name' => 'Название шестеренки',
-    'descripiotn' => 'Описание шестеренки.',
+    'description' => 'Описание шестеренки.',
     'author' => 'Беляев Дмитрий',
     'package' => 'Core',
     'email' => 'admin@cogear.ru',
