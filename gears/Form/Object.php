@@ -267,6 +267,8 @@ class Form_Object extends Object {
         $tpl->form = $this;
         $this->options->id = $this->getId();
         $tpl->options = $this->options;
+        // Чтобы стили работали нормально
+        $tpl->options->name = preg_replace('#[\._]#','-',$tpl->options->name);
         $this->code = $tpl->render();
         event('form.render.after', $this);
         return $this->code;
