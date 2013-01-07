@@ -110,6 +110,20 @@ class Theme_Gear extends Gear {
                 break;
         }
     }
+    /**
+     * Выводит меню в админке
+     */
+    public function hookAdminMenu() {
+        new Menu_Tabs(array(
+                    'name' => 'admin.theme',
+                    'elements' => array(
+                        array(
+                            'label' => t('Темы'),
+                            'link' => l('/admin/theme')
+                        )
+                    )
+                ));
+    }
 
     /**
      * Диспатчер админки
@@ -117,15 +131,7 @@ class Theme_Gear extends Gear {
      * @param type $action
      */
     public function admin_action() {
-        new Menu_Tabs(array(
-            'name' => 'admin.theme',
-            'elements' => array(
-                array(
-                    'label' => t('Темы'),
-                    'link' => l('/admin/theme')
-                )
-            )
-        ));
+        $this->hookAdminMenu();
         $themes = $this->getThemes();
         template('Theme/templates/list', array('themes' => $themes))->show();
     }

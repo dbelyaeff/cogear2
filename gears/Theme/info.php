@@ -1,7 +1,7 @@
-<?php 
+<?php
 return array (
   'gear' => 'Theme',
-  'name' => 'Темы оформления',
+  'name' => 'Внешний вид',
   'description' => 'Управления внешним видом сайта.',
   'order' => '-100',
 );
