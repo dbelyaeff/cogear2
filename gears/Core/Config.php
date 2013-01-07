@@ -140,9 +140,9 @@ class Config extends Core_ArrayObject {
             if (self::write($this->file, $this->toArray())) {
                 return TRUE;
             } else {
-                error(t('Cannot write file:<br/>
+                error(t('Не могу записать в файл:<br/>
                 <b>%s</b><br/>
-                Please, check the permissions (must be 0755 at least.', NULL, $file));
+                Пожалуйста, проверьте права (должны быть 0755 как минимум).', $file));
                 return FALSE;
             }
         }
@@ -162,11 +162,11 @@ class Config extends Core_ArrayObject {
         // Now we need to replace paths with constants
         $constants = get_defined_constants(true);
         $paths = array();
-//        foreach ($constants['user'] as $key => $value) {
-//            if (is_string($value) && strlen($value) > 5 && is_dir($value)) {
-//                $paths["'" . $value] = $key . '.\'';
-//            }
-//        }
+        foreach ($constants['user'] as $key => $value) {
+            if (is_string($value) && strlen($value) > 5 && is_dir($value)) {
+                $paths["'" . $value] = $key . '.\'';
+            }
+        }
         $paths = array_reverse($paths);
         $data = str_replace(DS . DS, DS, $data);
         $data = str_replace(array_keys($paths), array_values($paths), $data);
