@@ -167,5 +167,27 @@ class File_Object extends Adapter {
     public static function read($path) {
         return file_get_contents($path);
     }
+    /**
+     * Находит файлы согласно маске. В том числе и рекурсивно
+     *
+     * @param string $dir
+     * @param string $mask
+     * @param boolean $recursive
+     * @return array
+     */
+    public static function findByMask($dir, $mask = '/^.+\.(php|js)$/i',$recursive = TRUE) {
+        if($recursive){
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir,RecursiveDirectoryIterator::SKIP_DOTS));
+        }
+        else {
+            $it = new IteratorIterator(DirectoryIterator($dir));
+        }
+        $it = new RegexIterator($it, $mask);
+        $files = array();
+        foreach($it as $file){
+            $files[] = $file->__toString();
+        }
+        return $files;
+    }
 }
 
