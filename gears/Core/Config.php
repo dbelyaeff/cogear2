@@ -163,6 +163,7 @@ class Config extends Core_ArrayObject {
         $constants = get_defined_constants(true);
         $paths = array();
         foreach ($constants['user'] as $key => $value) {
+            if(PHP_FILE_PREFIX === $value) continue;
             if (is_string($value) && strlen($value) > 5 && is_dir($value)) {
                 $paths["'" . $value] = $key . '.\'';
             }
