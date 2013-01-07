@@ -16,7 +16,7 @@ class Meta_Gear extends Gear implements SplObserver {
         'description' => array(),
     );
     protected $hooks = array(
-//        'menu.active' => 'menuTitleHook',
+        'menu.active' => 'menuTitleHook',
         'post.full.after' => 'showObjectTitle',
         'blog.navbar.render' => 'showObjectTitle',
         'user.navbar.render' => 'showObjectTitle',
@@ -35,6 +35,7 @@ class Meta_Gear extends Gear implements SplObserver {
     public function __construct($config) {
         parent::__construct($config);
         $this->info = Core_ArrayObject::transform($this->info);
+        $this->info->title->append(config('site.name', config('site.url')));
     }
 
     /**
@@ -55,15 +56,6 @@ class Meta_Gear extends Gear implements SplObserver {
         echo self::SNIPPET;
         event('meta');
     }
-
-    /**
-     * Init
-     */
-    public function init() {
-        parent::init();
-        title(t(config('site.name', config('site.url'))));
-    }
-
     /**
      * Add object title to meta
      *
@@ -103,7 +95,7 @@ class Meta_Gear extends Gear implements SplObserver {
      */
     public function hookMenuTitleHook($item, $menu) {
         if ($menu->title && FALSE !== $item->title) {
-            title($item->label);
+            title(is_bool($item->title) ? $item->label : $item->title);
         }
     }
 
