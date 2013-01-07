@@ -9,7 +9,10 @@
  * @link		http://cogear.ru
  */
 class Install_Gear extends Gear {
-
+    protected $routes = array(
+        'install' => 'index',
+        'install/(\w+)' => 'index',
+    );
     /**
      * Init
      */

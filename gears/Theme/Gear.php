@@ -65,7 +65,8 @@ class Theme_Gear extends Gear {
      * @param   object  $Gear
      */
     public function hookGearRequest($Gear) {
-        if (access('Theme.admin') && $theme = $this->input->get('theme')) {
+        // Если Инсталлер включен, что шестерёнка Access выключена. Поэтмоу требуется проверка на существование функции
+        if (function_exists('access') && access('Theme.admin') && $theme = $this->input->get('theme')) {
             return $this->choose($theme);
         }
         if ($Gear->options->theme) {
