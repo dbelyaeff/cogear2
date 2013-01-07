@@ -16,7 +16,6 @@ class Meta_Gear extends Gear implements SplObserver {
         'description' => array(),
     );
     protected $hooks = array(
-        'menu.active' => 'menuTitleHook',
         'post.full.after' => 'showObjectTitle',
         'blog.navbar.render' => 'showObjectTitle',
         'user.navbar.render' => 'showObjectTitle',
@@ -63,6 +62,9 @@ class Meta_Gear extends Gear implements SplObserver {
      */
     public function showObjectTitle($object) {
         if ($object->label) {
+            if(FALSE === $object->title){
+                return;
+            }
             title($object->label);
         } elseif ($object->getName()) {
             title($object->getName(FALSE));
@@ -80,22 +82,11 @@ class Meta_Gear extends Gear implements SplObserver {
         if (!$menu->options->title) {
             return;
         }
-        $i = 0;
         foreach ($menu as $key => $item) {
-            if ($item->active && FALSE !== $item->title) {
+            if($menu->options->titleActiveOnly && !$item->active) continue;
+            if (FALSE !== $item->title) {
                 title(is_string($item->title) ? $item->title : $item->label, is_int($menu->title) ? $menu->title : NULL);
             }
-        }
-    }
-
-    /**
-     * Set title from active menu element
-     *
-     * @param string $element
-     */
-    public function hookMenuTitleHook($item, $menu) {
-        if ($menu->title && FALSE !== $item->title) {
-            title(is_bool($item->title) ? $item->label : $item->title);
         }
     }
 

@@ -21,6 +21,7 @@ class Menu_Object extends Observer {
         'render' => 'content',
         'multiple' => FALSE,
         'title' => TRUE,
+        'titleActiveOnly' => TRUE,
         'autoactive' => TRUE,
     );
     protected $is_activated;
@@ -34,7 +35,7 @@ class Menu_Object extends Observer {
         // Принимаем настройки
         parent::__construct($options);
         // Подкрепляем шестеренку Мета в качестве слушателя Listener (паттерн ООП Observer)
-        $this->attach(cogear()->gears->Meta);
+        $this->attach(cogear()->Meta);
         // Определяем базовый uri, от которого работает меню
         $this->options->base = rtrim(parse_url($this->options->base ? $this->options->base : Url::link(), PHP_URL_PATH), '/') . '/';
         // Если определен вывод, вешаем хук
@@ -89,16 +90,16 @@ class Menu_Object extends Observer {
             }
         }
         // Если активных нет или же могут быть несколько элементов — выходим
-        if (!$last_active OR $this->multiple)
-            return;
+        if ($last_active OR !$this->multiple) {
 
-        // Отменяем все, кроме последнего активного
-        foreach ($this as $key => $item) {
-            if ($item->options->active) {
-                if ($key !== $last_active) {
-                    $item->options->active = FALSE;
-                } else {
-                    event('menu.active', $item, $this);
+            // Отменяем все, кроме последнего активного
+            foreach ($this as $key => $item) {
+                if ($item->options->active) {
+                    if ($key !== $last_active) {
+                        $item->options->active = FALSE;
+                    } else {
+                        event('menu.active', $item, $this);
+                    }
                 }
             }
         }
@@ -137,8 +138,8 @@ class Menu_Object extends Observer {
      */
     public function render() {
         // Событие
-        event('menu',$this->name,$this);
-        event('menu.'.$this->name,$this);
+        event('menu', $this->name, $this);
+        event('menu.' . $this->name, $this);
         // Если не пустой
         if ($this->count()) {
             // Сортируем
@@ -164,6 +165,7 @@ class Menu_Object extends Observer {
     public function output() {
         echo $this->render();
     }
+
     /**
      * Приведение к строке
      *

@@ -64,11 +64,11 @@ class Admin_Gear extends Gear {
                     ));
             css($this->folder . DS . 'css' . DS . 'menu.css', 'head');
             if ('admin' == $this->router->getSegments(0)) {
-                title(t('Панель управления'));
                 $this->bc = new Breadcrumb_Object(
                                 array(
                                     'name' => 'admin.breadcrumb',
-                                    'title' => FALSE,
+                                    'title' => TRUE,
+                                    'titleActiveOnly' => FALSE,
                                     'elements' => array(
                                         array(
                                             'link' => l('/admin'),
