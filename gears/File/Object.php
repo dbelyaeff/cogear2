@@ -15,6 +15,7 @@ class File_Object extends Adapter {
     /**
      * Measure constants
      */
+
     const Kb = 'Kb';
     const Mb = 'Mb';
     const Gb = 'Gb';
@@ -38,20 +39,22 @@ class File_Object extends Adapter {
         parent::__construct($options);
         $this->object(new SplFileInfo($path));
     }
+
     /**
      * Render file
      */
-    public function render(){
+    public function render() {
         $ext = self::extension($this->getBasename());
-        return '<a href="'.$this->options->uri_full.'" class="icon-file-'.$ext.'">'.$this->getBasename().'</a>';
+        return '<a href="' . $this->options->uri_full . '" class="icon-file-' . $ext . '">' . $this->getBasename() . '</a>';
     }
+
     /**
      * Make nice uri for file
      *
      * @param string $file
      * @param string
      */
-    public static function pathToUri($file,$replace = ROOT) {
+    public static function pathToUri($file, $replace = ROOT) {
         return l(Url::toUri($file, $replace, FALSE));
     }
 
@@ -167,6 +170,7 @@ class File_Object extends Adapter {
     public static function read($path) {
         return file_get_contents($path);
     }
+
     /**
      * Находит файлы согласно маске. В том числе и рекурсивно
      *
@@ -175,19 +179,45 @@ class File_Object extends Adapter {
      * @param boolean $recursive
      * @return array
      */
-    public static function findByMask($dir, $mask = '/^.+\.(php|js)$/i',$recursive = TRUE) {
-        if($recursive){
-            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir,RecursiveDirectoryIterator::SKIP_DOTS));
-        }
-        else {
+    public static function findByMask($dir, $mask = '/^.+\.(php|js)$/i', $recursive = TRUE) {
+        if ($recursive) {
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS));
+        } else {
             $it = new IteratorIterator(DirectoryIterator($dir));
         }
         $it = new RegexIterator($it, $mask);
         $files = array();
-        foreach($it as $file){
+        foreach ($it as $file) {
             $files[] = $file->__toString();
         }
         return $files;
     }
+    /**
+     * Отправка файла в браузер
+     *
+     * @param mixed $data
+     * @param string $filename
+     */
+    public static function download($data, $filename) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        if(file_exists($data)){
+            header('Content-Length: ' . filesize($file));
+            while (false !== ($chunk = fread($handler, 4096))) {
+                echo $chunk;
+            }
+
+        }
+        else {
+            echo $data;
+        }
+        exit;
+    }
+
 }
 
