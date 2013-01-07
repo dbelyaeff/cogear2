@@ -3,7 +3,7 @@ return array (
   'cache' =>
   array (
     'driver' => 'Cache_Driver_Memcache',
-    'path' => 'C:\OpenServer\domains\cogear.new\cache',
+    'path' => CACHE,
     'prefix' => 'normal',
     'enabled' => true,
     'name' => 'normal',
@@ -39,7 +39,7 @@ return array (
   ),
   'gears' =>
   array (
-    'Install',
+      'Install'
   ),
   'i18n' =>
   array (
