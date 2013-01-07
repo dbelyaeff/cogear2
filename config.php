@@ -3,11 +3,12 @@ return array (
   'cache' =>
   array (
     'driver' => 'Cache_Driver_Memcache',
-    'path' => CACHE,
+    'path' => CACHE.'',
     'prefix' => 'normal',
     'enabled' => true,
     'name' => 'normal',
   ),
+  'development' => 1,
   'router' =>
   array (
     'defaults' =>
@@ -39,7 +40,7 @@ return array (
   ),
   'gears' =>
   array (
-      'Install'
+    'Install',
   ),
   'i18n' =>
   array (
@@ -130,6 +131,10 @@ return array (
         ),
       ),
     ),
+  ),
+  'site' =>
+  array (
+    'name' => 'cogear',
   ),
   'wysiwyg' =>
   array (

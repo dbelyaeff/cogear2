@@ -18,7 +18,7 @@ class Dev_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        if (access('Dev.*') && config('site.develompent')) {
+        if (access('Dev.*') && cogear()->config->development) {
             hook('done', array($this, 'finish'));
         }
     }

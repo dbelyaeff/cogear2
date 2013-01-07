@@ -13,15 +13,29 @@ class Admin_Gear extends Gear {
     protected $routes = array(
         'admin' => 'dashboard_action',
         'admin/clear/(\w+)' => 'clear_action',
+        'admin/site' => 'site_action',
     );
     protected $access = array(
         '*' => array(1),
     );
     protected $hooks = array(
         'menu' => 'hookMenu',
+        'gear.request' => 'hookGearRequest',
     );
     public $bc;
-
+    /**
+     * Хук запроса к шестерёнке
+     *
+     * @param Object $Gear
+     */
+    public function hookGearRequest($Gear){
+        if ($Gear !== $this && 'admin' == $this->router->getSegments(0)) {
+            $this->bc && $this->bc->register(array(
+                'link' => $this->router->getUri(),
+                'label' => $Gear->name,
+            ));
+        }
+    }
     /**
      * Initializer
      */
@@ -34,6 +48,20 @@ class Admin_Gear extends Gear {
                         'render' => 'before',
                     ));
             css($this->folder . DS . 'css' . DS . 'menu.css', 'head');
+            if ('admin' == $this->router->getSegments(0)) {
+                title(t('Панель управления'));
+                $this->bc = new Breadcrumb_Object(
+                                array(
+                                    'name' => 'admin.breadcrumb',
+                                    'title' => FALSE,
+                                    'elements' => array(
+                                        array(
+                                            'link' => l('/admin'),
+                                            'label' => icon('home') . ' ' . t('Панель управления'),
+                                        ),
+                                    ),
+                        ));
+            }
         }
     }
 
@@ -49,18 +77,6 @@ class Admin_Gear extends Gear {
      */
     public function request() {
         parent::request();
-        title(t('Панель управления'));
-        new Breadcrumb_Object(
-                        array(
-                            'name' => 'admin_breadcrumb',
-                            'title' => FALSE,
-                            'elements' => array(
-                                array(
-                                    'link' => l('/admin'),
-                                    'label' => icon('home') . ' ' . t('Панель управления'),
-                                ),
-                            ),
-                ));
     }
 
     /**
@@ -102,25 +118,6 @@ class Admin_Gear extends Gear {
     }
 
     /**
-     * Обработка запроса
-     */
-    public function index_action($gear = NULL) {
-        if (!$gear) {
-            return $this->dashboard_action();
-        } else {
-            $args = $this->router->getArgs();
-            $gear = ucfirst($args[1]);
-            $args = array_slice($args, 2);
-            $callback = new Callback(array($this->gears->$gear, 'admin_action'));
-            if ($callback->check()) {
-                $callback->run($args);
-            } else {
-                event('404');
-            }
-        }
-    }
-
-    /**
      * Показывает главную страницу панели управления
      */
     public function dashboard_action() {
@@ -153,13 +150,11 @@ class Admin_Gear extends Gear {
         $form = new Form('Admin/forms/site');
         $form->object(array(
             'name' => config('site.name'),
-            'url' => config('site.url'),
-            'dev' => config('site.development'),
-            'date_format' => config('date.format'),
+            'dev' => config('development'),
         ));
         if ($result = $form->result()) {
-            $result->name && cogear()->site->set('site.name', $result->name);
-            $result->dev && cogear()->site->set('site.development', $result->dev);
+            cogear()->set('site.name', $result->name);
+            cogear()->set('development', $result->dev);
             success(t('Настройки успешно сохранены!'));
         }
         $form->show();
