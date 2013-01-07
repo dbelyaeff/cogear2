@@ -36,6 +36,21 @@ class Admin_Gear extends Gear {
             ));
         }
     }
+
+    /**
+     * Выводим меню на странице настроек
+     */
+    public function hookSiteSettingsMenu(){
+        new Menu_Tabs(array(
+            'name' => 'admin.site',
+            'elements' => array(
+                array(
+                    'label' => t('Общие'),
+                    'link' => l('/admin/site'),
+                )
+            )
+        ));
+    }
     /**
      * Initializer
      */
@@ -147,6 +162,7 @@ class Admin_Gear extends Gear {
      * Site config
      */
     public function site_action() {
+        $this->hookSiteSettingsMenu();
         $form = new Form('Admin/forms/site');
         $form->object(array(
             'name' => config('site.name'),
