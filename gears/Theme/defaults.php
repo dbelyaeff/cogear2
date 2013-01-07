@@ -12,5 +12,5 @@ return array(
     'order' => 0,
     'logo' => 'img/logo.png',
     'favicon' => 'img/favicon.ico',
-    'screenshot' => 'img/screenshot.png',
+    'screenshot' => 'img/screenshot.jpg',
 );

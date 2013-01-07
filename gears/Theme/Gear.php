@@ -10,11 +10,32 @@
  */
 class Theme_Gear extends Gear {
 
+    /**
+     * Хуки
+     *
+     * @var array
+     */
     protected $hooks = array(
         'logo' => 'hookLogo',
         'head' => 'hookFavicon',
+        'gear.request' => 'hookGearRequest',
         'exit' => 'output',
+        'menu' => 'hookMenu',
     );
+    protected $routes = array(
+        'admin/theme' => 'admin_action',
+        'admin/theme/activate/(\w+)' => 'activate_action',
+    );
+    protected $access = array(
+        'admin' => array(1),
+        'activate' => array(1),
+    );
+
+    /**
+     * Регионы в теме для вывода информации
+     *
+     * @var array
+     */
     public $regions;
 
     const SUFFIX = '_Theme';
@@ -34,8 +55,24 @@ class Theme_Gear extends Gear {
      */
     public function hookFavicon() {
         $theme = $this->object();
-        $favicon = $theme->favicon ? l($theme->folder).'/'.$theme->favicon : l('/favicon.ico');
-        echo '<link rel="shortcut icon" href="'.$favicon.'">';
+        $favicon = $theme->favicon ? l($theme->folder) . '/' . $theme->favicon : l('/favicon.ico');
+        echo '<link rel="shortcut icon" href="' . $favicon . '">';
+    }
+
+    /**
+     * Хук, который загружает тему, когда Роутер обращается к шестерёнке
+     *
+     * @param   object  $Gear
+     */
+    public function hookGearRequest($Gear) {
+        if (access('Theme.admin') && $theme = $this->input->get('theme')) {
+            return $this->choose($theme);
+        }
+        if ($Gear->options->theme) {
+            $this->choose($Gear->options->theme);
+        } else {
+            $this->choose(config('theme.current', 'Default'));
+        }
     }
 
     /**
@@ -50,10 +87,6 @@ class Theme_Gear extends Gear {
      * Init
      */
     public function init() {
-        hook('gear.request', array($this, 'handleGearRequest'));
-        if ($favicon = config('theme.favicon')) {
-            hook('theme.head.meta.after', array($this, 'renderFavicon'));
-        }
         hook('callback.before', array($this, 'catchOutput'), NULL, 'start');
         hook('callback.after', array($this, 'catchOutput'), NULL, 'finish');
         parent::init();
@@ -65,7 +98,7 @@ class Theme_Gear extends Gear {
      * @param string  $name
      * @param object $menu
      */
-    public function menu($name, $menu) {
+    public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
                 $menu->register(array(
@@ -78,31 +111,56 @@ class Theme_Gear extends Gear {
     }
 
     /**
-     * Admin dispatcher
+     * Диспатчер админки
      *
      * @param type $action
      */
-    public function admin($action = 'settings') {
-        $form = new Form('Theme/forms/choose');
-        $form->elements->theme->setValues($this->getThemes());
-        $form->elements->theme->setValue(config('theme.current'));
-        if ($result = $form->result()) {
-            cogear()->set('theme.current', $result->theme);
-        }
-        $form->show();
+    public function admin_action() {
+        new Menu_Tabs(array(
+            'name' => 'admin.theme',
+            'elements' => array(
+                array(
+                    'label' => t('Темы'),
+                    'link' => l('/admin/theme')
+                )
+            )
+        ));
+        $themes = $this->getThemes();
+        template('Theme/templates/list', array('themes' => $themes))->show();
     }
 
     /**
-     * Get installed themes
+     * Активация темы
      *
-     * @return  array
+     * @param string $themeName Название темы
      */
-    private function getThemes() {
-        $files = glob(THEMES . DS . '*' . DS . 'theme.xml');
-        foreach ($files as $file) {
-            $xml = new XmlConfig($file);
-            $config = $xml->parse();
-            $themes[$config->gear] = $config->name;
+    public function activate_action($themeName) {
+        if ($theme = $this->getThemes($themeName)) {
+            $this->set($themeName);
+            flash_success(t('Тема успешно активирована!'));
+            redirect(l('/admin/theme'));
+        }
+    }
+
+    /**
+     * Возвращает установленные темы или указанную тему
+     *
+     * @param   $themeName  Название темы
+     * @return  array|Theme
+     */
+    private function getThemes($themeName = '') {
+        $files = glob(THEMES . DS . '*' . DS . 'info' . EXT);
+        $themes = array();
+        if ($files) {
+            foreach ($files as $file) {
+                $theme_dir = basename(dirname($file));
+                $theme_class = $theme_dir . '_Theme';
+                $theme = new $theme_class(new Config($file));
+                if ($theme->theme == $themeName) {
+                    return $theme;
+                }
+                $theme != $this->object() && array_push($themes, $theme);
+            }
         }
         return $themes;
     }
@@ -126,33 +184,20 @@ class Theme_Gear extends Gear {
     }
 
     /**
-     * Handle gear request
-     *
-     * Set theme, initialize it.
-     *
-     * @param   object  $Gear
-     */
-    public function handleGearRequest($Gear) {
-        $this->choose();
-    }
-
-    /**
-     * Init current theme
+     * Инициализация указанной темы
      *
      * @param string $theme
      * @param boolean $final
      */
-    public function choose($theme = NULL) {
-        $theme OR $theme = config('theme.current', 'Default');
+    public function choose($theme) {
         $class = self::themeToClass($theme);
         if (!class_exists($class)) {
-            error(t('Theme <b>%s</b> doesn\'t exist.', 'Theme', $theme));
+            error(t('Тема <b>%s</b> не существует.', $theme));
             $class = 'Default_Theme';
             $theme = 'Default';
-            $this->choose('Default');
+            return $this->choose('Default');
         }
-        $xml = new XmlConfig(THEMES . DS . $theme . DS . 'theme.xml');
-        $this->object(new $class($xml->parse((array) Theme::getDefaultSettings())));
+        $this->object(new $class(new Config(THEMES . DS . $theme . DS . 'info' . EXT)));
         $this->object()->init();
     }
 
@@ -241,21 +286,17 @@ class Theme_Gear extends Gear {
 }
 
 function append($name, $value) {
-    $cogear = getInstance();
-    $cogear->theme->region($name)->append($value);
+    cogear()->theme->region($name)->append($value);
 }
 
 function prepend($name, $value) {
-    $cogear = getInstance();
-    $cogear->theme->region($name)->prepend($value);
+    cogear()->theme->region($name)->prepend($value);
 }
 
 function inject($name, $value, $position = 0) {
-    $cogear = getInstance();
-    $cogear->theme->region($name)->inject($value, $position);
+    cogear()->theme->region($name)->inject($value, $position);
 }
 
 function theme($place) {
-    $cogear = getInstance();
-    return $cogear->theme->renderRegion($place);
+    return cogear()->theme->renderRegion($place);
 }

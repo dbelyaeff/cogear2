@@ -12,6 +12,11 @@ abstract class Theme_Object extends Gear {
 
     protected $theme;
     protected $template;
+    /**
+     * Настройки темы по умолчанию
+     *
+     * @var array
+     */
     protected static $defaults;
 
     /**
@@ -20,8 +25,9 @@ abstract class Theme_Object extends Gear {
      * @param SimpleXMLElement $xml
      */
     public function __construct($config) {
-        parent::__construct($config);
-        $this->theme = $this->gear;
+        $defaults = self::getDefaultSettings();
+        $defaults->extend($config);
+        parent::__construct($defaults);
         $this->template = new Template(THEMES . DS . $this->theme . DS . 'templates' . DS . 'index'.EXT);
     }
 
@@ -45,7 +51,7 @@ abstract class Theme_Object extends Gear {
      * @return SimpleXMLObject
      */
     public static function getDefaultSettings() {
-        return self::$defaults ? self::$defaults : self::$defaults = new SimpleXMLElement(file_get_contents(GEARS . DS . 'Theme' . DS . 'default.xml'));
+        return self::$defaults ? self::$defaults : self::$defaults = new Config(cogear()->Theme->dir.DS.'defaults'.EXT);
     }
 
     /**
@@ -54,7 +60,7 @@ abstract class Theme_Object extends Gear {
      * @return type
      */
     public function getScreenshot() {
-        return file_exists($this->dir . $this->screenshot) ? $this->folder . $this->screenshot : '/' . THEMES_FOLDER . '/Default/images/screenshot.png';
+        return file_exists($this->dir .DS. $this->screenshot) ? $this->dir .DS. $this->screenshot : cogear()->theme->dir.DS.$this->screenshot;
     }
 
     /**
