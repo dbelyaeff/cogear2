@@ -1,16 +1,12 @@
 <?php
 
 /**
- * Config
- *
+ * Конфиг
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Config extends Core_ArrayObject {
 
@@ -21,7 +17,7 @@ class Config extends Core_ArrayObject {
     const AS_OBJECT = 21;
 
     /**
-     * Constructor
+     * Конструктор
      *
      * @param string $path
      * @param string $section
@@ -35,7 +31,7 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Load file into internal config
+     * Загрузка файла в хранилище
      *
      * @param   string  $path
      * @param   string  $section
@@ -57,7 +53,7 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Get config var
+     * Чтение значения
      *
      * @param   string  $name
      * @param   string  $default
@@ -87,7 +83,7 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Set config value
+     * Установка значения
      *
      * @param type $name
      * @param type $value
@@ -117,7 +113,7 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Read config from file
+     * Чтение конфига из файла
      *
      * @param string $file
      */
@@ -133,7 +129,7 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Save config to file
+     * Сохранение конфига в файл
      *
      * @param string $file
      * @param array $data
@@ -155,14 +151,12 @@ class Config extends Core_ArrayObject {
     }
 
     /**
-     * Write data
+     * Экспортирование данных в содержимое файла
      *
-     * @param string $file
-     * @param mixed $data
-     * @return  mixed
+     * @param array $data
+     * @return array
      */
-    public static function write($file, $data) {
-        File::mkdir(dirname($file));
+    public static function export($data) {
         $data = var_export($data, TRUE);
         // Now we need to replace paths with constants
         $constants = get_defined_constants(true);
@@ -178,7 +172,19 @@ class Config extends Core_ArrayObject {
         $data = str_replace(DS . DS, DS, $data);
         $data = str_replace(array_keys($paths), array_values($paths), $data);
         // Done
-        return file_put_contents($file, PHP_FILE_PREFIX . "return " . $data . ';');
+        return PHP_FILE_PREFIX . "return " . $data . ';';
+    }
+
+    /**
+     * Запись в файл
+     *
+     * @param string $file
+     * @param mixed $data
+     * @return  mixed
+     */
+    public static function write($file, $data) {
+        File::mkdir(dirname($file));
+        return file_put_contents($file, self::export($data));
     }
 
 }
