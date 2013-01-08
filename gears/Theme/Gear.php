@@ -139,6 +139,7 @@ class Theme_Gear extends Gear {
                                 array(
                                     'label' => icon('upload') . ' ' . t('Загрузить'),
                                     'link' => l('/admin/theme/add'),
+                                    'access' => !check_route('admin/theme$'),
                                 ),
                                 array(
                                     'label' => icon('plus') . ' ' . t('Добавить'),
