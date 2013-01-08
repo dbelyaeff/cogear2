@@ -20,12 +20,12 @@ if (!$item->published && !$item->preview) {
         $title->object($item);
         $title->name = '<h2>' . ($item->teaser ? '<a href="' . $item->getLink() . '">' . $item->name . '</a>' : $item->name) . '</h2>';
         if (!$item->preview) {
-            if (access('Post.delete', $item)) {
-                $title->delete = '<a class="post-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';
-            }
-            if (access('Post.hide', $item)) {
-                $title->hide = '<a class="post-hide sh" data-id="' . $item->id . '" href="' . $item->getLink('hide') . '"><i class="icon-eye-' . ($item->published ? 'open' : 'close') . '"></i></a>';
-            }
+//            if (access('Post.delete', $item)) {
+//                $title->delete = '<a class="post-delete sh" data-id="' . $item->id . '" href="' . $item->getLink('delete') . '"><i class="icon-remove"></i></a>';
+//            }
+//            if (access('Post.hide', $item)) {
+//                $title->hide = '<a class="post-hide sh" data-id="' . $item->id . '" href="' . $item->getLink('hide') . '"><i class="icon-eye-' . ($item->published ? 'open' : 'close') . '"></i></a>';
+//            }
             if (access('Post.edit', $item)) {
                 $title->edit = '<a class="post-edit sh" data-id="' . $item->id . '" href="' . $item->getLink('edit') . '"><i class="icon-pencil"></i></a>';
             }
