@@ -213,7 +213,7 @@ class Router_Object extends Options implements Interface_Singleton {
      * @param int $type
      * @return  boolean
      */
-    public function check($uri = '', $type = self::STARTS) {
+    public function check($uri = '') {
         $site = 'http://' . SITE_URL . '/';
         if (strpos($uri, $site) !== FALSE) {
             $uri = str_replace($site, '', $uri);
@@ -225,17 +225,6 @@ class Router_Object extends Options implements Interface_Singleton {
             return $this->uri ? FALSE : TRUE;
         }
         $regexp = $uri;
-        switch($type){
-            case self::STARTS:
-                $regexp = '^'.$regexp;
-                break;
-            case self::ENDS:
-                $regexp .= '$';
-                break;
-            case self::BOTH:
-                $regexp = '^'.$regexp.'$';
-                break;
-        }
         return (bool)preg_match('#'.$regexp.'#', $this->uri);
     }
 
@@ -263,10 +252,10 @@ class Router_Object extends Options implements Interface_Singleton {
                 if ($this->exec($callback)) {
                     return;
                 }
+                return event('404');
             }
         }
-        event('404');
-        return;
+        return event('404');
     }
     /**
      * Очищает аргументы от шелухи
@@ -319,6 +308,6 @@ function bind_route($route, $callback, $prepend = FALSE) {
  * @param type $arg
  * @return type
  */
-function check_route($route = '', $arg = Router::BOTH) {
-    return cogear()->router->check($route, $arg);
+function check_route($route = '') {
+    return cogear()->router->check($route);
 }

@@ -105,7 +105,7 @@ class Admin_Gear extends Gear {
                 $menu->register(array(
                     'label' => icon('home'),
                     'link' => l('/admin'),
-                    'active' => check_route('admin', Router::ENDS) OR check_route('admin/dashboard', Router::STARTS),
+                    'active' => check_route('admin$') OR check_route('^admin/dashboard'),
                     'order' => 0,
                     'elements' => array(
                         array(

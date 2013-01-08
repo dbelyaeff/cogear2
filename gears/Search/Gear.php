@@ -50,7 +50,7 @@ class Search_Gear extends Gear {
                         'posts' => array(
                             'label' => t('Посты'),
                             'link' => l('/search' . ($q ? '?q=' . $q : '')),
-                            'active' => check_route('search', Router::ENDS),
+                            'active' => check_route('search$'),
                         ),
                         'blogs' => array(
                             'label' => t('Блоги'),

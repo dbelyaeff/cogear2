@@ -171,11 +171,11 @@ class Gears extends Options {
                 if (class_exists($class)) {
                     $this->$gear = new $class($config);
                 } else {
-                    array_push($remove,$gear);
+                    array_push($remove, $gear);
                 }
             }
-            if($remove){
-                foreach($remove as $gear){
+            if ($remove) {
+                foreach ($remove as $gear) {
                     $this->offsetUnset($gear);
                 }
             }

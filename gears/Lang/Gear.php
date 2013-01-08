@@ -96,7 +96,7 @@ class Lang_Gear extends Gear {
             $install_lang = $Gear->getDir() . DS . 'lang' . DS . $this->lang . EXT;
             if (file_exists($install_lang)) {
                 $lang = new Config($install_lang);
-                $this->object()->import($lang->toArray())->save();
+                Lang::factory('index')->import($lang->toArray())->save();
             }
         }
     }

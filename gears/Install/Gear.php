@@ -20,7 +20,7 @@ class Install_Gear extends Gear {
         parent::init();
         if ($this->status() == Gears::ENABLED) {
             $this->router->bind(':index', array($this, 'index'), TRUE);
-            if (!check_route('install', Router::STARTS)) {
+            if (!check_route('^install')) {
                 redirect(l('/install'));
             }
         }
@@ -50,22 +50,22 @@ class Install_Gear extends Gear {
                         array(
                             'label' => t('1. Начало'),
                             'link' => '',
-                            'active' => check_route('install', Router::ENDS),
+                            'active' => check_route('install$'),
                         ),
                         array(
                             'label' => t('2. Проверка'),
                             'link' => '',
-                            'active' => check_route('check', Router::ENDS),
+                            'active' => check_route('check$'),
                         ),
                         array(
                             'label' => t('3. Настройки'),
                             'link' => '',
-                            'active' => check_route('site', Router::ENDS),
+                            'active' => check_route('site$'),
                         ),
                         array(
                             'label' => t('4. Завершение'),
                             'link' => '',
-                            'active' => check_route('finish', Router::ENDS),
+                            'active' => check_route('finish$'),
                         ),
                     ),
                 ));
