@@ -228,7 +228,7 @@ class Theme_Gear extends Gear {
                 if ($comment = $zip->getArchiveComment()) {
                     if ($info = unserialize(base64_decode($comment))) {
                         if ($info['type'] == 'themes') {
-                            $zip->extractTo(GEARS);
+                            $zip->extractTo(THEMES);
                             success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])));
                         }
                         else
