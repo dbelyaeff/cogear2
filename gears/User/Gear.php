@@ -32,6 +32,8 @@ class User_Gear extends Gear {
         'edit.login' => 'access',
         'edit.email' => 'access',
         'delete' => 'access',
+        'admin' => array(1),
+        'admin_create' => array(1),
         'login' => array(0),
         'logout' => array(1, 100),
     );
@@ -40,6 +42,10 @@ class User_Gear extends Gear {
         'logout' => 'logout_action',
         'lostpassword' => 'lostpassword_action',
         'register' => 'register_action',
+        'admin/users:maybe' => 'admin_action',
+        'admin/user/create' => 'admin_create_action',
+        'admin/user/(\d+)' => 'edit_action',
+        'user/edit/(\d+)' => 'edit_action',
     );
 
     /**
@@ -183,7 +189,7 @@ class User_Gear extends Gear {
      */
     public function hookWidgets($widgets) {
         $widgets->append(new User_Widgets_Top());
-        $widgets->append(new User_Widgets_Online());
+        $widgets->append(new User_Widgets_Онлайн());
     }
 
     /**
@@ -201,6 +207,42 @@ class User_Gear extends Gear {
             }
         }
     }
+    /**
+     * Создание меню в админке
+     */
+    public function hookAdminMenu(){
+        new Menu_Tabs(array(
+            'name' => 'admin.users',
+            'elements' => array(
+                array(
+                    'label' => icon('user').' '.t('Список'),
+                    'link' => l('/admin/users'),
+                ),
+                array(
+                    'label' => icon('plus').' '.t('Создать'),
+                    'link' => l('/admin/user/create'),
+                    'class' => 'fl_r',
+                )
+            )
+        ));
+    }
+    /**
+     * Создание меню редактирования пользователя в админке
+     */
+    public function hookUserEditMenu($User){
+        $menu = new Menu_Tabs(array(
+            'name' => 'admin.users',
+            'elements' => array(
+                array(
+                    'label' => icon('user').' '.t('Общие'),
+                    'link' => l('/user/edit/'.$User->id),
+                    'active' => check_route('user/edit/(\d+)') OR check_route('admin/user/(\d+)'),
+                ),
+            )
+        ));
+        $menu->object($User);
+    }
+
 
     /**
      * Menu builder
@@ -227,6 +269,7 @@ class User_Gear extends Gear {
                     $menu->register(array(
                         'label' => icon('eject'),
                         'link' => s('/logout'),
+                        'title' => FALSE,
                         'place' => 'right',
                         'order' => 1000,
                     ));
@@ -240,7 +283,7 @@ class User_Gear extends Gear {
                 break;
             case 'admin':
                 $menu->register(array(
-                    'link' => l('/admin/user'),
+                    'link' => l('/admin/users'),
                     'label' => icon('user') . ' ' . t('Пользователи'),
                     'order' => 100,
                 ));
@@ -280,13 +323,13 @@ class User_Gear extends Gear {
      * Show admin page
      */
     public function admin_action() {
+        $this->hookAdminMenu();
         $q = $this->input->get('q');
         $tpl = new Template('Search/templates/form');
         $tpl->action = l('/admin/user/');
         $q && $tpl->value = $q;
         $tpl->show('info');
         Db_ORM::skipClear();
-//        $q && $this->db->like('login', $q)->or_like('login', $q, 'both')->or_like('login', $q, 'after');
         $list = new User_List(array(
                     'name' => 'admin.users',
                     'base' => l('/admin/user/'),
@@ -296,6 +339,14 @@ class User_Gear extends Gear {
         $fields = $list->getFields();
         $list->setFields($fields);
         $list->show();
+    }
+    /**
+     * Создание нового пользователя
+     */
+    public function admin_create_action(){
+        $this->hookAdminMenu();
+        $form = new Form('User/forms/create');
+        $form->show();
     }
 
 
@@ -312,7 +363,8 @@ class User_Gear extends Gear {
         if (!$user->find()) {
             return event('404');
         }
-        $user->navbar()->show();
+        $this->hookUserEditMenu($user);
+//        $user->navbar()->show();
         $form = new Form('User/forms/profile');
         $user->password = '';
         $form->object($user->object);
@@ -337,8 +389,8 @@ class User_Gear extends Gear {
                 unset($user->password);
             }
             if ($user->update()) {
-                flash_success(t('Изменения сохранены!'), t('Удача'));
-                redirect(l('/user/edit/' . $id));
+                flash_success(t('Изменения сохранены!'));
+                back();
             }
         }
         $form->show();
@@ -397,7 +449,7 @@ class User_Gear extends Gear {
                 flash_success(t('Вы вошли по временной ссылке. Теперь вы можете поменять пароль.'));
                 redirect($user->getLink('edit'));
             } else {
-                error(t('Password recovery code has been already used.', 'User.lostpassword'));
+                error(t('Данный код восстановления пароля уже был использован.', 'User.lostpassword'));
             }
         } else {
             $form = new Form('User/forms/lostpassword');
@@ -407,7 +459,7 @@ class User_Gear extends Gear {
                 if (!$user->find()) {
                     $user->email = $result->login;
                     if (!$user->find()) {
-                        error(t('Wrong credentials.'), t('Authentification error'), 'growl');
+                        error(t('Вы ввели неверные имя пользователя или пароль.'), t('Ошибка авторизации'), 'growl');
                         $form->show();
                         return;
                     }
@@ -433,7 +485,7 @@ class User_Gear extends Gear {
     }
 
     /**
-     * User registration
+     * User Регистрация
      */
     public function register_action($code = NULL) {
         $this->theme->template('User/templates/login');
