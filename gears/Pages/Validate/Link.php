@@ -16,10 +16,12 @@ class Pages_Validate_Link extends Form_Validate_Abstract {
      * @param	string	$value
      */
     public function validate($link) {
-        $link = trim($link,'/');
-        if($route = route($link,'route')){
-            if($page = page($route->id,'route')){
-                return $this->element->error(t('Данный путь уже занят страницей <a href="%s">%s</a>',$page->getLink('edit'),$page->name));
+        $link = trim($link, '/');
+        if ($route = route($link, 'route')) {
+            if ($page = page($route->id, 'route')) {
+                if ($page->id != $this->element->form->object()->id) {
+                    return $this->element->error(t('Данный путь уже занят страницей <a href="%s">%s</a>', $page->getLink('edit'), $page->name));
+                }
             }
         }
         return TRUE;
