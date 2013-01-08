@@ -90,7 +90,7 @@ class Menu_Object extends Observer {
             }
         }
         // Если активных нет или же могут быть несколько элементов — выходим
-        if ($last_active OR !$this->multiple) {
+        if ($last_active && !$this->multiple) {
 
             // Отменяем все, кроме последнего активного
             foreach ($this as $key => $item) {
