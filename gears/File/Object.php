@@ -192,13 +192,15 @@ class File_Object extends Adapter {
         }
         return $files;
     }
+
     /**
      * Отправка файла в браузер
      *
      * @param mixed $data
      * @param string $filename
+     * @param boolean   $delete Флаг, удалять ли файл или нет
      */
-    public static function download($data, $filename) {
+    public static function download($data, $filename, $delete = FALSE) {
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename=' . $filename);
@@ -206,16 +208,18 @@ class File_Object extends Adapter {
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
-        if(file_exists($data)){
-            header('Content-Length: ' . filesize($file));
-            while (false !== ($chunk = fread($handler, 4096))) {
-                echo $chunk;
+        if (file_exists($data)) {
+            header('Content-Length: ' . filesize($data));
+            if ($fd = fopen($data, 'rb')) {
+                while (!feof($fd)) {
+                    print fread($fd, 1024);
+                }
+                fclose($fd);
             }
-
-        }
-        else {
+        } else {
             echo $data;
         }
+        $delete && unlink($data);
         exit;
     }
 
