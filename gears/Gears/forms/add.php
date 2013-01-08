@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'name' => 'gears-add',
+    'name' => 'gears.add',
     'class' => 'form form-horizontal',
     'elements' => array(
         'info' => array(

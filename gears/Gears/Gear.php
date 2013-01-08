@@ -194,7 +194,7 @@ class Gears_Gear extends Gear {
     }
 
     /**
-     * Add gears
+     * Загрузка тем
      */
     public function upload_action() {
         $this->hookAdminMenu();
@@ -208,7 +208,7 @@ class Gears_Gear extends Gear {
                     if($info = unserialize(base64_decode($comment))){
                         if($info['type'] == 'gears'){
                             $zip->extractTo(GEARS);
-                            success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие шестерёнки: <ul><li>%s</li></ul>',implode('</li><li>',$info['items'])));
+                            success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие шестерёнки: <ul><li>%s</li></ul>',implode('</li><li>',$info['gears'])));
                         }
                         else error(t('Вы загружаете архив неверного формата!'),'','content');
                     }
