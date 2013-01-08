@@ -1,5 +1,8 @@
 <?php
-    $caches = Cache::$statistics;
+    $caches = array();
+    foreach(array('system','normal') as $cache){
+        $caches[$cache] = Cache::factory($cache)->stats;
+    }
 ?>
 <?php echo '<br/>'.t('<b>Кэшировние:</b> ');
 foreach($caches as $name=>$results){

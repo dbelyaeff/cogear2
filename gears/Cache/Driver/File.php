@@ -30,6 +30,7 @@ class Cache_Driver_File extends Cache_Driver_Abstract {
         if(FALSE === $this->options->enabled){
             return FALSE;
         }
+        $this->stats->read++;
         $name = $this->prepareKey($name);
         $path = $this->options->path . DS . $name;
         if (file_exists($path)) {
@@ -68,6 +69,7 @@ class Cache_Driver_File extends Cache_Driver_Abstract {
                 $this->write('tags/' . $tag, '', array());
             }
         }
+        $this->stats->write++;
         File::mkdir(dirname($this->options->path . DS . $name));
         file_put_contents($this->options->path . DS . $name, PHP_FILE_PREFIX . 'return ' . var_export($data, TRUE) . ';');
     }

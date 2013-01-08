@@ -9,6 +9,7 @@
  * @link		http://cogear.ru
  */
 abstract class Cache_Driver_Abstract extends Object {
+
     /**
      * Настройки по умолчанию
      *
@@ -17,13 +18,36 @@ abstract class Cache_Driver_Abstract extends Object {
     protected $options = array(
         'enabled' => TRUE,
     );
+
     abstract public function read($name);
 
-    abstract public function write($name, $value, $tags=NULL, $ttl=NULL);
+    abstract public function write($name, $value, $tags = NULL, $ttl = NULL);
 
     abstract public function remove($name);
 
     abstract public function clear();
+
+    /**
+     * Статистика запросов
+     *
+     * @var array
+     */
+    protected $stats = array(
+        'read' => 0,
+        'write' => 0,
+    );
+
+    /**
+     * Конструктор
+     *
+     * @param array $options
+     * @param int $place
+     */
+    public function __construct($options = NULL, $place = NULL) {
+        parent::__construct($options, $place);
+        $this->stats = new Core_ArrayObject($this->stats);
+    }
+
     /**
      * Remove cached tags
      *

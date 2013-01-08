@@ -50,6 +50,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
         if (FALSE === $this->options->enabled) {
             return FALSE;
         }
+        $this->stats->read++;
         $name = $this->prepareKey($name);
         if (NULL !== ($data = $this->get($name))) {
             if ($data['ttl'] && time() > $data['ttl']) {
@@ -86,6 +87,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
                 $this->write('tags/' . $tag, '', array());
             }
         }
+        $this->stats->write++;
         $this->set($name, $data);
     }
 
