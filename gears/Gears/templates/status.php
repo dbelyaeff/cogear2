@@ -23,4 +23,4 @@
         <p><?php echo $result->message; ?></p>
     </div>
 <?php endforeach; ?>
-<p><a href="<?php echo l('/admin/gears/'.($do == 'enable' ? 'disabled' : '')) ?>" class="btn">&larr; <?php echo t('Назад') ?></a></p>
+<p><a href="<?php echo server('referer') ?>" class="btn">&larr; <?php echo t('Назад') ?></a></p>

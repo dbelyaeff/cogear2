@@ -1,33 +1,46 @@
 <?php
+
 return array(
     'name' => 'gears-add',
-    'title' => t('Загрузить шестерёнку'),
+    'class' => 'form form-horizontal',
     'elements' => array(
-        'file' => array(
-            'label' => t('С диска'),
-            'type' => 'file',
-            'allowed_types' => array('zip','tar.gz'),
-            'maxsize' => 3072,
-            'path' => UPLOADS.DS.'gears',
-            'overwrite' => TRUE,
-        ),
-        'or' => array(
+        'info' => array(
             'type' => 'div',
-            'value' => '<h2>OR</h2>',
+            'class' => 'alert alert-info',
+            'label' => t('Вы можете загрузить одну или несколько шестерёнок в одном архиве. Система автоматически установит их.'),
         ),
-        'url' => array(
-            'type' => 'file_url',
-            'label' => t('С Интернета'),
-            'allowed_types' => array('zip','tar.gz'),
-            'maxsize' => 3072,
-            'path' => UPLOADS.DS.'gears',
-            'overwrite' => TRUE,
-            'validators' => array('Url'),
+        'field' => array(
+            'type' => 'fieldset',
+            'elements' => array(
+                'file' => array(
+                    'label' => t('С диска'),
+                    'type' => 'file',
+                    'allowed_types' => array('zip', 'tar.gz'),
+                    'maxsize' => 3072,
+                    'path' => UPLOADS . DS . 'gears',
+                    'overwrite' => TRUE,
+                ),
+                'or' => array(
+                    'type' => 'div',
+                    'value' => '<h2>OR</h2>',
+                ),
+                'url' => array(
+                    'type' => 'file_url',
+                    'label' => t('С Интернета'),
+                    'class' => 'input-xxxlarge',
+                    'allowed_types' => array('zip', 'tar.gz'),
+                    'maxsize' => 3072,
+                    'path' => UPLOADS . DS . 'gears',
+                    'overwrite' => TRUE,
+                    'validators' => array('Url'),
+                ),
+            ),
         ),
         'actions' => array(
+            'class' => 't_c',
             'elements' => array(
                 'submit' => array(
-                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-large',
                     'label' => t('Загрузить'),
                 )
             )
