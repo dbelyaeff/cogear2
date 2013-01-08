@@ -44,7 +44,7 @@ $(document).ready(function(){
 //            }
 //        });
     });
-    $('.delete input').on('click',function(){
+    $('.delete').on('click',function(){
        if(!confirm(t('Вы действительно хотите это сделать?'))){
            return false;
        }
