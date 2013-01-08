@@ -50,6 +50,7 @@ define('SITE', ROOT);
 define('CACHE', ROOT . DS . 'cache');
 define('GEARS', ROOT . DS . 'gears');
 define('THEMES', ROOT . DS . 'themes');
+define('TEMP', ROOT.DS.'temp');
 define('LANG', 'lang');
 define('UPLOADS', ROOT . DS . 'uploads');
 define('PHP_FILE_PREFIX', '<?php ' . "\n");
