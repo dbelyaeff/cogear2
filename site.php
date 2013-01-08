@@ -12,7 +12,7 @@ return array(
         'prefix' => NULL,
     ),
     'gears' =>
-    array('Access', 'Admin', 'Ajax', 'Assets', 'Bootstrap', 'Breadcrumb', 'Cache', 'DateTime', 'Db', 'Dev', 'Errors', 'Fancybox', 'File', 'Form', 'Gears', 'I18n', 'Icons', 'Image', 'Input', 'Jevix', 'Log', 'Mail', 'Menu', 'Meta', 'Modal', 'Notify', 'Pager', 'Post', 'Request', 'Response', 'Roles', 'Router', 'Secure', 'Session', 'Table', 'Template', 'Theme', 'User', 'Zip', 'jQuery'),
+    array('Access', 'Admin', 'Ajax', 'Assets', 'Bootstrap', 'Breadcrumb', 'Cache', 'DateTime', 'Db', 'Dev', 'Errors', 'Fancybox', 'File', 'Form', 'Gears', 'Geo','Lang', 'Icons', 'Image', 'Input', 'Jevix', 'Log', 'Mail', 'Menu', 'Meta', 'Modal', 'Notify', 'Pager', 'Post', 'Request', 'Response', 'Roles', 'Router', 'Secure', 'Session', 'Table', 'Template', 'Theme', 'User', 'Zip', 'jQuery'),
     'permitted_uri_chars' => 'а-яa-z0-9\s_\.\-',
     'key' => 'ba96917974845ff8a6f178c9551c17c7',
     'site' =>
