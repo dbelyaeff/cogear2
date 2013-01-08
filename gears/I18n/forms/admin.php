@@ -3,7 +3,8 @@ return array(
     'name' => 'i18n-admin',
     'elements' => array(
       'title' => array(
-          'label' => '<h1>'.t('Языковые настройки').'</h1>',
+          'label' => '<h1>'.t('Настройки').'</h1>',
+          'title' => FALSE,
       ),
       'lang' => array(
         'type' => 'select',
