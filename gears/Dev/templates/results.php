@@ -5,6 +5,6 @@
     $data = humanize_bench($bench['done']);
     ?>
     <p>
-    <?php echo t('<b>Система:</b> ').icon('time').' '.round($data['time'],3).' '.icon('asterisk').$data['memory']?>
+    <?php echo t('<b>Система:</b> ').icon('time').' '.round($data['time'],3).' '.icon('leaf').$data['memory']?>
 </div>
 
