@@ -22,7 +22,7 @@ return array(
                 ),
                 'or' => array(
                     'type' => 'div',
-                    'value' => '<h2>ИЛИ</h2>',
+                    'value' => '<h2>'.t('ИЛИ').'</h2>',
                 ),
                 'url' => array(
                     'type' => 'file_url',
