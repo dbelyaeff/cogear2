@@ -1,9 +1,9 @@
 <?php
 
 return array (
-  'name' => 'Шестерёнка',
-  'description' => 'Описание шестерёнки.',
-  'package' => 'Пакет шестерёнок',
+  'name' =>t('Шестерёнка'),
+  'description' => t('Описание шестерёнки.'),
+  'package' => t('Пакет шестерёнок'),
   'order' => 0,
   'required' => array(
       'gears' => array(

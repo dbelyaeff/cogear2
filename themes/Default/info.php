@@ -2,7 +2,7 @@
 
 return array(
     'theme' => 'Default',
-    'name' => 'Тема по умолчанию',
-    'description' => 'Идёт в комплекте с системой.',
+    'name' =>t('Тема по умолчанию'),
+    'description' => t('Идёт в комплекте с системой.'),
     'screenshot' => 'img/screenshot.jpg',
 );

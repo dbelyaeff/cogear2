@@ -39,7 +39,7 @@ class Search_Gear extends Gear {
     public function index($type = NULL) {
         $q = $this->input->get('q');
 
-        page_header($q ? t('Search results for «%s»', 'Seach', $q) : t('Search'));
+        page_header($q ? t('Search results for «%s»', $q) : t('Search'));
         $tpl = new Template('Search/templates/form');
         $tpl->action = l('/search/') . $type;
         $q && $tpl->value = $q;
@@ -48,22 +48,22 @@ class Search_Gear extends Gear {
                     'name' => 'search',
                     'elements' => array(
                         'posts' => array(
-                            'label' => t('Posts', 'Search'),
+                            'label' => t('Посты'),
                             'link' => l('/search' . ($q ? '?q=' . $q : '')),
                             'active' => check_route('search', Router::ENDS),
                         ),
                         'blogs' => array(
-                            'label' => t('Blogs', 'Search'),
+                            'label' => t('Блоги'),
                             'link' => l('/search/blogs' . ($q ? '?q=' . $q : '')),
                             'active' => check_route('search/blogs'),
                         ),
                         'users' => array(
-                            'label' => t('Users', 'Search'),
+                            'label' => t('Пользователи'),
                             'link' => l('/search/users' . ($q ? '?q=' . $q : '')),
                             'active' => check_route('search/users'),
                         ),
                         'comments' => array(
-                            'label' => t('Comments', 'Search'),
+                            'label' => t('Комментарии'),
                             'link' => l('/search/comments' . ($q ? '?q=' . $q : '')),
                             'active' => check_route('search/comments'),
                         ),

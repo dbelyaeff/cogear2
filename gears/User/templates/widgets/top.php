@@ -1,10 +1,10 @@
-<h2><?php echo t('Top users','User.widget')?></h2>
+<h2><?php echo t('Лучшие пользователи')?></h2>
 <table>
     <thead>
         <tr>
             <td></td>
             <td></td>
-            <td align="center"><b><?php echo t('Rating', 'User.widget') ?></b></td>
+            <td align="center"><b><?php echo t('Рейтинг') ?></b></td>
         </tr>
     </thead>
     <tbody>
@@ -12,13 +12,13 @@
             <tr>
                 <td width="10%"><?php echo $user->getLink('avatar'); ?></td>
                 <td  align="center" width="50%"><?php echo $user->getLink('profile'); ?></td>
-                <td align="center"><?php echo $user->rating ?></td>
+                <td align="center"><?php echo $user->Рейтинг ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
     <tfoot>
         <tr>
-            <td align="right" colspan="3"><a href="<?php echo l('/users') ?>"><?php echo t('all users &rarr;', 'User.widget') ?></a></td>
+            <td align="right" colspan="3"><a href="<?php echo l('/users') ?>"><?php echo t('все пользователи &rarr;') ?></a></td>
         </tr>
     </tfoot>
 </table>

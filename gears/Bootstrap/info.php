@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Bootstrap',
-  'name' => 'Twitter Bootstrap',
-  'description' => 'Подключение популярного фреймворка.',
+<?php
+
+return array(
+    'name' => 'Twitter Bootstrap',
+    'description' => t('Подключение популярного фреймворка.'),
 );

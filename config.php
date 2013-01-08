@@ -25,7 +25,7 @@ return array (
       'filename' => 'scripts.js',
       'driver' => 'Assets_Driver_JS',
       'render' => 'head',
-      'refresh' => 600,
+      'refresh' => 0,
       'name' => 'scripts',
     ),
     'css' =>
@@ -34,7 +34,7 @@ return array (
       'filename' => 'styles.css',
       'driver' => 'Assets_Driver_CSS',
       'render' => 'head',
-      'refresh' => 600,
+      'refresh' => 0,
       'name' => 'styles',
     ),
   ),
@@ -42,10 +42,18 @@ return array (
   array (
     'Install',
   ),
-  'i18n' =>
+  'lang' =>
   array (
     'lang' => 'ru',
-    'locale' => 'ru_RU.UTF-8',
+    'locale' => 'ru_RU',
+    'path' => SITE.'/lang',
+    'driver' => 'Lang_Driver_File',
+    'name' => 'index',
+    'available' =>
+    array (
+      0 => 'ru',
+      1 => 'en',
+    ),
   ),
   'theme' =>
   array (
@@ -138,6 +146,10 @@ return array (
   ),
   'wysiwyg' =>
   array (
-    'editor' => 'redactor',
+    'editor' => 'markitup',
+  ),
+  'Pages' =>
+  array (
+    'main_id' => '1',
   ),
 );

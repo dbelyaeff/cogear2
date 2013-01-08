@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Table',
-  'name' => 'Таблицы',
-  'description' => 'Работа с таблицами.',
+<?php
+
+return array(
+    'name' =>t('Таблицы'),
+    'description' => t('Работа с таблицами.'),
 );

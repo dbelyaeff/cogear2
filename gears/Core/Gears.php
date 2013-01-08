@@ -123,7 +123,9 @@ class Gears extends Options {
     public static function loadConfig($gear) {
         strpos($gear, 'info' . EXT) OR $gear = GEARS . DS . $gear . DS . 'info' . EXT;
         if (file_exists($gear)) {
-            return new Config($gear);
+            $config = new Config($gear);
+            $config->gear = basename(dirname($gear));
+            return $config;
         }
         return NULL;
     }
@@ -240,18 +242,6 @@ class Gears extends Options {
             foreach ($remove as $gear) {
                 $this->offsetUnset($gear);
             }
-        }
-    }
-
-    /**
-     * Sort gears by parameter
-     *
-     * @param	string $param
-     */
-    private function sortGears($param = 'order') {
-        $method = 'sortBy' . ucfirst($param);
-        if (method_exists('Core_ArrayObject', $method)) {
-            $this->uasort('Core_ArrayObject::' . $method);
         }
     }
 

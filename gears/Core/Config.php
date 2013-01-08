@@ -16,6 +16,7 @@ class Config extends Core_ArrayObject {
 
     protected $file;
     protected $write_flag;
+
     const AS_ARRAY = 1;
     const AS_OBJECT = 21;
 
@@ -45,9 +46,13 @@ class Config extends Core_ArrayObject {
         }
         if ($section) {
             $this->$section OR $this->$section = new Core_ArrayObject();
-            $this->$section->extend(self::read($path));
+            if ($config = self::read($path)) {
+                $this->$section->extend($config);
+            }
         } else {
-            $this->extend(self::read($path));
+            if ($config = self::read($path)) {
+                $this->extend($config);
+            }
         }
     }
 
@@ -116,8 +121,8 @@ class Config extends Core_ArrayObject {
      *
      * @param string $file
      */
-    public static function read($file, $mode=NULL) {
-        $mode OR $mode = self::AS_OBJECT;
+    public static function read($file, $mode = NULL) {
+        $mode OR $mode = self::AS_ARRAY;
         if (!file_exists($file)) {
             return NULL;
         } elseif ($mode === self::AS_OBJECT) {
@@ -163,7 +168,8 @@ class Config extends Core_ArrayObject {
         $constants = get_defined_constants(true);
         $paths = array();
         foreach ($constants['user'] as $key => $value) {
-            if(PHP_FILE_PREFIX === $value) continue;
+            if (PHP_FILE_PREFIX === $value)
+                continue;
             if (is_string($value) && strlen($value) > 5 && is_dir($value)) {
                 $paths["'" . $value] = $key . '.\'';
             }

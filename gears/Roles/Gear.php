@@ -21,6 +21,12 @@ class Roles_Gear extends Gear {
     public function hookSetDefaultRole($User){
         $User->update(array('role'=>config('roles.default',100)));
     }
+    /**
+     * Возврващает массив ролей для поля select
+     */
+    public function getSelectRoleValues(){
+
+    }
 }
 
 /**

@@ -133,6 +133,11 @@ class Theme_Gear extends Gear {
     public function admin_action() {
         $this->hookAdminMenu();
         $themes = $this->getThemes();
+        foreach($themes as $key=>$theme){
+            if($theme == $this->object()){
+                unset($themes[$key]);
+            }
+        }
         template('Theme/templates/list', array('themes' => $themes))->show();
     }
 
@@ -155,7 +160,7 @@ class Theme_Gear extends Gear {
      * @param   $themeName  Название темы
      * @return  array|Theme
      */
-    private function getThemes($themeName = '') {
+    public function getThemes($themeName = '') {
         $files = glob(THEMES . DS . '*' . DS . 'info' . EXT);
         $themes = array();
         if ($files) {
@@ -166,7 +171,7 @@ class Theme_Gear extends Gear {
                 if ($theme->theme == $themeName) {
                     return $theme;
                 }
-                $theme != $this->object() && array_push($themes, $theme);
+                array_push($themes, $theme);
             }
         }
         return $themes;

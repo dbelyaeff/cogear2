@@ -1,8 +1,8 @@
 <?php; ?>
-<h2><?php echo t('Online') ?></h2>
+<h2><?php echo t('Онлайн') ?></h2>
 <?php if ($data->counters->users): ?>
-<div class="online-widget-users">
-    <b><?php echo t('Users'); ?></b><sup><?php echo $data->counters->users;?></sup>:
+<div class="Онлайн-widget-users">
+    <b><?php echo t('Пользователи'); ?></b><sup><?php echo $data->counters->users;?></sup>:
     <?php
         $i = 1;
         foreach ($data->users as $user): ?>
@@ -15,14 +15,14 @@
     <?php endforeach; ?>
 </div>
 <?php endif; ?>
-<?php if ($data->counters->bots): ?>
-<div class="online-widget-bots">
-    <b><?php echo t('Bots'); ?></b><sup><?php echo $data->counters->bots;?></sup>:
+<?php if ($data->counters->Боты): ?>
+<div class="Онлайн-widget-Боты">
+    <b><?php echo t('Боты'); ?></b><sup><?php echo $data->counters->Боты;?></sup>:
     <?php
         $i = 1;
-        foreach ($data->bots as $name=>$info): ?>
+        foreach ($data->Боты as $name=>$info): ?>
         <?php echo ucfirst($name);
-            if($i < $data->counters->bots){
+            if($i < $data->counters->Боты){
                 echo ' ,';
             }
             $i++;
@@ -30,8 +30,8 @@
     <?php endforeach; ?>
 </div>
 <?php endif; ?>
-<?php if ($data->counters->guests): ?>
-<div class="online-widget-guests">
-    <b><?php echo t('Guests'); ?></b><sup><?php echo $data->counters->guests;?></sup>
+<?php if ($data->counters->Гости): ?>
+<div class="Онлайн-widget-Гости">
+    <b><?php echo t('Гости'); ?></b><sup><?php echo $data->counters->Гости;?></sup>
 </div>
 <?php endif; ?>

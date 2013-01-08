@@ -1,7 +1,7 @@
 <?php
-return array (
-  'gear' => 'Theme',
-  'name' => 'Внешний вид',
-  'description' => 'Управления внешним видом сайта.',
-  'order' => '-100',
+
+return array(
+    'name' =>t('Внешний вид'),
+    'description' => t('Управления внешним видом сайта.'),
+    'order' => '-100',
 );

@@ -20,5 +20,6 @@ class Menu_Item extends Options{
         'order' => 0,
         'active' => NULL,
         'class' => NULL,
+        'title' => TRUE,
     );
 }

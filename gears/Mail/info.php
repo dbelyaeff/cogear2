@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Mail',
-  'name' => 'Почта',
-  'description' => 'Отправка писем.',
+<?php
+
+return array(
+    'name' =>t('Почта'),
+    'description' => t('Отправка писем.'),
 );

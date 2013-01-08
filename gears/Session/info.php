@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Session',
-  'name' => 'Сессии',
-  'description' => 'Работа с механизмом сессий.',
-  'order' => '-1000',
+<?php
+
+return array(
+    'name' =>t('Сессии'),
+    'description' => t('Работа с механизмом сессий.'),
+    'order' => '-1000',
 );

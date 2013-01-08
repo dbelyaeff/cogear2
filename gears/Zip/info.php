@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Zip',
-  'name' => 'Архиватор ZIP',
-  'description' => 'Распаковщик архивов.',
+<?php
+
+return array(
+    'name' => 'Архиватор ZIP',
+    'description' => t('Распаковщик архивов.'),
 );

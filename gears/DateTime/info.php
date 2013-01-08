@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'DateTime',
-  'name' => 'Дата и время',
-  'description' => 'Управление датой и временем.',
+<?php
+
+return array(
+    'name' =>t('Дата и время'),
+    'description' => t('Управление датой и временем.'),
 );

@@ -30,10 +30,9 @@ class Zip_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        if(!class_exists('ZipArchive')){
+        if (!class_exists('ZipArchive')) {
             error(t('Для того, чтобы система работа корректно, вам необходимо установить расширение ZIP для PHP или же использовать версию PHP выше 5.3.'));
-        }
-        else {
+        } else {
             $this->object(new ZipArchive());
         }
     }

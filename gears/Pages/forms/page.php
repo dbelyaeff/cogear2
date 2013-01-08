@@ -10,11 +10,17 @@ return array(
             'values' => array(),
         ),
         'link' => array(
-            'validators' => array('Required','Pages_Validate_Link'),
+            'validators' => array('Required', 'Pages_Validate_Link'),
             'filters' => array(),
-           // 'description' => t(''),
+            // 'description' => t(''),
             'value' => isset($_GET['uri']) ? $_GET['uri'] : '',
         ),
-        'save' => array(),
+        'body' => array(),
+        'actions' => array(
+            'elements' => array(
+                'save' => array(),
+                'delete' => array(),
+            )
+        ),
     )
 );

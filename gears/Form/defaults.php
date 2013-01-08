@@ -12,6 +12,7 @@ return array(
         'label' => t('Ссылка'),
         'validators' => array(array('Length', 3)),
         'filters' => array('Uri'),
+        'placeholder' => array('Введите ссылку…'),
         'description' => t('Параметр будет использован для формирования ссылки. Если оставить поле пустым, значение будет сгенерировано автоматически.'
     )),
     'body' => array(

@@ -23,8 +23,8 @@ class Access_Gear extends Gear {
      * @param object $Router
      * @param Callback $callback
      */
-    public function hookRouterExec($Router, $callback) {
-        if (!access($callback[0]->gear . '.*') && !access($callback[0]->gear . '.' . str_replace('_action', '', $callback[1]))) {
+    public function hookRouterExec($Router, Callback $callback) {
+        if (!access($callback->getCallback(0)->gear . '.*') && !access($callback->getCallback(0)->gear . '.' . str_replace('_action', '', $callback->getCallback(1)))) {
             event('403');
             return FALSE;
         }

@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Errors',
-  'name' => 'Ошибки',
-  'description' => 'Обработчик ошибок.',
-  'order' => '-1000',
+<?php
+
+return array(
+    'name' =>t('Ошибки'),
+    'description' => t('Обработчик ошибок.'),
+    'order' => '-1000',
 );

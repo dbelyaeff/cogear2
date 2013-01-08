@@ -1,7 +1,7 @@
 <?php
-return array (
-  'gear' => 'Pages',
-  'name' => 'Страницы',
-  'description' => 'Управление страницами.',
-  'order' => -1500,
+
+return array(
+    'name' =>t('Страницы'),
+    'description' => t('Управление страницами.'),
+    'order' => -1500,
 );

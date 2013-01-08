@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Fancybox',
-  'name' => 'Fancybox',
-  'description' => 'Многофункциональное всплывающее окно.',
+<?php
+
+return array(
+    'name' => 'Fancybox',
+    'description' => t('Многофункциональное всплывающее окно.'),
 );

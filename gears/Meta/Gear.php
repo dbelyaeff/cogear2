@@ -85,7 +85,7 @@ class Meta_Gear extends Gear implements SplObserver {
         foreach ($menu as $key => $item) {
             if($menu->options->titleActiveOnly && !$item->active) continue;
             if (FALSE !== $item->title) {
-                title(is_string($item->title) ? $item->title : $item->label, is_int($menu->title) ? $menu->title : NULL);
+                title($item->title === TRUE ? $item->label : $item->title );
             }
         }
     }

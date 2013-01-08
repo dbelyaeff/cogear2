@@ -13,6 +13,12 @@ class Gears_Gear extends Gear {
     protected $hooks = array(
         'menu' => 'hookMenu',
     );
+    protected $routes = array(
+        'admin/gears:maybe' => 'admin_action',
+    );
+    protected $access = array(
+        '*' => array(1),
+    );
 
     /**
      * Menu hook

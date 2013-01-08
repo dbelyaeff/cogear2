@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'File',
-  'name' => 'Файл',
-  'description' => 'Работа с файлами.',
+<?php
+
+return array(
+    'name' =>t('Файл'),
+    'description' => t('Работа с файлами.'),
 );

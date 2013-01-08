@@ -19,16 +19,17 @@ class Pages_Gear extends Gear {
         'admin/pages' => 'admin_action',
         'admin/pages/create' => 'admin_createdit',
         'admin/pages/(\d+)' => 'admin_createdit',
+        'admin/pages/settings/?' => 'admin_settings_action',
         'admin/pages/ajax/(\w+)' => 'admin_ajax',
         'admin/pages/ajax/(\w+)/(\w+)' => 'admin_ajax',
-        'admin/pages/test/?' => 'admin_test',
     );
     protected $access = array(
         'admin' => array(1),
         'admin_createdit' => array(1),
         'admin_ajax' => array(1),
-        'admin_test' => array(1),
+        'admin_settings' => array(1),
         'show' => TRUE,
+        'index' => TRUE,
     );
 
     /**
@@ -89,7 +90,12 @@ class Pages_Gear extends Gear {
                         array(
                             'label' => icon('list') . ' ' . t('Список'),
                             'link' => l('/admin/pages'),
-                            'active' => l('/admin/pages'),
+                            'active' => check_route('admin/pages',Router::ENDS),
+                        ),
+                        array(
+                            'label' => icon('asterisk') . ' ' . t('Настройки'),
+                            'link' => l('/admin/pages/settings'),
+                            'active' => check_route('admin/pages/settings'),
                         ),
                         array(
                             'label' => icon('pencil') . ' ' . t('Создать'),
@@ -129,6 +135,18 @@ class Pages_Gear extends Gear {
                     'saveUri' => l('/admin/pages/ajax/saveDBtree'),
                 ));
     }
+    /**
+     * Главная страница
+     */
+    public function index_action(){
+        $main_id = config('Pages.main_id',1);
+        if($page = page($main_id)){
+            $page->show();
+        }
+        else {
+            event('404');
+        }
+    }
 
     /**
      * Создание страницы
@@ -146,6 +164,12 @@ class Pages_Gear extends Gear {
         }
         $form->pid->setValues($page->getSelectValues());
         if ($result = $form->result()) {
+            if($result->delete){
+                if($page->delete()){
+                    flash_success(t('Страница удалена вместе со всеми подстраницами!'));
+                    redirect(l('/admin/pages'));
+                }
+            }
             // Заполняем объект страницы
             $page->object()->extend($result);
             $refresh = TRUE;
@@ -181,7 +205,35 @@ class Pages_Gear extends Gear {
         }
         $form->show();
     }
+    /**
+     * Редактирование настроек
+     */
+    public function admin_settings_action(){
+        $this->hookPagesAdminMenu();
+        $form = new Form(array(
+            'name' => 'admin.pages.settings',
+            'elements' => array(
+                'main_page' => array(
+                    'label' => t('Главная страница'),
+                    'type' => 'select',
+                    'values' => page()->getSelectValues(),
+                    'value' => config('Pages.main_id',1),
+                ),
+                'actions' => array(
+                    'elements' => array(
+                        'save' => array(),
+                    )
+                )
 
+            )
+        ));
+        if($result = $form->result()){
+            if($result->main_page){
+                $this->set('Pages.main_id',$result->main_page);
+            }
+        }
+        $form->show();
+    }
     /**
      * Ajax интерцептор
      *
@@ -210,76 +262,6 @@ class Pages_Gear extends Gear {
                 break;
         }
         $ajax->json();
-    }
-
-    public function admin_test() {
-        $items = array(
-            0 =>
-            array(
-                'id' => '1',
-                'children' =>
-                array(
-                    0 =>
-                    array(
-                        'id' => '6',
-                        'children' =>
-                        array(
-                            0 =>
-                            array(
-                                'id' => '7',
-                            ),
-                            1 =>
-                            array(
-                                'id' => '8',
-                            ),
-                            2 =>
-                            array(
-                                'id' => '10',
-                            ),
-                        ),
-                    ),
-                    1 =>
-                    array(
-                        'id' => '2',
-                        'children' =>
-                        array(
-                            0 =>
-                            array(
-                                'id' => '3',
-                            ),
-                            1 =>
-                            array(
-                                'id' => '4',
-                            ),
-                            2 =>
-                            array(
-                                'id' => '5',
-                            ),
-                        ),
-                    ),
-                    2 =>
-                    array(
-                        'id' => '11',
-                        'children' =>
-                        array(
-                            0 =>
-                            array(
-                                'id' => '12',
-                            ),
-                            1 =>
-                            array(
-                                'id' => '13',
-                            ),
-                            2 =>
-                            array(
-                                'id' => '14',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
-        $this->rebuildPagesTree($items);
     }
 
     /**

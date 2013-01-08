@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Jevix',
-  'name' => 'Jevix',
-  'description' => 'Фильтрация HTML-кода.',
-  'order' => '0',
+<?php
+
+return array(
+    'name' => 'Jevix',
+    'description' => t('Фильтрация HTML-кода.'),
+    'order' => '0',
 );

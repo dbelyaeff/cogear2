@@ -31,6 +31,9 @@ class Post_Gear extends Gear {
     );
     protected $routes = array(
         'post/(\d+)' => 'index_action',
+        'post/create' => 'create_action',
+        'post/edit/(\d+)' => 'edit_action',
+        'post/delete/(\d+)' => 'delete_action',
     );
 
     /**
@@ -122,8 +125,8 @@ class Post_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        route('user/([^/]+)/posts:maybe', array($this, 'list_action'), TRUE);
-        route('user/([^/]+)/drafts:maybe', array($this, 'drafts_action'), TRUE);
+        bind_route('user/([^/]+)/posts:maybe', array($this, 'list_action'), TRUE);
+        bind_route('user/([^/]+)/drafts:maybe', array($this, 'drafts_action'), TRUE);
     }
 
     /**
@@ -140,6 +143,7 @@ class Post_Gear extends Gear {
                             'link' => l('/post/create/'),
                             'place' => 'left',
                             'access' => access('Post.create'),
+                            'title' => FALSE,
                         ));
                 break;
             case 'user.profile.tabs':
@@ -165,9 +169,8 @@ class Post_Gear extends Gear {
      * Default dispatcher
      *
      * @param string $action
-     * @param string $subaction
      */
-    public function index_action($id = '', $subaction = NULL) {
+    public function index_action($id = NULL) {
         if (!$id) {
             $posts = new Post_List(array(
                         'name' => 'front.posts',
@@ -175,7 +178,6 @@ class Post_Gear extends Gear {
                         'per_page' => config('User.posts.per_page', 5),
                         'where' => array('published' => 1),
                     ));
-            return;
         } else {
             $post = new Post();
             $post->id = $id;
@@ -394,7 +396,7 @@ class Post_Gear extends Gear {
 }
 
 /**
- * Shortcut for post
+ * Ярлык для поста
  *
  * @param int $id
  * @param string    $param

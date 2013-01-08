@@ -30,7 +30,7 @@ class Markitup_Gear extends Gear {
      * @return type
      */
     public function enable(){
-        config('wysiwyg.editor','markitup');
+        $this->set('wysiwyg.editor','markitup');
         return parent::enable();
     }
 

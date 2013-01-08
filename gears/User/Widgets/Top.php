@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Top users widgets
+ * Лучшие пользователи widgets
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Беляев Дмитрий
@@ -27,7 +27,7 @@ class User_Widgets_Top extends Widgets_Widget {
      */
     public function render() {
         $users = new User();
-        $users->order('rating', 'desc');
+        $users->order('Рейтинг', 'desc');
         $users->limit($this->options->limit);
         if($result = $users->findAll()){
             $tpl = new Template('User/templates/widgets/top');

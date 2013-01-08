@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Cron',
-  'name' => 'Cron',
-  'description' => 'Выполнение заданий по расписанию.',
+<?php
+
+return array(
+    'name' => 'Cron',
+    'description' => t('Выполнение заданий по расписанию.'),
 );

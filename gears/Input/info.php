@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Input',
-  'name' => 'Входные данные',
-  'description' => 'Обработка пользовательского ввода.',
-  'order' => '-998',
+<?php
+
+return array(
+    'name' =>t('Входные данные'),
+    'description' => t('Обработка пользовательского ввода.'),
+    'order' => '-998',
 );

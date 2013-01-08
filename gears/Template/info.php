@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Template',
-  'name' => 'Шаблонизатор',
-  'description' => 'Работа с шаблонами.',
+<?php
+
+return array(
+    'name' =>t('Шаблонизатор'),
+    'description' => t('Работа с шаблонами.'),
 );

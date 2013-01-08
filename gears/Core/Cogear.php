@@ -30,11 +30,6 @@ final class Cogear implements Interface_Singleton {
     public $gears;
 
     /**
-     * Флаг для остановки события
-     */
-    public $stop_event = FALSE;
-
-    /**
      * Settings and config
      */
     public $site;
@@ -197,7 +192,7 @@ function config($name = NULL, $default_value = NULL) {
     return $cogear->get($name, $default_value);
 }
 /**
- * Хранение одноразовых пеерменных
+ * Хранение одноразовых переменных
  *
  * @staticvar array $storage
  * @param string $key
@@ -213,4 +208,23 @@ function flash($key,$value = NULL){
         return $storage[$key];
     }
     return NULL;
+}
+
+/**
+ * Перевод фразы
+ *
+ * @param   string  $text
+ * @param   string  $domain
+ * Optional params to parse via sprintf
+ * @param   mixed   $param_1
+ * …
+ * @param   mixed   $param_N
+ * @return  string
+ */
+function t($text) {
+    if(!cogear()->lang){
+        return $text;
+    }
+    $args = func_get_args();
+    return call_user_func_array(array(cogear()->lang,'translate'), $args);
 }

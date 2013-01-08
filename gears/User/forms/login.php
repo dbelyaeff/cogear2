@@ -30,7 +30,7 @@ return array(
                 'lostpassword' => array(
                     'type' => 'link',
                     'label' => t('Забыли пароль?'),
-                    'link' => l('/user/lostpassword/'),
+                    'link' => l('/lostpassword'),
                     'class' => 'btn btn-mini',
                 ),
             )

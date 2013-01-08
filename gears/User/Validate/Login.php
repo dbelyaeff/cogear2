@@ -27,7 +27,7 @@ class User_Validate_Login extends Form_Validate_Abstract{
         $user = new User();
         $user->login = $value;
         $user->find();
-        if ($user->id) $this->element->error(t('Login name already in use!'));
+        if ($user->id) $this->element->error(t('Данное имя пользователя уже используется!'));
         return $user->id ? FALSE : TRUE;
     }
 }

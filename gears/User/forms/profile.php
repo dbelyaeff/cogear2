@@ -4,11 +4,11 @@ return array(
     'name' => 'user-profile',
     'elements' => array(
         'personal' => array(
-            'label' => t('Personal', 'User'),
+            'label' => t('Настройки'),
             'type' => 'fieldset',
             'elements' => array(
                 'avatar' => array(
-                    'label' => t('Avatar', 'User'),
+                    'label' => t('Аватар', 'User'),
                     'type' => 'image',
                     'preset' => 'avatar.profile',
                     'path' => UPLOADS . DS . 'avatars' . DS . cogear()->user->id,
@@ -16,31 +16,31 @@ return array(
                     'rename' => cogear()->user->id,
                 ),
                 'name' => array(
-                    'label' => t('Real name', 'User'),
+                    'label' => t('Настоящее имя'),
                     'type' => 'text',
                     'validators' => array(array('Length', 3,30), 'Name'),
                 ),
                 'login' => array(
-                    'label' => t('Login', 'User'),
+                    'label' => t('Имя пользователя'),
                     'type' => 'text',
                     'access' => 'User.edit.login',
                     'validators' => array(array('Length', 3), 'AlphaNum', 'Required', array('User_Validate_Login', User_Validate_Login::EXCLUDE_SELF)),
                 ),
                 'email' => array(
-                    'label' => t('E-Mail', 'User'),
+                    'label' => t('Электронная почта'),
                     'type' => 'text',
                     'validators' => array('Email', 'Required', array('User_Validate_Email', User_Validate_Email::EXCLUDE_SELF)),
                     'access' => 'User.edit.email',
                 ),
                 'password' => array(
-                    'label' => t('Password', 'User'),
+                    'label' => t('Пароль'),
                     'type' => 'password',
                     'validators' => array(array('Length', 3), 'AlphaNum')
                 ),
             ),
         ),
         'submit' => array(
-            'label' => t('Update'),
+            'label' => t('Сохранить'),
         ),
         'delete' => array(
         )

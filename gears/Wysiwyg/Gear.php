@@ -19,7 +19,7 @@ class Wysiwyg_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        Form::$types['editor'] = self::$editors[config('wysiwyg.editor', 'textarea')];
+        Form::$types['editor'] = isset(self::$editors[config('wysiwyg.editor', 'textarea')]) ? self::$editors[config('wysiwyg.editor', 'textarea')] : self::$editors['textarea'];
     }
 
     /**

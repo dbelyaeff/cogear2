@@ -23,34 +23,36 @@ class Admin_Gear extends Gear {
         'gear.request' => 'hookGearRequest',
     );
     public $bc;
+
     /**
      * Хук запроса к шестерёнке
      *
      * @param Object $Gear
      */
-    public function hookGearRequest($Gear){
+    public function hookGearRequest($Gear) {
         if ($Gear !== $this && 'admin' == $this->router->getSegments(0)) {
             $this->bc && $this->bc->register(array(
-                'link' => $this->router->getUri(),
-                'label' => $Gear->name,
-            ));
+                        'link' => $this->router->getUri(),
+                        'label' => $Gear->name,
+                    ));
         }
     }
 
     /**
      * Выводим меню на странице настроек
      */
-    public function hookSiteSettingsMenu(){
+    public function hookSiteSettingsMenu() {
         new Menu_Tabs(array(
-            'name' => 'admin.site',
-            'elements' => array(
-                array(
-                    'label' => t('Общие'),
-                    'link' => l('/admin/site'),
-                )
-            )
-        ));
+                    'name' => 'admin.site',
+                    'elements' => array(
+                        array(
+                            'label' => t('Общие'),
+                            'link' => l('/admin/site'),
+                        )
+                    )
+                ));
     }
+
     /**
      * Initializer
      */
@@ -163,15 +165,44 @@ class Admin_Gear extends Gear {
      */
     public function site_action() {
         $this->hookSiteSettingsMenu();
-        $form = new Form('Admin/forms/site');
+        $front_values = new Core_ArrayObject(array(
+            'Post' => t('Пост'),
+            'Pages' => t('Страницы'),
+        ));
+        $config = array(
+            'name' => 'admin-site',
+            'elements' => array(
+                'name' => array(
+                    'type' => 'text',
+                    'label' => t('Название сайта'),
+                    'validators' => array('Required'),
+                ),
+                'front_page' => array(
+                    'type' => 'select',
+                    'label' => t('Шестерёнка главной страницы:'),
+                    'values' => $front_values,
+                    'value' => config('router.defaults.gear')
+                ),
+                'dev' => array(
+                    'type' => 'checkbox',
+                    'label' => t('Режим разработки'),
+                    'value' => config('development'),
+                ),
+                'save' => array(
+                )
+            )
+        );
+        $form = new Form($config);
         $form->object(array(
             'name' => config('site.name'),
             'dev' => config('development'),
         ));
         if ($result = $form->result()) {
-            cogear()->set('site.name', $result->name);
-            cogear()->set('development', $result->dev);
-            success(t('Настройки успешно сохранены!'));
+            $this->set('site.name', $result->name);
+            $this->set('development', $result->dev);
+            $this->set('router.defaults.gear',$result->front_page);
+            flash_success(t('Настройки успешно сохранены!'));
+            back();
         }
         $form->show();
     }

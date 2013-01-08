@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Search',
-  'name' => 'Поиск',
-  'description' => 'Поиск по сайту.',
+<?php
+
+return array(
+    'name' =>t('Поиск'),
+    'description' => t('Поиск по сайту.'),
 );

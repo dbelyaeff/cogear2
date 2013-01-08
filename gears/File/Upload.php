@@ -1,14 +1,12 @@
 <?php
 
 /**
- * File upload class
+ * Класс загрузки файла
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * 	File
 
  */
 class File_Upload extends Adapter {
@@ -99,21 +97,21 @@ class File_Upload extends Adapter {
         $file['errors'] = array();
         switch ($file['error']) {
             case UPLOAD_ERR_CANT_WRITE:
-                $file['errors'][] = t('Can\'t upload file. Check write permission for temporary folder.');
+                $file['errors'][] = t('Не удаётся загрузить файл. Проверьте права на временую папку загрузки.');
                 break;
             case UPLOAD_ERR_INI_SIZE:
-                $file['errors'][] = t('File size is bigger that it\'s allowed in <b>php.ini</b> (%s).', NULL, ini_get('upload_max_filesize'));
+                $file['errors'][] = t('Файл больше максимально дозволенного размера, указанного в <b>php.ini</b> (%s).', ini_get('upload_max_filesize'));
                 break;
             case UPLOAD_ERR_NO_FILE:
                 if ($this->options->validators->findByValue('Required') OR $this->options->required) {
-                    $file['errors'][] = t('You didn\'t choose file to upload.');
+                    $file['errors'][] = t('Вы не выбрали файл для загрузки.');
                 }
                 break;
             case UPLOAD_ERR_PARTIAL:
-                $file['errors'][] = t('Please, upload file once again.');
+                $file['errors'][] = t('Пожалуйста, загрузите файл снова.');
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                $file['errors'][] = t('Temporary directory is not corrected.');
+                $file['errors'][] = t('Неверно указана временная директория загрузки.');
                 break;
         }
         if ($file['error'] == UPLOAD_ERR_OK) {
@@ -125,20 +123,20 @@ class File_Upload extends Adapter {
                 foreach ($types as $type) {
                     $type == $ext && $result = TRUE;
                 }
-                !$result && $file['errors'][] = t('Only following types of files are allowed: <b>%s</b>.', NULL, $types->toString('</b>, <b>'));
+                !$result && $file['errors'][] = t('Разрешены только следующие типы файлов: <b>%s</b>.', $types->toString('</b>, <b>'));
             }
             $result = File_Mime::check($file['name'], $file['type']);
             if ($result !== TRUE) {
-                $file['errors'][] = t('File you are trying to upload has unusual MIME-type. It is like <b>%s</b>, but it was expected to be <b>%s</b>', NULL, $file['type'], $result);
+                $file['errors'][] = t('Загружаемый вами файл имеет некорректный MIME-типа. Он должен иметь тип <b>%s</b>, но имеет иной тип — <b>%s</b>', $file['type'], $result);
             }
             $this->options->maxsize && $this->checkMaxSize($file['size'], $this->options->maxsize);
             if (!$this->options->path) {
-                $file['errors'][] = t('Upload path is not defined.');
+                $file['errors'][] = t('Путь для загрузки файла не указан.');
             }
             strpos($this->options->path, ROOT) !== FALSE OR $this->options->path = UPLOADS . DS . $this->options->path;
             File::mkdir($this->options->path);
             if (!is_dir($this->options->path)) {
-                $file['errors'][] = t('Upload path <b>%s</b> doesn\'t exist.', NULL, $this->options->path);
+                $file['errors'][] = t('Путь загрузки файла <b>%s</b> не существует.', NULL, $this->options->path);
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
@@ -179,7 +177,7 @@ class File_Upload extends Adapter {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $file['errors'] = t('Max allowed size of file is <b>%s</b>, while you\'re trying to upload <b>%s</b>.', 'File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
+            $file['errors'] = t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', 'File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
             return FALSE;
         }
         return TRUE;

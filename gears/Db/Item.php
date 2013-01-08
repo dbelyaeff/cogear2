@@ -2,7 +2,7 @@
 
 class Db_Item extends Db_ORM {
 
-    protected $template = 'Db.item';
+    protected $template = 'Db\templates\item';
 
     /**
      * Find all

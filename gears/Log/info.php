@@ -1,9 +1,8 @@
 <?php
 
 return array(
-    'gear' => 'Log',
-    'name' => 'Логгер',
-    'description' => 'Пишет логи о происходящем.',
-    'package' => 'Ядро',
+    'name' =>t('Логгер'),
+    'description' => t('Пишет логи о происходящем.'),
+    'package' => t('Ядро'),
     'order' => 0,
 );

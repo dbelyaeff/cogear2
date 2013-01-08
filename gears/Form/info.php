@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Form',
-  'name' => 'Формы',
-  'description' => 'Работа с формами.',
+<?php
+
+return array(
+    'name' =>t('Формы'),
+    'description' => t('Работа с формами.'),
 );

@@ -27,6 +27,14 @@ Ajax_Loader.prototype = {
         $(selector).before(this.el);
         return this;
     },
+    append: function(selector){
+        $(selector).append(this.el);
+        return this;
+    },
+    prepend: function(selector){
+        $(selector).prepend(this.el);
+        return this;
+    },
     show: function(){
         this.el.show();
         return this;

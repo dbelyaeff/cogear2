@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Assets',
-  'name' => 'Управления скриптами и стилями',
-  'description' => 'Вывод JavaScript и CSS на страницу.',
-  'order' => '-999',
+<?php
+
+return array(
+    'name' =>t('Управления скриптами и стилями'),
+    'description' => t('Вывод JavaScript и CSS на страницу.'),
+    'order' => '-999',
 );

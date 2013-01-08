@@ -151,7 +151,7 @@ class Form_Element_Abstract extends Errors_Handler {
      * @return array
      */
     public function prepareOptions() {
-        $this->options->required = $this->validators && strpos($this->validators->__toString(),'Required') != -1;
+        $this->options->required = $this->validators && strpos($this->validators->__toString(),'Required') !== FALSE;
         if ($this->getErrors()) {
             $this->options->class .= ' error';
         }

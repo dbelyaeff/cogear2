@@ -11,7 +11,7 @@
 /*jslint onevar: true, evil: true, nomen: true, eqeqeq: true, bitwise: true, regexp: true, newcap: true, immed: true */
 /*global window: true, document: true, clearInterval: true, setInterval: true, jQuery: true */
 
-(function($) {
+jQuery(function($) {
 
   var reEscape = new RegExp('(\\' + ['/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\'].join('|\\') + ')', 'g');
 
@@ -387,4 +387,4 @@
 
   };
 
-}(jQuery));
+});

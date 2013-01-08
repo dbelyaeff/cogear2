@@ -74,7 +74,7 @@ class Url {
      */
     public static function name($text, $separator = '-', $limit = 40) {
         $cogear = getInstance();
-        $text = $cogear->i18n->transliterate($text);
+        $text = $cogear->lang->transliterate($text);
         $text = preg_replace("/[^a-z0-9\_\-.]+/mi", "", $text);
         $text = preg_replace('#[\-]+#i', $separator, $text);
         $text = strtolower($text);

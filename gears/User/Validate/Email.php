@@ -31,7 +31,7 @@ class User_Validate_Email extends Form_Validate_Abstract {
             if ($user->id == cogear()->user->id) {
                 return TRUE;
             }
-            $this->element->error(t('Email is already taken!'));
+            $this->element->error(t('Данный адрес почты уже занят!'));
             return FALSE;
         }
         return TRUE;

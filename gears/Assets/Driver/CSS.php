@@ -29,8 +29,8 @@ class Assets_Driver_CSS extends Assets_Driver_Abstract {
     public function parse($file) {
         $content = parent::parse($file);
         $style_dir = File::pathToUri(dirname($file));
-        $content = preg_replace('#(url\([\'|\"]?)(\.?/)?#', '$1$2' . $style_dir . '/', $content);
         $content = preg_replace('#(url\([\'|\"]?)\.\./#', '$1' . dirname($style_dir) . '/', $content);
+        $content = preg_replace('#(url\([\'|\"]?)\.#', '$1' . $style_dir . '/', $content);
         return $content;
     }
 

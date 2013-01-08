@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Tags',
-  'name' => 'Теги',
-  'description' => 'Установка меток для материалов и работа с ними.',
+<?php
+
+return array(
+    'name' =>t('Теги'),
+    'description' => t('Установка меток для материалов и работа с ними.'),
 );

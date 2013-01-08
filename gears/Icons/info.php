@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Icons',
-  'name' => 'Иконки',
-  'description' => 'Управление иконками.',
+<?php
+
+return array(
+    'name' =>t('Иконки'),
+    'description' => t('Управление иконками.'),
 );

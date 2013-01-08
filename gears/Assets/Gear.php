@@ -33,7 +33,12 @@ class Assets_Gear extends Gear {
         $this->js = Assets::factory('scripts', config('assets.js'));
         $this->css = Assets::factory('styles', config('assets.css'));
     }
-
+    /**
+     * Инициализацтор
+     */
+    public function init(){
+        parent::init();
+    }
 }
 
 /**

@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Syndicate',
-  'name' => 'Синдикация',
-  'description' => 'Формирование RSS-потоков на сайте.',
+<?php
+
+return array(
+    'name' =>t('Синдикация'),
+    'description' => t('Формирование RSS-потоков на сайте.'),
 );

@@ -1,7 +1,7 @@
-<?php 
-return array (
-  'gear' => 'Router',
-  'name' => 'Роутер',
-  'description' => 'Маршрутизация запроса.',
-  'order' => '-10000',
+<?php
+
+return array(
+    'name' =>t('Роутер'),
+    'description' => t('Маршрутизация запроса.'),
+    'order' => '-10000',
 );

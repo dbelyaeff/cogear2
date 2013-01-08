@@ -11,7 +11,7 @@
 class Router_Route extends Db_ORM {
 
     protected $table = 'routes';
-    protected $primary = 'route';
+    protected $primary = 'id';
 
     const DELIM = '|';
 

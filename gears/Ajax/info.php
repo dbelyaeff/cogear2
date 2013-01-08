@@ -1,6 +1,6 @@
-<?php 
-return array (
-  'gear' => 'Ajax',
-  'name' => 'AJAX',
-  'description' => 'Для асинхронных запросов на языка JavaScript.',
+<?php
+
+return array(
+    'name' => 'AJAX',
+    'description' => t('Для асинхронных запросов на языка JavaScript.'),
 );
