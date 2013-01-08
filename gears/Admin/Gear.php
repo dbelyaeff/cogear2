@@ -14,6 +14,8 @@ class Admin_Gear extends Gear {
         'admin' => 'dashboard_action',
         'admin/clear/(\w+)' => 'clear_action',
         'admin/site' => 'site_action',
+        'admin/site/tools' => 'tools_action',
+        'admin/site/export' => 'download_action',
     );
     protected $access = array(
         '*' => array(1),
@@ -42,12 +44,21 @@ class Admin_Gear extends Gear {
      * Выводим меню на странице настроек
      */
     public function hookSiteSettingsMenu() {
+        $this->bc->register(array(
+            'link' => l('/admin/site'),
+            'label' => t('Сайт'),
+        ));
         new Menu_Tabs(array(
                     'name' => 'admin.site',
                     'elements' => array(
                         array(
                             'label' => t('Общие'),
                             'link' => l('/admin/site'),
+                        ),
+                        array(
+                            'label' => icon('wrench') . ' ' . ('Инструменты'),
+                            'link' => l('/admin/site/tools'),
+                            'class' => 'fl_r',
                         )
                     )
                 ));
@@ -166,9 +177,9 @@ class Admin_Gear extends Gear {
     public function site_action() {
         $this->hookSiteSettingsMenu();
         $front_values = new Core_ArrayObject(array(
-            'Post' => t('Пост'),
-            'Pages' => t('Страницы'),
-        ));
+                    'Post' => t('Пост'),
+                    'Pages' => t('Страницы'),
+                ));
         $config = array(
             'name' => 'admin-site',
             'elements' => array(
@@ -200,9 +211,57 @@ class Admin_Gear extends Gear {
         if ($result = $form->result()) {
             $this->set('site.name', $result->name);
             $this->set('development', $result->dev);
-            $this->set('router.defaults.gear',$result->front_page);
+            $this->set('router.defaults.gear', $result->front_page);
             flash_success(t('Настройки успешно сохранены!'));
             back();
+        }
+        $form->show();
+    }
+
+    /**
+     * Выгрузка файла конфигурации
+     */
+    public function download_action($themes = array()) {
+        $zip = new ZipArchive();
+        $archive_name = 'config.zip';
+        $path = TEMP . DS . $archive_name;
+        $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->setArchiveComment(base64_encode(serialize(array(
+                            'type' => 'config',
+                        ))));
+        $zip->addFile(ROOT . DS . 'config' . EXT, 'config' . EXT);
+        $zip->close();
+        File::download($path, $archive_name, TRUE);
+    }
+
+    /**
+     * Импорт и экспорт
+     */
+    public function tools_action() {
+        $this->hookSiteSettingsMenu();
+        template('Admin/templates/tools')->show();
+        $form = new Form('Admin/forms/import');
+        if ($result = $form->result()) {
+            $file = $result->file ? $result->file : $result->url;
+            $zip = new ZipArchive();
+            if (TRUE === $zip->open($file->path)) {
+                if ($comment = $zip->getArchiveComment()) {
+                    if ($info = unserialize(base64_decode($comment))) {
+                        if ($info['type'] == 'config') {
+                            $zip->extractTo(ROOT);
+                            success(t('<b>Архив успешно распакован!</b> Новый файл конфигурации установлен.'));
+                        }
+                        else
+                            error(t('Вы загружаете архив неверного формата!'), '', 'content');
+                    }
+                    else
+                        error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+                }
+                else
+                    error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+                $zip->close();
+            }
+            unlink($file->path);
         }
         $form->show();
     }
