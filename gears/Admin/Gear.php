@@ -151,7 +151,12 @@ class Admin_Gear extends Gear {
     public function dashboard_action() {
 
     }
-
+    /**
+     * Ловушка для страницы по умолчанию
+     */
+    public function index_action(){
+        redirect('/admin/gears');
+    }
     /**
      * Cleaner
      *
