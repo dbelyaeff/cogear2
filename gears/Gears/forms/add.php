@@ -15,20 +15,20 @@ return array(
                 'file' => array(
                     'label' => t('С диска'),
                     'type' => 'file',
-                    'allowed_types' => array('zip', 'tar.gz'),
+                    'allowed_types' => array('zip'),
                     'maxsize' => 3072,
                     'path' => UPLOADS . DS . 'gears',
                     'overwrite' => TRUE,
                 ),
                 'or' => array(
                     'type' => 'div',
-                    'value' => '<h2>OR</h2>',
+                    'value' => '<h2>ИЛИ</h2>',
                 ),
                 'url' => array(
                     'type' => 'file_url',
                     'label' => t('С Интернета'),
                     'class' => 'input-xxxlarge',
-                    'allowed_types' => array('zip', 'tar.gz'),
+                    'allowed_types' => array('zip'),
                     'maxsize' => 3072,
                     'path' => UPLOADS . DS . 'gears',
                     'overwrite' => TRUE,
