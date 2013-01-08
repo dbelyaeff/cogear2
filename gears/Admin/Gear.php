@@ -222,14 +222,14 @@ class Admin_Gear extends Gear {
      * Выгрузка файла конфигурации
      */
     public function download_action($themes = array()) {
-        $zip = new ZipArchive();
         $archive_name = 'config.zip';
         $path = TEMP . DS . $archive_name;
-        $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        $zip->setArchiveComment(base64_encode(serialize(array(
-                            'type' => 'config',
-                        ))));
-        $zip->addFile(ROOT . DS . 'config' . EXT, 'config' . EXT);
+        $zip = new Zip(array(
+                    'file' => $path,
+                    'create' => TRUE,
+                ));
+        $zip->info(array('type' => 'config'));
+        $zip->add(ROOT . DS . 'config' . EXT);
         $zip->close();
         File::download($path, $archive_name, TRUE);
     }
@@ -242,26 +242,18 @@ class Admin_Gear extends Gear {
         template('Admin/templates/tools')->show();
         $form = new Form('Admin/forms/import');
         if ($result = $form->result()) {
-            $file = $result->file ? $result->file : $result->url;
-            $zip = new ZipArchive();
-            if (TRUE === $zip->open($file->path)) {
-                if ($comment = $zip->getArchiveComment()) {
-                    if ($info = unserialize(base64_decode($comment))) {
-                        if ($info['type'] == 'config') {
-                            $zip->extractTo(ROOT);
-                            success(t('<b>Архив успешно распакован!</b> Новый файл конфигурации установлен.'));
-                        }
-                        else
-                            error(t('Вы загружаете архив неверного формата!'), '', 'content');
-                    }
-                    else
-                        error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+            if ($file = $result->file) {
+                $zip = new Zip(array(
+                            'file' => $file->path,
+                            'check' => array('type' => 'config'),
+                        ));
+
+                if ($zip->extract(ROOT)) {
+                    success(t('<b>Архив успешно распакован!</b> Новый файл конфигурации установлен.'));
                 }
-                else
-                    error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
                 $zip->close();
+                unlink($file->path);
             }
-            unlink($file->path);
         }
         $form->show();
     }

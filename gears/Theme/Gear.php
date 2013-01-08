@@ -188,27 +188,23 @@ class Theme_Gear extends Gear {
     public function download_action($themes = array()) {
         if ($themes = $this->input->get('themes', $themes)) {
             !is_array($themes) && $themes = explode(',', $themes);
-            $zip = new ZipArchive();
             // Если тема одна — называем архив её именем
             // Если тем несколько — называем архив gears
             $archive_name = (1 === sizeof($themes) ? end($themes) : 'themes') . '.zip';
             $path = TEMP . DS . $archive_name;
-            $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zip = new Zip(array(
+                        'file' => $path,
+                        'create' => TRUE
+                    ));
             foreach ($themes as $theme) {
                 $dir = THEMES . DS . $theme;
                 // Если директория существует и шестерёнка не относится к ядру
-                if (is_dir($dir)) {
-                    $files = File::findByMask($dir, '#^[^\.].+#');
-                    foreach ($files as $file) {
-                        $archive_file = str_replace(dirname($dir) . DS, '', $file);
-                        $zip->addFile($file, $archive_file);
-                    }
-                }
+                $zip->add($dir);
             }
-            $zip->setArchiveComment(base64_encode(serialize(array(
-                                'type' => 'themes',
-                                'themes' => $themes
-                            ))));
+            $zip->info(array(
+                'type' => 'themes',
+                'themes' => $themes
+            ));
             $zip->close();
             File::download($path, $archive_name, TRUE);
         }
@@ -222,26 +218,19 @@ class Theme_Gear extends Gear {
         $this->hookAdminMenu(2);
         $form = new Form('Theme/forms/add');
         if ($result = $form->result()) {
-            $file = $result->file ? $result->file : $result->url;
-            $zip = new ZipArchive();
-            if (TRUE === $zip->open($file->path)) {
-                if ($comment = $zip->getArchiveComment()) {
-                    if ($info = unserialize(base64_decode($comment))) {
-                        if ($info['type'] == 'themes') {
-                            $zip->extractTo(THEMES);
-                            success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])));
-                        }
-                        else
-                            error(t('Вы загружаете архив неверного формата!'), '', 'content');
-                    }
-                    else
-                        error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+            if ($file = $result->file ? $result->file : $result->url) {
+                $zip = new Zip(array(
+                            'file' => $file->path,
+                            'check' => array('type' => 'themes'),
+                        ));
+                if ($zip->extract(THEMES)) {
+                    $info = $zip->info();
+                    success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])),'','content');
+
+                    $zip->close();
                 }
-                else
-                    error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
-                $zip->close();
+                unlink($file->path);
             }
-            unlink($file->path);
         }
         $form->show();
     }

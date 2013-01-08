@@ -1,6 +1,6 @@
-<?php
+<?php 
 return array (
-  'cache' =>
+  'cache' => 
   array (
     'driver' => 'Cache_Driver_Memcache',
     'path' => CACHE.'',
@@ -9,17 +9,17 @@ return array (
     'name' => 'normal',
   ),
   'development' => 1,
-  'router' =>
+  'router' => 
   array (
-    'defaults' =>
+    'defaults' => 
     array (
       'gear' => 'Post',
       'action' => 'index_action',
     ),
   ),
-  'assets' =>
+  'assets' => 
   array (
-    'js' =>
+    'js' => 
     array (
       'glue' => true,
       'filename' => 'scripts.js',
@@ -28,7 +28,7 @@ return array (
       'refresh' => 0,
       'name' => 'scripts',
     ),
-    'css' =>
+    'css' => 
     array (
       'glue' => true,
       'filename' => 'styles.css',
@@ -38,117 +38,120 @@ return array (
       'name' => 'styles',
     ),
   ),
-  'gears' =>
+  'gears' => 
   array (
-    'Install',
+    2 => 'Pages',
+    3 => 'Wysiwyg',
+    4 => 'Markitup',
+    5 => 'Cut',
   ),
-  'lang' =>
+  'lang' => 
   array (
     'lang' => 'ru',
     'locale' => 'ru_RU',
     'path' => SITE.'/lang',
     'driver' => 'Lang_Driver_File',
     'name' => 'index',
-    'available' =>
+    'available' => 
     array (
       0 => 'ru',
       1 => 'en',
     ),
   ),
-  'theme' =>
+  'theme' => 
   array (
     'current' => 'Default',
   ),
-  'cron' =>
+  'cron' => 
   array (
     'last_run' => 1351775236,
   ),
-  'user' =>
+  'user' => 
   array (
     'refresh' => 60,
-    'register' =>
+    'register' => 
     array (
       'active' => false,
       'verification' => true,
     ),
-    'avatar' =>
+    'avatar' => 
     array (
       'default' => 'avatars/0/avatar.jpg',
     ),
     'last_visit' => 1347460375,
   ),
-  'image' =>
+  'image' => 
   array (
-    'presets' =>
+    'presets' => 
     array (
-      'blog' =>
+      'blog' => 
       array (
-        'avatar' =>
+        'avatar' => 
         array (
           0 => 'resize(128,128,crop)',
         ),
-        'profile' =>
+        'profile' => 
         array (
           0 => 'resize(64,64,crop)',
         ),
-        'small' =>
+        'small' => 
         array (
           0 => 'resize(32,32,crop)',
         ),
-        'tiny' =>
+        'tiny' => 
         array (
           0 => 'resize(24,24,crop)',
         ),
       ),
-      'post' =>
+      'post' => 
       array (
-        'large' =>
+        'large' => 
         array (
           0 => 'resize(700,500,height,down)',
         ),
       ),
-      'avatar' =>
+      'avatar' => 
       array (
-        'navbar' =>
+        'navbar' => 
         array (
           0 => 'resize(36,36,crop)',
         ),
-        'comment' =>
+        'comment' => 
         array (
           0 => 'resize(28,28,crop)',
         ),
-        'small' =>
+        'small' => 
         array (
           0 => 'resize(24,24,crop)',
         ),
-        'tiny' =>
+        'tiny' => 
         array (
           0 => 'resize(16,16,crop)',
         ),
-        'post' =>
+        'post' => 
         array (
           0 => 'resize(24,24,crop)',
         ),
-        'profile' =>
+        'profile' => 
         array (
           0 => 'resize(64,64,crop)',
         ),
-        'photo' =>
+        'photo' => 
         array (
           0 => 'resize(200,200,width)',
         ),
       ),
     ),
   ),
-  'site' =>
+  'site' => 
   array (
     'name' => 'cogear',
   ),
-  'wysiwyg' =>
+  'wysiwyg' => 
   array (
     'editor' => 'markitup',
   ),
-  'Pages' =>
+  'Pages' => 
   array (
     'main_id' => '1',
   ),

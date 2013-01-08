@@ -33,7 +33,7 @@ class Zip_Gear extends Gear {
         if (!class_exists('ZipArchive')) {
             error(t('Для того, чтобы система работа корректно, вам необходимо установить расширение ZIP для PHP или же использовать версию PHP выше 5.3.'));
         } else {
-            $this->object(new ZipArchive());
+//            $this->object(new ZipArchive());
         }
     }
 

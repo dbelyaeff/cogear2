@@ -82,14 +82,14 @@ class Gears_Gear extends Gear {
                 break;
             case 2:
                 new Menu_Pills(array(
-                    'name' => 'gears.add',
-                    'elements' => array(
-                        array(
-                            'label' => icon('upload').' '.t('Загрузить'),
-                            'link' => l('/admin/gears/add'),
-                        )
-                    ),
-                ));
+                            'name' => 'gears.add',
+                            'elements' => array(
+                                array(
+                                    'label' => icon('upload') . ' ' . t('Загрузить'),
+                                    'link' => l('/admin/gears/add'),
+                                )
+                            ),
+                        ));
                 break;
         }
     }
@@ -130,8 +130,9 @@ class Gears_Gear extends Gear {
      */
     public function status_action() {
         $do = $this->input->post('do');
-        if(!$do) $do = $this->input->post('do-alt');
-        if($do){
+        if (!$do)
+            $do = $this->input->post('do-alt');
+        if ($do) {
             $do_gears = $this->input->post('gears');
         } elseif ($do = $this->input->get('do')) {
             $do_gears = explode(',', $this->input->get('gears'));
@@ -167,27 +168,25 @@ class Gears_Gear extends Gear {
     public function download_action($gears = array()) {
         if ($gears = $this->input->get('gears', $gears)) {
             !is_array($gears) && $gears = explode(',', $gears);
-            $zip = new ZipArchive();
             // Если шестерёнка одна — называем архив её именем
             // Если шестерёнок несколько — называем архив gears
             $archive_name = (1 === sizeof($gears) ? end($gears) : 'gears') . '.zip';
             $path = TEMP . DS . $archive_name;
-            $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $zip = new Zip(array(
+                        'file' => $path,
+                        'create' => TRUE,
+                    ));
             foreach ($gears as $gear) {
                 $dir = GEARS . DS . $gear;
                 // Если директория существует и шестерёнка не относится к ядру
                 if (is_dir($dir) && !cogear()->site->gears->findByValue($gear)) {
-                    $files = File::findByMask($dir, '#^[^\.].+#');
-                    foreach ($files as $file) {
-                        $archive_file = str_replace(dirname($dir) . DS, '', $file);
-                        $zip->addFile($file, $archive_file);
-                    }
+                    $zip->add($dir);
                 }
             }
-            $zip->setArchiveComment(base64_encode(serialize(array(
+            $zip->info(array(
                 'type' => 'gears',
                 'gears' => $gears
-            ))));
+            ));
             $zip->close();
             File::download($path, $archive_name, TRUE);
         }
@@ -201,25 +200,19 @@ class Gears_Gear extends Gear {
         $this->hookAdminMenu(2);
         $form = new Form('Gears/forms/add');
         if ($result = $form->result()) {
-            $file = $result->file ? $result->file : $result->url;
-            $zip = new ZipArchive();
-            if (TRUE === $zip->open($file->path)) {
-                if($comment = $zip->getArchiveComment()){
-                    if($info = unserialize(base64_decode($comment))){
-                        if($info['type'] == 'gears'){
-                            $zip->extractTo(GEARS);
-                            success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие шестерёнки: <ul><li>%s</li></ul>',implode('</li><li>',$info['gears'])));
-                        }
-                        else error(t('Вы загружаете архив неверного формата!'),'','content');
-                    }
-                    else error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'),'','content');
+            if ($file = $result->file ? $result->file : $result->url) {
+                $zip = new Zip(array(
+                            'file' => $file->path,
+                            'check' => array('type' => 'gears')
+                        ));
+                if ($zip->extract(GEARS)) {
+                    $info = $zip->info();
+                    success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие шестерёнки: <ul><li>%s</li></ul>', implode('</li><li>', $info['gears'])),'','content');
                 }
-                else error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'),'','content');
                 $zip->close();
+                unlink($file->path);
             }
-            unlink($file->path);
         }
-
         $form->show();
     }
 
