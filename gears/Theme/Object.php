@@ -12,6 +12,7 @@ abstract class Theme_Object extends Gear {
 
     protected $theme;
     protected $template;
+    protected $menu;
     /**
      * Настройки темы по умолчанию
      *
@@ -29,6 +30,17 @@ abstract class Theme_Object extends Gear {
         $defaults->extend($config);
         parent::__construct($defaults);
         $this->template = new Template(THEMES . DS . $this->theme . DS . 'templates' . DS . 'index'.EXT);
+        $this->menu = new Menu(array(
+            'name' => 'theme',
+            'render' => FALSE,
+            'elements' => array(
+                array(
+                    'label' => icon('download'),
+                    'link' => l('/admin/theme/download').'?themes='.$this->theme,
+                    'class' => 'btn btn-mini'
+                )
+            )
+        ));
     }
 
     /**

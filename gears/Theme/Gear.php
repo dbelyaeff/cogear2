@@ -25,10 +25,14 @@ class Theme_Gear extends Gear {
     protected $routes = array(
         'admin/theme' => 'admin_action',
         'admin/theme/activate/(\w+)' => 'activate_action',
+        'admin/theme/download' => 'download_action',
+        'admin/theme/add' => 'upload_action',
     );
     protected $access = array(
         'admin' => array(1),
         'activate' => array(1),
+        'download' => array(1),
+        'upload' => array(1),
     );
 
     /**
@@ -110,19 +114,41 @@ class Theme_Gear extends Gear {
                 break;
         }
     }
+
     /**
      * Выводит меню в админке
      */
-    public function hookAdminMenu() {
-        new Menu_Tabs(array(
-                    'name' => 'admin.theme',
-                    'elements' => array(
-                        array(
-                            'label' => t('Темы'),
-                            'link' => l('/admin/theme')
-                        )
-                    )
-                ));
+    public function hookAdminMenu($type = 1) {
+        switch ($type) {
+            case 1:
+                new Menu_Tabs(array(
+                            'name' => 'admin.theme',
+                            'elements' => array(
+                                array(
+                                    'label' => t('Темы'),
+                                    'link' => l('/admin/theme')
+                                )
+                            )
+                        ));
+                break;
+            case 2:
+                new Menu_Pills(array(
+                            'name' => 'admin.theme.add',
+                            'multiple' => TRUE,
+                            'elements' => array(
+                                array(
+                                    'label' => icon('upload') . ' ' . t('Загрузить'),
+                                    'link' => l('/admin/theme/add'),
+                                ),
+                                array(
+                                    'label' => icon('plus') . ' ' . t('Добавить'),
+                                    'link' => l('/admin/theme/add'),
+                                    'class' => 'fl_r'
+                                )
+                            ),
+                        ));
+                break;
+        }
     }
 
     /**
@@ -132,9 +158,10 @@ class Theme_Gear extends Gear {
      */
     public function admin_action() {
         $this->hookAdminMenu();
+        $this->hookAdminMenu(2);
         $themes = $this->getThemes();
-        foreach($themes as $key=>$theme){
-            if($theme == $this->object()){
+        foreach ($themes as $key => $theme) {
+            if ($theme == $this->object()) {
                 unset($themes[$key]);
             }
         }
@@ -152,6 +179,70 @@ class Theme_Gear extends Gear {
             flash_success(t('Тема успешно активирована!'));
             redirect(l('/admin/theme'));
         }
+    }
+
+    /**
+     * Выгрузка тем
+     */
+    public function download_action($themes = array()) {
+        if ($themes = $this->input->get('themes', $themes)) {
+            !is_array($themes) && $themes = explode(',', $themes);
+            $zip = new ZipArchive();
+            // Если тема одна — называем архив её именем
+            // Если тем несколько — называем архив gears
+            $archive_name = (1 === sizeof($themes) ? end($themes) : 'themes') . '.zip';
+            $path = TEMP . DS . $archive_name;
+            $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            foreach ($themes as $theme) {
+                $dir = THEMES . DS . $theme;
+                // Если директория существует и шестерёнка не относится к ядру
+                if (is_dir($dir)) {
+                    $files = File::findByMask($dir, '#^[^\.].+#');
+                    foreach ($files as $file) {
+                        $archive_file = str_replace(dirname($dir) . DS, '', $file);
+                        $zip->addFile($file, $archive_file);
+                    }
+                }
+            }
+            $zip->setArchiveComment(base64_encode(serialize(array(
+                                'type' => 'themes',
+                                'themes' => $themes
+                            ))));
+            $zip->close();
+            File::download($path, $archive_name, TRUE);
+        }
+    }
+
+    /**
+     * Загрузка тем
+     */
+    public function upload_action() {
+        $this->hookAdminMenu();
+        $this->hookAdminMenu(2);
+        $form = new Form('Theme/forms/add');
+        if ($result = $form->result()) {
+            $file = $result->file ? $result->file : $result->url;
+            $zip = new ZipArchive();
+            if (TRUE === $zip->open($file->path)) {
+                if ($comment = $zip->getArchiveComment()) {
+                    if ($info = unserialize(base64_decode($comment))) {
+                        if ($info['type'] == 'themes') {
+                            $zip->extractTo(GEARS);
+                            success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])));
+                        }
+                        else
+                            error(t('Вы загружаете архив неверного формата!'), '', 'content');
+                    }
+                    else
+                        error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+                }
+                else
+                    error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгружденные через панель управления.'), '', 'content');
+                $zip->close();
+            }
+            unlink($file->path);
+        }
+        $form->show();
     }
 
     /**

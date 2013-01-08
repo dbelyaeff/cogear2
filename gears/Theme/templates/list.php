@@ -10,13 +10,14 @@ $thumbnail = File::pathToUri($screenshot);
 <div class="page-header">
     <h1><?php echo $theme->name ?> <small><?php echo t('Текущяя тема оформления') ?></small></h1>
 </div>
-<div class="row">
+<div class="row theme">
     <div class="span4">
         <a href="#" class="thumbnail"><img src="<?php echo $thumbnail ?>" <?php echo $info[3] ?>/></a>
     </div>
     <div class="span7">
         <div class="well"><?php echo $theme->description ?></div>
         <p><b><?php echo t('Версия: '). '</b> '.$theme->version?> <br/><b><?php echo t('Автор: '). '</b> '.HTML::a('mailto:'.$theme->email,$theme->author)?><br/> <b><?php echo t('Сайт: '). '</b> '.HTML::a($theme->site,$theme->site)?>
+         <?php echo $theme->menu?>
     </div>
 </div>
 <div class="page-header">

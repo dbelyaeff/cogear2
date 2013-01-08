@@ -1,0 +1,8 @@
+.theme ul.menu {
+    margin: 0;
+}
+.theme ul.menu li{
+    list-style: none;
+    float: left;
+    margin: 0 5px 0 5px;
+}
