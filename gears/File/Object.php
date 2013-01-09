@@ -88,21 +88,22 @@ class File_Object extends Adapter {
         switch ($measure) {
             case NULL:
             case 'Auto':
-                if ($bytes > self::Kilobyte && $bytes < self::Megabyte) {
+                if ($bytes >= self::Kilobyte && $bytes < self::Megabyte) {
                     return self::fromBytes($bytes, 'Kb', $round);
                 }
-                if ($bytes > self::Megabyte && $bytes < self::Gigabyte) {
+                if ($bytes >= self::Megabyte && $bytes < self::Gigabyte) {
                     return self::fromBytes($bytes, 'Mb', $round);
                 }
-                if ($bytes > self::Gigabyte && $bytes < self::Terabyte) {
+                if ($bytes >= self::Gigabyte && $bytes < self::Terabyte) {
                     return self::fromBytes($bytes, 'Gb', $round);
                 }
-                if ($bytes > self::Terabyte && $bytes < self::Petabyte) {
+                if ($bytes >= self::Terabyte && $bytes < self::Petabyte) {
                     return self::fromBytes($bytes, 'Tb', $round);
                 }
-                if ($bytes > self::Petabyte) {
+                if ($bytes >= self::Petabyte) {
                     return self::fromBytes($bytes, 'Pb', $round);
                 }
+                return round($bytes, $round) . 'b';
                 break;
             case self::Pb:
                 $bytes = $bytes / self::Petabyte;
