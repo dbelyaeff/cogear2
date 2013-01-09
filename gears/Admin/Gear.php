@@ -184,6 +184,7 @@ class Admin_Gear extends Gear {
     public function site_action() {
         $this->hookSiteSettingsMenu();
         $front_values = new Core_ArrayObject(array(
+                    'Admin' => t('Панель управления'),
                     'Post' => t('Пост'),
                     'Pages' => t('Страницы'),
                 ));
