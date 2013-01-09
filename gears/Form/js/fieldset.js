@@ -23,9 +23,10 @@ $(document).ready(function(){
                 $chevron.removeClass('icon-chevron-right').addClass('icon-chevron-down');
             }
             else {
-                $wrapper.slideUp();
-                $this.addClass('collapsed');
-                $chevron.removeClass('icon-chevron-down').addClass('icon-chevron-right');
+                $wrapper.slideUp(350,function(){
+                    $this.addClass('collapsed');
+                    $chevron.removeClass('icon-chevron-down').addClass('icon-chevron-right');
+                });
             }
         })
         // Если в форме есть ошибки, fieldset должен быть раскрыт
