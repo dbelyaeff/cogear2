@@ -27,9 +27,6 @@ class File_Element extends Form_Element_Abstract {
      * @return
      */
     public function result() {
-        if (NULL !== ($result = cogear()->input->post($this->name))) {
-            return $result;
-        }
         $file = new File_Upload($this->options);
         if ($value = $file->upload()) {
             $this->is_fetched = TRUE;

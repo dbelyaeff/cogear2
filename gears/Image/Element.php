@@ -34,9 +34,6 @@ class Image_Element extends File_Element {
      * @return  mixed
      */
     public function result() {
-        if (NULL !== ($result = cogear()->input->post($this->name))) {
-            return $result;
-        }
         if ($result = $this->image->upload()) {
             $this->is_fetched = TRUE;
             $this->image = $this->image->getInfo();
