@@ -12,7 +12,7 @@ $(document).ready(function(){
         $wrapper = $("<div class='wrapper'/>");
         $legend.after($wrapper);
         $wrapper.nextAll().appendTo($wrapper);
-        $chevron.on('click',function(){
+        $legend.on('click',function(){
             if($this.hasClass('collapsed')){
                 $wrapper.slideDown();
                 $this.removeClass('collapsed');

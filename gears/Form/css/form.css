@@ -51,6 +51,7 @@ fieldset legend{
     padding: 0 10px;
     font-size: 1.2em;
     margin: 0;
+    cursor: pointer;
 }
 fieldset legend .icon{
     margin: 0 0 0 5px;
