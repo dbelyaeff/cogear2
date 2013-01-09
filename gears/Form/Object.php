@@ -55,8 +55,6 @@ class Form_Object extends Object {
         'submit' => 'Form_Element_Submit',
         'delete' => 'Form_Element_Delete',
         'button' => 'Form_Element_Button',
-        'file' => 'Form_Element_File',
-        'image' => 'Form_Element_Image',
         'span' => 'Form_Element_Span',
         'div' => 'Form_Element_Div',
         'tab' => 'Form_Element_Tab',
@@ -237,7 +235,7 @@ class Form_Object extends Object {
         $method = strtolower($this->options->method);
         $result = array();
         $is_valid = TRUE;
-        if (cogear()->input->$method()) {
+        if (cogear()->input->$method() OR $_FILES) {
             foreach ($this->elements as $name => $element) {
                 $value = $element->result();
                 if ($value !== FALSE) {
