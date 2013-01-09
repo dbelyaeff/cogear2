@@ -31,7 +31,7 @@ class User_Avatar extends Object{
      * @return  string
      */
     public function getFile(){
-        return UPLOADS.$this->file;
+        return UPLOADS.DS.$this->file;
     }
     /**
      * Render avatar
