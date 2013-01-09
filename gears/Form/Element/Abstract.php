@@ -11,7 +11,7 @@
  * @subpackage
 
  */
-class Form_Element_Abstract extends Errors_Handler {
+class Form_Element_Abstract extends Notify_Handler {
 
     protected $options = array(
         'name' => '',
