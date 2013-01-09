@@ -132,7 +132,7 @@ class Form_Object extends Object {
         return $results;
     }
     /**
-     * Add element
+     * Добавление элемента
      *
      * @param string $name
      * @param array $options
@@ -168,6 +168,12 @@ class Form_Object extends Object {
                 $this->elements->$name = new self::$types[$config->type]($config);
             }
         }
+    }
+    /**
+     * Удаление элемента
+     */
+    public function remove($name){
+        $this->elements->offsetUnset($name);
     }
 
     /**
