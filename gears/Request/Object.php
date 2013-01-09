@@ -65,7 +65,7 @@ class Request_Object {
         $this->host = Url::link();
         $string_filter = array(FILTER_SANITIZE_SPECIAL_CHARS, FILTER_SANITIZE_STRING);
         $path_filter = array(FILTER_SANITIZE_URL, FILTER_FLAG_PATH_REQUIRED);
-        $this->server = $_SERVER;
+        $this->server = new Core_ArrayObject($_SERVER);
         foreach(array('HTTP_X_FORWARDED_FOR','HTTP_CLIENT_IP','REMOTE_ADDR') as $ip){
             if(isset($this->server[$ip])){
                 $this->ip = $this->server[$ip];
