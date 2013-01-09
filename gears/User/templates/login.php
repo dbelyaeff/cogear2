@@ -14,6 +14,11 @@
                         <?php echo theme('info') ?>
                         <?php echo theme('content') ?>
                     </div>
+                    <script>
+                        $(document).ready(function(){
+                            $('input').first().focus();
+                        })
+                    </script>
                 </div>
             </div>
         </div>
