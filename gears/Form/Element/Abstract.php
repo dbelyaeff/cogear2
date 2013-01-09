@@ -45,10 +45,10 @@ class Form_Element_Abstract extends Errors_Handler {
         foreach ($this->options as $key => $option) {
             switch ($key) {
                 case 'filter':
-                    $this->filters = $this->options->filter;
+                    $this->options->filters = $this->options->filter;
                     break;
                 case 'validate':
-                    $this->validators = $this->options->validate;
+                    $this->options->validators = $this->options->validate;
                     break;
             }
         }
