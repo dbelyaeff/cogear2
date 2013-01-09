@@ -151,12 +151,14 @@ class Admin_Gear extends Gear {
     public function dashboard_action() {
 
     }
+
     /**
      * Ловушка для страницы по умолчанию
      */
-    public function index_action(){
+    public function index_action() {
         redirect('/admin/gears');
     }
+
     /**
      * Cleaner
      *
@@ -186,26 +188,24 @@ class Admin_Gear extends Gear {
                     'Pages' => t('Страницы'),
                 ));
         $config = array(
-            'name' => 'admin-site',
-            'elements' => array(
-                'name' => array(
-                    'type' => 'text',
-                    'label' => t('Название сайта'),
-                    'validators' => array('Required'),
-                ),
-                'front_page' => array(
-                    'type' => 'select',
-                    'label' => t('Шестерёнка главной страницы:'),
-                    'values' => $front_values,
-                    'value' => config('router.defaults.gear')
-                ),
-                'dev' => array(
-                    'type' => 'checkbox',
-                    'label' => t('Режим разработки'),
-                    'value' => config('development'),
-                ),
-                'save' => array(
-                )
+            '#name' => 'admin-site',
+            'name' => array(
+                '#type' => 'text',
+                '#label' => t('Название сайта'),
+                '#validators' => array('Required'),
+            ),
+            'front_page' => array(
+                '#type' => 'select',
+                '#label' => t('Шестерёнка главной страницы:'),
+                '#values' => $front_values,
+                '#value' => config('router.defaults.gear')
+            ),
+            'dev' => array(
+                '#type' => 'checkbox',
+                '#label' => t('Режим разработки'),
+                '#value' => config('development'),
+            ),
+            'save' => array(
             )
         );
         $form = new Form($config);
