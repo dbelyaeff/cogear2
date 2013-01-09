@@ -21,7 +21,7 @@ class Form_Element_Group extends Form_Element_Abstract{
         parent::__construct($options);
         foreach($this->options->elements as $key=>$element){
             $element->render = FALSE;
-            $this->options->form->addElement($key,$element);
+            $this->options->form->add($key,$element);
         }
     }
     /**

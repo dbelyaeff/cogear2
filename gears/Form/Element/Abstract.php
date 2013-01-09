@@ -42,8 +42,8 @@ class Form_Element_Abstract extends Errors_Handler {
         /**
          * Если вдруг элементы названы иначе
          */
-        foreach($options as $key=>$option){
-            switch($key){
+        foreach ($this->options as $key => $option) {
+            switch ($key) {
                 case 'filter':
                     $this->filters = $this->options->filter;
                     break;
@@ -151,7 +151,7 @@ class Form_Element_Abstract extends Errors_Handler {
      * @return array
      */
     public function prepareOptions() {
-        $this->options->required = $this->validators && strpos($this->validators->__toString(),'Required') !== FALSE;
+        $this->options->required = $this->validators && strpos($this->validators->__toString(), 'Required') !== FALSE;
         if ($this->getErrors()) {
             $this->options->class .= ' error';
         }

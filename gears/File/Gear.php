@@ -9,9 +9,14 @@
  * @link		http://cogear.ru
  */
 class File_Gear extends Gear {
-
+    protected $routes = array(
+        'file' => 'index_action'
+    );
+    protected $access = array(
+        '*' => array(1),
+    );
     /**
-     * Construcotr
+     * Конструктор
      */
     public function __construct($config) {
         parent::__construct($config);
@@ -30,7 +35,7 @@ class File_Gear extends Gear {
      * @param type $Form
      */
     public function hookPostForm($Form) {
-        $Form->addElement('files', array(
+        $Form->add('files', array(
             'type' => 'file',
             'order' => 3.1,
             'action' => l('/file/upload'),
@@ -39,38 +44,23 @@ class File_Gear extends Gear {
     }
 
 
+    public function index_action(){
+        $form = new Form(array(
+            '#name' => 'file.upload',
+            'file' => array(
+                '#type' => 'file',
+                '#label' => t('Файл'),
+            ),
+            'submit' => array(
+                '#label' => t('Загрузить'),
+            ),
+        ));
+
+        $form->show();
+    }
 
     public function upload_action() {
-        $image = new Image_Upload(array(
-                    'name' => 'images',
-                    'allowed_types' => array('png', 'jpg', 'gif'),
-                    'maxsize' => '100Kb',
-                    'overwrite' => TRUE,
-                    'path' => File::mkdir($this->user->dir() . '/images'),
-                ));
-        $files = $image->upload();
-        $data = array();
-        $ajax = new Ajax();
-        if ($image->uploaded) {
-            $data['success'] = TRUE;
-            $data['code'] = '';
-            foreach ($files as $file) {
-                if ($file->uri) {
-                    $data['code'] .= template('File/templates/attached',array('file'=>$file))->render();
-                }
-            }
-        } else {
-            $data['success'] = FALSE;
-            foreach ($files as $file) {
-                if ($file->errors) {
-                    $data['messages'][] = array(
-                        'type' => 'error',
-                        'body' => implode('<br/>', $file->errors),
-                    );
-                }
-            }
-        }
-        $ajax->json($data);
+
     }
 
 }

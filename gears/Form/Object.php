@@ -100,21 +100,45 @@ class Form_Object extends Object {
         } else {
             $options = Core_ArrayObject::transform($options);
         }
-        parent::__construct($options);
-        $this->defaults = new Config(cogear()->form->dir . DS . 'defaults.php');
+        parent::__construct(Form::filterOptions($options));
+        $this->defaults = new Config(cogear()->form->dir.DS.'defaults'.EXT);
         event('form.load', $this);
         event('form.load.' . $this->name, $this);
         $this->init();
     }
-
+    /**
+     * Фильтрация опций
+     *
+     * @param array $options
+     */
+    public static function filterOptions($options){
+        // Если указаны напрямую элементы, значит данные по старому идут
+        // Проверка на name указана для определения настроек формы, а не её элемента
+        if($options->elements && $options->name){
+            return $options;
+        }
+        $results = new Core_ArrayObject();
+        foreach($options as $key=>$value){
+            if($key[0] == '#'){
+                $real_key = substr($key,1);
+                $results->$real_key = $value;
+            }
+            else {
+                $results->elements OR $results->elements = new Core_ArrayObject();
+                $results->elements->$key = $value;
+            }
+        }
+        return $results;
+    }
     /**
      * Add element
      *
      * @param string $name
      * @param array $options
      */
-    public function addElement($name, $config = array()) {
+    public function add($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
+        $config = Form::filterOptions($config);
         if ($this->defaults->$name) {
             $this->defaults->$name->extend($config);
             $config = $this->defaults->$name;
@@ -168,7 +192,7 @@ class Form_Object extends Object {
         event('form.init.' . $this->options->name, $this);
         if ($this->options->elements) {
             foreach ($this->options->elements as $name => $config) {
-                $this->addElement($name, $config);
+                $this->add($name, $config);
             }
             if ($this->callback && $callback = Cogear::prepareCallback($this->callback)) {
                 if ($this->result = $this->result()) {
