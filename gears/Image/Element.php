@@ -42,7 +42,13 @@ class Image_Element extends File_Element {
             $this->errors = $this->image->getErrors();
             $this->notices = $this->image->getNotices();
         }
-        return $result;
+        if($this->validate()){
+            if($result){
+                return $result;
+            }
+            return $this->errors ? FALSE : NULL;
+        }
+        return FALSE;
     }
 
     /**

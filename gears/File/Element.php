@@ -33,7 +33,13 @@ class File_Element extends Form_Element_Abstract {
         } else {
             $this->errors = $file->getErrors();
         }
-        return $value ? $value : $this->value = $this->options->value;
+        if ($this->validate()) {
+            if ($result) {
+                return $result;
+            }
+            return $this->errors ? FALSE : NULL;
+        }
+        return FALSE;
     }
 
     /**
