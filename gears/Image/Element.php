@@ -23,8 +23,8 @@ class Image_Element extends File_Element {
         parent::__construct($options);
         $this->image = new Image_Upload($this->options);
         $this->options = $this->image->options;
-        if(is_string($this->options->allowed_types)){
-            $this->options->allowed_types = explode(',',$this->options->allowed_types);
+        if (is_string($this->options->allowed_types)) {
+            $this->options->allowed_types = explode(',', $this->options->allowed_types);
         }
     }
 
@@ -34,16 +34,19 @@ class Image_Element extends File_Element {
      * @return  mixed
      */
     public function result() {
+        if (NULL !== ($result = cogear()->input->post($this->name))) {
+            return $result;
+        }
         if ($result = $this->image->upload()) {
             $this->is_fetched = TRUE;
             $this->image = $this->image->getInfo();
-            $result= File::pathToUri($result->path, UPLOADS);
+            $result = File::pathToUri($result->path, UPLOADS);
         } else {
             $this->errors = $this->image->getErrors();
             $this->notices = $this->image->getNotices();
         }
-        if($this->validate()){
-            if($result){
+        if ($this->validate()) {
+            if ($result) {
                 return $result;
             }
             return $this->errors ? FALSE : NULL;
