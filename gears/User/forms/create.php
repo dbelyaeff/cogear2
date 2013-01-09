@@ -5,7 +5,7 @@ return array(
     'login' => array(
         '#label' => t('Имя пользователя'),
         '#type' => 'text',
-        '#validators' => array(array('Length', 3), 'AlphaNum', 'Required', 'User_Validate_Login'),
+        '#validators' => array(array('Length', 3), 'Required', 'User_Validate_Login'),
     ),
     'name' => array(
         '#label' => t('Реальное имя'),
@@ -16,7 +16,7 @@ return array(
     'password' => array(
         '#label' => t('Пароль'),
         '#type' => 'text',
-        '#validators' => array(array('Length', 3), 'AlphaNum', 'Required')
+        '#validators' => array(array('Length', 3), 'Required')
     ),
     'email' => array(
         '#label' => t('Электронная почта'),
