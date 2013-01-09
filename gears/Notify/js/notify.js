@@ -10,6 +10,7 @@ Notify.prototype = {
                 $notify.show($data.messages);
             }
         })
+        $.jGrowl.defaults.closer = false;
     },
     growl: function($body,$config){
         $options = {
