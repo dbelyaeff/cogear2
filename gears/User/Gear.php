@@ -386,6 +386,7 @@ class User_Gear extends Gear {
 //        $user->navbar()->show();
         $form = new Form('User/forms/profile');
         $user->password = '';
+        $this->input->post('avatar') !== NULL && $user->object()->avatar = '';
         $form->object($user);
         if ($user->id == 1) {
             $form->delete->options->render = FALSE;
@@ -409,7 +410,7 @@ class User_Gear extends Gear {
             }
             if ($user->update()) {
                 success(t('Изменения сохранены!'));
-//                back();
+                redirect(l(TRUE));
             }
         }
         $form->show();
