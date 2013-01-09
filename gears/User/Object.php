@@ -22,7 +22,7 @@ class User_Object extends Db_Item {
     public function init() {
         if ($this->autologin()) {
             event('user.autologin', $this);
-            $this->dir = $this->dir();
+            $this->dir = $this->getUploadPath();
             $this->avatar = $this->getAvatar();
             if ($this->last_visit < time() - config('user.refresh', 86400)) {
                 $this->last_visit = time();
@@ -113,6 +113,7 @@ class User_Object extends Db_Item {
         if ($result = parent::update($data)) {
             // Automatically store new data to session
             if ($this->id == user()->id) {
+                $this->object()->extend($data);
                 $this->store();
             }
             event('user.update', $this, $data, $result);
@@ -319,7 +320,7 @@ class User_Object extends Db_Item {
     /**
      * Get user upload directory
      */
-    public function dir() {
+    public function getUploadPath() {
         return File::mkdir(UPLOADS . DS . 'users' . DS . $this->id);
     }
 
