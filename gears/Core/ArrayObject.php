@@ -14,6 +14,7 @@
 
  */
 class Core_ArrayObject extends ArrayObject {
+
     const BEFORE = 0;
     const AFTER = 1;
 
@@ -68,15 +69,17 @@ class Core_ArrayObject extends ArrayObject {
         if (!$data)
             return;
         $data instanceof self && $data = (array) $data;
-        $data = self::transform(array_merge($this->toArray(), $data));
-        /* Found some issue with PHP < 5.3
-         * Object can't accept another instance of self for exchange
-         *
-         * $this->exchangeArray($data);
-         *
-         * Have to reinterpret exchangeArray method with simple foreach cycle
-         */
-        $this->adopt($data);
+        if (is_array($data)) {
+            $data = self::transform(array_merge($this->toArray(), $data));
+            /* Found some issue with PHP < 5.3
+             * Object can't accept another instance of self for exchange
+             *
+             * $this->exchangeArray($data);
+             *
+             * Have to reinterpret exchangeArray method with simple foreach cycle
+             */
+            $this->adopt($data);
+        }
         return $this;
     }
 
@@ -191,7 +194,7 @@ class Core_ArrayObject extends ArrayObject {
      * @return object
      */
     public function reverse() {
-        $data = array_reverse((array)$this);
+        $data = array_reverse((array) $this);
         return new self($data);
     }
 
@@ -213,7 +216,7 @@ class Core_ArrayObject extends ArrayObject {
      * @param   int|string     $position
      * @param   int $order
      */
-    public function inject($value, $position=0, $order = NULL) {
+    public function inject($value, $position = 0, $order = NULL) {
         $order OR $order = self::BEFORE;
         $result = array();
         $it = $this->getIterator();
@@ -250,7 +253,7 @@ class Core_ArrayObject extends ArrayObject {
      * @param int/string $position
      * @param int $order
      */
-    public function place($array, $position=0, $order = NULL) {
+    public function place($array, $position = 0, $order = NULL) {
         $order OR $order = self::BEFORE;
         $result = array();
         $it = $this->getIterator();
@@ -290,29 +293,32 @@ class Core_ArrayObject extends ArrayObject {
         }
         return $result instanceof self ? $result->getArrayCopy() : $result;
     }
+
     /**
      * Переводит содержимое в JSON
      *
      * @return JSON
      */
-    public function toJSON(){
+    public function toJSON() {
         return json_encode($this->toArray());
     }
+
     /**
      * Выбирает первый ключ
      */
-    public function getFirstKey(){
-        foreach($this as $key=>$value){
+    public function getFirstKey() {
+        foreach ($this as $key => $value) {
             return $key;
         }
     }
+
     /**
      * Returns data in serialized form
      *
      * @param  string  $glue
      * @return string
      */
-    public function toString($glue="\n") {
+    public function toString($glue = "\n") {
         return implode($glue, $this->getArrayCopy());
     }
 
@@ -353,6 +359,7 @@ class Core_ArrayObject extends ArrayObject {
     public static function sortByOrder($a, $b) {
         return self::sortBy('order', $a, $b);
     }
+
     /**
      * Sort by param
      *
