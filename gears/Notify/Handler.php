@@ -18,8 +18,8 @@ class Notify_Handler extends Errors_Handler {
      * @param int $place
      */
     public function __construct($options = array(), $place = 0) {
-        parent::__construct($options, $place);
         $this->notices = new Core_ArrayObject();
+        parent::__construct($options, $place);
     }
 
     /**
@@ -28,6 +28,7 @@ class Notify_Handler extends Errors_Handler {
      * @param string $notice
      */
     public function notice($notice) {
+        $this->notices OR $this->notices = new Core_ArrayObject();
         $this->notices->append($notice);
     }
 
