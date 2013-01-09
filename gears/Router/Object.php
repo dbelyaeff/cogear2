@@ -274,6 +274,9 @@ class Router_Object extends Options implements Interface_Singleton {
      *
      */
     public function exec(Callback $callback) {
+        if(!$callback->check()){
+            return event('404');
+        }
         if (!event('router.exec', $this, $callback)->check()) {
             return FALSE;
         }
