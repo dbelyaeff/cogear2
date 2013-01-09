@@ -8,6 +8,10 @@ $(document).ready(function(){
             $chevron = $('<i class="icon icon-chevron-down"/>')
         }
         $legend = $this.find('> legend');
+        if(!$legend.html()){
+            $legend.hide();
+            return;
+        }
         $legend.append($chevron);
         $wrapper = $("<div class='wrapper'/>");
         $legend.after($wrapper);
