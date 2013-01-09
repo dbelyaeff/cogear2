@@ -78,6 +78,12 @@ class Theme_Gear extends Gear {
         } else {
             $this->choose(config('theme.current', 'Default'));
         }
+        if('' === $this->input->get('splash')){
+            $this->template('Theme/templates/splash');
+        }
+        elseif($tpl = $this->input->get('layout')){
+            $this->template($tpl);
+        }
     }
 
     /**
@@ -106,7 +112,7 @@ class Theme_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
-                $menu->register(array(
+                $menu->add(array(
                     'label' => icon('eye-open') . ' ' . t('Внешний вид'),
                     'link' => l('/admin/theme'),
                     'order' => 200,
