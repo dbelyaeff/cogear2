@@ -21,6 +21,11 @@ class File_Object extends Adapter {
     const Gb = 'Gb';
     const Tb = 'Tb';
     const Pb = 'Pb';
+    const Kilobyte = 1024;
+    const Megabyte = 1048576;
+    const Gigabyte = 1073741824;
+    const Terabyte = 1099511627776;
+    const Petabyte = 1125899906842624;
 
     /**
      * Path to files
@@ -69,74 +74,89 @@ class File_Object extends Adapter {
     }
 
     /**
-     * Transform bytes to other measures
+     * Переводим из байтов в более крупные разряды
      *
      * @param	int	$bytes
      * @param	const	$measure
      * @param	float	$round
      * @return	string
      */
-    public static function fromBytes($bytes, $measure = null, $round = 0.2) {
-        if (is_null($measure))
-            $measure = self::Kb;
-        elseif (is_string($measure))
+    public static function fromBytes($bytes, $measure = NULL, $round = 0) {
+        if (is_string($measure)){
             $measure = ucfirst($measure);
+        }
         switch ($measure) {
+            case NULL:
+            case 'Auto':
+                if ($bytes > self::Kilobyte && $bytes < self::Megabyte) {
+                    return self::fromBytes($bytes, 'Kb', $round);
+                }
+                if ($bytes > self::Megabyte && $bytes < self::Gigabyte) {
+                    return self::fromBytes($bytes, 'Mb', $round);
+                }
+                if ($bytes > self::Gigabyte && $bytes < self::Terabyte) {
+                    return self::fromBytes($bytes, 'Gb', $round);
+                }
+                if ($bytes > self::Terabyte && $bytes < self::Petabyte) {
+                    return self::fromBytes($bytes, 'Tb', $round);
+                }
+                if ($bytes > self::Petabyte) {
+                    return self::fromBytes($bytes, 'Pb', $round);
+                }
+                break;
             case self::Pb:
-                $result = $bytes / 1024 / 1024 / 1024 / 1024;
+                $bytes = $bytes / self::Petabyte;
                 break;
             case self::Tb:
-                $result = $bytes / 1024 / 1024 / 1024;
+                $bytes = $bytes / self::Terabyte;
                 break;
             case self::Gb:
-                $result = $bytes / 1024 / 1024;
+                $bytes = $bytes / self::Gigabyte;
                 break;
             case self::Mb:
-                $result = $bytes / 1024;
+                $bytes = $bytes / self::Megabyte;
                 break;
             case self::Kb:
             default:
-                $result = $bytes / 1024;
+                $bytes = $bytes / self::Kilobyte;
         }
-        return round($result, $round) . $measure;
+        return round($bytes, $round) . $measure;
     }
 
     /**
-     * Transform any size string to bytes
-     *
-     * 1Kb = 1024
-     * 1 Kb = 1024
+     * Переводит в байты
      *
      * @param string $size
-     * @param float  $round
+     * @param string  $measure
      * @return int
      */
     public static function toBytes($size) {
-        if (is_numeric($size))
-            return $size;
+        if (is_numeric($size)) {
+            $size .= 'Kb';
+        }
         if (preg_match('#(\d+)\s*(\w+)#im', $size, $matches)) {
-            $byte = $matches[1];
+            $size = $matches[1];
             $rank = ucfirst($matches[2]);
             switch ($rank) {
                 case self::Pb:
-                    $result = $byte * 1024 * 1024 * 1024 * 1024;
+                    $result = $size * self::Petabyte;
                     break;
                 case self::Tb:
-                    $result = $byte * 1024 * 1024 * 1024;
+                    $result = $size * self::Terabyte;
                     break;
                 case self::Gb:
-                    $result = $byte * 1024 * 1024;
+                    $result = $size * self::Gigabyte;
                     break;
                 case self::Mb:
-                    $result = $byte * 1024;
+                    $result = $size * self::Megabyte;
                     break;
                 case self::Kb:
                 default:
-                    $result = $byte * 1024;
+                    $result = $size * self::Kilobyte;
             }
             return $result;
         }
-        return NULL;
+        return $size;
     }
 
     /**
