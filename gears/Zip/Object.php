@@ -16,7 +16,12 @@ class Zip_Object extends Object {
         'check' => FALSE,
     );
 
-    public function __construct($options = NULL) {
+    public function __construct($file, $options = array()) {
+        if (is_string($file)) {
+            $options['file'] = $file;
+        } elseif (is_array($file)) {
+            $options = $file;
+        }
         parent::__construct($options);
         $this->object(new ZipArchive());
         if ($this->options->create) {
@@ -87,7 +92,7 @@ class Zip_Object extends Object {
             $this->setArchiveComment(base64_encode(serialize($data)));
         } else {
             if ($info = unserialize(base64_decode($this->getArchiveComment()))) {
-                return $info;
+                return new Core_ArrayObject($info);
             } else {
                 $this->error(t('Неверно указана или отсутствует цифровая подпись архива. Принимаются только архивы, выгруженные через панель управления.'));
             }
