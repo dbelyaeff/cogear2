@@ -27,6 +27,8 @@ class Lang_Gear extends Gear {
         'admin/lang/edit/([a-z]+)' => 'createdit_action',
         'admin/lang/delete/([a-z]+)' => 'delete_action',
         'admin/lang/reindex' => 'reindex_action',
+        'admin/lang/index' => 'index_action',
+        'admin/lang/index/(\w+)' => 'index_action',
         'admin/lang/translate' => 'translate_action',
         'admin/lang/translate' => 'translate_action',
         'admin/lang/translate/([//\w_-]+)' => 'translate_action',
@@ -126,8 +128,8 @@ class Lang_Gear extends Gear {
                                     'link' => l('/admin/lang/scan')
                                 ),
                                 array(
-                                    'label' => icon('refresh') . ' ' . t('Пересобрать индекс'),
-                                    'link' => l('/admin/lang/reindex'),
+                                    'label' => icon('list') . ' ' . t('Индекс'),
+                                    'link' => l('/admin/lang/index'),
                                     'class' => 'fl_r'
                                 ),
                             ),
@@ -146,6 +148,27 @@ class Lang_Gear extends Gear {
                                 array(
                                     'label' => icon('plus') . ' ' . t('Добавить язык'),
                                     'link' => l('/admin/lang/add/'),
+                                    'class' => 'fl_r'
+                                ),
+                            ),
+                        ));
+                break;
+            case 3:
+                new Menu_Pills(array(
+                            'name' => 'admin.lang.index',
+                            'title' => TRUE,
+                            'elements' => array(
+                                array(
+                                    'label' => icon('upload') . ' ' . t('Импорт'),
+                                    'link' => l('/admin/lang/index')
+                                ),
+                                array(
+                                    'label' => icon('download-alt') . ' ' . t('Экспорт'),
+                                    'link' => l('/admin/lang/index/export'),
+                                ),
+                                array(
+                                    'label' => icon('refresh') . ' ' . t('Перестроить'),
+                                    'link' => l('/admin/lang/reindex/'),
                                     'class' => 'fl_r'
                                 ),
                             ),
@@ -315,9 +338,9 @@ class Lang_Gear extends Gear {
                 $new[] = $value;
             }
             $info = reset($info);
-            $this->config->set('lang.available',$new);
+            $this->config->set('lang.available', $new);
             $this->store();
-            flash_success(t('Язык <b>«%s»</b> успешно удалён!',$info));
+            flash_success(t('Язык <b>«%s»</b> успешно удалён!', $info));
             back();
         }
     }
@@ -351,8 +374,6 @@ class Lang_Gear extends Gear {
      * Пересобирает индекс из уже переведённых файлов шестерёнков и тем
      */
     public function reindex_action() {
-        $this->hookAdminMenu(1);
-        $this->hookAdminMenu(2);
         $gears_lang_files = File::findByMask(GEARS, '#[^a-z]' . $this->lang . '\.php$#');
         $themes_lang_files = File::findByMask(THEMES, '#[^a-z]' . $this->lang . '\.php$#');
         $lang_files = array_merge($gears_lang_files, $themes_lang_files);
@@ -369,6 +390,54 @@ class Lang_Gear extends Gear {
         $index->save();
         flash_success(t('Индекс успешно пересобран!'));
         back();
+    }
+
+    /**
+     *
+     */
+    public function index_action($action = 'import') {
+        $this->hookAdminMenu(1);
+        $this->hookAdminMenu(3);
+        switch ($action) {
+            case 'import':
+                $form = new Form('Lang/forms/import');
+                if ($result = $form->result()) {
+                    if ($file = $result->file) {
+                        $zip = new Zip(array(
+                                    'file' => $file->path,
+                                    'check' => array('type' => 'lang'),
+                                ));
+
+                        if ($zip->extract(LANG)) {
+                            $info = $zip->info();
+                            $langs = $this->getLangs(array($info['lang']));
+                            success(t('<b>Архив успешно распакован!</b> Индекс для языка <b>«%s»</b> установлен.', implode($langs)),'','content');
+                        }
+                        $zip->close();
+                        unlink($file->path);
+                    }
+                }
+                $form->show();
+                break;
+            case 'export':
+                template('Lang/templates/download')->show();
+                break;
+            case 'download':
+                $file = ROOT.$this->prepareFilePath();
+                $archive = TEMP.DS.  pathinfo($file,PATHINFO_FILENAME).'.zip';
+                $zip = new Zip(array(
+                   'file' => $archive,
+                    'create' => TRUE,
+                ));
+                $zip->add($file);
+                $zip->info(array(
+                    'type' => 'lang',
+                    'lang' => config('lang.lang'),
+                ));
+                $zip->close();
+                File::download($archive, basename($archive),TRUE);
+                break;
+        }
     }
 
     /**
