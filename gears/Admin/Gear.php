@@ -75,7 +75,7 @@ class Admin_Gear extends Gear {
                         'template' => 'Admin/templates/menu',
                         'render' => 'before',
                     ));
-            css($this->folder . DS . 'css' . DS . 'menu.css', 'head');
+            css($this->folder . '/css/menu.css', 'head');
             if ('admin' == $this->router->getSegments(0)) {
                 $this->bc = new Breadcrumb_Object(
                                 array(
