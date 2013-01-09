@@ -66,3 +66,14 @@ fieldset legend .icon{
 label {
     cursor: pointer;
 }
+.error input[type=file]{
+    border: none;
+    color: black;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.error .help-inline{
+    font-size: 0.9em;
+}
