@@ -40,27 +40,33 @@ class User_List extends Db_List_Table {
         if ($this->fields) {
             return $this->fields;
         } else {
-            return $this->setFields(array(
-                        'login' => array(
-                            'label' => t('Имя пользователя'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
-                        ),
-                        'posts' => array(
-                            'label' => t('Публикаций'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
-                            'class' => 't_c w10',
-                        ),
-                        'comments' => array(
-                            'label' => t('Комментариев'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
-                            'class' => 't_c w10',
-                            'access' => (boolean)$this->gears->Comments,
-                        ),
-                        'reg_date' => array(
-                            'label' => t('Зарегистрирован'),
-                            'callback' => new Callback(array($this, 'prepareFields')),
-                        ),
-                    ));
+            $fields = array(
+                'login' => array(
+                    'label' => t('Имя пользователя'),
+                    'callback' => new Callback(array($this, 'prepareFields')),
+                ),
+            );
+            if (cogear()->gears->Post) {
+                $fields += array('posts' => array(
+                        'label' => t('Публикаций'),
+                        'callback' => new Callback(array($this, 'prepareFields')),
+                        'class' => 't_c w10',
+                        ));
+            }
+            if (cogear()->Comments) {
+                $fields += array('comments' => array(
+                        'label' => t('Комментариев'),
+                        'callback' => new Callback(array($this, 'prepareFields')),
+                        'class' => 't_c w10',
+                        ));
+            }
+
+            $fields += array('reg_date' => array(
+                    'label' => t('Зарегистрирован'),
+                    'callback' => new Callback(array($this, 'prepareFields')),
+                ),
+            );
+            return $this->setFields($fields);
         }
     }
 
@@ -73,7 +79,7 @@ class User_List extends Db_List_Table {
     public function prepareFields($user, $key) {
         switch ($key) {
             case 'login':
-                return $user->render('list','avatar.small');
+                return $user->render('list', 'avatar.small');
                 break;
             case 'reg_date':
                 return df($user->reg_date, 'd M Y');
