@@ -26,6 +26,7 @@ class User_Gear extends Gear {
         'user.update' => 'hookUserUpdate',
         'done' => 'hookDone',
         'menu' => 'hookMenu',
+        'user.register' => 'hookUserRegister',
     );
     protected $access = array(
         'edit' => 'access',
@@ -77,7 +78,9 @@ class User_Gear extends Gear {
                 }
                 break;
             case 'delete':
-
+                if (role() == 1) {
+                    return TRUE;
+                }
                 break;
         }
         return FALSE;
@@ -183,16 +186,6 @@ class User_Gear extends Gear {
     }
 
     /**
-     * Hook widgets
-     *
-     * @param type $widgets
-     */
-    public function hookWidgets($widgets) {
-        $widgets->append(new User_Widgets_Top());
-        $widgets->append(new User_Widgets_Онлайн());
-    }
-
-    /**
      * Hook item render
      *
      * @param type $item
@@ -207,42 +200,61 @@ class User_Gear extends Gear {
             }
         }
     }
+
     /**
      * Создание меню в админке
      */
-    public function hookAdminMenu(){
+    public function hookAdminMenu() {
         new Menu_Tabs(array(
-            'name' => 'admin.users',
-            'elements' => array(
-                array(
-                    'label' => icon('user').' '.t('Список'),
-                    'link' => l('/admin/users'),
-                ),
-                array(
-                    'label' => icon('plus').' '.t('Создать'),
-                    'link' => l('/admin/user/create'),
-                    'class' => 'fl_r',
-                )
-            )
-        ));
+                    'name' => 'admin.users',
+                    'elements' => array(
+                        array(
+                            'label' => icon('user') . ' ' . t('Список'),
+                            'link' => l('/admin/users'),
+                        ),
+                        array(
+                            'label' => icon('plus') . ' ' . t('Создать'),
+                            'link' => l('/admin/user/create'),
+                            'class' => 'fl_r',
+                        )
+                    )
+                ));
     }
+
     /**
      * Создание меню редактирования пользователя в админке
      */
-    public function hookUserEditMenu($User){
+    public function hookUserEditMenu($User) {
         $menu = new Menu_Tabs(array(
-            'name' => 'admin.users',
-            'elements' => array(
-                array(
-                    'label' => icon('user').' '.t('Общие'),
-                    'link' => l('/user/edit/'.$User->id),
-                    'active' => check_route('user/edit/(\d+)') OR check_route('admin/user/(\d+)'),
-                ),
-            )
-        ));
+                    'name' => 'admin.users',
+                    'elements' => array(
+                        array(
+                            'label' => icon('user') . ' ' . t('Общие'),
+                            'link' => l('/user/edit/' . $User->id),
+                            'active' => check_route('user/edit/(\d+)') OR check_route('admin/user/(\d+)'),
+                        ),
+                    )
+                ));
         $menu->object($User);
     }
 
+    /**
+     * Отправка письма на почту пользователю о регистрации
+     *
+     * @param object $user
+     */
+    public function hookUserRegister($user) {
+        $mail = new Mail(array(
+                    'name' => 'register',
+                    'subject' => t('Регистрация на сайте %s', config('site.url')),
+                    'body' => t('Вы успешно зарегистрировались на сайте http://%s.
+                        <p>Ваш логин: <b>%s</b>
+                        <p>Пароль хранится в зашифрованном виде, но вы всегда сможете его сбросить, используя ссылку: <a href="%s">%s</a>
+                            ',config('site.url'),$user->login,l('/lostpassword'),l('/lostpassword')),
+                ));
+        $mail->to($user->email);
+        $mail->send();
+    }
 
     /**
      * Menu builder
@@ -254,19 +266,19 @@ class User_Gear extends Gear {
         switch ($name) {
             case 'user':
                 if ($this->user->id) {
-//                    $menu->register(array(
+//                    $menu->add(array(
 //                        'label' => $this->getAvatarImage('avatar.navbar'),
 //                        'link' => $this->getLink(),
 //                        'place' => 'left',
 //                        'title' => FALSE,
 //                    ));
-//                    $menu->register(array(
+//                    $menu->add(array(
 //                        'label' => $this->getName(),
 //                        'link' => NULL,//$this->getLink(),
 //                        'title' => FALSE,
 //                        'place' => 'right',
 //                    ));
-                    $menu->register(array(
+                    $menu->add(array(
                         'label' => icon('eject'),
                         'link' => s('/logout'),
                         'title' => FALSE,
@@ -274,7 +286,7 @@ class User_Gear extends Gear {
                         'order' => 1000,
                     ));
                 } else {
-                    $menu->register(array(
+                    $menu->add(array(
                         'label' => icon('lock'),
                         'link' => l('/login'),
                         'place' => 'right',
@@ -282,7 +294,7 @@ class User_Gear extends Gear {
                 }
                 break;
             case 'admin':
-                $menu->register(array(
+                $menu->add(array(
                     'link' => l('/admin/users'),
                     'label' => icon('user') . ' ' . t('Пользователи'),
                     'order' => 100,
@@ -300,18 +312,18 @@ class User_Gear extends Gear {
                     'template' => 'Bootstrap/templates/tabs',
                     'elements' => array(
                         'login' => array(
-                            'label' => icon('lock').' '.t('Войти'),
+                            'label' => icon('lock') . ' ' . t('Войти'),
                             'link' => l('/login'),
                         ),
                         'lostpassword' => array(
-                            'label' => icon('wrench').' '.t('Забыли пароль?'),
+                            'label' => icon('wrench') . ' ' . t('Забыли пароль?'),
                             'link' => l('/lostpassword'),
                             'access' => check_route('lostpassword'),
                         ),
                         'register' => array(
-                            'label' => icon('ok').' '.t('Регистрация'),
+                            'label' => icon('ok') . ' ' . t('Регистрация'),
                             'link' => l('/register'),
-                            'access' => config('user.register.active',FALSE),
+                            'access' => config('user.register.active', FALSE),
                         ),
                     ),
                     'render' => 'info',
@@ -326,7 +338,7 @@ class User_Gear extends Gear {
         $this->hookAdminMenu();
         $q = $this->input->get('q');
         $tpl = new Template('Search/templates/form');
-        $tpl->action = l('/admin/user/');
+        $tpl->action = l('/admin/users/');
         $q && $tpl->value = $q;
         $tpl->show('info');
         Db_ORM::skipClear();
@@ -340,16 +352,23 @@ class User_Gear extends Gear {
         $list->setFields($fields);
         $list->show();
     }
+
     /**
      * Создание нового пользователя
      */
-    public function admin_create_action(){
+    public function admin_create_action() {
         $this->hookAdminMenu();
         $form = new Form('User/forms/create');
+        if ($result = $form->result()) {
+            $user = new User();
+            $user->object()->extend($result);
+            $user->insert();
+            event('user.register', $user);
+            flash_success(t('Новый пользоватеь успешно создан!'));
+            redirect(l('/admin/users'));
+        }
         $form->show();
     }
-
-
 
     /**
      * Edit action
@@ -367,9 +386,9 @@ class User_Gear extends Gear {
 //        $user->navbar()->show();
         $form = new Form('User/forms/profile');
         $user->password = '';
-        $form->object($user->object);
+        $form->object($user);
         if ($user->id == 1) {
-            $form->elements->delete->options->render = FALSE;
+            $form->delete->options->render = FALSE;
         }
 
         if ($result = $form->result()) {
@@ -379,18 +398,18 @@ class User_Gear extends Gear {
             if ($result->delete && access('User.delete', $user)) {
                 if ($user->delete()) {
                     flash_success(t('Пользователь <b>%s</b> был удалён!', $user->login));
-                    redirect(l());
+                    redirect(l('/admin/users'));
                 }
             }
-            $user->object()->adopt($result);
+            $user->object()->extend($result);
             if ($result->password) {
                 $user->hashPassword();
             } else {
                 unset($user->password);
             }
             if ($user->update()) {
-                flash_success(t('Изменения сохранены!'));
-                back();
+                success(t('Изменения сохранены!'));
+//                back();
             }
         }
         $form->show();
@@ -510,7 +529,7 @@ class User_Gear extends Gear {
                     $user->hash = $this->secure->genHash($user->password);
                     $user->reg_date = time();
                     if ($user->save()) {
-                        event('user.verified', $user);
+                        event('user.register', $user);
                         if ($user->login()) {
                             flash_success(t('Регистрация завершена!'));
                             redirect($user->getLink());
@@ -532,7 +551,7 @@ class User_Gear extends Gear {
                     $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
                                 'name' => 'register.verify',
-                                'subject' => t('Регистрация на сайте %s',config('site.url')),
+                                'subject' => t('Регистрация на сайте %s', config('site.url')),
                                 'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
                             Пожалуйста, перейдите по ссылке ниже, для того чтобы подтвердить данный почтовый ящик:<p>
                             <a href="%s">%s</a>', config('site.url'), $verify_link, $verify_link),
@@ -541,7 +560,7 @@ class User_Gear extends Gear {
                     if ($mail->send()) {
                         $user->save();
                         event('user.confirmation', $user);
-                        success(t('Письмо с подтвержденим регистрации было отправлено на почтовый адрес <b>%s</b>. Следуйте инструкциям.',$user->email));
+                        success(t('Письмо с подтвержденим регистрации было отправлено на почтовый адрес <b>%s</b>. Следуйте инструкциям.', $user->email));
                     }
                 } else {
                     $user->save();

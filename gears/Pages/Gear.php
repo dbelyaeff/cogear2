@@ -70,7 +70,7 @@ class Pages_Gear extends Gear {
      * @param Menu $menu
      */
     public function hookAdminMenu($menu) {
-        $menu->register(array(
+        $menu->add(array(
             'link' => l('/admin/pages'),
             'label' => icon('list') . ' ' . t('Страницы'),
             'order' => 2,

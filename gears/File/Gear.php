@@ -9,6 +9,9 @@
  * @link		http://cogear.ru
  */
 class File_Gear extends Gear {
+    protected $hooks = array(
+        'menu.admin' => 'hookMenuAdmin',
+    );
     protected $routes = array(
         'file' => 'index_action'
     );
@@ -23,25 +26,12 @@ class File_Gear extends Gear {
         Form::$types['file'] = 'File_Element';
         Form::$types['file_url'] = 'File_Url_Element';
     }
-    /**
-     * Stop assets autoload
-     */
-    public function loadAssets() {
-        parent::loadAssets();
+
+    public function hookMenuAdmin($menu){
+
     }
-    /**
-     * Extend post form
-     *
-     * @param type $Form
-     */
-    public function hookPostForm($Form) {
-        $Form->add('files', array(
-            'type' => 'file',
-            'order' => 3.1,
-            'action' => l('/file/upload'),
-            'multiple' => TRUE,
-        ));
-    }
+
+
 
 
     public function index_action(){

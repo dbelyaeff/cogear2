@@ -1,3 +1,6 @@
+<p class="alert alert-info">
+    <?php echo t("Внимание! Если вы выбираете шестерёнку или тему, то вы редактируете их языковые файлы. Если не используете фильтр, то вы редактируете индекс текущего языка.")?>
+</p>
 <?php
 $base = l('/admin/lang/translate/');
 echo template('Lang/templates/choose', array('path' => $path, 'base' => $base))

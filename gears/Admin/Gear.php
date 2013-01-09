@@ -33,7 +33,7 @@ class Admin_Gear extends Gear {
      */
     public function hookGearRequest($Gear) {
         if ($Gear !== $this && 'admin' == $this->router->getSegments(0)) {
-            $this->bc && $this->bc->register(array(
+            $this->bc && $this->bc->add(array(
                         'link' => $this->router->getUri(),
                         'label' => $Gear->name,
                     ));
@@ -44,7 +44,7 @@ class Admin_Gear extends Gear {
      * Выводим меню на странице настроек
      */
     public function hookSiteSettingsMenu() {
-        $this->bc->register(array(
+        $this->bc->add(array(
             'link' => l('/admin/site'),
             'label' => t('Сайт'),
         ));
@@ -113,7 +113,7 @@ class Admin_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
-                $menu->register(array(
+                $menu->add(array(
                     'label' => icon('home'),
                     'link' => l('/admin'),
                     'active' => check_route('admin$') OR check_route('^admin/dashboard'),
@@ -136,7 +136,7 @@ class Admin_Gear extends Gear {
                         )
                     ),
                 ));
-                $menu->register(array(
+                $menu->add(array(
                     'link' => l('/admin/site'),
                     'label' => icon('inbox') . ' ' . t('Сайт'),
                     'order' => 1000,

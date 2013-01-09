@@ -43,7 +43,7 @@ class Menu_Object extends Observer {
         // Регистрируем элементы меню из конфига
         if ($this->options->elements) {
             foreach ($this->options->elements as $item) {
-                $this->register($item->toArray());
+                $this->add($item->toArray());
             }
         }
     }
@@ -54,7 +54,7 @@ class Menu_Object extends Observer {
      * @param string $path
      * @param Menu_Item $item
      */
-    public function register($item) {
+    public function add($item) {
         if (is_array($item)) {
             isset($item['order']) OR $item['order'] = $this->pointer++;
             $item['level'] = count(explode('.', $item['order']));

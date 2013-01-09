@@ -138,7 +138,7 @@ class Post_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'user':
-                access('Post.create') && $menu->register(array(
+                access('Post.create') && $menu->add(array(
                             'label' => icon('pencil') . ' ' . t('Написать'),
                             'link' => l('/post/create/'),
                             'place' => 'left',
@@ -147,14 +147,14 @@ class Post_Gear extends Gear {
                         ));
                 break;
             case 'user.profile.tabs':
-                $menu->register(array(
+                $menu->add(array(
                     'label' => t('Публикации') . ' <sup>' . $menu->object()->posts . '</sup>',
                     'link' => $menu->object()->getLink() . '/posts/',
                     'order' => 2,
                     'title' => t('Публикации'),
                 ));
                 if ($menu->object()->id == $this->user->id) {
-                    $menu->register(array(
+                    $menu->add(array(
                         'label' => t('Черновики') . ' <sup>' . $this->user->drafts . '</sup>',
                         'link' => $menu->object()->getLink() . '/drafts/',
                         'order' => 2.1,

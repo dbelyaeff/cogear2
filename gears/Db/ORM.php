@@ -20,11 +20,13 @@ class Db_ORM extends Object {
      */
     protected static $cached = array();
     protected $cache_path = '';
+
     /**
      * Флаг кеширования
      * @var type
      */
     protected $caching = TRUE;
+
     /**
      * Table name
      *
@@ -213,23 +215,22 @@ class Db_ORM extends Object {
      * @param type $id
      * @param type $object
      */
-    public function cache($id, $object = NULL,$tags = array(), $ttl = 3600) {
+    public function cache($id, $object = NULL, $tags = array(), $ttl = 3600) {
         // Возможность переключения кеширования
-        if(is_bool($id)){
+        if (is_bool($id)) {
             $this->caching = $id;
             return;
         }
         // Если кеширования выключено и происходит запись — возвращаем NULL
-        if(!$this->caching && NULL === $object){
+        if (!$this->caching && NULL === $object) {
             return NULL;
         }
         // Если работает Мемкеш
         if (Cache_Driver_Memcache::check()) {
-            $key = $this->table.'.'.$id;
-            if($object){
-                return cache($key,$object,$tags,$ttl);
-            }
-            else {
+            $key = $this->table . '.' . $id;
+            if ($object) {
+                return cache($key, $object, $tags, $ttl);
+            } else {
                 return cache($key);
             }
         } else {
@@ -365,8 +366,9 @@ class Db_ORM extends Object {
             $data = $this->getData();
         }
         event('Db_ORM.insert', $this, $data);
-        if($result = $this->object()->{$this->primary} = $this->db->insert($this->table, $data)){
-            $this->cache($result,$this->object());
+        if ($result = $this->db->insert($this->table, $data)) {
+            $this->object()->{$this->primary} = $result;
+            $this->cache($result, $this->object());
         }
         return $result;
     }
@@ -384,8 +386,8 @@ class Db_ORM extends Object {
             $data = $this->getData();
         }
         event('Db_ORM.update', $this, $data);
-        if($result = $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}))){
-            $this->cache($this->{$this->primary},$this->object());
+        if ($result = $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}))) {
+            $this->cache($this->{$this->primary}, $this->object());
         }
         return $result;
     }
@@ -410,7 +412,7 @@ class Db_ORM extends Object {
             event('Db_ORM.delete', $this, $data, $result);
         }
         // Чистим кеш
-        $this->cache($this->{$this->primary},FALSE,array(),0);
+        $this->cache($this->{$this->primary}, FALSE, array(), 0);
         $this->clear();
         return $result;
     }

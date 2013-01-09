@@ -25,7 +25,7 @@ class Menu_Gear extends Gear {
      * @param Menu $menu
      */
     public function hookMenuAdminTheme($menu){
-        $menu->register(array(
+        $menu->add(array(
             'label' => t('Меню'),
             'link' => l('/admin/theme/menu'),
             'title' => FALSE,

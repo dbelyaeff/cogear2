@@ -36,7 +36,7 @@ class Gears_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
-                $menu->register(array(
+                $menu->add(array(
                     'link' => l('/admin/gears'),
                     'label' => icon('cog') . ' ' . t('Шестеренки'),
                     'order' => 1,

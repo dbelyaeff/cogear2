@@ -73,6 +73,7 @@ class Image_Driver_GD extends Image_Driver_Abstract {
     public function resize($width, $height, $fit = 'width', $scale = 'any') {
         $source_width = $this->smartSize($width, 'width');
         $source_height = $this->smartSize($height, 'height');
+        $args = func_get_args();
         // Проверяем тип масштабирования
         switch ($fit) {
             // Если подравниваем по ширине, то приводим высоту к нужным пропорциям

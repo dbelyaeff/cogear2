@@ -186,7 +186,7 @@ class Lang_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'admin':
-                $menu->register(array(
+                $menu->add(array(
                     'link' => l('/admin/lang'),
                     'label' => icon('comment') . ' ' . t('Язык'),
                     'order' => 200,
