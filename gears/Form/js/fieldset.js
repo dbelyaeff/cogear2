@@ -24,5 +24,9 @@ $(document).ready(function(){
                 $chevron.removeClass('icon-chevron-down').addClass('icon-chevron-right');
             }
         })
+        // Если в форме есть ошибки, fieldset должен быть раскрыт
+        if($legend.find('.error').length && $legend.hasClass('collapsed')){
+            $legend.click();
+        }
     })
 })
