@@ -30,12 +30,10 @@ class File_Element extends Form_Element_Abstract {
         $file = new File_Upload($this->options);
         if ($value = $file->upload()) {
             $this->is_fetched = TRUE;
-            $this->value = $value;
         } else {
             $this->errors = $file->getErrors();
-            $this->value = $this->options->value;
         }
-        return $this->value;
+        return $value ? $value : $this->value = $this->options->value;
     }
 
     /**

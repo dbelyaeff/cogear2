@@ -37,13 +37,12 @@ class Image_Element extends File_Element {
         if ($result = $this->image->upload()) {
             $this->is_fetched = TRUE;
             $this->image = $this->image->getInfo();
-            $this->value = File::pathToUri($result->path, UPLOADS);
+            $result= File::pathToUri($result->path, UPLOADS);
         } else {
             $this->errors = $this->image->getErrors();
             $this->notices = $this->image->getNotices();
-            $this->value = $this->options->value;
         }
-        return $this->value;
+        return $result;
     }
 
     /**

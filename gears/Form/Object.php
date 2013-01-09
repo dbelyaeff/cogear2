@@ -238,9 +238,10 @@ class Form_Object extends Object {
         if (cogear()->input->$method() OR $_FILES) {
             foreach ($this->elements as $name => $element) {
                 $value = $element->result();
-                if ($value !== FALSE) {
+                if ($value !== NULL) {
                     $result[$name] = $value;
-                } else {
+                }
+                if($value === FALSE){
                     $is_valid = FALSE;
                 }
             }
