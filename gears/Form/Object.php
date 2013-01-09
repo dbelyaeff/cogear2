@@ -114,7 +114,7 @@ class Form_Object extends Object {
     public static function filterOptions($options){
         // Если указаны напрямую элементы, значит данные по старому идут
         // Проверка на name указана для определения настроек формы, а не её элемента
-        if($options->elements && $options->name){
+        if(isset($options['elements']) && isset($options['name'])){
             return $options;
         }
         $results = new Core_ArrayObject();
@@ -125,6 +125,9 @@ class Form_Object extends Object {
             }
             else {
                 $results->elements OR $results->elements = new Core_ArrayObject();
+                if(is_array($value) OR $value instanceof Core_ArrayObject){
+                    $value = self::filterOptions($value);
+                }
                 $results->elements->$key = $value;
             }
         }
@@ -138,7 +141,6 @@ class Form_Object extends Object {
      */
     public function add($name, $config = array()) {
         !($config instanceof Core_ArrayObject) && $config = new Core_ArrayObject($config);
-        $config = Form::filterOptions($config);
         if ($this->defaults->$name) {
             $this->defaults->$name->extend($config);
             $config = $this->defaults->$name;
