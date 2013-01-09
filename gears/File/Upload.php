@@ -9,7 +9,7 @@
  * @link		http://cogear.ru
 
  */
-class File_Upload extends Adapter {
+class File_Upload extends Notify_Handler {
 
     /**
      * Info about uploaded file
@@ -51,13 +51,6 @@ class File_Upload extends Adapter {
     );
 
     /**
-     * Errors
-     *
-     * @var type
-     */
-    public $errors = array();
-
-    /**
      * Upload file
      *
      * @param string $name
@@ -65,8 +58,12 @@ class File_Upload extends Adapter {
      * @return string|boolean
      */
     public function upload() {
-        if (!isset($_FILES[$this->name]))
+        if (!isset($_FILES[$this->name]) OR empty($_FILES[$this->name]['name'])) {
+            if (strpos($this->options->validators->toString(), 'Required') !== FALSE) {
+                $this->error(t('Выберите файл для загрузки.'));
+            }
             return FALSE;
+        }
         $files = $_FILES[$this->name];
         if (is_array($files['name'])) {
             $files_upload = array();
@@ -94,24 +91,18 @@ class File_Upload extends Adapter {
     private function uploadOne($file) {
         $file = new Core_ArrayObject($file);
         event('file.preupload', $file);
-        $file['errors'] = array();
         switch ($file['error']) {
             case UPLOAD_ERR_CANT_WRITE:
-                $file['errors'][] = t('Не удаётся загрузить файл. Проверьте права на временую папку загрузки.');
+                $this->error(t('Не удаётся загрузить файл. Проверьте права на временую папку загрузки.'));
                 break;
             case UPLOAD_ERR_INI_SIZE:
-                $file['errors'][] = t('Файл больше максимально дозволенного размера, указанного в <b>php.ini</b> (%s).', ini_get('upload_max_filesize'));
-                break;
-            case UPLOAD_ERR_NO_FILE:
-                if ($this->options->validators->findByValue('Required') OR $this->options->required) {
-                    $file['errors'][] = t('Вы не выбрали файл для загрузки.');
-                }
+                $this->error(t('Файл больше максимально дозволенного размера, указанного в <b>php.ini</b> (%s).', ini_get('upload_max_filesize')));
                 break;
             case UPLOAD_ERR_PARTIAL:
-                $file['errors'][] = t('Пожалуйста, загрузите файл снова.');
+                $this->error(t('Пожалуйста, загрузите файл снова.'));
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                $file['errors'][] = t('Неверно указана временная директория загрузки.');
+                $this->error(t('Неверно указана временная директория загрузки.'));
                 break;
         }
         if ($file['error'] == UPLOAD_ERR_OK) {
@@ -123,30 +114,29 @@ class File_Upload extends Adapter {
                 foreach ($types as $type) {
                     $type == $ext && $result = TRUE;
                 }
-                !$result && $file['errors'][] = t('Разрешены только следующие типы файлов: <b>%s</b>.', $types->toString('</b>, <b>'));
+                !$result && $this->error(t('Разрешены только следующие типы файлов: <b>%s</b>.', $types->toString('</b>, <b>')));
             }
             $result = File_Mime::check($file['name'], $file['type']);
             if ($result !== TRUE) {
-                $file['errors'][] = t('Загружаемый вами файл имеет некорректный MIME-типа. Он должен иметь тип <b>%s</b>, но имеет иной тип — <b>%s</b>', $file['type'], $result);
+                $this->error(t('Загружаемый вами файл имеет некорректный MIME-типа. Он должен иметь тип <b>%s</b>, но имеет иной тип — <b>%s</b>', $file['type'], $result));
             }
             $this->options->maxsize && $this->checkMaxSize($file['size'], $this->options->maxsize);
             if (!$this->options->path) {
-                $file['errors'][] = t('Путь для загрузки файла не указан.');
+                $this->error(t('Путь для загрузки файла не указан.'));
             }
             strpos($this->options->path, ROOT) !== FALSE OR $this->options->path = UPLOADS . DS . $this->options->path;
             File::mkdir($this->options->path);
             if (!is_dir($this->options->path)) {
-                $file['errors'][] = t('Путь загрузки файла <b>%s</b> не существует.', NULL, $this->options->path);
+                $this->error(t('Путь загрузки файла <b>%s</b> не существует.', NULL, $this->options->path));
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
-            if ($file['errors']) {
-                return $file;
+            if ($this->errors->count()) {
+                return FALSE;
             } else {
                 return $this->file = $this->process($file);
             }
         }
-        ;
         return FALSE;
     }
 
@@ -177,7 +167,7 @@ class File_Upload extends Adapter {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $file['errors'] = t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', 'File', File::fromBytes($maxsize, 'Kb'), File::fromBytes($size, 'Kb'));
+            $this->error(t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', File::fromBytes($maxsize), File::fromBytes($size, 'auto',2)));
             return FALSE;
         }
         return TRUE;
