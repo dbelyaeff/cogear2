@@ -98,6 +98,11 @@ class File_Upload extends Notify_Handler {
             case UPLOAD_ERR_INI_SIZE:
                 $this->error(t('Файл больше максимально дозволенного размера, указанного в <b>php.ini</b> (%s).', ini_get('upload_max_filesize')));
                 break;
+            case UPLOAD_ERR_NO_FILE:
+                if (strpos($this->options->validators->toString(), 'Required') !== FALSE) {
+                    $this->error(t('Выберите файл для загрузки.'));
+                }
+                break;
             case UPLOAD_ERR_PARTIAL:
                 $this->error(t('Пожалуйста, загрузите файл снова.'));
                 break;
@@ -131,7 +136,7 @@ class File_Upload extends Notify_Handler {
             }
             $file['name'] = $this->prepareFileName($file['name']);
             $file['path'] = $this->options->path . DS . $file['name'];
-            if ($this->errors->count()) {
+            if ($this->errors) {
                 return FALSE;
             } else {
                 return $this->file = $this->process($file);
@@ -167,7 +172,7 @@ class File_Upload extends Notify_Handler {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $this->error(t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', File::fromBytes($maxsize), File::fromBytes($size, 'auto',2)));
+            $this->error(t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', File::fromBytes($maxsize), File::fromBytes($size, 'auto', 2)));
             return FALSE;
         }
         return TRUE;

@@ -1,5 +1,12 @@
-@charset "UTF-8";
-/*
+.file-notice{
+    font-size: 0.87em;
+    margin: 0;
+}
+.file-notice li{
+    list-style: none;
+}
+/*@charset "UTF-8";
+
  * jQuery File Upload Plugin CSS Example 1.0.1
  * https://github.com/blueimp/jQuery-File-Upload
  *
@@ -8,8 +15,8 @@
  *
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
- */
+
 
 body{
   padding-top: 60px;
-}
+}*/

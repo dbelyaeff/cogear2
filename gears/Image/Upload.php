@@ -10,8 +10,13 @@
  */
 class Image_Upload extends File_Upload {
 
+    /**
+     * Параметры
+     *
+     * @var array
+     */
     protected $options = array(
-        'allowed_types' => 'jpg,png,gif,ico',
+        'allowed_types' => array('jpg','png','gif','ico'),
         'min' => array(
             'width' => 0,
             'height' => 0,
@@ -27,19 +32,20 @@ class Image_Upload extends File_Upload {
     );
 
     /**
-     * Image width
+     * Ширина изображения
+     *
      * @var int
      */
     protected $width;
 
     /**
-     * Image height
+     * Высота изображения
      * @var int
      */
     protected $height;
 
     /**
-     * Image type
+     * Тип изображения
      *
      * IMAGETYPE_XXX
      *
@@ -48,28 +54,30 @@ class Image_Upload extends File_Upload {
     protected $type;
 
     /**
-     * Image mime
+     * MIME-тип
      *
      * @var string
      */
     protected $mime;
 
     /**
-     * Preset name
+     * Конструктор
      *
-     * @var string
+     * @param array $options
      */
-    protected $preset;
-
-    /**
-     * Upload
-     *
-     * @return  boolean
-     */
-    public function upload() {
+    public function __construct($options = array()) {
+        parent::__construct($options);
         if ($this->options->preset && $preset = config('image.presets.' . $this->options->preset)) {
             $preset->options && $this->options->extend($preset->options);
         }
+    }
+
+    /**
+     * Загрузка
+     *
+     * @return  array|Core_ArrayObject
+     */
+    public function upload() {
         if ($result = parent::upload()) {
             if (is_array($result)) {
                 foreach ($result as $file) {
@@ -83,9 +91,9 @@ class Image_Upload extends File_Upload {
     }
 
     /**
-     * Post process
+     * Постобработка
      *
-     * @param type $file
+     * @param  array|Core_ArrayObject
      */
     public function postProcess($file) {
         $image = new Image($file->path);
@@ -99,24 +107,7 @@ class Image_Upload extends File_Upload {
     }
 
     /**
-     * Process upload
-     *
-     * @return boolean|string
-     */
-    protected function process($file) {
-        if ($file = parent::process($file)) {
-//            $this->getInfo($file->path);
-//            if ($this->options->max->width && $this->options->max->height && !$this->checkMax($this->options->max->width, $this->options->max->height)
-//                    OR $this->options->min->width && $this->options->min->height && !$this->checkMin($this->options->min->width, $this->options->min->height)) {
-//                @unlink($file->path);
-//                $this->uploaded = FALSE;
-//            }
-        }
-        return $file;
-    }
-
-    /**
-     * Get info about uploaded image
+     * Получение информаици об изображении
      *
      * @return array
      */
@@ -134,34 +125,34 @@ class Image_Upload extends File_Upload {
     }
 
     /**
-     * Check image dimensions for maximum
+     * Проверка границ на максимум
      *
-     * @param   int $width Max width
-     * @param   int $height Max height
+     * @param   int $width Максимальная ширина
+     * @param   int $height Максимальная высота
      * @param   boolean $strict
      * @return  boolean
      */
     public function checkMax($width, $height, $strict = NULL) {
         if (($strict && $this->width > $width && $this->height > $height) OR
                 ($this->width > $width OR $this->height > $height)) {
-            $this->errors[] = t('Maximum image dimensions are <b>%sx%s</b>pixels.', 'Image', $width, $height);
+            $this->error(t('Максимальный размер изображения должен быть не более <b>%sx%s</b> пикселей.', $width, $height));
             return FALSE;
         }
         return TRUE;
     }
 
     /**
-     * Check image dimensions for minimum
+     * Проверка границ на минимум
      *
-     * @param   int $width Min width
-     * @param   int $height Min height
+     * @param   int $width Максимальная ширина
+     * @param   int $height Максимальная высота
      * @param   boolean $strict
      * @return  boolean
      */
     public function checkMin($width, $height, $strict = NULL) {
         if (($strict && $this->width < $width && $this->height < $height) OR
                 ($this->width < $width OR $this->height < $height)) {
-            $this->errors[] = t('Minimal image dimensions are <b>%sx%s</b>pixels.', 'Image', $width, $height);
+            $this->error(t('Минимальный размер изображения должен быть не менее <b>%sx%s</b> пикселов.', $width, $height));
             return FALSE;
         }
         return TRUE;

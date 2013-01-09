@@ -27,7 +27,7 @@ class File_Gear extends Gear {
      * Stop assets autoload
      */
     public function loadAssets() {
-        //parent::loadAssets();
+        parent::loadAssets();
     }
     /**
      * Extend post form
@@ -48,14 +48,19 @@ class File_Gear extends Gear {
         $form = new Form(array(
             '#name' => 'file.upload',
             'file' => array(
-                '#type' => 'file',
+                '#type' => 'image',
                 '#label' => t('Файл'),
+                '#maxsize' => 500,
+                '#allowed_types' => 'jpg',
+                '#validate' => array('Required'),
             ),
             'submit' => array(
                 '#label' => t('Загрузить'),
             ),
         ));
+        if($result = $form->result()){
 
+        }
         $form->show();
     }
 

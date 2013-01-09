@@ -18,6 +18,14 @@ class Image_Gear extends Gear {
     protected $enabled = TRUE;
 
     /**
+     * Конструктор
+     */
+    public function __construct($config) {
+        parent::__construct($config);
+        Form::$types['image'] = 'Image_Element';
+    }
+
+    /**
      * Hook form render
      *
      * @param type $Form
