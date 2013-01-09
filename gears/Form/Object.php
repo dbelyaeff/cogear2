@@ -112,7 +112,8 @@ class Form_Object extends Object {
     public static function filterOptions($options){
         // Если указаны напрямую элементы, значит данные по старому идут
         // Проверка на name указана для определения настроек формы, а не её элемента
-        if(isset($options['elements']) && isset($options['name'])){
+        $first_key = $options->getFirstKey();
+        if($first_key[0] !== '#'){
             return $options;
         }
         $results = new Core_ArrayObject();

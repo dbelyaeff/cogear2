@@ -298,7 +298,14 @@ class Core_ArrayObject extends ArrayObject {
     public function toJSON(){
         return json_encode($this->toArray());
     }
-
+    /**
+     * Выбирает первый ключ
+     */
+    public function getFirstKey(){
+        foreach($this as $key=>$value){
+            return $key;
+        }
+    }
     /**
      * Returns data in serialized form
      *
