@@ -11,6 +11,7 @@ Notify.prototype = {
             }
         })
         $.jGrowl.defaults.closer = false;
+        $.jGrowl.defaults.check = 2000;
     },
     growl: function($body,$config){
         $options = {
