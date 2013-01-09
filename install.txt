@@ -1,25 +1,20 @@
-To install beta version of Cogear you need to do a several steps.
+Для установки системы вам понадобится произвести слеующие процедуры.
 
-1. Download Cogear2 beta from github and place it to proper web-server folder.
-http://github.com/codemotion/cogear2/
+1. Загрузите систему на сервер в папку сайта так, чтобы файл index.php лежал в его корне.
+2. Откройте сайт в браузере.
 
-2. Create new database using phpMyAdmin or some other way.
-Couple of params you need to remeber — host, database user, name and password.
+Если автоматическая установка запустилась, следуйте получаемым инструкциям для её завершения.
 
-3. Import database dump from /cogear.sql to created database.
+Если автоматическая установка не завершилась, то вам необходимо сделать следующее:
+1. Установить права записи(0777 или 0755 в зависимости от настроек сервера) на следующие файлы и папки:
+/cache
+/temp
+/uploads
+/config.php
+/site.php
 
-4. Open /site.php and change string
+2. Заново запустить процедуру установки.
 
-'dsn' => 'mysql://root@localhost/cogear',
+После завершения работы установщика, можно закрыть файл /site.php от записи, установив ему права 0644.
 
-to
-
-'dsn' => 'mysql://database_user[:database_password]@database_host/database_name',
-
-Where [] — means "Optional".
-
-Also change 'site' => 'url' param to your site domain without http:// and www.
-
-Just like 'cogear.new' or 'localhost'.
-
-5. Start your web-site and finish the installation process.
+Приятной работы!
