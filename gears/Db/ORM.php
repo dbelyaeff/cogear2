@@ -385,6 +385,9 @@ class Db_ORM extends Object {
         } else {
             $data = $this->getData();
         }
+        if(isset($data[$this->primary])){
+            unset($data[$this->primary]);
+        }
         event('Db_ORM.update', $this, $data);
         if ($result = $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}))) {
             $this->cache($this->{$this->primary}, $this->object());
