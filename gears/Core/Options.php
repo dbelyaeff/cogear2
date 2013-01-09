@@ -1,15 +1,12 @@
 <?php
 
 /**
- *  Options
+ *  Опции
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Беляев Дмитрий
+ * @copyright		Copyright (c) 2011-2013, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Options extends Core_ArrayObject {
 
@@ -19,6 +16,7 @@ class Options extends Core_ArrayObject {
      * @var array
      */
     protected $options = array();
+
     const SELF = 1;
 
     /**
@@ -28,9 +26,19 @@ class Options extends Core_ArrayObject {
      * @param string $storage
      */
     public function __construct($options = array(), $place = 0) {
-        $this->options = new Core_ArrayObject((array)$this->options);
+        $this->setOptions($options, $place);
+    }
+
+    /**
+     * Установка опций
+     *
+     * @param array $options
+     * @param int $place
+     */
+    public function setOptions($options, $place = 0) {
+        $this->options = new Core_ArrayObject((array) $this->options);
         if (self::SELF == $place) {
-            foreach($options as $key=>$value){
+            foreach ($options as $key => $value) {
                 $this->$key = $value;
             }
         } else {
