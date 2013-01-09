@@ -83,16 +83,16 @@ class File_Object extends Adapter {
             $measure = ucfirst($measure);
         switch ($measure) {
             case self::Pb:
-                $result = $byte / 1024 / 1024 / 1024 / 1024;
+                $result = $bytes / 1024 / 1024 / 1024 / 1024;
                 break;
             case self::Tb:
-                $result = $byte / 1024 / 1024 / 1024;
+                $result = $bytes / 1024 / 1024 / 1024;
                 break;
             case self::Gb:
-                $result = $byte / 1024 / 1024;
+                $result = $bytes / 1024 / 1024;
                 break;
             case self::Mb:
-                $result = $byte / 1024;
+                $result = $bytes / 1024;
                 break;
             case self::Kb:
             default:
