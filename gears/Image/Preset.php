@@ -43,6 +43,7 @@ class Image_Preset extends Core_ArrayObject {
     public function parseAction($action) {
         if (preg_match('#^(\w+)\((.+)\)$#', $action, $matches)) {
             $action = $matches[1];
+            $matches[2] = str_replace(' ','',$matches[2]);
             $args = explode(',', $matches[2]);
             $callback = new Callback(array($this->image, $action));
             $callback->setArgs($args);
