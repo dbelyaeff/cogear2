@@ -25,7 +25,7 @@ $(document).ready(function(){
             }
         })
         // Если в форме есть ошибки, fieldset должен быть раскрыт
-        if($legend.find('.error').length && $legend.hasClass('collapsed')){
+        if($this.find('.error').length && $this.hasClass('collapsed')){
             $legend.click();
         }
     })
