@@ -1,1 +1,1 @@
-<label class="checkbox"><input type="checkbox" name="<?php echo $element->name?>" <?php if($element->checked){ echo 'checked="checked"';}?>> <?php echo $element->text?></label>
+<label class="checkbox"><?php echo HTML::input($element->options)?> <?php echo $element->text?></label>

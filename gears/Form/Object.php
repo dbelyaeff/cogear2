@@ -110,8 +110,7 @@ class Form_Object extends Object {
      * @param array $options
      */
     public static function filterOptions($options){
-        // Если указаны напрямую элементы, значит данные по старому идут
-        // Проверка на name указана для определения настроек формы, а не её элемента
+        !($options instanceof Core_ArrayObject) && $options = new Core_ArrayObject($options);
         $first_key = $options->getFirstKey();
         if($first_key[0] !== '#'){
             return $options;
@@ -166,6 +165,7 @@ class Form_Object extends Object {
         }
         if ($config->access !== FALSE) {
             if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
+                $config->tabindex OR $config->tabindex = $this->elements->count()+1;
                 $this->elements->$name = new self::$types[$config->type]($config);
             }
         }
