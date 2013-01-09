@@ -33,16 +33,9 @@ function validateForm($id,data){
     });
 }
 $(document).ready(function(){
-    $('form').on('click','.error',function(){
+    $('form .error').on('click',function(){
         $(this).removeClass('error');
-//        $group  = $(this);
-//        $element = $('.form-element',$group);
-//        $element.off('change.error').one('change.error',function(){
-//            if($group.hasClass('error')){
-//                $group.removeClass('error');
-//                $group.find('.help-inline').remove();
-//            }
-//        });
+        $(this).find('.help-inline').slideUp();
     });
     $('.delete').on('click',function(){
        if(!confirm(t('Вы действительно хотите это сделать?'))){
