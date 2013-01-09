@@ -25,6 +25,7 @@ return array(
         '#validators' => array('Email', 'Required', 'User_Validate_EmailReg'),
     ),
     'actions' => array(
+        '#class' => 'form-actions',
         'save' => array(
             '#name' => 'save',
             '#type' => 'submit',
