@@ -9,10 +9,12 @@
  * @link		http://cogear.ru
  */
 class Install_Gear extends Gear {
+
     protected $routes = array(
         'install' => 'index',
         'install/(\w+)' => 'index',
     );
+
     /**
      * Init
      */
@@ -82,7 +84,16 @@ class Install_Gear extends Gear {
                     $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;
                     $config->key OR $config->key = md5(md5(time()) + time() + $config->site->name);
-                    $config->database = Db::parseDSN($result->database);
+                    $result->port OR $result->port = 3306;
+                    $config->database = array(
+                        'driver' => config('database.driver'),
+                        'host' => $result->host,
+                        'base' => $result->base,
+                        'user' => $result->user,
+                        'pass' => $result->pass,
+                        'port' => $result->port,
+                        'prefix' => $result->prefix,
+                    );
                     $db = Db::factory('temp', $config->database);
                     if (!$db->connect()) {
                         if ($result->create_db && $db->connect(FALSE)) {
@@ -97,7 +108,7 @@ class Install_Gear extends Gear {
                         $config->store(TRUE);
                         redirect('/install/finish');
                     } else {
-                        error(t("Не удалось установить подключение к базе данных."));
+                        error(t("Не удалось установить подключение к базе данных."),'','content');
                     }
                 } else {
                     $form->save->label = t('Попробуйте снова');
