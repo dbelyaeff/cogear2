@@ -11,7 +11,7 @@
  */
 class Template_Object extends Core_ArrayObject {
 
-    protected $name = '';
+    public $name = '';
     protected $path = '';
     protected $code = '';
     protected $vars = array();
@@ -23,11 +23,13 @@ class Template_Object extends Core_ArrayObject {
      */
     public function __construct($name) {
         $this->name = $name;
+        event('template',$this);
+        event('template.'.$name,$this);
         $path = Gear::preparePath($this->name);
         if (file_exists($path)) {
             $this->path = $path;
         } else {
-            $message = t('Template <b>%s</b> is not found by path <u>%s</u>.', $name, $path);
+            $message = t('Шаблон <b>%s</b> не найден по пути <u>%s</u>.', $name, $path);
             exit($message);
         }
     }
