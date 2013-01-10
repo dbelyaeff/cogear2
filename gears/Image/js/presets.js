@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $('a.preset').each(function(){
+    $('article a.preset').each(function(){
         $a = $(this);
         $a.fancybox({
             maxWidth	: 800,
