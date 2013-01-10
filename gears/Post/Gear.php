@@ -298,7 +298,7 @@ class Post_Gear extends Gear {
             if ($result->delete && access('Post.delete', $post)) {
                 if ($post->delete()) {
                     flash_success(t('Пост удалён!'));
-                    redirect(user()->getLink());
+                    redirect();
                 }
             }
             if ($result->preview) {
