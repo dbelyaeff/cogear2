@@ -1,7 +1,6 @@
-<p>
-    <a class="btn" id="upload-button">
-        <?php echo icon('upload') . ' ' . t("Загрузить изображение"); ?>
-    </a></p>
+<a class="btn" id="upload-button">
+    <?php echo icon('upload') . ' ' . t("Загрузить изображение"); ?>
+</a>
 <script>
     $('#upload-button').uploader({
         url: '<?php echo l('/files/upload/editor/image') ?>',
@@ -13,7 +12,7 @@
             if(data.code){
                 $el = $('[name=body]');
                 if($el.redactor){
-                  $el.insertHtml("<p align=\"center\">" + data.code + "</p>")
+                    $el.insertHtml("<p align=\"center\">" + data.code + "</p>")
                 }
                 else {
                     $el.val($el.val() + "\n<p align=\"center\">" + data.code + "</p>\n");

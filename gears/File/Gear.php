@@ -62,7 +62,7 @@ class File_Gear extends Gear {
      */
     public function hookFormEditorRender($Editor) {
         $this->initUploader();
-        $Editor->options->after = template('File/templates/hooks/editor')->render();
+        $Editor->options->after->append(template('File/templates/hooks/editor')->render());
     }
 
 //    /**
