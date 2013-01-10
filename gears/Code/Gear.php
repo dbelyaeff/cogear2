@@ -14,7 +14,8 @@ class Code_Gear extends Gear {
         'jevix' => 'hookJevix',
         'post.edit' => 'hookPostEdit',
         'menu.admin' => 'hookMenuAdmin',
-        'form.element.editor.render' => 'hookFormEditorRender'
+        'form.element.editor.render' => 'hookFormEditorRender',
+        'parse' => 'hookParse'
     );
     protected $routes = array(
         'admin/code' => 'admin_action',
@@ -27,26 +28,24 @@ class Code_Gear extends Gear {
     );
 
     /**
-     * Инициализация
-     */
-    public function init() {
-        parent::init();
-        Parser_Gear::$codes['#\[code\s+snippet=(\d+)\]#'] = array($this, 'hookParser');
-    }
-
-    /**
      * Парсинг кода
      */
-    public function hookParser($matches) {
-        if ($matches) {
-            $snippet = new Code_Snippet();
-            $snippet->id = $matches[1];
-            if ($snippet->find()) {
-                return $snippet->render();
+    public function hookParse($item) {
+        if ($item->body && preg_match_all('#\[code\s+snippet=(\d+)\]#', $item->body, $matches)) {
+            for ($i = 0; $i < sizeof($matches[0]); $i++) {
+                foreach ($matches as $match) {
+                    $snippet = new Code_Snippet();
+                    $snippet->id = $matches[1][$i];
+                    if ($snippet->find()) {
+                        $item->body = str_replace($matches[0][$i], $snippet->render(), $item->body);
+                    } else {
+                        $item->body = str_replace($matches[0][$i], t('<i>Парсер не нашёл указазного сниппета в базе данных.</i>'), $item->body);
+                    }
+                }
             }
         }
-        return t('<i>Парсер не нашёл указазного сниппета в базе данных.</i>');
     }
+
     /**
      * Хук для вывода кнопки под редактором
      *
@@ -55,6 +54,7 @@ class Code_Gear extends Gear {
     public function hookFormEditorRender($Editor) {
         $Editor->options->after->append(template('Code/templates/hooks/editor')->render());
     }
+
     /**
      * Добавлени пункта в админ меню
      *
@@ -122,10 +122,10 @@ class Code_Gear extends Gear {
         $this->hookAdminMenu();
         $snippet = new Code_Snippet();
         $snippet->order('id', 'DESC');
-        if($q = $this->input->get('q')){
-            $snippet->like('name',$q)->or_like('code',$q);
+        if ($q = $this->input->get('q')) {
+            $snippet->like('name', $q)->or_like('code', $q);
         }
-        template('Search/templates/form',array('action' => ''))->show();
+        template('Search/templates/form', array('action' => ''))->show();
         $pager = new Pager(array(
                     'count' => $snippet->countAll(),
                     'per_page' => 20,

@@ -27,6 +27,7 @@ class User_Gear extends Gear {
         'done' => 'hookDone',
         'menu' => 'hookMenu',
         'user.register' => 'hookUserRegister',
+        'parse' => 'hookParse',
     );
     protected $access = array(
         'edit' => 'access',
@@ -93,7 +94,6 @@ class User_Gear extends Gear {
         parent::init();
         $this->object(new User_Object());
         $this->object()->init();
-        Parser_Gear::$codes['#\[user\](.+?)\[\/user\]#i'] = array($this,'hookCodeUser');
     }
 
     /**
@@ -118,6 +118,23 @@ class User_Gear extends Gear {
      */
     public function hookDone() {
         $this->object()->refresh();
+    }
+
+    /**
+     * Хук парсера
+     *
+     * @param object $item
+     */
+    public function hookParse($item) {
+        if ($item->body && strpos($item->body, '[user')) {
+            preg_match_all('#\[user\](.+?)\[/user\]#i', $item->body, $matches);
+            for ($i = 0; $i < sizeof($matches[0]); $i++) {
+                if ($user = user($matches[1][$i], 'login')) {
+                    $link = $user->getLink('avatar','avatar.tiny') . ' ' . $user->getLink('profile');
+                    $item->body = str_replace($matches[0][$i], $link, $item->body);
+                }
+            }
+        }
     }
 
     /**
@@ -192,14 +209,12 @@ class User_Gear extends Gear {
      * @param type $item
      */
     public function hookCodeUser($matches) {
-        if($matches){
-            if($user = user($matches[1],'login')){
-                return $user->getLink('avatar','avatar.tiny') . ' ' . $user->getLink('profile');
-            }
-            else {
+        if ($matches) {
+            if ($user = user($matches[1], 'login')) {
+                return $user->getLink('avatar', 'avatar.tiny') . ' ' . $user->getLink('profile');
+            } else {
                 return '';
             }
-
         }
         return $matches[0];
     }
@@ -253,7 +268,7 @@ class User_Gear extends Gear {
                     'body' => t('Вы успешно зарегистрировались на сайте http://%s.
                         <p>Ваш логин: <b>%s</b>
                         <p>Пароль хранится в зашифрованном виде, но вы всегда сможете его сбросить, используя ссылку: <a href="%s">%s</a>
-                            ',config('site.url'),$user->login,l('/lostpassword'),l('/lostpassword')),
+                            ', config('site.url'), $user->login, l('/lostpassword'), l('/lostpassword')),
                 ));
         $mail->to($user->email);
         $mail->send();

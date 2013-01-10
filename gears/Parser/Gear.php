@@ -11,7 +11,7 @@
 class Parser_Gear extends Gear {
 
     protected $hooks = array(
-        'parse' => 'hookParse',
+//        'parse' => 'hookParse',
     );
     public static $codes = array(
     );
@@ -28,11 +28,11 @@ class Parser_Gear extends Gear {
     /**
      * Хук парсера
      *
-     * @param object $element
+     * @param object $item
      * @param string $field
      */
-    public function hookParse($element, $field = 'body') {
-        $element->$field = $this->parse($element->$field);
+    public function hookParse($item, $field = 'body') {
+        $item->$field = $this->parse($item->$field, $item);
     }
 
     /**
@@ -40,13 +40,21 @@ class Parser_Gear extends Gear {
      *
      * @param string $text
      */
-    public function parse($text) {
+    public function parse($text, $item) {
         if (self::$codes) {
             foreach (self::$codes as $code => $callback) {
-                $text = preg_replace_callback($code, $callback, $text);
+                if (preg_match($code, $text, $matches)) {
+                    $callback = new Callback($callback);
+                    if ($callback->check()) {
+                        $callback->setArgs(array($matches, $item));
+                        if ($result = $callback->run()) {
+                            $text = $result;
+                        }
+                    }
+                }
             }
+            return $text;
         }
-        return $text;
     }
 
 }
