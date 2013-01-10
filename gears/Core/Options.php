@@ -45,6 +45,14 @@ class Options extends Core_ArrayObject {
             $this->options->extend($options);
         }
     }
+    /**
+     * Возвращает опции
+     *
+     * @return array
+     */
+    public function getOptions(){
+        return $this->options;
+    }
 
     /**
      * Magic __get method
