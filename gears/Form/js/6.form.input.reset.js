@@ -5,7 +5,7 @@ $.fn.resetButton = function(){
     $reset = $('<i class="icon icon-remove"></i>');
     $wrapper.css({
         position:'relative',
-        display: 'inline-block'
+        display: $wrapper.parent('[class$="pend"]').length ? 'inline-block' : 'block'
     } );
     $reset.css({
         position: 'absolute',
