@@ -14,6 +14,7 @@
 
  */
 class Url {
+
     const SECURE = 's';
 
     /**
@@ -24,7 +25,7 @@ class Url {
      * @param	string	$protocol
      * @return	string
      */
-    public static function link($url='', $absolute_flag = FALSE, $protocol = 'http') {
+    public static function link($url = '', $absolute_flag = FALSE, $protocol = 'http') {
         $link = '';
         $cogear = getInstance();
         if (!$url) {
@@ -45,6 +46,9 @@ class Url {
         isset($url['query']) && $link .= '?' . $url['query'];
         isset($url['fragment']) && $link .= '#' . $url['fragment'];
         event('link', $link);
+        if (cogear()->input->get('splash') == '') {
+            $link .= e();
+        }
         return $link;
     }
 
@@ -56,7 +60,7 @@ class Url {
      * @param string $protocol
      * @return string
      */
-    public static function slink($url='', $absolute_flag = FALSE, $protocol = 'http') {
+    public static function slink($url = '', $absolute_flag = FALSE, $protocol = 'http') {
         $link = self::link($url, $absolute_flag, $protocol);
         $link .= '?' . self::SECURE . '=' . cogear()->secure->salt();
         return $link;
@@ -123,23 +127,30 @@ class Url {
      * @param array $data
      * @return  string
      */
-    public static function extendQuery($data = array(),$value = NULL) {
-        if(!is_array($data) && $value){
-            $data = array($data=>$value);
+    public static function extendQuery($data = array(), $value = NULL) {
+        if (!is_array($data) && $value) {
+            $data = array($data => $value);
         }
-        return http_build_query(array_merge($_GET, $data));
+        $data = array_merge($_GET, $data);
+        if ($q = http_build_query($data)) {
+            if ($q[0] != '?') {
+                $q = '?' . $q;
+            }
+            return $q;
+        }
+        return '';
     }
 
 }
 
-function l($url='', $absolute_flag = FALSE, $protocol = 'http') {
+function l($url = '', $absolute_flag = FALSE, $protocol = 'http') {
     return Url::link($url, $absolute_flag, $protocol);
 }
 
-function s($url='', $absolute_flag = FALSE, $protocol = 'http') {
+function s($url = '', $absolute_flag = FALSE, $protocol = 'http') {
     return Url::slink($url, $absolute_flag, $protocol);
 }
 
-function e($data = array(),$value = NULL){
-    return '?'.Url::extendQuery($data,$value);
+function e($data = array(), $value = NULL) {
+    return Url::extendQuery($data, $value);
 }
