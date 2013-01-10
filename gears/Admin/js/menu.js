@@ -39,7 +39,7 @@ $(document).ready(function(){
         $.cookie('a',1);
     }
     $(document).on('keydown',function(e){
-        if(e.keyCode == 17){
+        if(e.keyCode == 36){
             $handler.trigger('click');
         }
     })
