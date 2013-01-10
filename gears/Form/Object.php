@@ -156,6 +156,8 @@ class Form_Object extends Object {
             $this->counter++;
             $config->order = $this->counter;
         }
+        $config->before = new Core_ArrayObject();
+        $config->after = new Core_ArrayObject();
         if (is_string($config->access)) {
             if ($this->object) {
                 $config->access = access($config->access, $this->object);
