@@ -73,12 +73,6 @@ class Image_Gear extends Gear {
         }
     }
 
-    /**
-     * Avoid assets autoload
-     */
-    public function loadAssets() {
-        //parent::loadAssets();
-    }
 
     /**
      *
