@@ -21,13 +21,14 @@ class Redactor_Editor extends Wysiwyg_Abstract {
         $options->lang = config('i18n.lang', 'ru');
         $options->shortcuts = TRUE;
         $options->minHeight = 300;
-        $options->buttons = array('bold', 'italic', 'deleted', '|','formatting','|',
+        $options->buttons = array('formatting','alignment','|','bold', 'italic', 'deleted', '|',
 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|','table', 'link', 'image','|',
-'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule','|','html');
+'fontcolor', 'backcolor', '|', 'horizontalrule','|','html');
 //        $options->imageUpload = l('/redactor/upload/');
         $options->fixed = TRUE;
         $options->observeImages = TRUE;
         $options->convertLinks = TRUE;
+        $options->cleanup = TRUE;
         role() == 1 && $options->fixedTop = 40;
         js($folder.$options->lang.'.js','after');
 //        $this->toolbar->markupSet->uasort('Core_ArrayObject::sortByOrder');
