@@ -47,7 +47,7 @@ abstract class Db_Driver_Abstract extends Object {
      *
      * @var type
      */
-    protected $swap_chain =  array(
+    protected $swap_chain = array(
         'SELECT' => '*',
         'FROM' => '',
         'JOIN' => '',
@@ -86,12 +86,14 @@ abstract class Db_Driver_Abstract extends Object {
      * @var object
      */
     protected $result;
+
     /**
      * Флаг, который показывает есть ли соединение с базой
      *
      * @var boolean
      */
     protected $is_connected;
+
     /**
      * Автоматическая очистка цепочки запроса
      *
@@ -281,10 +283,10 @@ abstract class Db_Driver_Abstract extends Object {
             }
         } else {
             if ($this->chain['WHERE']) {
-                $this->chain['WHERE'] .= ' '.trim($join).' ';
+                $this->chain['WHERE'] .= ' ' . trim($join) . ' ';
             }
-            if(strpos($name,' ')){
-                $where = explode(' ',$name,2);
+            if (strpos($name, ' ')) {
+                $where = explode(' ', $name, 2);
                 $name = $where[0];
                 $condition = $where[1];
             }
@@ -313,17 +315,8 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $condition // BOTH, LEFT или RIGHT
      * @return object
      */
-    public function like($name = array(), $value = TRUE, $condition = 'BOTH', $join = ' AND ', $action = ' LIKE ') {
-        switch ($condition) {
-            case 'LEFT':
-                $value = '%' . $value;
-                break;
-            case 'RIGHT':
-                $value .= '%';
-                break;
-            default:
-                $value = '%' . $value . '%';
-        }
+    public function like($name = array(), $value = TRUE, $join = ' AND ', $action = ' LIKE ') {
+        strpos($value, '%') === FALSE && $value = '%' . $value . '%';
         return $this->where($name, $value, $action, $join);
     }
 
@@ -335,8 +328,8 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $condition // BOTH, LEFT или RIGHT
      * @return object
      */
-    public function or_like($name = array(), $value = TRUE, $condition = 'BOTH') {
-        return $this->like($name, $value, $condition, 'OR');
+    public function or_like($name = array(), $value = TRUE) {
+        return $this->like($name, $value, 'OR');
     }
 
     /**
@@ -347,8 +340,8 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $condition // BOTH, LEFT или RIGHT
      * @return object
      */
-    public function not_like($name = array(), $value = TRUE, $condition = 'BOTH') {
-        return $this->like($name, $value, $condition, 'AND', ' NOT LIKE ');
+    public function not_like($name = array(), $value = TRUE) {
+        return $this->like($name, $value, 'AND', ' NOT LIKE ');
     }
 
     /**
@@ -358,7 +351,7 @@ abstract class Db_Driver_Abstract extends Object {
      * @param string $dir
      */
     public function order($field, $dir = 'ASC') {
-        if ($this->chain['ORDER BY']){
+        if ($this->chain['ORDER BY']) {
             $this->chain['ORDER BY'] .= ',';
         }
         $this->chain['ORDER BY'] .= $field . ' ' . $dir;

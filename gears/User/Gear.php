@@ -582,7 +582,7 @@ class User_Gear extends Gear {
     public function autocomplete_action() {
         if ($query = $this->input->get('query')) {
             $user = new User();
-            $this->db->like('login', $query, 'both');
+            $this->db->like('login', $query);
             if ($users = $user->findAll()) {
                 $data = array('query' => $query, 'suggestions' => array());
                 foreach ($users as $user) {
