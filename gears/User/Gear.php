@@ -27,7 +27,6 @@ class User_Gear extends Gear {
         'done' => 'hookDone',
         'menu' => 'hookMenu',
         'user.register' => 'hookUserRegister',
-        'parser.codes' => 'hookParserCodes',
     );
     protected $access = array(
         'edit' => 'access',
@@ -94,6 +93,7 @@ class User_Gear extends Gear {
         parent::init();
         $this->object(new User_Object());
         $this->object()->init();
+        Parser_Gear::$codes['#\[user\](.+?)\[\/user\]#i'] = array($this,'hookCodeUser');
     }
 
     /**
@@ -202,10 +202,6 @@ class User_Gear extends Gear {
 
         }
         return $matches[0];
-    }
-
-    public function hookParserCodes($Parser){
-        $Parser::$codes['#\[user\](.+?)\[\/user\]#i'] = array($this,'hookCodeUser');
     }
 
     /**

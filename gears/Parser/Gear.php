@@ -41,9 +41,6 @@ class Parser_Gear extends Gear {
      * @param string $text
      */
     public function parse($text) {
-        if (!self::$codes) {
-            event('parser.codes', $this);
-        }
         if (self::$codes) {
             foreach (self::$codes as $code => $callback) {
                 $text = preg_replace_callback($code, $callback, $text);
