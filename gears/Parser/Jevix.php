@@ -69,7 +69,7 @@
  *      + Первый бета-релиз
  */
 
-class Jevix_Object{
+class Parser_Jevix {
 	const PRINATABLE  = 0x1;
 	const ALPHA       = 0x2;
 	const LAT	 = 0x4;
@@ -946,7 +946,7 @@ class Jevix_Object{
 		      }
 		  }
 		}
-		
+
 		// Пустой некороткий тег удаляем кроме исключений
 		if (!isset($tagRules[self::TR_TAG_IS_EMPTY]) or !$tagRules[self::TR_TAG_IS_EMPTY]) {
 			if(!$short && empty($content)) return '';
@@ -960,7 +960,7 @@ class Jevix_Object{
 				$text.=' '.$param.'="'.$value.'"';
 			}
 		}
-		
+
 		// Закрытие тега (если короткий то без контента)
 		$text.= $short && $this->isXHTMLMode ? '/>' : '>';
 		if(isset($tagRules[self::TR_TAG_CONTAINER])) $text .= "\r\n";

@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'name' => 'Jevix',
+    'name' => t('Парсер'),
     'description' => t('Фильтрация HTML-кода.'),
     'order' => '0',
 );

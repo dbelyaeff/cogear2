@@ -7,11 +7,8 @@
  * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
-class Jevix_Filter extends Form_Filter_Abstract {
+class Parser_Filter extends Form_Filter_Abstract {
 
     /**
      * Filter
@@ -19,7 +16,7 @@ class Jevix_Filter extends Form_Filter_Abstract {
      * @value
      */
     public function filter($value) {
-        $jevix = new Jevix_Object();
+        $jevix = new Parser_Jevix();
 
 //Конфигурация
         $allowed_tags = array('a', 'img', 'i', 'b', 'u', 'em', 'strong', 'nobr', 'li', 'ol', 'ul', 'sup', 'abbr', 'pre', 'acronym', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'cut', 'user', 'br', 'code', 'p','video');
@@ -36,8 +33,8 @@ class Jevix_Filter extends Form_Filter_Abstract {
         $jevix->cfgSetTagCutWithContent(array('script', 'object', 'iframe', 'style'));
 
 // 5. Устанавливаем разрешённые параметры тегов. Также можно устанавливать допустимые значения этих параметров.
-        $jevix->cfgAllowTagParams('a', array('title', 'href'));
-        $jevix->cfgAllowTagParams('img', array('src', 'alt' => '#text', 'title', 'align' => array('right', 'left', 'center'), 'width' => '#int', 'height' => '#int', 'hspace' => '#int', 'vspace' => '#int'));
+        $jevix->cfgAllowTagParams('a', array('title', 'href','class'));
+        $jevix->cfgAllowTagParams('img', array('src', 'alt' => '#text', 'title', 'align' => array('right', 'left', 'center'), 'width' => '#int', 'height' => '#int', 'hspace' => '#int', 'vspace' => '#int','class'));
         $jevix->cfgAllowTagParams('code', array('class'));
         $jevix->cfgAllowTagParams('p', array('align' => array('left', 'right', 'center')));
         $jevix->cfgAllowTagParams('pre', array('class'));
@@ -72,7 +69,7 @@ class Jevix_Filter extends Form_Filter_Abstract {
 // 12. Включаем или выключаем режим автоматического определения ссылок. (по умолчанию включен)
         $jevix->cfgSetAutoLinkMode(FALSE);
 // 13. Отключаем типографирование в определенном теге
-        $jevix->cfgSetTagNoTypography('code');
+        $jevix->cfgSetTagNoTypography(array('code','pre'));
 //        $jevix->cfgSetTagNoTypography('pre');
         event('jevix', $jevix);
         $errors = array();

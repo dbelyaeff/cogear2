@@ -14,19 +14,20 @@ class User_Gear extends Gear {
     protected $hooks = array(
         'post.insert' => 'hookPostCount',
         'post.delete' => 'hookPostCount',
-        'friends.insert' => 'hookFriends',
-        'friends.delete' => 'hookFriends',
-        'post.render' => 'hookRenderFilter',
-        'chat.msg.render' => 'hookRenderFilter',
-        'comment.render' => 'hookRenderFilter',
-        'comment.insert' => 'hookCommentsRecount',
-        'comment.update' => 'hookCommentsRecount',
-        'comment.delete' => 'hookCommentsRecount',
+//        'friends.insert' => 'hookFriends',
+//        'friends.delete' => 'hookFriends',
+//        'post.render' => 'hookRenderFilter',
+//        'chat.msg.render' => 'hookRenderFilter',
+//        'comment.render' => 'hookRenderFilter',
+//        'comment.insert' => 'hookCommentsRecount',
+//        'comment.update' => 'hookCommentsRecount',
+//        'comment.delete' => 'hookCommentsRecount',
         'assets.js.global' => 'hookGlobalScripts',
         'user.update' => 'hookUserUpdate',
         'done' => 'hookDone',
         'menu' => 'hookMenu',
         'user.register' => 'hookUserRegister',
+        'parser.codes' => 'hookParserCodes',
     );
     protected $access = array(
         'edit' => 'access',
@@ -190,15 +191,21 @@ class User_Gear extends Gear {
      *
      * @param type $item
      */
-    public function hookRenderFilter($item) {
-        if ($item->body && strpos($item->body, '[user')) {
-            preg_match_all('#\[user=([^\]]+)\]#imsU', $item->body, $matches);
-            for ($i = 0; $i < sizeof($matches[0]); $i++) {
-                if ($user = user($matches[1][$i], 'login')) {
-                    $item->body = str_replace($matches[0][$i], $user->getLink('avatar') . ' ' . $user->getLink('profile'), $item->body);
-                }
+    public function hookCodeUser($matches) {
+        if($matches){
+            if($user = user($matches[1],'login')){
+                return $user->getLink('avatar','avatar.tiny') . ' ' . $user->getLink('profile');
             }
+            else {
+                return '';
+            }
+
         }
+        return $matches[0];
+    }
+
+    public function hookParserCodes($Parser){
+        $Parser::$codes['#\[user\](.+?)\[\/user\]#i'] = array($this,'hookCodeUser');
     }
 
     /**

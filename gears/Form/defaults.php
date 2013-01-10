@@ -18,7 +18,7 @@ return array(
     'body' => array(
         'type' => 'editor',
         'label' => t('Текст'),
-        'filters' => array('Parser_Jevix'),
+        'filters' => array('Parser_Filter'),
         'validators' => array('Required', array('Length', 1)),
     ),
     'description' => array(

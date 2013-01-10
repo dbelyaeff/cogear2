@@ -3,7 +3,7 @@ $user = new User();
 $user->id = $item->aid;
 $user->find();
 $item->author = $user;
-
+event('parse',$item);
 if (!($item->teaser OR $item->preview)) {
     $before = new Stack(array('name' => 'post.full.before'));
     $before->object($item);
