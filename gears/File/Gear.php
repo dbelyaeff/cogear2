@@ -17,7 +17,7 @@ class File_Gear extends Gear {
     protected $routes = array(
 //        'admin/files' => 'admin_action',
 //        'files/upload' => 'index_action',
-//        'files/upload/(.+)' => 'upload_action',
+        'files/upload/(.+)' => 'upload_action',
 //        'files/ajax/(\w+)/(\w+)' => 'ajax_action',
 //        'files/?' => 'library_action',
     );
@@ -122,32 +122,32 @@ class File_Gear extends Gear {
 //        }
 //    }
 //
-//    public function upload_action($type) {
-//        $ajax = new Ajax();
-//        $ajax->success = FALSE;
-//        switch ($type) {
-//            case 'editor/image':
-//                $form = new Form(array(
-//                            '#name' => 'file.upload.editor.image',
-//                            'file' => array(
-//                                'type' => 'image',
-//                                'allowed_types' => array('jpg', 'png', 'gif'),
-//                                'maxsize' => '300Kb',
-//                                'path' => Image::uploadPath(),
-//                                'validate' => array('Required'),
-//                                'rewrite' => TRUE,
-//                                'preset' => 'image.large')
-//                        ));
-//                if ($result = $form->result()) {
-//                    if($result->file){
-//                        $ajax->code = Image::getThumbCode($result->file,'image.medium');
-//                        $ajax->success = TRUE;
-//                    }
-//                }
-//                break;
-//        }
-//        $ajax->json();
-//    }
+    public function upload_action($type) {
+        $ajax = new Ajax();
+        $ajax->success = FALSE;
+        switch ($type) {
+            case 'editor/image':
+                $form = new Form(array(
+                            '#name' => 'file.upload.editor.image',
+                            'file' => array(
+                                'type' => 'image',
+                                'allowed_types' => array('jpg', 'png', 'gif'),
+                                'maxsize' => '300Kb',
+                                'path' => Image::uploadPath(),
+                                'validate' => array('Required'),
+                                'rewrite' => TRUE,
+                                'preset' => 'image.large')
+                        ));
+                if ($result = $form->result()) {
+                    if($result->file){
+                        $ajax->code = Image::getThumbCode($result->file,'image.medium');
+                        $ajax->success = TRUE;
+                    }
+                }
+                break;
+        }
+        $ajax->json();
+    }
 //
 //    /**
 //     * Отображение файлов конкретного пользователя
