@@ -147,6 +147,8 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
                 bench('db.query.' . $i . '.end');
                 return $this->PDO->lastInsertId();
             } else {
+                $error = $PDOStatement->errorInfo();
+                $this->error($error[2].' '.$error[1]);
                 return FALSE;
             }
         } catch (PDOException $e) {
@@ -186,13 +188,12 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
-                return $PDOStatement->rowCount();
-            } else {
-                return FALSE;
+                return TRUE;
             }
         } catch (PDOException $e) {
             $this->error($e->getMessage());
         }
+        return FALSE;
     }
 
     /**

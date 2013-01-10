@@ -4,12 +4,9 @@
  * Database ORM
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
- * @copyright		Copyright (c) 2011, Беляев Дмитрий
+ * @copyright		Copyright (c) 2011-2013, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Db_ORM extends Object {
 
@@ -344,8 +341,8 @@ class Db_ORM extends Object {
         if (!$data) {
             return FALSE;
         } elseif (isset($data[$this->primary])) {
-            if ($this->update($data)) {
-                return TRUE;
+            if ($result = $this->update($data)) {
+                return $result;
             }
         } elseif ($id = $this->insert($data)) {
             return $id;

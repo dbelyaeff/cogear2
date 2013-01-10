@@ -72,7 +72,7 @@ abstract class Db_List_Abstract extends Cogearable {
         }
         $pager = new Pager(array(
                     'current' => $this->page ? $this->page : NULL,
-                    'count' => $item->count(),
+                    'count' => $item->countAll(),
                     'per_page' => $this->per_page,
                     'base' => $this->base,
                 ));
