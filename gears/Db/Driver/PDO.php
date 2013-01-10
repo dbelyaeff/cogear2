@@ -25,7 +25,8 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         }
         try {
             $this->PDO = new PDO($this->driver . ':host=' . $this->options->host . $database, $this->options->user, $this->options->pass);
-            $this->query('SET NAMES utf8;');
+            // Данный запрос чисто технический, поэтому в общей статистике он не учитывается
+            $this->PDO->query('SET NAMES utf8;');
         } catch (PDOException $e) {
             $this->error($e->getMessage());
             return $this->is_connected = FALSE;
