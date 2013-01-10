@@ -55,11 +55,11 @@ class DateTime_Gear extends Gear {
         if ($time >= strtotime('-1 minutes')) {
             return t('менее минуты назад');
         } elseif ($time >= strtotime('-1 hours')) {
-            return t('%d (минуту|минуты|минут) назад', date('m') - date('m', strtotime(date('H-00', $time))));
+            return t('%d (минуту|минуты|минут) назад', date('i') - date('i', strtotime(date('Y-m-d H:00', $time))));
         } elseif ($time >= strtotime('today')) {
-            return t('Сегодня в %s', date('H:i', $time));
+            return t('Сегодня в %s', date('Y-m-d H:i', $time));
         } else if ($time >= strtotime('yesterday')) {
-            return t('Вчера в %s', date('H:i', $time));
+            return t('Вчера в %s', date('Y-m-d  H:i', $time));
         } else if ($time > strtotime(date('01-01-Y'))) {
             return date('j', $time) . ' ' . $this->monthes[date('n', $time)] . ' ' . date(' в H:i', $time);
         } else {
