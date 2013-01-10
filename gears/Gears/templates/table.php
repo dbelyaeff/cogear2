@@ -72,8 +72,8 @@
                         <?php elseif ($gear->status() == Gears::ENABLED): ?>
                             <a href="<?php echo l('/admin/gears/status') . e(array('do' => 'disable', 'gears' => $gear->gear)) ?>"  class="btn btn-mini btn-danger"><?php echo t('Выключить') ?></a>
                         <?php endif; ?>
-                        <?php if (method_exists($gear, 'admin') && $gear->status() != Gears::DISABLED): ?>
-                            <a href="<?php echo l('/admin/' . strtolower($gear->gear)) ?>"  class="btn btn-mini"><?php echo t('Настройки') ?></a>
+                        <?php if (method_exists($gear, 'admin_action') && $gear->status() != Gears::DISABLED): ?>
+                            <a href="<?php echo l('/admin/' . strtolower($gear->gear)) ?>"  class="btn btn-mini" title="<?php echo t('Настройки') ?>"><?php echo icon('wrench')?></a>
                         <?php endif; ?>
                         <?php if ($gear->status() !== Gears::CORE): ?>
                             <a href="<?php echo l('/admin/gears/download').'?gears='.$gear->gear?>" class="btn btn-mini" title="<?php echo t('Скачать')?>"><?php echo icon('download')?></a>                      <?php endif; ?>
