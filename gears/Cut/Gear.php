@@ -30,7 +30,7 @@ class Cut_Gear extends Gear {
      * @param Post $Post
      */
     public function hookParse($item) {
-        if (preg_match('#(.+)(\[cut(?:\s+text=([^\]]+?))?\])#imU', $item->body, $matches)) {
+        if (preg_match('#(.+)(\[cut(?:\s+text=([^\]]+?))?\])#imsU', $item->body, $matches)) {
 
             if ($item->teaser) {
                 $cut = template('Cut/templates/cut', array('item' => $item, 'text' => isset($matches[3]) ? $matches[3] : config('Cut.text', t('Читать далее…'))))->render();
