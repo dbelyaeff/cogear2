@@ -1,4 +1,5 @@
 <?php
+
 /**
  *  Form Element Textarea
  *
@@ -10,20 +11,15 @@
  *         Form
 
  */
-class Form_Element_Textarea extends Form_Element_Abstract{
+class Form_Element_Textarea extends Form_Element_Abstract {
     /**
-     * Render
+     * Конструктор
      *
-     * @return string
+     * @param type $options
      */
-    public function  render() {
-        $code = HTML::paired_tag('textarea', $this->value, $this->prepareOptions());
-        if ($this->wrapper) {
-            $tpl = new Template($this->wrapper);
-            $tpl->assign($this->options);
-            $tpl->code = $code;
-            $code = $tpl->render();
-        }
-        return $code;
+    public function __construct($options) {
+        $options['template'] = 'Form/templates/textarea';
+        parent::__construct($options);
     }
+
 }

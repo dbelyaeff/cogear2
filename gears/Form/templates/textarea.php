@@ -1,0 +1,1 @@
+<?php echo HTML::paired_tag('textarea', $element->value, $element->options)?>
