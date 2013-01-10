@@ -38,4 +38,9 @@ $(document).ready(function(){
         });
         $.cookie('a',1);
     }
+    $(document).on('keydown',function(e){
+        if(e.keyCode == 17){
+            $handler.trigger('click');
+        }
+    })
 })
