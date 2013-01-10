@@ -34,7 +34,7 @@ class Wysiwyg_Gear extends Gear {
     public function admin_action() {
         $form = new Form("Wysiwyg/forms/config");
         $options = new Core_ArrayObject;
-        $options->editor = config('wysiwyg.editor');
+        $options->type = config('wysiwyg.editor');
         $form->type->setValues(self::$editors);
         $form->object($options);
         if ($result = $form->result()) {
