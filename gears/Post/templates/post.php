@@ -13,7 +13,7 @@ if (!$item->published && !$item->preview) {
     $item->class = $item->class ? $item->class . ' draft' : 'draft';
 }
 ?>
-<div class="post <?php echo $item->class ?> shd" id="post-<?php echo $item->id ?>">
+<article class="post <?php echo $item->class ?> shd" id="post-<?php echo $item->id ?>">
     <div class="post-title">
         <?php
         $title = new Stack(array('name' => 'post.title'));
@@ -54,7 +54,7 @@ if (!$item->published && !$item->preview) {
         echo $info->render();
         ?>
     </div>
-</div>
+</article>
 <?php
 if (!($item->teaser OR $item->preview)) {
     $after = new Stack(array('name' => 'post.full.after'));
