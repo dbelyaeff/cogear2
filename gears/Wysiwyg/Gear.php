@@ -10,12 +10,18 @@
  */
 class Wysiwyg_Gear extends Gear {
 
+    protected $routes = array(
+        'admin/wysiwyg' => 'admin_action',
+    );
+    protected $access = array(
+        'admin' => array(1),
+    );
     public static $editors = array(
         'textarea' => 'Form_Element_Textarea',
     );
 
     /**
-     * Init
+     * Инициализация
      */
     public function init() {
         parent::init();
@@ -23,13 +29,13 @@ class Wysiwyg_Gear extends Gear {
     }
 
     /**
-     * Control Panel
+     * Панель управления
      */
     public function admin_action() {
         $form = new Form("Wysiwyg/forms/config");
         $options = new Core_ArrayObject;
         $options->editor = config('wysiwyg.editor');
-        $form->type->setValues(self::$editors );
+        $form->type->setValues(self::$editors);
         $form->object($options);
         if ($result = $form->result()) {
             if (isset(self::$editors[$result['type']])) {
