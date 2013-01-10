@@ -3,7 +3,10 @@ $.fn.resetButton = function(){
     $el.wrap($('<div class="element-wrapper"/>'));
     $wrapper = $el.parent();
     $reset = $('<i class="icon icon-remove"></i>');
-    $wrapper.css('position','relative');
+    $wrapper.css({
+        position:'relative',
+        display: 'inline-block'
+    } );
     $reset.css({
         position: 'absolute',
         right: '10px',
@@ -18,11 +21,15 @@ $.fn.resetButton = function(){
     });
     $reset.on('click',function(){
         $el.val('');
+        $el.trigger('change')
         $(this).hide();
     })
     $reset.hide();
     $wrapper.append($reset);
-    $el.on('keydown keyup change',function(){
+    $el.on('keydown keyup change',function(event){
+        if(event.type == 'keydown' && event.keyCode == 46 && event.ctrlKey == true){
+            $reset.trigger('click')
+        }
         if($(this).val()){
             $reset.show();
         }
