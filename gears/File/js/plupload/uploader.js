@@ -20,28 +20,28 @@ Uploader.prototype = {
     },
     uploader: {},
     init: function(options){
-        $this = this;
         if(options){
             this.options = $.extend(this.options,options)
         }
+        cogear.upload = this;
         this.uploader = new plupload.Uploader(this.options);
         this.uploader.init();
         this.uploader.bind('FilesAdded', function(up, files) {
-            $this.onAdd(files);
+            cogear.upload.onAdd(files);
             up.refresh();
         });
         this.uploader.bind('UploadProgress', function(up, file) {
-           $this.uploadProgress(file);
+            cogear.upload.uploadProgress(file);
         });
         this.uploader.bind('Error', function(up, error) {
-            $this.onError(error);
+            cogear.upload.onError(error);
         });
         this.uploader.bind('FileUploaded', function(up, file, info) {
             info = info.response;
             if(info.charAt(0) == '{'){
                 info = $.parseJSON(info);
             }
-            $this.onComplete(info);
+            cogear.upload.onComplete(info);
         });
         $('#'+this.options.drop_element).on('dragover',function(){
             $(this).addClass('dragover');
@@ -51,11 +51,9 @@ Uploader.prototype = {
             $(this).removeClass('dragover');
         })
     },
-    upload: function(){
-    },
     onAdd: function(files){
         if(this.options.autostart){
-            this.uploader.start();
+            cogear.upload.uploader.start();
         }
         this.options.onAdd(files);
     },
@@ -72,32 +70,5 @@ Uploader.prototype = {
     onComplete: function(data){
         $(document).trigger('ajax.json',data);
         this.options.onComplete(data);
-    }
-}
-
-$.fn.uploader = function(options){
-    if(!options){
-        options = {}
-    }
-    options.browse_button = $(this).attr('id');
-    if(undefined == $(this).prop('uploader')){
-        $uploader = new Uploader(options);
-        $(this).prop('uploader',$uploader);
-    }
-    else {
-        return $(this).prop('uploader');
-    }
-}
-$.fn.dduploader = function(options){
-    if(!options){
-        options = {}
-    }
-    options.drop_element = $(this).attr('id');
-    if(undefined == $(this).prop('uploader')){
-        $uploader = new Uploader(options);
-        $(this).prop('uploader',$uploader);
-    }
-    else {
-        return $(this).prop('uploader');
     }
 }

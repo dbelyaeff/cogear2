@@ -2,9 +2,10 @@
     <?php echo icon('upload') . ' ' . t("Загрузить изображение"); ?>
 </a>
 <script>
-    $('#upload-button').uploader({
+    new Uploader({
         url: '<?php echo l('/files/upload/editor/image') ?>',
         drop_element: $('[name=body]').attr('id'),
+        browse_button: 'upload-button',
         uploadProgress: function(file){
             cogear.ajax.loader.type('blue-dots').after($('#upload-button')).show();
         },
