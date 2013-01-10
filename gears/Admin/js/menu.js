@@ -1,19 +1,42 @@
 $(document).ready(function(){
-// fix sub nav on scroll
-var $win = $(window)
-, $nav = $('.subnav')
-, navTop = $('.subnav').length && $('.subnav').offset().top - 40
-, isFixed = 0
-processScroll();
-$win.on('scroll', processScroll);
-    function processScroll() {
-        var i, scrollTop = $win.scrollTop()
-        if (scrollTop >= navTop && !isFixed) {
-            isFixed = 1
-            $nav.addClass('subnav-fixed')
-        } else if (scrollTop <= navTop && isFixed) {
-            isFixed = 0
-            $nav.removeClass('subnav-fixed')
+    $handler = $('<i class="icon icon-bookmark"></i>');
+    $('#admin-menu').append($handler);
+    $handler.css({
+        position: 'absolute',
+        top: 38,
+        right: 50,
+        cursor: 'pointer'
+    })
+    $handler.on('click',function(event){
+        speed = 100;
+        $top = $('#admin-menu').css('top');
+        if($top == '0px'){
+            $('#admin-menu').animate({
+                'top':'-40px'
+            },speed)
+            $('#navbar-user').animate({
+                'marginTop':'0'
+            },3*speed);
+            $.cookie('a',1);
         }
-    } 
+        else {
+            $('#admin-menu').animate({
+                'top':'0'
+            },speed)
+            $('#navbar-user').animate({
+                'marginTop':'40px'
+            },3*speed);
+            $.cookie('a',0,{expires: 0});
+        }
+    })
+    console.log($.cookie('a'))
+    if(1 == $.cookie('a')){
+        $('#admin-menu').css({
+            top:'-40px'
+        })
+        $('#navbar-user').css({
+            marginTop:'0px'
+        });
+        $.cookie('a',1);
+    }
 })

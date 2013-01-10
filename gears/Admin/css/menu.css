@@ -1,3 +1,13 @@
 #navbar-user {
     margin-top: 40px;
+    /*transition: all 0.3s ease;*/
+/*    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;*/
+}
+#admin-menu{
+    /*transition: all 0.1s ease;*/
+/*    -webkit-transition: all 0.1s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;*/
 }
