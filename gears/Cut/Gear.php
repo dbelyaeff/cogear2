@@ -11,63 +11,34 @@
 class Cut_Gear extends Gear {
 
     protected $hooks = array(
-        'markitup.toolbar' => 'hookMarkItUp',
-        'post.render' => 'hookPostRender',
-        'jevix' => 'hookJevix',
+        'parse' => 'hookParse',
+        'form.post.element.editor.render' => 'hookFormEditorRender'
     );
 
     /**
-     * Acccess
+     * Хук для вывода кнопки под редактором
      *
-     * @param string $rule
-     * @param object $Item
+     * @param type $Editor
      */
-    public function access($rule, $Item = NULL) {
-        switch ($rule) {
-            case 'create':
-                return TRUE;
-                break;
-        }
-        return FALSE;
-    }
-
-    public function hookJevix($jevix) {
-        $jevix->cfgAllowTags(array('cut'));
-        $jevix->cfgSetTagShort(array('cut'));
-        $jevix->cfgAllowTagParams('cut', array('text'=>'#text'));
+    public function hookFormEditorRender($Editor) {
+        $Editor->options->after->append(template('Cut/templates/hooks/editor')->render());
     }
 
     /**
-     * Extend MarkItUp toolbar
-     *
-     * @param type $toolbar
-     */
-    public function hookMarkItUp($toolbar) {
-        if (role() && $this->router->getSegments(0) == 'post') {
-            $toolbar->markupSet->append(array(
-                'name' => t('Cut'),
-                'key' => 'Q',
-                'className' => 'markItUpCut',
-                'replaceWith' => '[cut text="[![Cut]!]"]',
-                'order' => 20,
-            ));
-        }
-    }
-
-    /**
-     * Hook render post
+     * Обработка кода ката
      *
      * @param Post $Post
      */
-    public function hookPostRender($Post) {
-        if (preg_match_all('#(.*?)[\[\<]cut((\s*text)?=\"?([^"\]\>]+))?\s*\"?/?[\]\>](.*?)#imsU', $Post->body, $matches)) {
-            if($Post->teaser){
-                $Post->body = $matches[1][0];
-                    $Post->body .= template('Cut/templates/cut',array('text'=>empty($matches[4][0]) ? t('Читать далее') : $matches[4][0],'post'=>$Post))->render();
-            }
-            else {
-                $Post->body = $matches[1][0].'<div id="cut"></div>'.$matches[5][0];
+    public function hookParse($item) {
+        if (preg_match('#(.+)(\[cut(?:\s+text=([^\]]+?))?\])#imU', $item->body, $matches)) {
+
+            if ($item->teaser) {
+                $cut = template('Cut/templates/cut', array('item' => $item, 'text' => isset($matches[3]) ? $matches[3] : config('Cut.text', t('Читать далее…'))))->render();
+                $item->body = $matches[1] . $cut;
+            } else {
+                $item->body = str_replace($matches[2], '<div id="cut"></div>', $item->body);
             }
         }
     }
+
 }

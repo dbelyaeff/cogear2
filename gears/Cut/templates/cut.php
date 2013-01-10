@@ -1,1 +1,1 @@
-<div class="cut"><a href="<?php echo $post->getLink()?>#cut" class="btn"><?php echo $text ? $text : t('Read more…','Cut')?></a></div>
+<div class="cut"><a href="<?php echo $item->getLink()?>#cut" class="btn"><?php echo $text?></a></div>
