@@ -29,7 +29,6 @@ $(document).ready(function(){
             $.cookie('a',0,{expires: 0});
         }
     })
-    console.log($.cookie('a'))
     if(1 == $.cookie('a')){
         $('#admin-menu').css({
             top:'-40px'
