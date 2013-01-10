@@ -172,7 +172,7 @@ class File_Upload extends Notify_Handler {
     public function checkMaxSize($size, $maxsize) {
         $maxsize = File::toBytes($maxsize);
         if ($size > $maxsize) {
-            $this->error(t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', File::fromBytes($maxsize), File::fromBytes($size, 'auto', 2)));
+            $this->error(t('Максимально разрешенный размер загружаемого файла составляет <b>%s</b>. Вы же пытаетесь загрузкить файл размером <b>%s</b>.', File::fromBytes($maxsize,'auto',2), File::fromBytes($size, 'auto', 2)));
             return FALSE;
         }
         return TRUE;

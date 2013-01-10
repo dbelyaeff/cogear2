@@ -1,6 +1,7 @@
 <?php
 
 return array(
-    'name' =>t('Файл'),
+    'name' =>t('Файлы'),
     'description' => t('Работа с файлами.'),
+    'order' => 0,
 );

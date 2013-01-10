@@ -1,19 +1,19 @@
 <?php
 
 /**
- * File Object
+ * Объект файла
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
- * @copyright		Copyright (c) 2012, Беляев Дмитрий
+ * @copyright		Copyright (c) 2012-2013, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
-class File_Object extends Adapter {
+class File_Object extends Db_Item {
+
+    protected $table = 'files';
+
     /**
-     * Measure constants
+     * Константы
      */
 
     const Kb = 'Kb';
@@ -27,12 +27,30 @@ class File_Object extends Adapter {
     const Terabyte = 1099511627776;
     const Petabyte = 1125899906842624;
 
+    public $info;
+
     /**
-     * Path to files
+     * Типы загружаемых файлов
      *
-     * @var string
+     * @var array
      */
-    protected $path;
+    public static $types = array(
+        'image' => array('jpg', 'png', 'gif', 'ico'),
+        'doc' => array('pdf', 'doc', 'docx', 'xls', 'xlsx'),
+        'archive' => array('zip', 'rar'),
+        'video' => array('mp4', 'avi', 'mkv', 'wmv'),
+        'audio' => array('mp3', 'ogg', 'wma'),
+    );
+    public static $templates = array(
+        'image' => 'File/templates/types/image',
+        'doc' => 'File/templates/types/doc',
+        'archive' => 'File/templates/types/archive',
+        'video' => 'File/templates/types/video',
+        'audio' => 'File/templates/types/audio',
+    );
+    protected $options = array(
+        'template' => '',
+    );
 
     /**
      * Конструктор
@@ -40,17 +58,79 @@ class File_Object extends Adapter {
      * @param type $path
      * @param type $options
      */
-    public function __construct($path, $options = array()) {
-        parent::__construct($options);
-        $this->object(new SplFileInfo($path));
+    public function __construct($options = array()) {
+        parent::__construct();
+        $options && $this->setOptions($options);
     }
 
     /**
-     * Render file
+     * Поиск файла
+     *
+     * @return File_Object
+     */
+    public function find() {
+        if ($result = parent::find()) {
+
+        }
+        $this->getInfo();
+        return $result;
+    }
+
+    /**
+     * Найти все
+     */
+    public function findAll() {
+        if ($result = parent::findAll()) {
+            foreach ($result as $file) {
+                $file->getInfo();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Получает информацию о файле
+     *
+     * @return type
+     */
+    public function getInfo() {
+        return $this->info = new SplFileInfo(UPLOADS . DS . $this->path);
+    }
+
+    /**
+     * Автоматически определяет тип файла
+     *
+     * @return  string
+     */
+    public function getType() {
+        $ext = $this->info->getExtension();
+        foreach (self::$types as $type => $exts) {
+            if (in_array($ext, $exts)) {
+                return $this->type = $type;
+            }
+        }
+    }
+
+    /**
+     * Вывод
      */
     public function render() {
-        $ext = self::extension($this->getBasename());
-        return '<a href="' . $this->options->uri_full . '" class="icon-file-' . $ext . '">' . $this->getBasename() . '</a>';
+        if($this->options->template){
+            $template = $this->options->template;
+        }
+        else {
+            $template = self::$templates[$this->type];
+        }
+        return template($template, array('file' => $this));
+    }
+
+    /**
+     * Получние ссылки на файл
+     *
+     * @return type
+     */
+    public function getLink() {
+        return self::pathToUri(UPLOADS . $this->path);
     }
 
     /**
@@ -82,7 +162,7 @@ class File_Object extends Adapter {
      * @return	string
      */
     public static function fromBytes($bytes, $measure = NULL, $round = 0) {
-        if (is_string($measure)){
+        if (is_string($measure)) {
             $measure = ucfirst($measure);
         }
         switch ($measure) {
@@ -174,11 +254,11 @@ class File_Object extends Adapter {
     }
 
     /**
-     * Delete file
+     * Удаление файла
      *
      * @param string $file
      */
-    public static function delete($file) {
+    public static function remove($file) {
         @unlink($file);
     }
 
@@ -237,10 +317,10 @@ class File_Object extends Adapter {
                 }
                 fclose($fd);
             }
+            $delete && self::remove($data);
         } else {
             echo $data;
         }
-        $delete && unlink($data);
         exit;
     }
 
