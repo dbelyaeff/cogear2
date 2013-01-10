@@ -12,7 +12,7 @@ $.fn.resetButton = function(){
         } );
         $reset.css({
             position: 'absolute',
-            right: '10px',
+            right: $wrapper.parent('[class$="pend"]').length ? '5px' : $wrapper.width() - $el.width() - 7  + 'px',
             top: '8px',
             cursor: 'pointer',
             opacity: '0.3'
