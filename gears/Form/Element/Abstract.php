@@ -173,10 +173,10 @@ class Form_Element_Abstract extends Notify_Handler {
         $tpl = new Template($this->options->template);
         $tpl->assign($this->options);
         $this->code = $tpl->render();
-        event('form.'.$this->form->name.'.element.render', $this);
         event('form.element.render', $this);
-        event('form.'.$this->form->name.'.element.' . $this->options->type . '.render', $this);
+        event('form.'.$this->form->getOptions()->name.'.element.render', $this);
         event('form.element.' . $this->options->type . '.render', $this);
+        event('form.'.$this->form->getOptions()->name.'.element.' . $this->options->type . '.render', $this);
         $this->decorate();
         return $this->code;
     }
