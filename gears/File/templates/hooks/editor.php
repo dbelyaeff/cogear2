@@ -11,12 +11,7 @@
         onComplete: function(data){
             if(data.code){
                 $el = $('[name=body]');
-                if($el.redactor){
-                    $el.insertHtml("<p align=\"center\">" + data.code + "</p>")
-                }
-                else {
-                    $el.val($el.val() + "\n<p align=\"center\">" + data.code + "</p>\n");
-                }
+                window.insertWysiwyg("\n<p align=\"center\">" + data.code + "</p>\n");
             }
             cogear.ajax.loader.hide();
         }
