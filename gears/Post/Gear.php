@@ -34,6 +34,7 @@ class Post_Gear extends Gear {
         'post/create' => 'create_action',
         'post/edit/(\d+)' => 'edit_action',
         'post/delete/(\d+)' => 'delete_action',
+        'drafts/?' => 'drafts_action',
     );
 
     /**
@@ -66,6 +67,10 @@ class Post_Gear extends Gear {
             case 'drafts':
                 if ($data && $user = user($data, 'login')) {
                     if ($user->id == $this->user->id) {
+                        return TRUE;
+                    }
+                } else {
+                    if (user()->isLogged()) {
                         return TRUE;
                     }
                 }
@@ -125,8 +130,8 @@ class Post_Gear extends Gear {
      */
     public function init() {
         parent::init();
-        bind_route('user/([^/]+)/posts:maybe', array($this, 'list_action'), TRUE);
-        bind_route('user/([^/]+)/drafts:maybe', array($this, 'drafts_action'), TRUE);
+//        bind_route('user/([^/]+)/posts:maybe', array($this, 'list_action'), TRUE);
+//        bind_route('user/([^/]+)/drafts:maybe', array($this, 'drafts_action'), TRUE);
     }
 
     /**
@@ -138,11 +143,19 @@ class Post_Gear extends Gear {
     public function hookMenu($name, $menu) {
         switch ($name) {
             case 'user':
-                access('Post.create') && $menu->add(array(
+                $menu->add(array(
                             'label' => icon('pencil') . ' ' . t('Написать'),
                             'link' => l('/post/create/'),
                             'place' => 'left',
                             'access' => access('Post.create'),
+                            'title' => FALSE,
+                        ));
+                $menu->add(array(
+                            'label' => icon('eye-close').' <span class="badge">'.user()->drafts.'</span>',
+                            'tooltip' => t('Черновики'),
+                            'link' => l('/drafts/'),
+                            'place' => 'left',
+                            'access' => access('Post.create') && user()->drafts > 0,
                             'title' => FALSE,
                         ));
                 break;
@@ -215,15 +228,15 @@ class Post_Gear extends Gear {
      * @param type $page
      */
     public function drafts_action($login = NULL) {
-        if ($login == user()->login) {
+        if (!$login OR $login == user()->login) {
             $user = user();
         } elseif (!$user = user($login, 'login')) {
             return event('404');
         }
-        $user->navbar()->show();
+//        $user->navbar()->show();
         $posts = new Post_List(array(
-                    'name' => 'user.posts',
-                    'base' => user()->getLink() . '/posts/',
+                    'name' => 'user.drafts',
+                    'base' => l('/drafts'),
                     'per_page' => config('User.posts.per_page', 5),
                     'where' => array('aid' => $user->id, 'published' => 0),
                 ));
