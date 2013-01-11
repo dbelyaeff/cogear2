@@ -21,7 +21,7 @@ class Post_Gear extends Gear {
     );
     protected $access = array(
         'index' => TRUE,
-        'create' => 'access',
+        'create' => array(1,100),
         'edit' => 'access',
         'delete' => 'access',
         'drafts' => 'access',
@@ -45,15 +45,6 @@ class Post_Gear extends Gear {
      */
     public function access($rule, $data = NULL) {
         switch ($rule) {
-            case 'create':
-                $event = event('access.post.create', $data);
-                if ($event->check()) {
-                    // Allow to write post to reg every user
-                    return role();
-                } else {
-                    return $event->result();
-                }
-                break;
             case 'edit':
                 if (role() == 1) {
                     return TRUE;
