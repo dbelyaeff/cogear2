@@ -13,6 +13,7 @@ class User_Gear extends Gear {
     protected $current;
     protected $hooks = array(
         'post.insert' => 'hookPostCount',
+        'post.update' => 'hookPostCount',
         'post.delete' => 'hookPostCount',
 //        'friends.insert' => 'hookFriends',
 //        'friends.delete' => 'hookFriends',
