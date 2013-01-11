@@ -144,7 +144,8 @@ class Post_Gear extends Gear {
         switch ($name) {
             case 'user':
                 $menu->add(array(
-                            'label' => icon('pencil') . ' ' . t('Написать'),
+                            'label' => icon('pencil') ,
+                            'tooltip' => t('Написать'),
                             'link' => l('/post/create/'),
                             'place' => 'left',
                             'access' => access('Post.create'),
@@ -156,7 +157,7 @@ class Post_Gear extends Gear {
                             'link' => l('/drafts/'),
                             'place' => 'left',
                             'access' => access('Post.create') && user()->drafts > 0,
-                            'title' => FALSE,
+                            'title' => t('Черновики'),
                         ));
                 break;
             case 'user.profile.tabs':
