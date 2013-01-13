@@ -101,8 +101,8 @@ class Cache_Driver_File extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = str_replace('/', DS, $name . EXT);
-        return $name;
+        $name = preg_replace('#([^\w+])#', DS, $name);
+        return $name.EXT;
     }
 
 }
