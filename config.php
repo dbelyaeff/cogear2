@@ -2,7 +2,7 @@
 return array (
   'cache' =>
   array (
-    'driver' => 'Cache_Driver_Memcache',
+    'driver' => 'Cache_Driver_File',
     'path' => CACHE.'',
     'prefix' => 'normal',
     'enabled' => true,
@@ -13,7 +13,7 @@ return array (
   array (
     'defaults' =>
     array (
-      'gear' => 'Admin',
+      'gear' => 'Post',
       'action' => 'index_action',
     ),
   ),
@@ -40,7 +40,7 @@ return array (
   ),
   'gears' =>
   array (
-    'Install',
+    'Install'
   ),
   'lang' =>
   array (
@@ -85,57 +85,68 @@ return array (
       array (
         'avatar' =>
         array (
-          0 => 'resize(128,128,crop)',
+          0 => 'resize(128, 128, crop)',
         ),
         'profile' =>
         array (
-          0 => 'resize(64,64,crop)',
+          0 => 'resize(64, 64, crop)',
         ),
         'small' =>
         array (
-          0 => 'resize(32,32,crop)',
+          0 => 'resize(32, 32, crop)',
         ),
         'tiny' =>
         array (
-          0 => 'resize(24,24,crop)',
+          0 => 'resize(24, 24, crop)',
         ),
       ),
       'post' =>
       array (
         'large' =>
         array (
-          0 => 'resize(700,500,height,down)',
+          0 => 'resize(700, 500, height, down)',
+        ),
+      ),
+      'image' =>
+      array (
+        'thumb' =>
+        array (
+          0 => 'resize(130,130, width)',
+        ),
+        'small' =>
+        array (
+          0 => 'resize(200, 100, height, down)',
+        ),
+        'medium' =>
+        array (
+          0 => 'resize(500, 300, height, down)',
+        ),
+        'large' =>
+        array (
+          0 => 'resize(800, 600, height, down)',
         ),
       ),
       'avatar' =>
       array (
-        'navbar' =>
+        'tiny' =>
         array (
-          0 => 'resize(36,36,crop)',
-        ),
-        'comment' =>
-        array (
-          0 => 'resize(28,28,crop)',
+          0 => 'resize(16, 16, crop)',
         ),
         'small' =>
         array (
-          0 => 'resize(24,24,crop)',
+          0 => 'resize(24, 24, crop)',
         ),
-        'tiny' =>
+        'medium' =>
         array (
-          0 => 'resize(16,16,crop)',
+          0 => 'resize(24, 24, crop)',
         ),
-        'post' =>
+        'large' =>
         array (
-          0 => 'resize(24,24,crop)',
-        ),
-        'profile' =>
-        array (
-          0 => 'resize(64,64,crop)',
+          0 => 'resize(64, 64, crop)',
         ),
         'photo' =>
         array (
-          0 => 'resize(200,200,width)',
+          0 => 'resize(200, 200, width)',
         ),
       ),
     ),
@@ -146,7 +157,7 @@ return array (
   ),
   'wysiwyg' =>
   array (
-    'editor' => 'markitup',
+    'editor' => 'redactor',
   ),
   'Pages' =>
   array (
