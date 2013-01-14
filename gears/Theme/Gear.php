@@ -40,7 +40,9 @@ class Theme_Gear extends Gear {
      *
      * @var array
      */
-    public $regions;
+    protected $regions = array(
+        'head', 'before', 'header', 'info', 'content', 'sidebar', 'footer', 'after'
+    );
 
     const SUFFIX = '_Theme';
 
@@ -78,10 +80,9 @@ class Theme_Gear extends Gear {
         } else {
             $this->choose(config('theme.current', 'Default'));
         }
-        if('' === $this->input->get('splash')){
+        if ('' === $this->input->get('splash')) {
             $this->template('Theme/templates/splash');
-        }
-        elseif($tpl = $this->input->get('layout')){
+        } elseif ($tpl = $this->input->get('layout')) {
             $this->template($tpl);
         }
     }
@@ -91,7 +92,7 @@ class Theme_Gear extends Gear {
      */
     public function __construct($config) {
         parent::__construct($config);
-        $this->regions = new Core_ArrayObject();
+        $this->initRegions();
     }
 
     /**
@@ -231,7 +232,7 @@ class Theme_Gear extends Gear {
                         ));
                 if ($zip->extract(THEMES)) {
                     $info = $zip->info();
-                    success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])),'','content');
+                    success(t('<b>Архив успешно распакован!</b> <p>Он содержал в себе следующие темы: <ul><li>%s</li></ul>', implode('</li><li>', $info['themes'])), '', 'content');
 
                     $zip->close();
                 }
@@ -291,12 +292,14 @@ class Theme_Gear extends Gear {
     public function choose($theme) {
         $class = self::themeToClass($theme);
         if (!class_exists($class)) {
-            error(t('Тема <b>%s</b> не существует.', $theme));
+            error(t('Темы <b>%s</b> не существует.', $theme));
             $class = 'Default_Theme';
             $theme = 'Default';
             return $this->choose('Default');
         }
-        $this->object(new $class(new Config(THEMES . DS . $theme . DS . 'info' . EXT)));
+        $config = new Config(THEMES . DS . $theme . DS . 'info' . EXT);
+        $config->regions && $this->initRegions($config->regions);
+        $this->object(new $class($config));
         $this->object()->init();
     }
 
@@ -334,68 +337,39 @@ class Theme_Gear extends Gear {
     }
 
     /**
-     * Render region
-     *
-     * Split it with echos output for the hooks system
-     *
-     * @param string $name
-     */
-    public function renderRegion($name) {
-        $this->region($name);
-        hook($name, array($this, 'showRegion'), NULL, $name);
-        ob_start();
-        event($name);
-        $content = ob_get_clean();
-        return $content;
-    }
-
-    /**
-     * Check region for existance and create it if it's not exits
-     *
-     * @param string $name
-     * @return  Theme_Region
-     */
-    public function region($name) {
-        if ($this->regions->$name) {
-            return $this->regions->$name;
-        } else {
-            return $this->regions->$name = new Theme_Region(array('name' => $name));
-        }
-    }
-
-    /**
-     * Show region
-     *
-     * Simply echoes regions output
-     *
-     * @param string $name
-     */
-    public function showRegion($name) {
-        $this->region($name);
-        echo $this->regions->$name->render();
-    }
-
-    /**
      * Output
      */
     public function output() {
-        $this->object && $this->object()->render();
+        $this->object()->render();
+    }
+
+    /**
+     * Инициализация регионов
+     */
+    public function initRegions($regions = array()) {
+        $regions OR $regions = $this->regions;
+        foreach ($regions as $key => $region) {
+            $this->offsetSet($region, new Theme_Region($region));
+        }
     }
 
 }
 
-function append($name, $value) {
-    cogear()->theme->region($name)->append($value);
+function append($region, $value) {
+    cogear()->theme->$region->append($value);
 }
 
-function prepend($name, $value) {
-    cogear()->theme->region($name)->prepend($value);
+function prepend($region, $value) {
+    cogear()->theme->$region->prepend($value);
 }
 
-function inject($name, $value, $position = 0) {
-    cogear()->theme->region($name)->inject($value, $position);
+function inject($region, $value, $position = 0) {
+    cogear()->theme->$region->inject($value, $position);
 }
 
-function theme($place) {
-    return cogear()->theme->renderRegion($place);
+function theme($region) {
+    if(cogear()->theme->$region){
+        return cogear()->theme->$region->render();
+    }
+    exit(t('Регион <b>%s</b> не определён в настройках темы',$region));
 }

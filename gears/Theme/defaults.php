@@ -13,4 +13,5 @@ return array(
     'logo' => 'img/logo.png',
     'favicon' => 'img/favicon.ico',
     'screenshot' => 'img/screenshot.jpg',
+    'regions' => array('head','before', 'header', 'info', 'content', 'footer', 'after'),
 );
