@@ -89,7 +89,7 @@ class Form_Element_Abstract extends Notify_Handler {
     /**
      * Filter value
      */
-    public function filter() {
+    public function filtrate() {
         foreach ($this->filters as $filter) {
             if ($callback = $this->isCallable($filter, 'Filter')) {
                 array_unshift($callback[1], $this->value);
