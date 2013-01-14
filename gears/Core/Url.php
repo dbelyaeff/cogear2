@@ -1,24 +1,21 @@
 <?php
 
 /**
- * Url class
+ * Класс Url.
  *
- * Bulid links.
+ * Построитель ссылок.
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2010, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Url {
 
     const SECURE = 's';
 
     /**
-     * Build link
+     * Построение ссылки
      *
      * @param	string	$url
      * @param	boolean	$absolute_flag
@@ -53,7 +50,7 @@ class Url {
     }
 
     /**
-     * Secure linke
+     * Построение безопасной ссылки
      *
      * @param string $url
      * @param boolean $absolute_flag
@@ -67,7 +64,7 @@ class Url {
     }
 
     /**
-     * Standartize
+     * Привод строки к виду url
      *
      * Transform text to url-compatible snippet
      *
@@ -77,8 +74,7 @@ class Url {
      * @return  string
      */
     public static function name($text, $separator = '-', $limit = 40) {
-        $cogear = getInstance();
-        $text = $cogear->lang->transliterate($text);
+        $text = cogear()->lang->transliterate($text);
         $text = preg_replace("/[^a-z0-9\_\-.]+/mi", "", $text);
         $text = preg_replace('#[\-]+#i', $separator, $text);
         $text = strtolower($text);
@@ -93,7 +89,7 @@ class Url {
     }
 
     /**
-     * Transform path to uri
+     * Превращение пути к url
      *
      * @param string $path
      * @param string $replace_path
@@ -108,21 +104,7 @@ class Url {
     }
 
     /**
-     * Make link for gear
-     *
-     * @param string $gear
-     * @param string $suffix
-     * @return string
-     */
-    public static function gear($gear, $suffix = '/') {
-        $cogear = getInstance();
-        if (!$cogear->$gear)
-            return self::link();
-        return self::link($cogear->$gear->base . '/' . trim($suffix, '/'));
-    }
-
-    /**
-     * Extend existins $_GET query
+     * Расширение существующего $_GET-запроса
      *
      * @param array $data
      * @return  string
