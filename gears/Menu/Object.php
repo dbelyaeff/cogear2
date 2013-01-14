@@ -110,27 +110,6 @@ class Menu_Object extends Observer {
     }
 
     /**
-     * Фильтруем элементы, согласно условиям.
-     *
-     * Возвращаем выборку отобранных элементов.
-     *
-     * @param   array   $conditions
-     * @return Core_ArrayObject
-     */
-    public function filter(array $condtitions) {
-        $result = new Core_ArrayObject();
-        foreach ($this as $item) {
-            $stop = FALSE;
-            foreach ($condtitions as $key => $value) {
-                if ($item->$key == $value) {
-                    $result->append($item);
-                }
-            }
-        }
-        return $result->count() ? $result : NULL;
-    }
-
-    /**
      * Ренденр меню
      *
      * @param string $glue
