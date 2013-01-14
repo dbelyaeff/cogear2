@@ -88,7 +88,16 @@ class Session_Object extends Cache_Object {
         isset($_SESSION['user_agent']) OR $_SESSION['user_agent'] = $cogear->request->getUserAgent();
         $_SESSION['ip'] = $cogear->request->get('ip');
         $_SESSION['session_id'] = session_id();
-        $referer = $cogear->request->get('HTTP_REFERER', '/');
+        if ($referer = $cogear->request->get('HTTP_REFERER')) {
+            if (!$this->history) {
+                $this->history = new Core_ArrayObject();
+            }
+            $this->history->append($referer);
+            if ($this->history->count() > 10) {
+                $array = $this->history->toArray();
+                $this->history->exchangeArray(array_slice($array, sizeof($array) - 11));
+            }
+        }
     }
 
     /**
@@ -99,7 +108,7 @@ class Session_Object extends Cache_Object {
      * @return  string|NULL
      */
     public function history($page = 0, $default = NULL) {
-        $current = sizeof($_SESSION['history']);
+        $current = $this->history->count();
         $needle = $current + $page;
         return isset($_SESSION['history'][$needle]) ? $_SESSION['history'][$needle] : ($default ? $default : NULL);
     }
@@ -165,7 +174,7 @@ class Session_Object extends Cache_Object {
      * @param	string	$name
      * @param	mixed	$default
      */
-    public function flash($name, $default=NULL) {
+    public function flash($name, $default = NULL) {
         $result = $this->get($name, $default);
         $this->destory($name);
         return $result;
