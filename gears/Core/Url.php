@@ -43,7 +43,7 @@ class Url {
         isset($url['query']) && $link .= '?' . $url['query'];
         isset($url['fragment']) && $link .= '#' . $url['fragment'];
         event('link', $link);
-        if (cogear()->input->get('splash') == '') {
+        if (cogear()->input->get('splash') === '') {
             $link .= e();
         }
         return $link;
