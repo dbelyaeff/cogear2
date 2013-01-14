@@ -327,7 +327,7 @@ class Db_ORM extends Object {
                     $callback = new Callback($callback);
                 }
                 if ($callback->check()) {
-                    $data[$field] = $callback->run(array($data[$field]));
+                    isset($data[$field]) && $data[$field] = $callback->run(array($data[$field]));
                 }
             }
         }
