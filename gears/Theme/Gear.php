@@ -27,12 +27,17 @@ class Theme_Gear extends Gear {
         'admin/theme/activate/(\w+)' => 'activate_action',
         'admin/theme/download' => 'download_action',
         'admin/theme/add' => 'upload_action',
+        'admin/theme/widgets' => 'widgets_action',
+        'admin/theme/widgets/(\d+)' => 'widgets_action',
+        'admin/theme/widgets/(\d+)/(options)' => 'widgets_action',
+        'admin/theme/widgets/(add)' => 'widgets_action',
     );
     protected $access = array(
         'admin' => array(1),
         'activate' => array(1),
         'download' => array(1),
         'upload' => array(1),
+        'widgets' => array(1)
     );
 
     /**
@@ -44,17 +49,16 @@ class Theme_Gear extends Gear {
         'head', 'before', 'header', 'info', 'content', 'sidebar', 'footer', 'after'
     );
 
-    const SUFFIX = '_Theme';
-
     /**
-     * Выводит логотип сайта
+     * Список классов виджетов с их названиями
+     *
+     * @var array
      */
-    public function hookLogo() {
-        $theme = $this->object();
-        if ($theme->logo) {
-            echo "<a href=" . l() . "><img src=\"" . l($theme->folder) . '/' . $theme->logo . "\"></a>";
-        }
-    }
+    protected $widgets = array(
+            // 'Theme_Widget_HTML' => 'Простой HTML код',
+    );
+
+    const SUFFIX = '_Theme';
 
     /**
      * Добавляем иконку сайта в шапку
@@ -93,19 +97,38 @@ class Theme_Gear extends Gear {
     public function __construct($config) {
         parent::__construct($config);
         $this->initRegions();
+        // Почему здесь, а не выше в общем списке?
+        // Потом что общий список инициализируется во время init.
+        // Если указать там, то будут вовлечены только те шестерёнки, которые в очереди после данной идут
+        hook('gear.init', array($this, 'hookGearInit'));
     }
 
     /**
-     * Init
+     * Инициализация
      */
     public function init() {
         hook('callback.before', array($this, 'catchOutput'), NULL, 'start');
         hook('callback.after', array($this, 'catchOutput'), NULL, 'finish');
         parent::init();
+        // Загрузка виджетов
+        $this->loadWidgets();
     }
 
     /**
-     * hook Menu
+     * Хук инициализации шестерёнки
+     *
+     * @param type $Gear
+     */
+    public function hookGearInit($Gear) {
+        if ($Gear->widgets) {
+            foreach ($Gear->widgets as $class => $name) {
+                $this->registerWidget($class, $name);
+            }
+        }
+    }
+
+    /**
+     * Хук меню
      *
      * @param string  $name
      * @param object $menu
@@ -118,7 +141,6 @@ class Theme_Gear extends Gear {
                     'link' => l('/admin/theme'),
                     'order' => 200,
                 ));
-                break;
         }
     }
 
@@ -134,6 +156,10 @@ class Theme_Gear extends Gear {
                                 array(
                                     'label' => t('Темы'),
                                     'link' => l('/admin/theme')
+                                ),
+                                array(
+                                    'label' => t('Виджеты'),
+                                    'link' => l('/admin/theme/widgets')
                                 )
                             )
                         ));
@@ -240,6 +266,151 @@ class Theme_Gear extends Gear {
             }
         }
         $form->show();
+    }
+
+    /**
+     * Загрузка виджетов
+     */
+    public function loadWidgets() {
+        if (!$widgets = cache('widgets')) {
+            $widget = widget();
+            $widget->order('position');
+            $widgets = $widget->findAll();
+            cache('widgets', $widgets);
+        }
+        foreach ($widgets as $key => $widget) {
+            $widgets->$key = new Theme_Widget();
+            $widget->options = unserialize($widget->options);
+            $widgets->$key->object($widget);
+        }
+        if ($widgets) {
+            foreach ($widgets as $widget) {
+                check_route($widget->route) && append($widget->region, $widget->render());
+            }
+        }
+    }
+
+    /**
+     * Управление виджетами
+     *
+     * @param mixed $action
+     */
+    public function widgets_action($action = 'list', $subaction = NULL) {
+        new Menu_Tabs(array(
+                    'name' => 'admin.theme.widgets',
+                    'elements' => array(
+                        array(
+                            'label' => icon('list') . ' ' . t('Список'),
+                            'link' => l('/admin/theme/widgets'),
+                        ),
+                        array(
+                            'label' => icon('plus') . ' ' . t('Добавить'),
+                            'link' => l('/admin/theme/widgets/add'),
+                            'class' => 'fl_r',
+                        ),
+                        array(
+                            'label' => icon('pencil') . ' ' . t('Редактировать'),
+                            'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3)),
+                            'access' => check_route('widgets/(\d+)'),
+                            'active' => check_route('widgets/(\d+)$'),
+                            'class' => 'fl_r',
+                        ),
+                        array(
+                            'label' => icon('wrench') . ' ' . t('Настройки'),
+                            'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3) . '/options'),
+                            'access' => check_route('widgets/(\d+)'),
+                            'active' => check_route('widgets/(\d+)/options'),
+                            'class' => 'fl_r',
+                        ),
+                    )
+                ));
+        if ($action == 'list') {
+            template('Theme/templates/widgets/search')->show();
+            $widget = widget();
+            $widgets = $widget->findAll();
+            // Фильтруем, если задан параметр
+            if ($uri = $this->input->get('uri')) {
+                $remove_ids = array();
+                foreach ($widgets as $key => $widget) {
+                    if (!check_route($widget->route, $uri)) {
+                        $remove_ids[] = $key;
+                    }
+                }
+                foreach ($remove_ids as $id) {
+                    $widgets->offsetUnset($id);
+                }
+            }
+            template('Theme/templates/widgets/list', array(
+                'regions' => $this->regions,
+                'widgets' => $widgets,
+            ))->show();
+        } else {
+            $form = new Form('Theme/forms/widget');
+            $form->callback->setValues($this->getWidgets());
+            $form->region->setValues(array_combine($this->regions, $this->regions));
+            if (is_numeric($action) && $widget = widget($action)) {
+                if ($subaction === 'options') {
+                    template('Theme/templates/widgets/options.header', array('widget' => $widget))->show();
+                    $class = $widget->callback;
+                    $current_widget = new $class(unserialize($widget->object()->options));
+                    $current_widget->object($widget);
+                    if ($current_widget->settings()) {
+                        $this->cache->remove('widgets');
+                        flash_success(t('Настройки виджета <b>%s</b> сохранены!', $widget->name), '', 'growl');
+                        redirect($this->session->history(-2));
+                    }
+                    return;
+                }
+                $form->object($widget);
+                $form->callback->options->disabled = TRUE;
+            } elseif ($action == 'add') {
+                $form->remove('delete');
+                $widget = widget();
+            } else {
+                return event('empty');
+            }
+            if ($result = $form->result()) {
+                $this->cache->remove('widgets');
+                if ($result->delete && $widget->delete()) {
+                    flash_success(t('Виджет успешно удалён!'), '', 'growl');
+                    redirect(l('/admin/theme/widgets'));
+                }
+                if ($action == 'add') {
+                    $result->position = 1 + widget()->where('region', $result->region)->countAll();
+                }
+                $widget->object()->extend($result);
+                if ($widget->save()) {
+                    if($action == 'add'){
+                        flash_success(t('Виджет <b>%s</b> успешно добавлен!', $widget->name),'','growl');
+                        redirect(l('/admin/theme/widgets/'.$widget->id.'/options'));
+                    }
+                    else {
+                        flash_success(t('Виджет <b>%s</b> успешно отредактирован!', $widget->name));
+                        redirect(l(TRUE));
+                    }
+                }
+            }
+            $form->show();
+        }
+    }
+
+    /**
+     * Регистрирует виджет в списке доступных
+     *
+     * @param string $class
+     * @param string $name
+     */
+    public function registerWidget($class, $name) {
+        $this->widgets[$class] = $name;
+    }
+
+    /**
+     * Возвращает классы виджетов
+     *
+     * @return  array
+     */
+    public function getWidgets() {
+        return $this->widgets;
     }
 
     /**
@@ -368,8 +539,21 @@ function inject($region, $value, $position = 0) {
 }
 
 function theme($region) {
-    if(cogear()->theme->$region){
+    if (cogear()->theme->$region instanceof Theme_Region) {
         return cogear()->theme->$region->render();
     }
-    exit(t('Регион <b>%s</b> не определён в настройках темы',$region));
+    exit(t('Регион <b>%s</b> не определён в настройках темы', $region));
+}
+
+function widget($value = NULL, $param = 'id') {
+    if (NULL === $value) {
+        return new Theme_Widget();
+    } else {
+        $widget = new Theme_Widget();
+        $widget->$param = $value;
+        if ($widget->find()) {
+            return $widget;
+        }
+        return NULL;
+    }
 }

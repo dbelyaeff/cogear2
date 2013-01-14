@@ -1,0 +1,1 @@
+<a href="<?php echo l().e('mode','widgets')?>" style="position: fixed; bottom: 5px; right: 10px;"><i class="icon icon-edit"></i></a>

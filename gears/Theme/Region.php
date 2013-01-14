@@ -35,7 +35,12 @@ class Theme_Region extends Options {
                 $output->append($item);
             }
         }
-        echo $output;
+        if ('widgets' === cogear()->input->get('mode') && access('Theme.widgets')) {
+            echo template('Theme/templates/widgets/wrapper',array('output'=>$output,'name'=>$this->name))->render();
+        }
+        elseif($output) {
+            echo $output;
+        }
     }
 
     /**
