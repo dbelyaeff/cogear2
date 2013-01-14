@@ -131,7 +131,7 @@ class Form_Element_Abstract extends Notify_Handler {
         }
         $method = strtolower($this->form->method);
         $this->value = cogear()->input->$method($this->name, $this->options->value);
-        $this->filter();
+        $this->filtrate();
         $result = $this->validate() ? $this->value : FALSE;
         return $result;
     }
