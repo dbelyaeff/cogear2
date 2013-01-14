@@ -52,9 +52,9 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         $this->queries->push($query);
         $i = $this->queries->count();
         bench('db.query.' . $i . '.start');
-        if(!$this->result = $this->PDO->query($query)){
-            $info = $this->PDO->errorInfo();
-            $this->error($info[2].' '.$info[1]);
+        if (!$this->result = $this->PDO->query($query)) {
+            $this->setError($this->PDO);
+
         }
         bench('db.query.' . $i . '.end');
         $this->autoclear && $this->clear();
@@ -70,6 +70,13 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         return $this->PDO->lastInsertId();
     }
 
+    public function setError($Object){
+        $info = $Object->errorInfo();
+        ob_start();
+        $Object->debugDumpParams();
+        $end = ob_get_clean();
+        $this->error($info[2] . ' Code:' . $info[1] . ' <p><button class="btn btn-mini" onclick="$(this).next().slideDown();"><i class="icon-eye-open"></i></button> <pre style="display: none;">' .$end  . '</pre>');
+    }
     /**
      * Получние списка полей в таблице
      *
@@ -151,8 +158,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
                 bench('db.query.' . $i . '.end');
                 return $this->PDO->lastInsertId();
             } else {
-                $error = $PDOStatement->errorInfo();
-                $this->error($error[2].' '.$error[1]);
+                $this->setError($PDOStatement);
                 return FALSE;
             }
         } catch (PDOException $e) {
@@ -193,10 +199,8 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
                 return TRUE;
-            }
-            else {
-                $info = $PDOStatement->errorInfo();
-                $this->error($info[2].' '.$info[1]);
+            } else {
+                $this->setError($PDOStatement);
             }
         } catch (PDOException $e) {
             $this->error($e->getMessage());
