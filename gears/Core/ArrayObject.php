@@ -98,6 +98,37 @@ class Core_ArrayObject extends ArrayObject {
     }
 
     /**
+     * Фильтрация по параметрам
+     *
+     * @param array|string $filter
+     * @param mixed $value
+     * @return  Core_ArrayObject
+     */
+    public function filter($filter, $value = NULL) {
+        if (!is_array($filter)) {
+            $filter = array(
+                $filter => $value,
+            );
+        }
+        $result = new self();
+        foreach ($this as $key => $val) {
+            if ($val instanceof self) {
+                $stop = FALSE;
+                foreach ($filter as $fkey => $fval) {
+                    if ($val->$fkey != $fval) {
+                        $stop = TRUE;
+                    }
+                }
+                if ($stop) {
+                    continue;
+                }
+                $result->$key = $val;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Find element by value
      *
      * @param mixed $needle
@@ -221,7 +252,8 @@ class Core_ArrayObject extends ArrayObject {
         $result = array();
         $it = $this->getIterator();
         $i = 0;
-        while ($it->valid()) {
+        if ($this->count()) {
+            while ($it->valid()) {
             if (is_numeric($position)) {
                 if ($order == self::BEFORE && $position == $i) {
                     $result[] = $value;
@@ -240,10 +272,14 @@ class Core_ArrayObject extends ArrayObject {
                     $result[$key] = $value;
                 }
             }
-            $it->next();
-            $i++;
+                $it->next();
+                $i++;
+            }
+            $this->exchangeArray($result);
         }
-        $this->exchangeArray($result);
+        else {
+            $this->append($value);
+        }
     }
 
     /**
