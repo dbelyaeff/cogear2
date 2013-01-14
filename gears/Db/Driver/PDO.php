@@ -75,7 +75,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         ob_start();
         $Object->debugDumpParams();
         $end = ob_get_clean();
-        $this->error($info[2] . '<br/>Code:' . $info[1] . ' <button class="btn btn-mini" onclick="$(this).next().slideDown();"><i class="icon-eye-open"></i></button> <pre style="display: none;">' .$end  . '</pre>');
+        $this->error($info[2] . '<br/>Code:' . $info[1] . ' <button class="btn btn-mini" onclick="$(this).next().toggleClass(\'hidden\');"><i class="icon-eye-open"></i></button> <pre class="hidden">' .$end  . '</pre>');
     }
     /**
      * Получние списка полей в таблице
