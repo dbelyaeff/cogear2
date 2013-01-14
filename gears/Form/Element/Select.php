@@ -31,7 +31,7 @@ class Form_Element_Select extends Form_Element_Abstract{
         $method = strtolower($this->form->method);
         $name = str_replace('[]','',$this->name);
         $this->value = cogear()->input->$method($name, $this->options->value);
-        $this->filter();
+        $this->filtrate();
         $result = $this->validate() ? $this->value : FALSE;
         return $result;
     }
