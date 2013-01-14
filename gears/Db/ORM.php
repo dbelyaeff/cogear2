@@ -321,7 +321,7 @@ class Db_ORM extends Object {
         // Set scope to $this
         foreach ($filters as $field => $filter) {
             foreach ($filter as $key => $callback) {
-                if (!is_array($callback) && method_exists($this, $callback)) {
+                if (!is_array($callback) && !function_exists($callback) && method_exists($this, $callback)) {
                     $callback = new Callback(array($this, $callback));
                 } else {
                     $callback = new Callback($callback);
