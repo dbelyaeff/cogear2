@@ -321,7 +321,11 @@ class Db_ORM extends Object {
         // Set scope to $this
         foreach ($filters as $field => $filter) {
             foreach ($filter as $key => $callback) {
-                $callback = new Callback($callback);
+                if (!is_array($callback) && method_exists($this, $callback)) {
+                    $callback = new Callback(array($this, $callback));
+                } else {
+                    $callback = new Callback($callback);
+                }
                 if ($callback->check()) {
                     $data[$field] = $callback->run(array($data[$field]));
                 }
@@ -382,7 +386,7 @@ class Db_ORM extends Object {
         } else {
             $data = $this->getData();
         }
-        if(isset($data[$this->primary])){
+        if (isset($data[$this->primary])) {
             unset($data[$this->primary]);
         }
         event('Db_ORM.update', $this, $data);
