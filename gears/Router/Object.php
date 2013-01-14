@@ -21,7 +21,7 @@ class Router_Object extends Options implements Interface_Singleton {
     private static $_instance;
 
     /**
-     * Routes
+     * Пути
      *
      * @var array
      */
@@ -29,42 +29,42 @@ class Router_Object extends Options implements Interface_Singleton {
     );
 
     /**
-     * URI — path or URL after domain address.
+     * Uri — тот фрагмент адреса, что идёт после домена
      *
      * @var string
      */
     protected $uri;
 
     /**
-     * URI segments
+     * Сегменты Uri
      *
      * @var array
      */
     private $segments = array();
 
     /**
-     * Arguments — filtered segments
+     * Аргументы
      *
      * @var array
      */
     private $args = array();
 
     /**
-     * Matches
+     * Совпадения
      *
      * @var array
      */
     protected $matches = array();
 
     /**
-     * Callback
+     * Обратный вызов
      *
      * @var array
      */
     protected $callback = array();
 
     /**
-     * Route expression transformation variables
+     * Шаблоны путей
      *
      * @array
      */
@@ -88,7 +88,7 @@ class Router_Object extends Options implements Interface_Singleton {
     );
 
     /**
-     * Url delimiter
+     * Разделитель uri
      *
      * @const
      */
@@ -99,14 +99,14 @@ class Router_Object extends Options implements Interface_Singleton {
     const BOTH = 2;
 
     /**
-     * Clone
+     * Клонирование
      */
     private function __clone() {
 
     }
 
     /**
-     * Get instance
+     * Сущность
      *
      * @return Cogear
      */
@@ -126,12 +126,11 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Sanitize path
+     * Очистка пути
      *
      * @param	string	$path
      */
     public function sanitizePath($path) {
-        $cogear = getInstance();
         if (strpos($path, '?') !== FALSE) {
             $path = substr($path, 0, strpos($path, '?'));
         }
@@ -142,7 +141,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Parse path segments
+     * Обработка сегментов пути
      *
      * @param	string	$path
      * @return	string
@@ -154,7 +153,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Add route
+     * Привязывание пути
      *
      * @param string $route
      * @param callback $callback
@@ -170,7 +169,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Get uri
+     * Получение Uri
      *
      * @return string
      */
@@ -179,7 +178,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Get arguments
+     * Получение аргументов
      *
      * @return array
      */
@@ -188,7 +187,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Get route matches
+     * Получение совпадений роутера
      *
      * @return array
      */
@@ -197,7 +196,7 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Get segments
+     * Получение сегментов uri
      *
      * @param   int     $num
      * @return array|string
@@ -207,29 +206,30 @@ class Router_Object extends Options implements Interface_Singleton {
     }
 
     /**
-     * Check uri match
+     * Проверка пути
      *
+     * @param string $route
      * @param string $uri
      * @param int $type
      * @return  boolean
      */
-    public function check($uri = '') {
+    public function check($route = '', $uri = NULL) {
         $site = 'http://' . SITE_URL . '/';
-        if (strpos($uri, $site) !== FALSE) {
-            $uri = str_replace($site, '', $uri);
+        if (strpos($route, $site) !== FALSE) {
+            $route = str_replace($site, '', $route);
         }
         if (defined('FOLDER')) {
-            $uri = str_replace(FOLDER . '/', '', $uri);
+            $route = str_replace(FOLDER . '/', '', $route);
         }
-        if (!$uri) {
+        if (!$route) {
             return $this->uri ? FALSE : TRUE;
         }
-        $regexp = $uri;
-        return (bool)preg_match('#'.$regexp.'#', $this->uri);
+        $regexp = $route;
+        return (bool)preg_match('#'.$regexp.'#', $uri ? $uri : $this->uri);
     }
 
     /**
-     * Run dispatched request
+     * Обработка запроса
      */
     public function run() {
         if (!event('router.run', $this)->check()) {
@@ -270,8 +270,7 @@ class Router_Object extends Options implements Interface_Singleton {
         return $args;
     }
     /**
-     * Execute callback
-     *
+     * Выполнение обратного вызова
      */
     public function exec(Callback $callback) {
         if(!$callback->check()){
@@ -295,7 +294,7 @@ class Router_Object extends Options implements Interface_Singleton {
 }
 
 /**
- * Routes
+ * Привязка пути
  *
  * @param type $route
  * @param type $callback
@@ -305,12 +304,12 @@ function bind_route($route, $callback, $prepend = FALSE) {
 }
 
 /**
- * Check route alias
+ * Проверка пути
  *
  * @param type $route
  * @param type $arg
  * @return type
  */
-function check_route($route = '') {
-    return cogear()->router->check($route);
+function check_route($route = '', $uri = NULL) {
+    return cogear()->router->check($route, $uri);
 }
