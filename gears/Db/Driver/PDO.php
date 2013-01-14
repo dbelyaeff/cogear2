@@ -52,7 +52,10 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         $this->queries->push($query);
         $i = $this->queries->count();
         bench('db.query.' . $i . '.start');
-        $this->result = $this->PDO->query($query);
+        if(!$this->result = $this->PDO->query($query)){
+            $info = $this->PDO->errorInfo();
+            $this->error($info[2].' '.$info[1]);
+        }
         bench('db.query.' . $i . '.end');
         $this->autoclear && $this->clear();
         return $this->result ? $this->result : FALSE;
@@ -190,6 +193,10 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
                 return TRUE;
+            }
+            else {
+                $info = $PDOStatement->errorInfo();
+                $this->error($info[2].' '.$info[1]);
             }
         } catch (PDOException $e) {
             $this->error($e->getMessage());

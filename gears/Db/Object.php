@@ -59,4 +59,12 @@ class Db_Object extends Object implements Interface_Factory {
         return $config;
     }
 
+    /**
+     * Получение ошибок драйвера
+     *
+     * @return array
+     */
+    public function getErrors(){
+        return $this->object()->getErrors();
+    }
 }

@@ -14,6 +14,7 @@ class Db_Gear extends Gear {
         'dev.trace' => 'hookTrace',
         'gear.enable' => 'hookGearEnable',
         'gear.disable' => 'hookGearDisable',
+        'done' => 'hookErrors',
     );
 
     /**
@@ -47,6 +48,15 @@ class Db_Gear extends Gear {
     }
 
     /**
+     * Отображает ошибки
+     */
+    public function hookErrors(){
+        if($errors = $this->object()->getErrors()){
+            error($errors->toString());
+        }
+    }
+
+    /**
      * Конструктор
      */
     public function __construct($config) {
@@ -64,9 +74,7 @@ class Db_Gear extends Gear {
             parent::init();
             $this->object($db);
         }
-        hook('done', array($db->object(), 'showErrors'));
     }
-
     /**
      * Вывод отладочной информации в подвал темы
      *
