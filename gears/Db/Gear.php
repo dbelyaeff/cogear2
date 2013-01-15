@@ -61,7 +61,6 @@ class Db_Gear extends Gear {
      */
     public function __construct($config) {
         parent::__construct($config);
-        cogear()->db = $this;
     }
 
     /**

@@ -97,7 +97,7 @@ class Db_ORM extends Object {
             self::$cached = new Core_ArrayObject();
         }
         $table && $this->table = $table;
-        $this->db = $db instanceof Db_Object ? $db : cogear()->db->object();
+        $this->db = $db instanceof Db_Object ? $db : cogear()->Db->object();
         $this->fields = $this->db->getFields($this->table);
         $this->reflection = new ReflectionClass($this);
         $this->class = $this->reflection->getName();
