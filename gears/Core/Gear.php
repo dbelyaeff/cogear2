@@ -375,7 +375,7 @@ abstract class Gear extends Object {
         // If it has relative path
         if (strpos($path, ROOT) === FALSE) {
             if ($path[0] == '/') {
-                $path = ROOTPATH . DS . $path;
+                $path = ROOT . DS . $path;
             } else {
                 $path = GEARS . DS . $path;
             }
