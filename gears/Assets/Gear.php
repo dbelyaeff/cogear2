@@ -20,7 +20,8 @@ class Assets_Gear extends Gear {
         $cogear->settings = new Core_ArrayObject();
         $cogear->settings->site = config('site.url');
         event('assets.js.global', $cogear);
-        echo HTML::script("var cogear = cogear || " . json_encode($cogear),array(), TRUE);
+        echo HTML::script("var cogear = cogear || " . json_encode($cogear).";\n
+            window.cogear = cogear;",array(), TRUE);
     }
 
     /**
