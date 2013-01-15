@@ -99,8 +99,10 @@ class Theme_Gear extends Gear {
      */
     public function hookDone() {
         // Загрузка виджетов
+        if(!$this->Install){
         $this->loadWidgets();
         $this->hookAfter();
+        }
     }
 
     /**
@@ -141,7 +143,7 @@ class Theme_Gear extends Gear {
      * Хук футера
      */
     public function hookFooter() {
-        if (role() == 1) {
+        if (!$this->Install && role() == 1) {
             echo template('Theme/templates/widgets/edit.link')->render();
         }
     }
