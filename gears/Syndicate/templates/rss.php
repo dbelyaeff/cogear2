@@ -17,7 +17,7 @@
                     <?php echo $item->body ?>
         ]]></description>
         <author><?php echo $item->author->getName() ?></author>
-        <pubDate><?php echo gmdate("D, d M Y H:i:s", strtotime($item->created_date)) . ' GMT'; ?></pubDate>
+        <pubDate><?php echo date('r',$item->created_date); ?></pubDate>
     </item><?php endforeach; ?>
     </channel>
 </rss>
