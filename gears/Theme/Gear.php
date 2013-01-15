@@ -401,6 +401,9 @@ class Theme_Gear extends Gear {
                 if ($uri = $this->input->get('uri')) {
                     $form->route->setValue($uri);
                 }
+                if ($region = $this->input->get('region')) {
+                    $form->region->setValue($region);
+                }
                 $form->remove('delete');
                 $widget = widget();
             } else {

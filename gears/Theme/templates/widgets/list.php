@@ -1,10 +1,11 @@
 <div id="widgets-list">
     <?php foreach ($regions as $region): ?>
         <section>
-            <h1><span><?php echo t('Регион') ?></span> <?php echo $region ?></h1>
-            <div class="region-widgets shd" data-name="<?php echo $region?>">
+            <h1 class="shd"><span><?php echo t('Регион') ?></span> <?php echo $region ?> <a class="sh add" href="<?php echo l('/admin/theme/widgets/add/') . e('region',$region) ?>"><i class="icon icon-plus"></i></a></h1>
+
+            <div class="region-widgets shd" data-name="<?php echo $region ?>">
                 <?php foreach ($widgets->filter('region', $region) as $widget): ?>
-                    <div class="region-widget" data-id="<?php echo $widget->id?>" data-region="<?php echo $widget->region?>">
+                    <div class="region-widget" data-id="<?php echo $widget->id ?>" data-region="<?php echo $widget->region ?>">
                         <a class="sh"><i class="icon icon-move"></i></a>
                         <span class="region-widget-name">
                             <?php echo $widget->name ?>
@@ -31,7 +32,7 @@
                     $data.push({id: $(this).attr('data-id'),region: $(this).attr('data-region')})
                 })
                 $.ajax({
-                    url: '<?php echo l('/admin/theme/widgets/ajax')?>',
+                    url: '<?php echo l('/admin/theme/widgets/ajax') ?>',
                     dataType: 'json',
                     type: 'POST',
                     data: {widgets: $data},
@@ -72,6 +73,12 @@
         background-image: -webkit-linear-gradient(top,#f9f9f9,#ececec);
         background-image: linear-gradient(top,#f9f9f9,#ececec);
         text-shadow: 1px 1px 1px #FFF;
+        position: relative;
+    }
+    #widgets-list section h1 .add{
+        position: absolute;
+        right: 10px;
+        top: 0px;
     }
     #widgets-list section h1 span{
         color: rgb(185, 185, 185);
