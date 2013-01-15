@@ -15,6 +15,7 @@ class Pages_Gear extends Gear {
 //        'router.run' => 'hookRouterRun',
         'menu.admin' => 'hookAdminMenu',
         'parse' => 'hookParse',
+        'done' => 'hookDone',
     );
     protected $routes = array(
         'admin/pages' => 'admin_action',
@@ -32,6 +33,11 @@ class Pages_Gear extends Gear {
         'show' => TRUE,
         'index' => TRUE,
     );
+    /**
+     * Текущая страница
+     * @var Page
+     */
+    public $current;
 
     /**
      * Обработка 404 ошибки
@@ -75,7 +81,7 @@ class Pages_Gear extends Gear {
             preg_match_all('#\[pagelist(?:\s+root=(\d+)?)?\]#i', $item->body, $matches);
             for ($i = 0; $i < sizeof($matches[0]); $i++) {
                 $root = empty($matches[1][$i]) ? 1 : $matches[1][$i];
-                $item->body = str_replace($matches[0][$i], cogear()->pages->renderList($root), $item->body);
+                $item->body = str_replace($matches[0][$i], cogear()->pages->getList($root), $item->body);
             }
         }
     }
@@ -137,6 +143,7 @@ class Pages_Gear extends Gear {
      */
     public function show_action($id) {
         if ($page = page($id)) {
+            $this->current = $page;
             $page->show();
         }
     }
@@ -158,6 +165,7 @@ class Pages_Gear extends Gear {
     public function index_action() {
         $main_id = config('Pages.main_id', 1);
         if ($page = page($main_id)) {
+            $this->current = $page;
             $page->show();
         } else {
             event('404');
@@ -167,15 +175,23 @@ class Pages_Gear extends Gear {
     /**
      * Показывает страницы от корня
      *
-     * @param type $root
+     * @param type $root    корневая страница
+     * @param boolean $render  делать ли вывод через шаблон
      */
-    public function renderList($root = 1) {
+    public function getList($root = 1, $render = TRUE) {
         if ($page = page($root)) {
-            $tpl = new Template('Pages/templates/list');
-            $tpl->pages = $page->getChilds();
-            return $tpl->render();
+            if ($render) {
+                if (!$render = cache('pagelist.' . $root)) {
+                    $tpl = new Template('Pages/templates/list');
+                    $tpl->pages = $page->getChilds();
+                    $render = $tpl->render();
+                    cache('pagelist.'.$root,$render,array('pages'));
+                }
+                return $render;
+            } else {
+                return $page->getChilds();
+            }
         }
-        return '';
     }
 
     /**
