@@ -24,7 +24,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
     public function __construct($options = array()) {
         parent::__construct($options);
         if (!self::check()) {
-            throw new Exception(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
+            exit(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
         } else {
             $this->object(new Memcache());
             if (FALSE == $this->connect($this->options->host, $this->options->port)) {
