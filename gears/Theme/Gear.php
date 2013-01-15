@@ -93,12 +93,14 @@ class Theme_Gear extends Gear {
             $this->template($tpl);
         }
     }
+
     /**
      * Загружаем виджеты в конце. Чтобы все успело проинициализироваться.
      */
     public function hookDone() {
         // Загрузка виджетов
         $this->loadWidgets();
+        $this->hookAfter();
     }
 
     /**
@@ -142,6 +144,13 @@ class Theme_Gear extends Gear {
         if (role() == 1) {
             echo template('Theme/templates/widgets/edit.link')->render();
         }
+    }
+
+    /**
+     * Хук перед закрытие </body>
+     */
+    public function hookAfter() {
+        template('Theme/templates/copyright')->show('footer');
     }
 
     /**

@@ -1,0 +1,1 @@
+<div id="copyrights" class="t_r p10"><small><?php echo t("Работает на <a href=\"http://cogear.ru\">Cogear</a>");?> &copy; </small></div>
