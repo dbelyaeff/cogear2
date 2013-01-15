@@ -18,7 +18,6 @@ return array(
         'description' => t('Виджет будет отображаться только по этому адресу. Можно использовать регулярные выражения.'),
         'value' => '.*',
         'placeholder' => t('Путь страницы или регулярное выражение…'),
-        'validate' => array('Required'),
     ),
     'region' => array(
         'type' => 'select',

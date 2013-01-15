@@ -21,6 +21,7 @@ class Theme_Gear extends Gear {
         'gear.request' => 'hookGearRequest',
         'exit' => 'output',
         'menu' => 'hookMenu',
+        'footer' => 'hookFooter',
     );
     protected $routes = array(
         'admin/theme' => 'admin_action',
@@ -125,6 +126,14 @@ class Theme_Gear extends Gear {
             foreach ($Gear->widgets as $class => $name) {
                 $this->registerWidget($class, $name);
             }
+        }
+    }
+    /**
+     * Хук футера
+     */
+    public function hookFooter() {
+        if (role() == 1) {
+            echo template('Theme/templates/widgets/edit.link')->render();
         }
     }
 
@@ -309,7 +318,7 @@ class Theme_Gear extends Gear {
                         ),
                         array(
                             'label' => icon('plus') . ' ' . t('Добавить'),
-                            'link' => l('/admin/theme/widgets/add'),
+                            'link' => l('/admin/theme/widgets/add').e('uri',$this->input->get('uri')),
                             'class' => 'fl_r',
                         ),
                         array(
@@ -375,13 +384,16 @@ class Theme_Gear extends Gear {
                     if ($current_widget->settings()) {
                         $this->cache->remove('widgets');
                         flash_success(t('Настройки виджета <b>%s</b> сохранены!', $widget->name), '', 'growl');
-                        redirect($this->session->history(-2));
+                        redirect(l(TRUE));
                     }
                     return;
                 }
                 $form->object($widget);
                 $form->callback->options->disabled = TRUE;
             } elseif ($action == 'add') {
+                if($uri = $this->input->get('uri')){
+                    $form->route->setValue($uri);
+                }
                 $form->remove('delete');
                 $widget = widget();
             } else {
