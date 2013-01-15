@@ -15,7 +15,6 @@ class Theme_Widget_HTML extends Theme_Widget_Abstract {
      * @var array
      */
     protected $options = array(
-        'title' => '',
         'content' => '',
     );
 
@@ -34,14 +33,8 @@ class Theme_Widget_HTML extends Theme_Widget_Abstract {
     public function settings() {
         $form = new Form(array(
                     '#name' => 'widget.html',
-                    'title' => array(
-                        'type' => 'text',
-                        'label' => t('Заголовок'),
-                        'value' => $this->options->title,
-                    ),
                     'content' => array(
                         'type' => 'editor',
-                        'filter' => array('Parser_Filter'),
                         'validate' => array('Required'),
                         'value' => $this->options->content
                     ),
