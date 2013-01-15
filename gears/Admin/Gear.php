@@ -150,7 +150,21 @@ class Admin_Gear extends Gear {
      * Показывает главную страницу панели управления
      */
     public function dashboard_action() {
-
+        $panels = new Core_ArrayObject();
+        $panels->system = new Core_ArrayObject(array(
+            'span' => '6',
+            'title' => t('О системе'),
+            'content' => template('Admin/templates/dashboard/system')->render(),
+        ));
+        $panels->news = new Core_ArrayObject(array(
+            'span' => '6',
+            'title' => t('Новости проекта'),
+            'content' => template('Admin/templates/dashboard/news')->caching(3600)->render(),
+        ));
+        event('admin.dashboard.panels',$panels);
+        $tpl = new Template('Admin/templates/dashboard');
+        $tpl->panels = $panels;
+        $tpl->show();
     }
 
     /**
