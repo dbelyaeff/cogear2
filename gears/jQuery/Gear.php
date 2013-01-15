@@ -12,7 +12,7 @@ class jQuery_Gear extends Gear {
 
 }
 /**
- * Продключает jQuery UI
+ * Подключает jQuery UI
  */
 function jqueryui(){
     $folder = cogear()->jQuery->folder.'/UI/';
