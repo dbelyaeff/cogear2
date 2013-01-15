@@ -13,5 +13,5 @@ return array(
             ),
         ),
     ),
-    'order' => '0',
+    'order' => '-100',
 );
