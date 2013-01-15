@@ -22,6 +22,7 @@ class Theme_Gear extends Gear {
         'exit' => 'output',
         'menu' => 'hookMenu',
         'footer' => 'hookFooter',
+        'done' => 'hookDone',
     );
     protected $routes = array(
         'admin/theme' => 'admin_action',
@@ -92,6 +93,13 @@ class Theme_Gear extends Gear {
             $this->template($tpl);
         }
     }
+    /**
+     * Загружаем виджеты в конце. Чтобы все успело проинициализироваться.
+     */
+    public function hookDone() {
+        // Загрузка виджетов
+        $this->loadWidgets();
+    }
 
     /**
      * Конструктор
@@ -112,8 +120,6 @@ class Theme_Gear extends Gear {
         hook('callback.before', array($this, 'catchOutput'), NULL, 'start');
         hook('callback.after', array($this, 'catchOutput'), NULL, 'finish');
         parent::init();
-        // Загрузка виджетов
-        $this->loadWidgets();
     }
 
     /**
@@ -128,6 +134,7 @@ class Theme_Gear extends Gear {
             }
         }
     }
+
     /**
      * Хук футера
      */
@@ -284,20 +291,20 @@ class Theme_Gear extends Gear {
     public function loadWidgets() {
         // Важно! Кэшируем только пары ключ => путь
         // Чтобы лишнего не хранить
-        if (TRUE){//!$widgets = cache('widgets')) {
+        if (TRUE) {//!$widgets = cache('widgets')) {
             $widget = widget();
             $widget->order('position');
             $result = $widget->findAll();
             $widgets = array();
-            foreach($result as $widget){
+            foreach ($result as $widget) {
                 $widgets[$widget->id] = $widget->route;
             }
             cache('widgets', $widgets);
         }
         if ($widgets) {
-            foreach ($widgets as $id=>$route) {
-                if(check_route($route) && $widget = widget($id)){
-                     append($widget->region, $widget->render());
+            foreach ($widgets as $id => $route) {
+                if (check_route($route) && $widget = widget($id)) {
+                    append($widget->region, $widget->render());
                 }
             }
         }
@@ -318,7 +325,7 @@ class Theme_Gear extends Gear {
                         ),
                         array(
                             'label' => icon('plus') . ' ' . t('Добавить'),
-                            'link' => l('/admin/theme/widgets/add').e('uri',$this->input->get('uri')),
+                            'link' => l('/admin/theme/widgets/add') . e('uri', $this->input->get('uri')),
                             'class' => 'fl_r',
                         ),
                         array(
@@ -340,8 +347,8 @@ class Theme_Gear extends Gear {
         if ($action == 'ajax' && $widgets = $this->input->post('widgets')) {
             $ajax = new Ajax();
             $position = 0;
-            foreach($widgets as $config){
-                if($widget = widget($config['id'])){
+            foreach ($widgets as $config) {
+                if ($widget = widget($config['id'])) {
                     $widget->region = $config['region'];
                     $widget->position = ++$position;
                     $widget->save();
@@ -391,7 +398,7 @@ class Theme_Gear extends Gear {
                 $form->object($widget);
                 $form->callback->options->disabled = TRUE;
             } elseif ($action == 'add') {
-                if($uri = $this->input->get('uri')){
+                if ($uri = $this->input->get('uri')) {
                     $form->route->setValue($uri);
                 }
                 $form->remove('delete');
@@ -402,7 +409,7 @@ class Theme_Gear extends Gear {
             if ($result = $form->result()) {
                 $this->cache->remove('widgets');
                 if ($result->delete && $widget->delete()) {
-                    flash_success(t('Виджет «<b>%s</b>»успешно удалён!',$widget->name), '', 'growl');
+                    flash_success(t('Виджет «<b>%s</b>»успешно удалён!', $widget->name), '', 'growl');
                     redirect(l('/admin/theme/widgets'));
                 }
                 if ($action == 'add') {
