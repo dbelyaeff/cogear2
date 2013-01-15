@@ -9,4 +9,13 @@
  * @link		http://cogear.ru
  */
 class jQuery_Gear extends Gear {
+
+}
+/**
+ * Продключает jQuery UI
+ */
+function jqueryui(){
+    $folder = cogear()->jQuery->folder.'/UI/';
+    js($folder.'jquery-ui-1.9.2.custom.min.js');
+    css($folder.'jquery-ui-1.9.2.custom.min.css');
 }
