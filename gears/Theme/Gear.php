@@ -402,7 +402,7 @@ class Theme_Gear extends Gear {
             if ($result = $form->result()) {
                 $this->cache->remove('widgets');
                 if ($result->delete && $widget->delete()) {
-                    flash_success(t('Виджет успешно удалён!'), '', 'growl');
+                    flash_success(t('Виджет «<b>%s</b>»успешно удалён!',$widget->name), '', 'growl');
                     redirect(l('/admin/theme/widgets'));
                 }
                 if ($action == 'add') {
@@ -411,10 +411,10 @@ class Theme_Gear extends Gear {
                 $widget->object()->extend($result);
                 if ($widget->save()) {
                     if ($action == 'add') {
-                        flash_success(t('Виджет <b>%s</b> успешно добавлен!', $widget->name), '', 'growl');
+                        flash_success(t('Виджет «<b>%s</b>» успешно добавлен!', $widget->name), '', 'growl');
                         redirect(l('/admin/theme/widgets/' . $widget->id . '/options'));
                     } else {
-                        flash_success(t('Виджет <b>%s</b> успешно отредактирован!', $widget->name));
+                        flash_success(t('Виджет  «<b>%s</b>» успешно отредактирован!', $widget->name));
                         redirect(l(TRUE));
                     }
                 }
