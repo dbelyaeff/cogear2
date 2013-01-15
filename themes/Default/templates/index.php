@@ -9,20 +9,19 @@
         <div class="container" id="body">
             <div class="row">
                 <div class="span12" id="header">
-                    <div class="span5"> <?php echo theme('logo') ?></div>
                     <?php echo theme('header') ?>
                 </div>
             </div>
             <div class="row">
                 <?php $sidebar = theme('sidebar') ?>
-                <div class="span<?php echo $sidebar ? '8' : '12'; ?>" id="wrapper">
+                <div class="span<?php echo $sidebar ? '9' : '12'; ?>" id="wrapper">
                     <div id="content">
                         <?php echo theme('info') ?>
                         <?php echo theme('content') ?>
                     </div>
                 </div>
                 <?php if ($sidebar): ?>
-                    <div class="span4" id="sidebar">
+                    <div class="span3" id="sidebar">
                         <?php echo $sidebar ?>
                     </div>
                 <?php endif; ?>
