@@ -45,6 +45,7 @@ class Install_Gear extends Gear {
      * @param string $subaction
      */
     public function index($action = '') {
+        template('Install/templates/header')->show('info');
         new Menu_Tabs(array(
                     'name' => 'install',
                     'render' => 'content',
