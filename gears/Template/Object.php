@@ -15,6 +15,7 @@ class Template_Object extends Core_ArrayObject {
     protected $path = '';
     protected $code = '';
     protected $vars = array();
+    protected $caching = 0;
 
     /**
      * Конструктор
@@ -23,8 +24,8 @@ class Template_Object extends Core_ArrayObject {
      */
     public function __construct($name) {
         $this->name = $name;
-        event('template',$this);
-        event('template.'.$name,$this);
+        event('template', $this);
+        event('template.' . $name, $this);
         $path = Gear::preparePath($this->name);
         if (file_exists($path)) {
             $this->path = $path;
@@ -125,6 +126,16 @@ class Template_Object extends Core_ArrayObject {
             $this->vars[$name] = & $value;
         }
     }
+    /**
+     * Установка кэширования
+     *
+     * @param type $ttl
+     * @return Template_Object
+     */
+    public function caching($ttl = 600){
+        $this->caching = $ttl;
+        return $this;
+    }
 
     /**
      * Рендер
@@ -134,13 +145,18 @@ class Template_Object extends Core_ArrayObject {
     public function render() {
         if (!$this->path)
             return;
-        ob_start();
-        event('template.render.before', $this);
-        extract($this->vars);
-        include $this->path;
-        event('template.render.after', $this);
-        return ob_get_clean();
-        ;
+        if ($this->caching && $output = cache('template.' . $this->name)) {
+            return $output;
+        } else {
+            ob_start();
+            event('template.render.before', $this);
+            extract($this->vars);
+            include $this->path;
+            event('template.render.after', $this);
+            $output = ob_get_clean();
+            $this->caching && cache('template.' . $this->name,$output,array('templates'),$this->caching);
+            return $output;
+        }
     }
 
     /**
