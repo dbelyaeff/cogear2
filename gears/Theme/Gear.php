@@ -302,7 +302,7 @@ class Theme_Gear extends Gear {
     public function loadWidgets() {
         // Важно! Кэшируем только пары ключ => путь
         $widgets = cache('widgets');
-        if (FALSE === $widgets) {
+        if (!$widgets) {
             $widget = widget();
             $widget->order('position');
             if ($result = $widget->findAll()) {
@@ -315,7 +315,7 @@ class Theme_Gear extends Gear {
             }
             cache('widgets', $widgets);
         }
-        if ($widgets) {
+        if ($widgets !== NULL) {
             foreach ($widgets as $id => $route) {
                 if (check_route($route) && $widget = widget($id)) {
                     append($widget->region, $widget->render());
