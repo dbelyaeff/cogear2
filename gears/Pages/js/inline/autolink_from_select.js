@@ -1,7 +1,7 @@
 $(document).ready(function(){
-    $('form').on('change', 'select[name=pid]',function(){
+    autoselect = function(){
         $link = $('form input[name=link]');
-        $pid = $(this);
+        $pid = $('form select[name=pid]');
         $.ajax({
             url: l('/admin/pages/ajax/getLink/'+$pid.val()),
             dataType: 'json',
@@ -20,7 +20,12 @@ $(document).ready(function(){
                 }
             }
         });
-    });
+    };
+    $('form').on('change', 'select[name=pid]',autoselect);
+    $handler = $('<i class="icon icon-refresh"/>');
+    $handler.css('cursor','pointer');
+    $('#form-page-link label').append($handler);
+    $handler.on('click',autoselect);
     if($('[name=pid]').val() != 0 && $('[name=link]').val() == ''){
         $('[name=pid]').trigger('change');
     }
