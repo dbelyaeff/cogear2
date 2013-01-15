@@ -222,6 +222,7 @@ class Db_ORM extends Object {
         if (!$this->caching && NULL === $object) {
             return NULL;
         }
+        cogear()->cache->removeTags($this->table);
         // Если работает Мемкеш
         if (Cache_Driver_Memcache::check()) {
             $key = $this->table . '.' . $id;
