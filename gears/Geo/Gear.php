@@ -32,10 +32,10 @@ class Geo_Gear extends Gear {
 
 }
 
-function flag($county_code){
-    $file = cogear()->geo->dir.DS.'img'.DS.'flags'.DS.$county_code.'.png';
-    if(file_exists($file)){
-        return File::pathToUri($file);
-    }
-    return NULL;
-}
+//function flag($county_code){
+//    $file = cogear()->geo->dir.DS.'img'.DS.'flags'.DS.$county_code.'.png';
+//    if(file_exists($file)){
+//        return File::pathToUri($file);
+//    }
+//    return NULL;
+//}
