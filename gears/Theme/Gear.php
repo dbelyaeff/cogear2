@@ -31,6 +31,7 @@ class Theme_Gear extends Gear {
         'admin/theme/widgets/(\d+)' => 'widgets_action',
         'admin/theme/widgets/(\d+)/(options)' => 'widgets_action',
         'admin/theme/widgets/(add)' => 'widgets_action',
+        'admin/theme/widgets/(ajax)' => 'widgets_action',
     );
     protected $access = array(
         'admin' => array(1),
@@ -272,20 +273,23 @@ class Theme_Gear extends Gear {
      * Загрузка виджетов
      */
     public function loadWidgets() {
-        if (!$widgets = cache('widgets')) {
+        // Важно! Кэшируем только пары ключ => путь
+        // Чтобы лишнего не хранить
+        if (TRUE){//!$widgets = cache('widgets')) {
             $widget = widget();
             $widget->order('position');
-            $widgets = $widget->findAll();
+            $result = $widget->findAll();
+            $widgets = array();
+            foreach($result as $widget){
+                $widgets[$widget->id] = $widget->route;
+            }
             cache('widgets', $widgets);
         }
-        foreach ($widgets as $key => $widget) {
-            $widgets->$key = new Theme_Widget();
-            $widget->options = unserialize($widget->options);
-            $widgets->$key->object($widget);
-        }
         if ($widgets) {
-            foreach ($widgets as $widget) {
-                check_route($widget->route) && append($widget->region, $widget->render());
+            foreach ($widgets as $id=>$route) {
+                if(check_route($route) && $widget = widget($id)){
+                     append($widget->region, $widget->render());
+                }
             }
         }
     }
@@ -324,7 +328,21 @@ class Theme_Gear extends Gear {
                         ),
                     )
                 ));
-        if ($action == 'list') {
+        if ($action == 'ajax' && $widgets = $this->input->post('widgets')) {
+            $ajax = new Ajax();
+            $position = 0;
+            foreach($widgets as $config){
+                if($widget = widget($config['id'])){
+                    $widget->region = $config['region'];
+                    $widget->position = ++$position;
+                    $widget->save();
+                }
+            }
+            $this->cache->remove('widgets');
+            $ajax->success = TRUE;
+            $ajax->json();
+        } else if ($action == 'list') {
+            jqueryui();
             template('Theme/templates/widgets/search')->show();
             $widget = widget();
             $widgets = $widget->findAll();
@@ -380,11 +398,10 @@ class Theme_Gear extends Gear {
                 }
                 $widget->object()->extend($result);
                 if ($widget->save()) {
-                    if($action == 'add'){
-                        flash_success(t('Виджет <b>%s</b> успешно добавлен!', $widget->name),'','growl');
-                        redirect(l('/admin/theme/widgets/'.$widget->id.'/options'));
-                    }
-                    else {
+                    if ($action == 'add') {
+                        flash_success(t('Виджет <b>%s</b> успешно добавлен!', $widget->name), '', 'growl');
+                        redirect(l('/admin/theme/widgets/' . $widget->id . '/options'));
+                    } else {
                         flash_success(t('Виджет <b>%s</b> успешно отредактирован!', $widget->name));
                         redirect(l(TRUE));
                     }

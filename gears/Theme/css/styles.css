@@ -19,8 +19,8 @@
 }
 .widget > .edit{
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: -2px;
+    right: -16px;
     -webkit-transition:  all 0.5s ease;
     -moz-transition:  all 0.5s ease;
     -o-transition:  all 0.5s ease;

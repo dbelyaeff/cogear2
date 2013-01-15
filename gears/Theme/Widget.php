@@ -26,6 +26,7 @@ class Theme_Widget extends Db_ORM {
      */
     public function init() {
         $class = $this->callback;
+        !is_array($this->object()->options) && $this->object()->options = unserialize($this->object()->options);
         $this->instance = new $class($this->object()->options);
         $this->instance->object($this);
         return $this->instance;
