@@ -17,7 +17,7 @@ return array(
             '#validate' => array('Required'),
             '#label' => t('Хост'),
             '#value' => 'localhost',
-            'placeholder' => 'localhost',
+            '#placeholder' => 'localhost',
         ),
         'base' => array(
             '#type' => 'text',
@@ -50,6 +50,7 @@ return array(
         ),
     ),
     'actions' => array(
+        '#class' => 'form-actions',
         'save' => array(
             '#type' => 'submit',
             '#label' => t('Далее'),
