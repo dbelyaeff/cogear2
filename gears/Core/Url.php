@@ -110,15 +110,18 @@ class Url {
      * @return  string
      */
     public static function extendQuery($data = array(), $value = NULL) {
-        if (!is_array($data) && $value) {
+        if (!is_array($data)) {
             $data = array($data => $value);
         }
-        $data = array_merge($_GET, $data);
-        if ($q = http_build_query($data)) {
-            if ($q[0] != '?') {
-                $q = '?' . $q;
+        if (!empty($_GET))
+            $data = array_merge($_GET, $data);
+        if ($data) {
+            if ($q = http_build_query($data)) {
+                if ($q[0] != '?') {
+                    $q = '?' . $q;
+                }
+                return $q;
             }
-            return $q;
         }
         return '';
     }
