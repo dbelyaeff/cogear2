@@ -22,6 +22,7 @@ return array(
     'region' => array(
         'type' => 'select',
         'label' => t('Регион вывода'),
+        'value' => 'sidebar',
         'values' => array(),
         'validate' => array('Required'),
     ),
