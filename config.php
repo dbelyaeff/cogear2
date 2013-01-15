@@ -13,7 +13,7 @@ return array (
   array (
     'defaults' =>
     array (
-      'gear' => 'Post',
+      'gear' => 'Admin',
       'action' => 'index_action',
     ),
   ),
@@ -40,7 +40,7 @@ return array (
   ),
   'gears' =>
   array (
-    'Install'
+      'Install'
   ),
   'lang' =>
   array (
