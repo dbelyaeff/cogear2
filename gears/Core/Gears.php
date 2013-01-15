@@ -65,6 +65,9 @@ class Gears extends Options {
      * @return  mixed
      */
     public function __get($name) {
+        if ($this->offsetExists($name)) {
+            return $this->offsetGet($name);
+        }
         $ucname = ucfirst($name);
         if ($this->offsetExists($ucname)) {
             return $this->offsetGet($ucname);
@@ -75,7 +78,7 @@ class Gears extends Options {
     /**
      * Настройки по умолчанию для всех шестеренок
      *
-     * @return SimpleXMLObject
+     * @return Config
      */
     public static function getDefaultSettings() {
         return self::$defaults ? self::$defaults : self::$defaults = new Config(GEARS . DS . 'Core' . DS . 'defaults' . EXT);
