@@ -148,7 +148,7 @@ class Db_Tree extends Db_Item {
                 $data = str_replace('/', '', $this->{$this->thread_field});
                 break;
         }
-        cogear()->db->like($this->thread_field, $data.'%');
+        cogear()->db->like($this->thread_field, $data.'.%');
         if ($result = $obj->findAll()) {
             return $result;
         }
