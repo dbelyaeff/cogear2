@@ -14,6 +14,7 @@ class Pages_Gear extends Gear {
         '404' => 'hook404',
 //        'router.run' => 'hookRouterRun',
         'menu.admin' => 'hookAdminMenu',
+        'parse' => 'hookParse',
     );
     protected $routes = array(
         'admin/pages' => 'admin_action',
@@ -65,6 +66,21 @@ class Pages_Gear extends Gear {
     }
 
     /**
+     * Хук парсера
+     *
+     * @param object $item
+     */
+    public function hookParse($item) {
+        if ($item->body && strpos($item->body, '[pagelist')) {
+            preg_match_all('#\[pagelist(?:\s+root=(\d+)?)?\]#i', $item->body, $matches);
+            for ($i = 0; $i < sizeof($matches[0]); $i++) {
+                $root = empty($matches[1][$i]) ? 1 : $matches[1][$i];
+                $item->body = str_replace($matches[0][$i], cogear()->pages->renderList($root), $item->body);
+            }
+        }
+    }
+
+    /**
      * Создает элемент в админском меню
      *
      * @param Menu $menu
@@ -90,7 +106,7 @@ class Pages_Gear extends Gear {
                         array(
                             'label' => icon('list') . ' ' . t('Список'),
                             'link' => l('/admin/pages'),
-                            'active' => check_route('admin/pages',Router::ENDS),
+                            'active' => check_route('admin/pages', Router::ENDS),
                         ),
                         array(
                             'label' => icon('asterisk') . ' ' . t('Настройки'),
@@ -135,17 +151,31 @@ class Pages_Gear extends Gear {
                     'saveUri' => l('/admin/pages/ajax/saveDBtree'),
                 ));
     }
+
     /**
      * Главная страница
      */
-    public function index_action(){
-        $main_id = config('Pages.main_id',1);
-        if($page = page($main_id)){
+    public function index_action() {
+        $main_id = config('Pages.main_id', 1);
+        if ($page = page($main_id)) {
             $page->show();
-        }
-        else {
+        } else {
             event('404');
         }
+    }
+
+    /**
+     * Показывает страницы от корня
+     *
+     * @param type $root
+     */
+    public function renderList($root = 1) {
+        if ($page = page($root)) {
+            $tpl = new Template('Pages/templates/list');
+            $tpl->pages = $page->getChilds();
+            return $tpl->render();
+        }
+        return '';
     }
 
     /**
@@ -160,12 +190,13 @@ class Pages_Gear extends Gear {
             $form->object($page);
         } else {
             $page = page();
+            $form->remove('delete');
             $form->pid->setValue($this->input->get('pid', 0));
         }
         $form->pid->setValues($page->getSelectValues());
         if ($result = $form->result()) {
-            if($result->delete){
-                if($page->delete()){
+            if ($result->delete) {
+                if ($page->delete()) {
                     flash_success(t('Страница удалена вместе со всеми подстраницами!'));
                     redirect(l('/admin/pages'));
                 }
@@ -199,41 +230,42 @@ class Pages_Gear extends Gear {
                     $route->callback = $route->encodeCallback(array($this, 'show_action'), array($page->id));
                     $route->update();
                 }
-                flash_success(t('Страница успещно сохранена'));
+                flash_success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
                 redirect(l('/admin/pages'));
             }
         }
         $form->show();
     }
+
     /**
      * Редактирование настроек
      */
-    public function admin_settings_action(){
+    public function admin_settings_action() {
         $this->hookPagesAdminMenu();
         $form = new Form(array(
-            'name' => 'admin.pages.settings',
-            'elements' => array(
-                'main_page' => array(
-                    'label' => t('Главная страница'),
-                    'type' => 'select',
-                    'values' => page()->getSelectValues(),
-                    'value' => config('Pages.main_id',1),
-                ),
-                'actions' => array(
+                    'name' => 'admin.pages.settings',
                     'elements' => array(
-                        'save' => array(),
+                        'main_page' => array(
+                            'label' => t('Главная страница'),
+                            'type' => 'select',
+                            'values' => page()->getSelectValues(),
+                            'value' => config('Pages.main_id', 1),
+                        ),
+                        'actions' => array(
+                            'elements' => array(
+                                'save' => array(),
+                            )
+                        )
                     )
-                )
-
-            )
-        ));
-        if($result = $form->result()){
-            if($result->main_page){
-                $this->set('Pages.main_id',$result->main_page);
+                ));
+        if ($result = $form->result()) {
+            if ($result->main_page) {
+                $this->set('Pages.main_id', $result->main_page);
             }
         }
         $form->show();
     }
+
     /**
      * Ajax интерцептор
      *
