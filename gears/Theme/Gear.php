@@ -99,9 +99,9 @@ class Theme_Gear extends Gear {
      */
     public function hookDone() {
         // Загрузка виджетов
-        if(!$this->Install){
-        $this->loadWidgets();
-        $this->hookAfter();
+        if (!$this->Install) {
+            $this->loadWidgets();
+            $this->hookAfter();
         }
     }
 
@@ -301,14 +301,17 @@ class Theme_Gear extends Gear {
      */
     public function loadWidgets() {
         // Важно! Кэшируем только пары ключ => путь
-        // Чтобы лишнего не хранить
-        if (TRUE) {//!$widgets = cache('widgets')) {
+        $widgets = cache('widgets');
+        if (FALSE === $widgets) {
             $widget = widget();
             $widget->order('position');
-            $result = $widget->findAll();
-            $widgets = array();
-            foreach ($result as $widget) {
-                $widgets[$widget->id] = $widget->route;
+            if ($result = $widget->findAll()) {
+                $widgets = array();
+                foreach ($result as $widget) {
+                    $widgets[$widget->id] = $widget->route;
+                }
+            } else {
+                $widgets = FALSE;
             }
             cache('widgets', $widgets);
         }
