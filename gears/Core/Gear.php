@@ -270,7 +270,7 @@ abstract class Gear extends Object {
             $gears_required = new Core_ArrayObject();
             $gears_incomp_version = new Core_ArrayObject();
             $gears_incomp = new Core_ArrayObject();
-            foreach ($this->required->gear as $gear) {
+            foreach ($this->required->gears as $gear) {
                 // Несовместимые шестерйнки
                 if (Gears::ERROR_INCOMP === $gear->success) {
                     $gears_incomp->append($gear->name);
