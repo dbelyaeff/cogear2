@@ -3,7 +3,9 @@ $(document).ready(function(){
         listNodeName: 'ul',
         expandBtnHTML: '',
         collapseBtnHTML: ''
-    });
+        }).attr('unselectable', 'on')
+    .css('user-select', 'none')
+    .on('selectstart', false);
     $('#dd-save').on('click', function() {
         $dd = $('.dd').first();
         $this = $(this);
