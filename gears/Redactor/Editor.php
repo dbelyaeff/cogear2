@@ -28,7 +28,9 @@ class Redactor_Editor extends Wysiwyg_Abstract {
         $options->fixed = TRUE;
         $options->observeImages = TRUE;
         $options->convertLinks = TRUE;
-        $options->cleanup = TRUE;
+        $options->cleanup = FALSE;
+        $options->focus = TRUE;
+        $options->convertDivs = FALSE;
         role() == 1 && $options->fixedTop = 40;
         js($folder.$options->lang.'.js','after');
 //        $this->toolbar->markupSet->uasort('Core_ArrayObject::sortByOrder');
