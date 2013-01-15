@@ -12,11 +12,7 @@
         foreach ($langs as $code => $lang) {
             ?>
             <tr data-lang="<?php echo $code ?>">
-                <td><?php if($flag = flag($code)): ?>
-                    <?php
-                    echo HTML::img($flag,$lang);?>
-                    <?php endif; ?>
-                    <b><?php echo $lang ?></b></td>
+                <td> <b><?php echo $lang ?></b></td>
 
 
                 <td class="t_c"><?php echo $code ?></td>
