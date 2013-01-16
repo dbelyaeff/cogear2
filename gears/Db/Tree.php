@@ -194,7 +194,7 @@ class Db_Tree extends Db_Item {
      * @return array
      */
     public function getSelectValues() {
-        $this->id && $this->where($this->primary, $this->id, ' != ')->not_like($this->thread_field,$this->{$this->thread_field},'RIGHT');
+        $this->id && $this->where($this->primary, $this->id, ' != ')->not_like($this->thread_field,$this->{$this->thread_field}.'%');
         $result = array('');
         $reflection = new ReflectionClass($this);
         $class = $reflection->getName();
