@@ -22,6 +22,6 @@ class jQuery_Gear extends Gear {
  * Подключает jQuery UI
  */
 function jqueryui(){
-    //css('http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css');
+    css('http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css');
     js('http://code.jquery.com/ui/1.9.2/jquery-ui.js');
 }
