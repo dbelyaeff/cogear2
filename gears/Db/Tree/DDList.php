@@ -13,7 +13,7 @@ class Db_Tree_DDList extends Options {
     protected $options = array(
         'class' => '',
         'render' => 'content',
-        'template' => 'Db\templates\tree\dd',
+        'template' => 'Db/templates/tree/dd',
         'saveUri' => '/db/saveDDtree',
     );
 
