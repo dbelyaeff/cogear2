@@ -596,7 +596,7 @@ class Lang_Gear extends Gear {
                             session('admin.lang.index', array_unique($index));
                         }
                     }
-                    $ajax->text .= t("Файл <b>%s</b> успешно обработан.", File::pathToUri($file));
+                    $ajax->text .= t("Файл <b>%s</b> успешно обработан. ", File::pathToUri($file));
                     $ajax->result .= $strings ? t('Найдено: <b>%d (строка|строки|строк)</b> для перевода.', sizeof($strings)) : t('Строки для перевода не найдены.');
                     $ajax->text .= $ajax->result;
                     $ajax->result = icon('file') . ' <b>' . File::pathToUri($file) . '</b><br/>' . $ajax->result;
