@@ -121,3 +121,13 @@
 a[title],a[data-original-title] {
     cursor: pointer;
 }
+.posabs{
+    position: absolute;
+}
+.posrel {
+    position: relative;
+}
+.topright {
+    top: 5px;
+    right: 5px;
+}
