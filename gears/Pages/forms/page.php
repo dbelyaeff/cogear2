@@ -16,6 +16,14 @@ return array(
             'value' => isset($_GET['uri']) ? $_GET['uri'] : '',
         ),
         'body' => array(),
+        'show_title' => array(
+            'type' => 'checkbox',
+            'label' => t('Показывать заголовок'),
+        ),
+        'show_breadcrumb' => array(
+            'type' => 'checkbox',
+            'label' => t('Показывать навигационную панель'),
+        ),
         'actions' => array(
             'elements' => array(
                 'save' => array(),

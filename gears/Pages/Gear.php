@@ -319,8 +319,6 @@ class Pages_Gear extends Gear {
      */
     private function rebuildPagesTree($items, $parent_id = 0) {
         $i = 0;
-//        debug($items);
-//        die();
         foreach ($items as $item) {
             $page = new Page();
             $page->id = $item['id'];

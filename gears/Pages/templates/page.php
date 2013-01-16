@@ -1,8 +1,9 @@
 <?php
 event('parser', $item);
+if($item->show_breadcrumb){
 $elements = array();
-if($parents = $item->getParents()){
-    foreach($parents as $parent){
+if ($parents = $item->getParents()) {
+    foreach ($parents as $parent) {
         $elements[] = array(
             'label' => $parent->name,
             'link' => $parent->getLink(),
@@ -14,14 +15,18 @@ $elements[] = array(
     'link' => $item->getLink(),
 );
 $bc = new Breadcrumb(array(
-    'name' => 'page',
-    'render' => FALSE,
-    'elements' => $elements,
-));
+            'name' => 'page',
+            'render' => FALSE,
+            'elements' => $elements,
+        ));
 echo $bc->render();
+}
 ?>
-<article class="page">
-    <div class="page-header"><h1><?php echo $item->name ?></h1></div>
+<article class="page shd posrel">
+    <?php if (access('Pages.admin')): ?>
+        <a class="sh posabs topright" href="<?php echo $item->getLink('edit')?>"><?php echo icon('pencil')?></a>
+    <?php endif ?>
+    <?php if($item->show_title):?><div class="page-header"><h1><?php echo $item->name ?></h1></div><?php endif?>
     <div class="page-body">
         <?php echo $item->body ?>
     </div>
