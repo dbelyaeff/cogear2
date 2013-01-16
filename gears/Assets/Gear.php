@@ -38,6 +38,8 @@ class Assets_Gear extends Gear {
      * Инициализацтор
      */
     public function init(){
+        hook('head',array($this->js,'output'));
+        hook('head',array($this->css,'output'));
         parent::init();
     }
 }

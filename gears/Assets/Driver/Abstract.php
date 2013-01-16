@@ -12,7 +12,6 @@ abstract class Assets_Driver_Abstract extends Object {
 
     protected $options = array(
         'glue' => TRUE,
-        'render' => 'head',
         'refresh' => 0,
     );
     protected $is_rendered;
@@ -25,7 +24,6 @@ abstract class Assets_Driver_Abstract extends Object {
      */
     public function __construct($options = NULL) {
         parent::__construct($options);
-        $this->options->render && hook($this->options->render, array($this, 'output'));
     }
 
     /**
