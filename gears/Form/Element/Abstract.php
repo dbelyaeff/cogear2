@@ -60,7 +60,7 @@ class Form_Element_Abstract extends Notify_Handler {
      * @param mixed $value
      */
     public function setValue($value) {
-        $this->value = $value;
+        $this->options->value = $value;
     }
 
     /**
