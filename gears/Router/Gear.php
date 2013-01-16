@@ -32,5 +32,5 @@ function route($id = NULL, $param = 'id') {
             return $route;
         }
     }
-    return $id ? NULL : new Router_Route();
+    return $id !== NULL ? NULL : new Router_Route();
 }
