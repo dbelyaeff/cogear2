@@ -23,7 +23,7 @@ class Input_Cookie {
         // By default cookie lifetime is month
         $expire OR $expire = 2592000;
         $path OR $path = '/';
-        $domain OR $domain =  '.'.config('site.url');
+        $domain OR $domain =  strpos(SITE_URL,'.') !== FALSE ? '.'.SITE_URL : SITE_URL;
         setcookie($name, $value, time()+$expire, $path, $domain);
     }
     /**
