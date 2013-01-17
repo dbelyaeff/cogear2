@@ -24,7 +24,7 @@ class User_Object extends Db_Item {
             event('user.autologin', $this);
             $this->dir = $this->getUploadPath();
             $this->avatar = $this->getAvatar();
-            if ($this->last_visit < time() - config('user.refresh', 86400)) {
+            if ($this->last_visit + config('user.refresh') > time()){
                 $this->last_visit = time();
                 event('user.refresh', $this);
                 $this->update(array('last_visit' => $this->last_visit));
