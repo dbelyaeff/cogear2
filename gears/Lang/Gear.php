@@ -82,7 +82,7 @@ class Lang_Gear extends Gear {
         $this->locale = config('lang.locale') . '.UTF-8';
         $options = config('lang');
         $this->object(Lang::factory('index', $options));
-        $this->object->load();
+        config('lang.ignore_native') && $this->lang == 'ru' OR $this->object->load();
         setlocale(LC_ALL, $this->locale);
         parent::__construct($config);
     }

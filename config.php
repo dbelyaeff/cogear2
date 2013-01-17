@@ -13,7 +13,7 @@ return array (
   array (
     'defaults' =>
     array (
-      'gear' => 'Admin',
+      'gear' => 'Pages',
       'action' => 'index_action',
     ),
   ),
@@ -40,7 +40,7 @@ return array (
   ),
   'gears' =>
   array (
-      'Install'
+    'Install'
   ),
   'lang' =>
   array (
@@ -49,6 +49,7 @@ return array (
     'path' => SITE.'/lang',
     'driver' => 'Lang_Driver_File',
     'name' => 'index',
+    'ignore_native' => TRUE,
     'available' =>
     array (
       0 => 'ru',
@@ -65,7 +66,7 @@ return array (
   ),
   'user' =>
   array (
-    'refresh' => 60,
+    'refresh' => 600,
     'register' =>
     array (
       'active' => false,
