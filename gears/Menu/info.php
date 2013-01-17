@@ -13,4 +13,7 @@ return array(
             ),
         ),
     ),
+    'widgets' => array(
+        'Menu_Widget' => t('Меню'),
+    ),
 );

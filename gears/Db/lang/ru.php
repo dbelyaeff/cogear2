@@ -1,7 +1,6 @@
 <?php 
-
 return array (
-  '<b>База данных:</b> %d <i class="icon icon-time"></i> %.3f<i class="icon icon-asterisk"></i>%s' => '',
+  '<b>База данных:</b> %d <i class="icon icon-time"></i> %.3f<i class="icon icon-leaf"></i>%s' => '',
   'Базы данных' => '',
   'Дамп базы данных <b>%s</b> успешно импортирован!' => '',
   'Класс <b>%s</b> не существует.' => '',

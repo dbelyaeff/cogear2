@@ -23,21 +23,30 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        if (!self::check()) {
-            exit(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
+        if ($memcache = self::check($this->options->host,$this->options->port)) {
+            $this->object($memcache);
         } else {
-            $this->object(new Memcache());
-            if (FALSE == $this->connect($this->options->host, $this->options->port)) {
-                throw new Exception(t('Не удаётся соединиться с сервером Memcache по адресу %s:%d', $this->options->host, $this->options->port));
+            FALSE === $memcache && exit(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
+            if (NULL === $memcache) {
+                throw new Exception(t('Не удаётся соединиться с сервером Memcache по адресу '). $this->options->host.':'. $this->options->port);
             }
         }
     }
 
     /**
      * Проверяет, работает ли мемкеша на сервере
+     *
+     * @param   string  $host
+     * @param   int     $port
+     * @return  mixed   Memcache если работает, FALSE если не установлен, NULL если нет подключения
      */
-    public static function check() {
-        return class_exists('Memcache');
+    public static function check($host = '127.0.0.1',$port = '11211') {
+        if(class_exists('Memcache')){
+            $memcache = new Memcache();
+            $result =  $memcache->connect($host, $port) ? $memcache : NULL;
+            return $result;
+        }
+        return FALSE;
     }
 
     /**

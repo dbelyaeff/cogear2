@@ -9,6 +9,7 @@
  * @link		http://cogear.ru
  */
 class Theme_Widget_HTML extends Theme_Widget_Abstract {
+
     /**
      * Настройки по умолчанию
      *

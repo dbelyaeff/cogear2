@@ -35,7 +35,7 @@ class Factory extends Object implements Interface_Factory {
         try {
             $this->object(new $this->options->driver($options));
         } catch (Exception $e) {
-            error($e->getMessage());
+            die($e->getMessage());
         }
     }
 }

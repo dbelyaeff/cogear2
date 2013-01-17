@@ -315,7 +315,7 @@ class Theme_Gear extends Gear {
             }
             cache('widgets', $widgets);
         }
-        if ($widgets !== NULL) {
+        if ($widgets) {
             foreach ($widgets as $id => $route) {
                 if (check_route($route) && $widget = widget($id)) {
                     append($widget->region, $widget->render());
@@ -330,6 +330,7 @@ class Theme_Gear extends Gear {
      * @param mixed $action
      */
     public function widgets_action($action = 'list', $subaction = NULL) {
+        $this->hookAdminMenu();
         new Menu_Tabs(array(
                     'name' => 'admin.theme.widgets',
                     'elements' => array(
@@ -400,7 +401,7 @@ class Theme_Gear extends Gear {
                 if ($subaction === 'options') {
                     template('Theme/templates/widgets/options.header', array('widget' => $widget))->show();
                     $class = $widget->callback;
-                    $current_widget = new $class(unserialize($widget->object()->options));
+                    $current_widget = new $class($widget->object()->options);
                     $current_widget->object($widget);
                     if ($current_widget->settings()) {
                         $this->cache->remove('widgets');
@@ -409,6 +410,7 @@ class Theme_Gear extends Gear {
                     }
                     return;
                 }
+
                 $form->object($widget);
                 $form->callback->options->disabled = TRUE;
             } elseif ($action == 'add') {
@@ -423,6 +425,7 @@ class Theme_Gear extends Gear {
             } else {
                 return event('empty');
             }
+
             if ($result = $form->result()) {
                 $this->cache->remove('widgets');
                 if ($result->delete && $widget->delete()) {

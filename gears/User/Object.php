@@ -258,16 +258,6 @@ class User_Object extends Db_Item {
         return $this->avatar;
     }
 
-    /**
-     * User navbar
-     */
-    public function navbar() {
-        if (!$this->navbar) {
-            $this->navbar = new User_Navbar();
-            $this->navbar->object($this);
-        }
-        return $this->navbar;
-    }
 
     /**
      * Get user upload directory

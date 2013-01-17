@@ -217,6 +217,7 @@ class Pages_Gear extends Gear {
                     redirect(l('/admin/pages'));
                 }
             }
+
             // Заполняем объект страницы
             $page->object()->extend($result);
             $refresh = TRUE;
@@ -225,6 +226,7 @@ class Pages_Gear extends Gear {
                 // Если равны, то обновлять не надо
                 $refresh = ($route->route != $page->getLink());
             }
+
             // Если путь не указан или не существует
             if ($refresh) {
                 // Создаём новый путь
@@ -240,6 +242,7 @@ class Pages_Gear extends Gear {
                 // Обновляем id
                 $page->route = $route->id;
             }
+
             // Сохранение страницы
             if ($page->save()) {
                 if ($refresh) {
@@ -250,6 +253,7 @@ class Pages_Gear extends Gear {
                 redirect(l('/admin/pages'));
             }
         }
+
         $form->show();
     }
 

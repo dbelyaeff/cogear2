@@ -39,6 +39,7 @@ class User_Gear extends Gear {
         'admin_create' => array(1),
         'login' => array(0),
         'logout' => array(1, 100),
+        'index' => TRUE,
     );
     protected $routes = array(
         'login' => 'login_action',
@@ -49,6 +50,7 @@ class User_Gear extends Gear {
         'admin/user/create' => 'admin_create_action',
         'admin/user/(\d+)' => 'edit_action',
         'user/edit/(\d+)' => 'edit_action',
+        'user/([\w]+)' => 'index_action',
     );
 
     /**
@@ -349,7 +351,19 @@ class User_Gear extends Gear {
                 ));
         ;
     }
-
+    /**
+     * Отображает профиль пользователя
+     *
+     * @param string $action
+     */
+    public function index_action($login = '') {
+        if ($login && $user = user($login,'login')) {
+                $profile = new Profile($user);
+                $profile->show();
+        } else {
+            event('404');
+        }
+    }
     /**
      * Show admin page
      */

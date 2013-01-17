@@ -1,0 +1,19 @@
+.menu{
+    position: relative;
+    display: inline-block;
+}
+.menu > .edit{
+    position: absolute;
+    top: 0px;
+    right: -16px;
+    -webkit-transition:  all 0.5s ease;
+    -moz-transition:  all 0.5s ease;
+    -o-transition:  all 0.5s ease;
+    transition:  all 0.5s ease;
+}
+.menu > .edit:hover{
+    -webkit-transform:scale(1.05);
+    -moz-transform:scale(1.05);
+    -o-transform:scale(1.05);
+    transform:scale(1.05);
+}

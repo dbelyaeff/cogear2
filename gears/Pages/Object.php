@@ -49,7 +49,12 @@ class Pages_Object extends Db_Tree {
         }
         return l('/' . $uri->render('/'));
     }
-
+    /**
+     * Вывод
+     *
+     * @param string $type
+     * @return type
+     */
     public function render($type = NULL) {
         switch ($type) {
             case 'admin.list':

@@ -50,7 +50,7 @@ final class Cogear implements Interface_Singleton {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
         $this->config = new Config(ROOT . DS . 'config' . EXT);
         $this->system_cache = Cache::factory('system', array(
-                    'driver' => Cache_Driver_Memcache::check() ? 'Cache_Driver_Memcache' : 'Cache_Driver_File',
+                    'driver' => config('cache.driver','Cache_Driver_File'),
                     'prefix' => 'system',
                     'path' => CACHE . DS . 'system'
                 ));

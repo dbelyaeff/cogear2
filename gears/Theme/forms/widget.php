@@ -11,6 +11,7 @@ return array(
         'values' => array(),
         'validate' => array('Required'),
         'class' => 'input-xxlarge',
+        'value' => '',
     ),
     'route' => array(
         'type' => 'text',

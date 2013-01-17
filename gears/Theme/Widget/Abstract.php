@@ -33,7 +33,7 @@ abstract class Theme_Widget_Abstract extends Object {
      */
     protected function save() {
         $widget = $this->object();
-        $widget->object()->options = serialize($this->options);
+        $widget->object()->options = $this->options;
         return $widget->save();
     }
 

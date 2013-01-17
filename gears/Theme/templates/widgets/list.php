@@ -4,7 +4,7 @@
             <h1 class="shd"><span><?php echo t('Регион') ?></span> <?php echo $region ?> <a class="sh add" href="<?php echo l('/admin/theme/widgets/add/') . e('region',$region) ?>"><i class="icon icon-plus"></i></a></h1>
 
             <div class="region-widgets shd" data-name="<?php echo $region ?>">
-                <?php foreach ($widgets->filter('region', $region) as $widget): ?>
+                <?php if($widgets && $region_widgets = $widgets->filter('region', $region)): foreach ($region_widgets as $widget): ?>
                     <div class="region-widget" data-id="<?php echo $widget->id ?>" data-region="<?php echo $widget->region ?>">
                         <a class="sh"><i class="icon icon-move"></i></a>
                         <span class="region-widget-name">
@@ -13,10 +13,11 @@
                         <a href="<?php echo l('/admin/theme/widgets/' . $widget->id) ?>" class="sh fl_r" title="<?php echo t("Редактировать") ?>"><i class="icon icon-pencil"></i></a>
                         <a href="<?php echo l('/admin/theme/widgets/' . $widget->id) . '/options' ?>" class="sh fl_r" title="<?php echo t("Настройки") ?>"><i class="icon icon-wrench"></i></a>
                     </div>
-                <?php endforeach; ?>
+                <?php endforeach;
+                endif; ?>
             </div>
         </section>
-    <?php endforeach; ?>
+    <?php endforeach;  ?>
 </div>
 <script>
     $(document).ready(function(){

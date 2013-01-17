@@ -1,5 +1,4 @@
 <?php 
-
 return array (
   'Search' => '',
   'Search results for «%s»' => '',

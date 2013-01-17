@@ -16,7 +16,7 @@ class Menu_Object extends Observer {
     protected $pointer = 0;
     protected $options = array(
         'name' => 'primary',
-        'template' => 'Menu/templates/menu',
+        'template' => 'Menu/templates/simple',
         'show_empty' => TRUE,
         'render' => 'content',
         'multiple' => FALSE,

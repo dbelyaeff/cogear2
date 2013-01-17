@@ -414,7 +414,6 @@ class Core_ArrayObject extends ArrayObject {
         }
         return floatval($a->order) < floatval($b->order) ? -1 : 1;
     }
-
 }
 
 /**

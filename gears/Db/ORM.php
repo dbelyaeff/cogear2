@@ -225,12 +225,12 @@ class Db_ORM extends Object {
         cogear()->cache->removeTags($this->table);
         // Если работает Мемкеш
 //        if (Cache_Driver_Memcache::check()) {
-            $key = $this->table . '.' . $id;
-            if ($object) {
-                return cache($key, $object, $tags, $ttl);
-            } else {
-                return cache($key);
-            }
+        $key = $this->table . '.' . $id;
+        if ($object) {
+            return cache($key, $object, $tags, $ttl);
+        } else {
+            return cache($key);
+        }
 //        } else {
 //            $path = $this->cache_path;
 //            self::$cached OR self::$cached = new Core_ArrayObject();
@@ -251,7 +251,7 @@ class Db_ORM extends Object {
     public function find() {
         $primary = $this->primary;
         if ($object = $this->cache($this->object()->$primary)) {
-            $this->object = $object;
+            $this->object = $this->filterData($object, self::FILTER_OUT);
             $this->clear();
             return TRUE;
         }
@@ -261,8 +261,8 @@ class Db_ORM extends Object {
             }
             if ($result = $this->db->get($this->table)->row()) {
                 event('Db_ORM.find', $this, $result);
+                $this->cache($result->{$this->primary}, $result);
                 $this->object = $this->filterData($result, self::FILTER_OUT);
-                $this->cache($result->{$this->primary}, $this->object);
                 $this->clear();
                 return TRUE;
             }
@@ -282,8 +282,8 @@ class Db_ORM extends Object {
         if ($result = $this->db->get($this->table)->result()) {
             foreach ($result as &$element) {
                 event('Db_ORM.findAll', $this, $result);
-                $element = $this->filterData($element, self::FILTER_OUT);
                 $this->cache($element->{$this->primary}, $element);
+                $element = $this->filterData($element, self::FILTER_OUT);
             }
             $this->clear();
         }
@@ -322,13 +322,13 @@ class Db_ORM extends Object {
         // Set scope to $this
         foreach ($filters as $field => $filter) {
             foreach ($filter as $key => $callback) {
-                if (!is_array($callback) && !function_exists($callback) && method_exists($this, $callback)) {
+                if (!is_array($callback) && method_exists($this, $callback)) {
                     $callback = new Callback(array($this, $callback));
                 } else {
                     $callback = new Callback($callback);
                 }
                 if ($callback->check()) {
-                    isset($data[$field]) && $data[$field] = $callback->run(array($data[$field]));
+                    !empty($data[$field]) && $data[$field] = $callback->run(array($data[$field]));
                 }
             }
         }
@@ -370,7 +370,7 @@ class Db_ORM extends Object {
         event('Db_ORM.insert', $this, $data);
         if ($result = $this->db->insert($this->table, $data)) {
             $this->object()->{$this->primary} = $result;
-            $this->cache($result, $this->object());
+            $this->cache($this->{$this->primary}, FALSE, array(), 0);
         }
         return $result;
     }
@@ -392,7 +392,7 @@ class Db_ORM extends Object {
         }
         event('Db_ORM.update', $this, $data);
         if ($result = $this->db->update($this->table, $data, array($this->primary => $this->{$this->primary}))) {
-            $this->cache($this->{$this->primary}, $this->object());
+            $this->cache($this->{$this->primary}, FALSE, array(), 0);
         }
         return $result;
     }

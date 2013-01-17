@@ -70,7 +70,7 @@ echo template('Lang/templates/choose', array('path' => $path, 'base' => $base))
         </form>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     function setExtraButtons(){
         $('#fillAll').on('click',function(event){
             $('#translations-wrapper').find('button.sync').trigger('click');

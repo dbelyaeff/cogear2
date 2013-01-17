@@ -1,5 +1,4 @@
 <?php 
-
 return array (
   'Post saved!' => '',
   'Shure to delete this post?' => '',

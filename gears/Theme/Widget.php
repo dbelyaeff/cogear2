@@ -8,15 +8,9 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  */
-class Theme_Widget extends Db_ORM {
+class Theme_Widget extends Db_ORM_Options {
 
     protected $table = 'widgets';
-    protected $filters_in = array(
-        'options' => array('serialize'),
-    );
-    protected $filters_out = array(
-        'options' => array('unserialize'),
-    );
     protected $instance;
 
     /**
@@ -26,18 +20,23 @@ class Theme_Widget extends Db_ORM {
      */
     public function init() {
         $class = $this->callback;
-        !is_array($this->object()->options) && $this->object()->options = unserialize($this->object()->options);
-        $this->instance = new $class($this->object()->options);
-        $this->instance->object($this);
-        return $this->instance;
+        if (class_exists($class)) {
+            $this->instance = new $class($this->object()->options);
+            $this->instance->object($this);
+            return $this->instance;
+        }
+        return FALSE;
     }
 
     /**
      * Отображение
      */
     public function render() {
-        $this->instance OR $this->init();
-        return template('Theme/templates/widget',array('widget'=>$this,'content' => $this->instance->render()))->render();
+        if ($this->init()) {
+            return template('Theme/templates/widget', array('widget' => $this, 'content' => $this->instance->render()))->render();
+        }
+        return '';
     }
+
 
 }
