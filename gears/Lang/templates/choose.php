@@ -25,10 +25,10 @@
                 // Сортировать ли по свойству конфига order
                 'sort' => FALSE,
                 // Превращать ли конфиги в объекты шестерёнок
-                'charge' => TRUE));
+                'charge' => FALSE));
     $values = array();
     foreach ($gears as $gear) {
-        $values[ltrim($gear->folder, '/')] = $gear->name;
+        $values[ltrim('gears/'.$gear->gear, '/')] = $gear->name;
     }
     asort($values);
     $defaults = array(0 => '');
@@ -60,20 +60,19 @@
             clear: both;
         }
     </style>
-    <script>
-        $base = "<?php echo $base; ?>";
+    <script type="text/javascript">
+        base_uri = "<?php echo $base; ?>";
         $(document).ready(function(){
-
             $('form select').change(function(){
                 $this = $(this);
-                $('#lang-action-button').attr('data-action',$base + '/' + $this.val());
+                $('#lang-action-button').attr('data-action',base_uri + '/' + $this.val());
                 $('form select').each(function(){
                     if($(this).attr('name') != $this.attr('name')){
                         $(this).val(0);
                     }
                 })
             })
-            if($('#lang-action-button').attr('data-action') != $base){
+            if($('#lang-action-button').attr('data-action') != base_uri){
                 $('form select').filter(function(){
                     return $(this).val() != '';
                 }).change();
