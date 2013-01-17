@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS `pages` (
+DROP TABLE IF EXISTS `pages`;
+CREATE TABLE `pages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `thread` varchar(255) NOT NULL,
   `pid` int(11) unsigned NOT NULL,
