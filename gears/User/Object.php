@@ -105,7 +105,7 @@ class User_Object extends Db_Item {
             return;
         $cogear = cogear();
         event('user.logout', $this);
-        $cogear->session->remove('user');
+        $cogear->session->remove('uid');
         $this->forget();
     }
 

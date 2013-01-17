@@ -84,6 +84,7 @@ class Install_Gear extends Gear {
                 if ($result = $form->result()) {
                     $config = new Config(SITE . DS . 'site' . EXT);
                     $config->site->name = $result->sitename;
+                    $config->site->url = str_replace(array('http://','www'),'',trim($result->sitehost,'/'));
                     $config->key OR $config->key = md5(md5(time()) + time() + $config->site->name);
                     $result->port OR $result->port = 3306;
                     $config->database = array(
@@ -123,7 +124,7 @@ class Install_Gear extends Gear {
             case 'done':
                 $config = new Config(SITE . DS . 'site' . EXT);
                 $config->store(TRUE);
-                flash_success(t('Ваш сайт успешно настроен!'));
+                flash_success(t('Ваш сайт успешно настроен! <p> Данные для входа – логин <b>admin</b> и пароль <b>password</b>.'),'','info');
                 $this->disable();
                 redirect();
                 break;

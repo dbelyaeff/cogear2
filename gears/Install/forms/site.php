@@ -8,6 +8,12 @@ return array(
         '#validators' => array('Required'),
         '#value' => config('site.name'),
     ),
+    'sitehost' => array(
+        '#type' => 'text',
+        '#validate' => array('Required'),
+        '#label' => t('Адрес сайта'),
+        '#value' => server('HTTP_HOST'),
+    ),
     'database' => array(
         '#type' => 'fieldset',
         '#class' => 'collapsed',
@@ -16,33 +22,36 @@ return array(
             '#type' => 'text',
             '#validate' => array('Required'),
             '#label' => t('Хост'),
-            '#value' => 'localhost',
+            '#value' => config('database.host'),
             '#placeholder' => 'localhost',
         ),
         'base' => array(
             '#type' => 'text',
             '#validate' => array('Required'),
             '#label' => t('Название базы'),
-            '#value' => 'cogear',
+            '#value' => config('database.base'),
         ),
         'user' => array(
             '#type' => 'text',
             '#validate' => array('Required'),
             '#label' => t('Имя пользователя'),
-            '#value' => 'root',
+            '#value' => config('database.user'),
         ),
         'pass' => array(
             '#type' => 'password',
             '#label' => t('Пароль'),
+            '#value' => config('database.pass'),
         ),
         'port' => array(
             '#type' => 'text',
             '#label' => t('Порт'),
-            '#validate' => array('Num')
+            '#validate' => array('Num'),
+            '#value' => config('database.port'),
         ),
         'prefix' => array(
             '#type' => 'text',
             '#label' => t('Префикс таблиц'),
+            '#value' => config('database.prefix'),
         ),
         'create_db' => array(
             '#type' => 'checkbox',
