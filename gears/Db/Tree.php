@@ -190,7 +190,7 @@ class Db_Tree extends Db_Item {
      * @param type $exclude
      * @return array
      */
-    public function getSelectValues() {
+    public function getSelectValues($field = 'name') {
         $this->id && $this->where($this->primary, $this->id, ' != ')->not_like($this->thread_field,$this->{$this->thread_field}.'%');
         $result = array('');
         $this->object_field && $this->where(array($this->object_field=>$this->{$this->object_field}));
@@ -199,7 +199,7 @@ class Db_Tree extends Db_Item {
         $object = new $class();
         if ($items = $object->findAll()) {
             foreach ($items as $item) {
-                $result[$item->id] = str_repeat('--', $item->level) . ' ' . $item->name;
+                $result[$item->id] = str_repeat('--', $item->level) . ' ' . $item->$field;
             }
         }
         return $result;
