@@ -1,17 +1,14 @@
 <?php
 
 /**
- * Database Tree
+ * Древовидный объект базы данных
  *
- * Provided by matherialized path
+ * Работает на бази материализованных путей
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2012, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- *         Db
-
  */
 class Db_Tree extends Db_Item {
 
@@ -196,6 +193,7 @@ class Db_Tree extends Db_Item {
     public function getSelectValues() {
         $this->id && $this->where($this->primary, $this->id, ' != ')->not_like($this->thread_field,$this->{$this->thread_field}.'%');
         $result = array('');
+        $this->object_field && $this->where(array($this->object_field=>$this->{$this->object_field}));
         $reflection = new ReflectionClass($this);
         $class = $reflection->getName();
         $object = new $class();
