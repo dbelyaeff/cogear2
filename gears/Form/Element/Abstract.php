@@ -126,11 +126,8 @@ class Form_Element_Abstract extends Notify_Handler {
      * @return
      */
     public function result() {
-        if ($this->options->disabled) {
-            return $this->value ? $this->value : TRUE;
-        }
         $method = strtolower($this->form->method);
-        $this->value = cogear()->input->$method($this->name, $this->options->value);
+        $this->value = cogear()->input->$method($this->name);
         $this->filtrate();
         $result = $this->validate() ? $this->value : FALSE;
         return $result;
@@ -160,6 +157,10 @@ class Form_Element_Abstract extends Notify_Handler {
             $this->options->value = $this->value;
         } else {
             $this->value = $this->options->value;
+        }
+        if ($this->options->disabled) {
+            $this->value = NULL;
+            $this->options->value = NULL;
         }
         $this->options->element = $this;
         return $this->options;

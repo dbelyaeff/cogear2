@@ -25,12 +25,9 @@ class Form_Element_Select extends Form_Element_Abstract{
      * @return
      */
     public function result() {
-        if($this->options->disabled){
-            return $this->value ? $this->value : TRUE;
-        }
         $method = strtolower($this->form->method);
         $name = str_replace('[]','',$this->name);
-        $this->value = cogear()->input->$method($name, $this->options->value);
+        $this->value = cogear()->input->$method($name);
         $this->filtrate();
         $result = $this->validate() ? $this->value : FALSE;
         return $result;
