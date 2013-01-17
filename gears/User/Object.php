@@ -28,7 +28,6 @@ class User_Object extends Db_Item {
                 $this->last_visit = time();
                 event('user.refresh', $this);
                 $this->update(array('last_visit' => $this->last_visit));
-                $this->store();
             }
         }
         // Set data for guest
@@ -42,33 +41,26 @@ class User_Object extends Db_Item {
      * Autologin
      */
     public function autologin() {
-        $cogear = cogear();
         $event = event('user.autologin', $this);
         if (!$event->check()) {
             if ($event->result()) {
                 return TRUE;
             }
-        } elseif ($cogear->session->get('user')) {
-            $this->object($cogear->session->get('user'));
-            $this->store();
-            return TRUE;
-        } elseif (Cookie::get('id') && $hash = Cookie::get('hash')) {
-            $this->id = Cookie::get('id');
-            if ($this->find() &&  cogear()->secure->genHash($this->login) == $hash) {
-                $this->store();
+        }
+        if ($id = session('uid')) {
+            $this->id = $id;
+            if ($this->find()) {
+                return TRUE;
+            }
+        }
+        if (Cookie::get('uid') && $hash = Cookie::get('hash')) {
+            $this->id = Cookie::get('uid');
+            if ($this->find() && cogear()->secure->genHash($this->login) == $hash) {
+                session('uid', $this->id);
                 return TRUE;
             }
         }
         return FALSE;
-    }
-
-    /**
-     * Store — save user to session
-     */
-    public function store() {
-        event('user.store', $this);
-        cogear()->session->set('user', $this->object);
-        return TRUE;
     }
 
     /**
@@ -78,8 +70,9 @@ class User_Object extends Db_Item {
         if (!$this->find()) {
             return FALSE;
         }
+        session('uid',$this->id);
         event('user.login', $this);
-        return $this->store();
+        return TRUE;
     }
 
     /**
@@ -100,47 +93,6 @@ class User_Object extends Db_Item {
     public function insert($data = NULL) {
         if ($result = parent::insert($data)) {
             event('user.insert', $this, $data, $result);
-        }
-        return $result;
-    }
-
-    /**
-     * Update user
-     *
-     * @param type $data
-     */
-    public function update($data = NULL) {
-        if ($result = parent::update($data)) {
-            // Automatically store new data to session
-            if ($this->id == user()->id) {
-                $this->object()->extend($data);
-                $this->store();
-            }
-            event('user.update', $this, $data, $result);
-        }
-        return $result;
-    }
-
-    /**
-     * User find method overload
-     *
-     * @return boolean
-     */
-    public function find() {
-        if ($result = parent::find()) {
-            event('user.find', $this, array(), $result);
-        }
-        return $result;
-    }
-
-    /**
-     * Delete user
-     *
-     * @return type
-     */
-    public function delete() {
-        if ($result = parent::delete()) {
-            event('user.delete', $this);
         }
         return $result;
     }
@@ -172,7 +124,7 @@ class User_Object extends Db_Item {
     public function remember() {
         if (!$this->object)
             return;
-        Cookie::set('id', $this->id);
+        Cookie::set('uid', $this->id);
         Cookie::set('hash', cogear()->secure->genHash($this->login));
         event('user.remember', $this);
     }
@@ -182,9 +134,9 @@ class User_Object extends Db_Item {
      */
     public function refresh($set_flag = FALSE) {
         if (cogear()->cache->read('users/reset/' . $this->id, TRUE)) {
-            cogear()->session->remove('user');
+            cogear()->session->remove('uid');
             cogear()->cache->remove('users/reset/' . $this->id);
-        } elseif($set_flag) {
+        } elseif ($set_flag) {
             cogear()->cache->write('users/reset/' . $this->id, TRUE);
         }
     }
@@ -212,7 +164,7 @@ class User_Object extends Db_Item {
      * Remember user
      */
     public function forget() {
-        Cookie::delete('id');
+        Cookie::delete('uid');
         Cookie::delete('hash');
         event('user.forget', $this);
     }
@@ -281,7 +233,7 @@ class User_Object extends Db_Item {
      * @return string
      */
     public function getAvatarImage($preset = 'avatar.small') {
-        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar','title'=>$this->getName()));
+        return HTML::img(image_preset($preset, $this->getAvatar()->getFile(), TRUE), $this->login, array('class' => 'avatar', 'title' => $this->getName()));
     }
 
     /**
