@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="span7" id="wrapper">
-                    <?php echo theme('header') ?>
+                    <a href="http://cogear.ru"><img src="<?php echo l('/themes/Default/img/logo.png')?>" alt="Cogear"></a>
                     <div id="content">
                         <?php echo theme('info') ?>
                         <?php echo theme('content') ?>
