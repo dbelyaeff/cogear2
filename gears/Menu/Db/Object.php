@@ -46,7 +46,7 @@ class Menu_Db_Object extends Db_ORM_Options {
     public function getItems() {
         if (!$items = cache('menu.' . $this->id . '.items')) {
             $handler = new Menu_Db_Item();
-            $hanlder->menu_id = $this->object()->id;
+            $handler->menu_id = $this->object()->id;
             $items = array();
             if ($result = $handler->findAll()) {
                 foreach ($result as $item) {
