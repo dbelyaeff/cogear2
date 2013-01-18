@@ -41,7 +41,7 @@ class Input_Cookie {
      * @return string
      */
     public static function get($name) {
-        return isset($_COOKIE[$name]) ? unserialize($_COOKIE[$name]) : NULL;
+        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : NULL;
     }
     /**
      * Волшебный метод для получения куки
