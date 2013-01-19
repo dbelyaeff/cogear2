@@ -13,7 +13,7 @@ return array (
   array (
     'defaults' =>
     array (
-      'gear' => 'Admin',
+      'gear' => 'Pages',
       'action' => 'index_action',
     ),
   ),
@@ -163,5 +163,11 @@ return array (
   'Pages' =>
   array (
     'main_id' => '1',
+  ),
+  'mail' =>
+  array (
+    'from' => 'admin@cogear.ru',
+    'from_name' => 'cogear',
+    'signature' => '<p>-----------------------<br/>С уважением,<br/>почтально сайта http:/cogear.ru',
   ),
 );
