@@ -25,8 +25,6 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         }
         try {
             $this->PDO = new PDO($this->driver . ':host=' . $this->options->host . $database, $this->options->user, $this->options->pass);
-            // Данный запрос чисто технический, поэтому в общей статистике он не учитывается
-            $this->PDO->query('SET NAMES utf8;');
         } catch (PDOException $e) {
             $this->error($e->getMessage());
             return $this->is_connected = FALSE;
@@ -49,8 +47,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
      * @return PDOStatement|bool
      */
     public function query($query) {
-        array_push($this->queries, $query);
-        $i = sizeof($this->queries);
+        $i = $this->log($query);
         bench('db.query.' . $i . '.start');
         if (!$this->result = $this->PDO->query($query)) {
             $this->setError($this->PDO);
@@ -68,14 +65,14 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
     public function lastInsertId() {
         return $this->PDO->lastInsertId();
     }
-
+    /**
+     * Установка сообщения об ошибке
+     *
+     * @param PDOException $Object
+     */
     public function setError($Object) {
         $info = $Object->errorInfo();
-//        ob_start();
-        //$Object->debugDumpParams();
-//        $end = ob_get_clean();
         $this->error($info[2] . '<br/>Code:' . $info[1]);
-// . ' <button class="btn btn-mini" onclick="$(this).next().toggleClass(\'hidden\');"><i class="icon-eye-open"></i></button> <pre class="hidden">' .$end  . '</pre>');
     }
 
     /**
@@ -152,8 +149,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
         }
         $this->autoclear && $this->clear();
         try {
-            array_push($this->queries, str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
-            $i = sizeof($this->queries);
+            $i = $this->log(str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');
@@ -194,8 +190,7 @@ class Db_Driver_PDO extends Db_Driver_Abstract {
             $exec_data[':' . $key] = $value;
         }
         try {
-            array_push($this->queries, str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
-            $i = sizeof($this->queries);
+            $i = $this->log(str_replace(array_keys($exec_data), array_values($exec_data), (string) $PDOStatement->queryString));
             bench('db.query.' . $i . '.start');
             if ($PDOStatement->execute($exec_data)) {
                 bench('db.query.' . $i . '.end');

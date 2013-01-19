@@ -424,7 +424,16 @@ abstract class Db_Driver_Abstract extends Object {
     public function last() {
         return array_pop($this->queries);
     }
-
+    /**
+     * Логгер. Сохраняет запрос в массив и возвращает количество запросов
+     *
+     * @param string $query
+     * @return int
+     */
+    protected function log($query){
+        array_push($this->queries,$query);
+        return sizeof($this->queries);
+    }
     /**
      * Получение всего результата запроса
      *
