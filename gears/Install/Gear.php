@@ -108,7 +108,7 @@ class Install_Gear extends Gear {
                     }
                     if ($db->is_connected && $db->import($this->dir . DS . 'cogear.sql')) {
                         $config->store(TRUE);
-                        redirect('/install/finish');
+                        redirect(l('/install/finish'));
                     } else {
                         error(t("Не удалось установить подключение к базе данных."),'','content');
                     }
