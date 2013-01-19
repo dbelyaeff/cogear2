@@ -17,8 +17,8 @@ class Session_Gear extends Gear {
     /**
      * Init
      */
-    public function init() {
-        parent::init();
+    public function __construct() {
+        parent::__construct();
         $this->object(new Session(array('name' => 'session')));
     }
 
