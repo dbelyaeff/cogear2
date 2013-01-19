@@ -85,11 +85,4 @@ CREATE TABLE `widgets` (
   KEY `region` (`region`),
   KEY `route` (`route`),
   KEY `order` (`position`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Дамп данных таблицы `widgets`
---
-
-INSERT INTO `widgets` (`id`, `callback`, `name`, `options`, `region`, `route`, `position`) VALUES
-(6, 'Theme_Widget_HTML', 'Логотип', 0x783a693a303b613a323a7b733a373a22636f6e74656e74223b733a35373a223c6120687265663d222f223e3c696d67207372633d222f7468656d65732f44656661756c742f696d672f6c6f676f2e706e67222f3e3c2f613e223b733a353a227469746c65223b4e3b7d3b6d3a613a303a7b7d, 'header', '.*', 1);
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
