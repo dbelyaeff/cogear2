@@ -163,7 +163,7 @@ class Core_ArrayObject extends ArrayObject {
      * @param	mixed
      */
     public function __set($name, $value) {
-        $this->offsetSet($name, Core_ArrayObject::transform($value));
+        $this->offsetSet($name, self::transform($value));
     }
 
     /**
