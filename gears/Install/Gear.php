@@ -34,7 +34,7 @@ class Install_Gear extends Gear {
     public function request() {
         parent::request();
         if (config('installed')) {
-            redirect('/');
+            redirect(l('/'));
         }
     }
 
