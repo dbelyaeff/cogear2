@@ -71,7 +71,7 @@ abstract class Db_Driver_Abstract extends Object {
      *
      * @var array
      */
-    public $queries;
+    public $queries = array();
 
     /**
      * Текущий запрос
@@ -102,13 +102,12 @@ abstract class Db_Driver_Abstract extends Object {
     protected $autoclear = TRUE;
 
     /**
-     * Констрктор
+     * Конструктор
      *
      * @param array $options
      */
     public function __construct($options) {
         parent::__construct($options);
-        $this->queries = new SplStack();
     }
 
     /**
@@ -423,7 +422,7 @@ abstract class Db_Driver_Abstract extends Object {
      * @return type
      */
     public function last() {
-        return $this->queries->pop();
+        return array_pop($this->queries);
     }
 
     /**
