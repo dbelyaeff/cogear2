@@ -27,6 +27,8 @@ abstract class Cache_Driver_Abstract extends Object {
 
     abstract public function clear();
 
+    abstract static function check();
+
     /**
      * Статистика запросов
      *

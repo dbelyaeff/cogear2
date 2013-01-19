@@ -54,8 +54,26 @@ class Session_Object extends Cache_Object {
      * @param	array	$options
      */
     public function __construct($options) {
+        switch (config('cache.driver')) {
+            default:
+            case 'Cache_Driver_File':
+                $driver = 'Session_Driver_File';
+                break;
+            case 'Cache_Driver_Memcache':
+                $driver = 'Session_Driver_Memcache';
+                break;
+            case 'Cache_Driver_APC':
+                $driver = 'Session_Driver_APC';
+                break;
+            case 'Cache_Driver_eAccelerator':
+                $driver = 'Session_Driver_eAccelerator';
+                break;
+            case 'Cache_Driver_XCache':
+                $driver = 'Session_Driver_XCache';
+                break;
+        }
         $defaults = array(
-            'driver' => config('cache.driver') === 'Cache_Driver_Memcache' ? 'Session_Driver_Memcache' : 'Session_Driver_File',
+            'driver' => $driver,
             'save_path' => CACHE . DS . 'sessions',
             'path' => CACHE . DS . 'sessions',
             'prefix' => 'sessions',

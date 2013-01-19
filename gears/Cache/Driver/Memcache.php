@@ -34,7 +34,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
     }
 
     /**
-     * Проверяет, работает ли мемкеша на сервере
+     * Проверяет, работает ли Memcache на сервере
      *
      * @param   string  $host
      * @param   int     $port
@@ -49,32 +49,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
         return FALSE;
     }
 
-    /**
-     * Read from cache
-     *
-     * @param string $name
-     * @return mixed|NULL
-     */
-    public function read($name) {
-        if (FALSE === $this->options->enabled) {
-            return FALSE;
-        }
-        $this->stats->read++;
-        $name = $this->prepareKey($name);
-        if (NULL !== ($data = $this->get($name))) {
-            if ($data['ttl'] && time() > $data['ttl']) {
-                return NULL;
-            } elseif (isset($data['tags']) && is_array($data['tags'])) {
-                foreach ($data['tags'] as $tag) {
-                    if (NULL === $this->read('tags/' . $tag)) {
-                        return NULL;
-                    }
-                }
-            }
-            return $data['value'];
-        }
-        return NULL;
-    }
+
 
     /**
      * Write to cache
@@ -125,7 +100,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = md5(cogear()->secure->genHash(SITE_URL)) . '_' . $this->options->prefix . '_' . $name;
+        $name = md5(SITE_URL.config('key')) . '_' . $this->options->prefix . '_' . $name;
         return $name;
     }
 
