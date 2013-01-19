@@ -27,7 +27,7 @@ class Response_Gear extends Gear {
      * @param Template $Template
      */
     public function hookTemplateRender($Template){
-        if(FOLDER){
+        if(defined('FOLDER')){
             $Template->output = preg_replace('#\="/(?!'.FOLDER.')#','="/'.FOLDER.'/',$Template->output);
         }
     }
