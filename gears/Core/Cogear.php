@@ -71,6 +71,7 @@ final class Cogear implements Interface_Singleton {
         }
         $core_gears = clone $this->site->gears;
         $this->gears = new Gears($core_gears->extend($this->config->gears));
+        event('preload');
         foreach ($this->gears as $gear) {
             $gear->init();
         }
