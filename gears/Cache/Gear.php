@@ -42,7 +42,7 @@ class Cache_Gear extends Gear {
         if (!config('cache.guests')) {
             return;
         }
-        if (0 === user()->id && !cache('pagecache/' . $uri)) {
+        if (!session('uid') && !cache('pagecache/' . $uri)) {
             $uri = $this->router->getUri();
             $uri OR $uri = 'index';
             cache('pagecache/' . $uri, $response->output, array(), config('cache.guests', 3600));
