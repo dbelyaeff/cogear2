@@ -34,7 +34,7 @@ class Url {
 
         if ($absolute_flag) {
             $link .= $protocol . '://';
-            $link .= config('site.url');
+            $link .= SITE_URL;
         } elseif (defined('FOLDER')) {
             $link .= '/' . FOLDER;
         }

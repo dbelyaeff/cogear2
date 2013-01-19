@@ -8,12 +8,6 @@ return array(
         '#validators' => array('Required'),
         '#value' => config('site.name'),
     ),
-    'sitehost' => array(
-        '#type' => 'text',
-        '#validate' => array('Required'),
-        '#label' => t('Адрес сайта'),
-        '#value' => server('HTTP_HOST'),
-    ),
     'database' => array(
         '#type' => 'fieldset',
         '#class' => 'collapsed',

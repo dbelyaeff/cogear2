@@ -191,7 +191,7 @@ function redirect($url = NULL) {
     if ($url == cogear()->router->getUri()) {
         return;
     }
-    $url OR $url = Url::link();
+    strpos($url,'http://') !== FALSE OR $url = Url::link($url);
     event('done');
     event('exit');
     header('Location: ' . $url);
@@ -200,7 +200,7 @@ function redirect($url = NULL) {
 
 function back() {
     $referer = cogear()->request->get('HTTP_REFERER');
-    $referer = str_replace('http://' . config('site.url'), '', $referer);
+    $referer = str_replace('http://' . SITE_URL, '', $referer);
     $referer = ltrim($referer, '/');
     $uri = cogear()->router->getUri();
     if ($uri != $referer) {

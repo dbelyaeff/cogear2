@@ -34,7 +34,7 @@ class Meta_Gear extends Gear implements SplObserver {
     public function __construct($config) {
         parent::__construct($config);
         $this->info = Core_ArrayObject::transform($this->info);
-        $this->info->title->append(config('site.name', config('site.url')));
+        $this->info->title->append(config('site.name', SITE_URL));
     }
 
     /**

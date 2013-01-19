@@ -16,6 +16,7 @@ class Template_Object extends Core_ArrayObject {
     protected $code = '';
     protected $vars = array();
     protected $caching = 0;
+    public $output;
 
     /**
      * Конструктор
@@ -145,17 +146,17 @@ class Template_Object extends Core_ArrayObject {
     public function render() {
         if (!$this->path)
             return;
-        if ($this->caching && $output = cache('template.' . $this->name)) {
-            return $output;
+        if ($this->caching && $this->output = cache('template.' . $this->name)) {
+            return $this->output;
         } else {
             ob_start();
             event('template.render.before', $this);
             extract($this->vars);
             include $this->path;
+            $this->output = ob_get_clean();
             event('template.render.after', $this);
-            $output = ob_get_clean();
-            $this->caching && cache('template.' . $this->name,$output,array('templates'),$this->caching);
-            return $output;
+            $this->caching && cache('template.' . $this->name,$this->output,array('templates'),$this->caching);
+            return $this->output;
         }
     }
 

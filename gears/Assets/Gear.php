@@ -18,7 +18,7 @@ class Assets_Gear extends Gear {
     public function hookHead() {
         $cogear = new Core_ArrayObject();
         $cogear->settings = new Core_ArrayObject();
-        $cogear->settings->site = config('site.url');
+        $cogear->settings->site = SITE_URL;
         event('assets.js.global', $cogear);
         echo HTML::script("var cogear = cogear || " . json_encode($cogear).";\n
             window.cogear = cogear;",array(), TRUE);

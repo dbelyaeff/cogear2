@@ -54,7 +54,16 @@ final class Cogear implements Interface_Singleton {
                     'prefix' => 'system',
                     'path' => CACHE . DS . 'system'
                 ));
-        defined('SITE_URL') OR define('SITE_URL', config('site.url'));
+        $script_filename = $_SERVER['SCRIPT_FILENAME'];
+        $document_root = $_SERVER['DOCUMENT_ROOT'];
+        // Если корневая диреактория сайта не совпадает с папкой исполняемого файла
+        if(dirname($script_filename) !== $document_root){
+            define('SITE_URL', $_SERVER['SERVER_NAME'].str_replace($document_root,'',  dirname($script_filename)));
+        }
+        else {
+            define('SITE_URL',$_SERVER['SERVER_NAME']);
+        }
+        defined('SITE_URL') OR define('SITE_URL', SITE_URL);
         if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
             $array = explode('/', SITE_URL, 2);
             $folder = array_pop($array);

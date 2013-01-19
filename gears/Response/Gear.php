@@ -12,6 +12,7 @@ class Response_Gear extends Gear {
 
     protected $hooks = array(
         'exit' => 'send',
+        'template.render.after' => 'hookTemplateRender'
     );
     /**
      * Конструктор
@@ -19,5 +20,11 @@ class Response_Gear extends Gear {
     public function __construct($config) {
         parent::__construct($config);
         $this->object(Response::getInstance());
+    }
+
+    public function hookTemplateRender($Template){
+        if(FOLDER){
+            $Template->output = preg_replace('#\="/(?!'.FOLDER.')#','="/'.FOLDER.'/',$Template->output);
+        }
     }
 }

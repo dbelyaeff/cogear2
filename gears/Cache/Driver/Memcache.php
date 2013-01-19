@@ -125,7 +125,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = md5(cogear()->secure->genHash(config('site.url'))) . '_' . $this->options->prefix . '_' . $name;
+        $name = md5(cogear()->secure->genHash(SITE_URL)) . '_' . $this->options->prefix . '_' . $name;
         return $name;
     }
 

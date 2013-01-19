@@ -267,11 +267,11 @@ class User_Gear extends Gear {
     public function hookUserRegister($user) {
         $mail = new Mail(array(
                     'name' => 'register',
-                    'subject' => t('Регистрация на сайте %s', config('site.url')),
+                    'subject' => t('Регистрация на сайте %s', SITE_URL),
                     'body' => t('Вы успешно зарегистрировались на сайте http://%s.
                         <p>Ваш логин: <b>%s</b>
                         <p>Пароль хранится в зашифрованном виде, но вы всегда сможете его сбросить, используя ссылку: <a href="%s">%s</a>
-                            ', config('site.url'), $user->login, l('/lostpassword'), l('/lostpassword')),
+                            ', SITE_URL, $user->login, l('/lostpassword'), l('/lostpassword')),
                 ));
         $mail->to($user->email);
         $mail->send();
@@ -520,11 +520,11 @@ class User_Gear extends Gear {
                 $recover = l('/user/lostpassword/' . $user->hash, TRUE);
                 $mail = new Mail(array(
                             'name' => 'register.lostpassword',
-                            'subject' => t('Восстановление пароля на сайте %s', config('site.url')),
+                            'subject' => t('Восстановление пароля на сайте %s', SITE_URL),
                             'body' => t('Было запрошено восстановление вашего пароля на сайте http://%s с IP-адреса <b>%s</b>.
                                     <p>Если не вы были инициатором этого действия, оставьте письм без внимания или обратитесь к администрации сайта.
                                     <p>Чтобы пройти процедуру восстановления пароля, перейдите по разовой ссылке:<p>
-                            <a href="%s">%s</a>', config('site.url'), $this->session->get('ip'), $recover, $recover),
+                            <a href="%s">%s</a>', SITE_URL, $this->session->get('ip'), $recover, $recover),
                         ));
                 $mail->to($user->email);
                 if ($mail->send()) {
@@ -585,10 +585,10 @@ class User_Gear extends Gear {
                     $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
                                 'name' => 'register.verify',
-                                'subject' => t('Регистрация на сайте %s', config('site.url')),
+                                'subject' => t('Регистрация на сайте %s', SITE_URL),
                                 'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
                             Пожалуйста, перейдите по ссылке ниже, для того чтобы подтвердить данный почтовый ящик:<p>
-                            <a href="%s">%s</a>', config('site.url'), $verify_link, $verify_link),
+                            <a href="%s">%s</a>', SITE_URL, $verify_link, $verify_link),
                             ));
                     $mail->to($user->email);
                     if ($mail->send()) {
