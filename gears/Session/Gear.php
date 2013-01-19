@@ -10,24 +10,14 @@
  */
 class Session_Gear extends Gear {
 
-    protected $hooks = array(
-        //'dev.info' => 'trace',
-    );
-
     /**
-     * Init
+     * Конструктор
      */
-    public function __construct() {
-        parent::__construct();
+    public function __construct($config) {
+        parent::__construct($config);
         $this->object(new Session(array('name' => 'session')));
     }
 
-    /**
-     * Trace session
-     */
-    public function trace($Stack){
-        $Stack->append(template('Session/templates/trace')->render());
-    }
 
 }
 /**
