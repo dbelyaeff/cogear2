@@ -24,10 +24,7 @@ class Db_ORM_Options extends Db_ORM {
      * @return Core_ArrayObject
      */
     public function sleep($options) {
-        if ($options instanceof Core_ArrayObject && version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            return $options->serialize();
-        }
-        return @serialize($options);
+        return serialize($options);
     }
 
     /**
@@ -37,14 +34,7 @@ class Db_ORM_Options extends Db_ORM {
      * @return type
      */
     public function wake($options) {
-        $result = new Core_ArrayObject();
-        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            $result->unserialize($options);
-        }
-        else {
-            $result->extend(@unserialize($options));
-        }
-        return $result;
+        return unserialize($options);
     }
 
 }

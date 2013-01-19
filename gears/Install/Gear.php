@@ -107,18 +107,6 @@ class Install_Gear extends Gear {
                         $db->connect();
                     }
                     if ($db->is_connected && $db->import($this->dir . DS . 'cogear.sql')) {
-                        // Важный момент. PHP 5.2 и PHP 5.3 имеют разные взгляды на сериализацию SPL-класса ArrayObject.
-                        // Поэтому данные виджетов в базе должны храниться по-разному.
-                        if(version_compare(PHP_VERSION, '5.3.0') >= 0){
-                            $db->query("INSERT INTO `widgets` (`id`, `callback`, `name`, `options`, `region`, `route`, `position`) VALUES
-(6, 'Theme_Widget_HTML', 'Логотип', 0x783a693a303b613a323a7b733a373a22636f6e74656e74223b733a35373a223c6120687265663d222f223e3c696d67207372633d222f7468656d65732f44656661756c742f696d672f6c6f676f2e706e67222f3e3c2f613e223b733a353a227469746c65223b4e3b7d3b6d3a613a303a7b7d, 'header', '.*', 1);
-");
-                        }
-                        else {
-                            $db->query("INSERT INTO `widgets` (`id`, `callback`, `name`, `options`, `region`, `route`, `position`) VALUES
-(6, 'Theme_Widget_HTML', 'Логотип', 0x4f3a31363a22436f72655f41727261794f626a656374223a323a7b733a373a22636f6e74656e74223b733a35363a223c6120687265663d222f223e3c696d67207372633d222f7468656d65732f44656661756c742f696d672f6c6f676f2e706e67223e3c2f613e223b733a353a227469746c65223b4e3b7d, 'header', '.*', 1);
-");
-                        }
                         $config->store(TRUE);
                         redirect(l('/install/finish'));
                     } else {
