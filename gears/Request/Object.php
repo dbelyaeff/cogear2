@@ -105,6 +105,9 @@ class Request_Object {
                     return $result;
                 }
                 elseif($result = $this->get('REQUEST_URI')){
+                    if(defined('FOLDER')){
+                        $result = str_replace(FOLDER,'',$result);
+                    }
                     return $result;
                 }
                 elseif($result = $this->get('ORIG_PATH_INFO')){
