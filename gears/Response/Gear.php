@@ -21,7 +21,11 @@ class Response_Gear extends Gear {
         parent::__construct($config);
         $this->object(Response::getInstance());
     }
-
+    /**
+     * Если движок установлен в подпапку, на выходе парсит шаблоны и заменяет пути на правильные
+     *
+     * @param Template $Template
+     */
     public function hookTemplateRender($Template){
         if(FOLDER){
             $Template->output = preg_replace('#\="/(?!'.FOLDER.')#','="/'.FOLDER.'/',$Template->output);
