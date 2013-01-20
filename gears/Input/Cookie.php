@@ -21,7 +21,7 @@ class Input_Cookie {
     public static function set($name, $value, $expire = NULL, $path = NULL, $domain = NULL) {
         // By default cookie lifetime is month
         $expire OR $expire = 2592000;
-        $path OR $path = '/';
+        $path OR $path = defined('FOLDER') ? '/'.FOLDER : '/';
         $domain OR $domain = self::getDomain();
         setcookie($name, $value, time() + $expire, $path, $domain);
     }
@@ -68,7 +68,7 @@ class Input_Cookie {
      * @return string
      */
     public static function getDomain() {
-        return strpos(SITE_URL, '.') ? '.' . SITE_URL : '';
+        return strpos(server('SERVER_NAME'), '.') ? '.' . server('SERVER_NAME') : '';
     }
 
 }
