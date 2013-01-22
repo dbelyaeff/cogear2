@@ -41,7 +41,7 @@ return array (
   ),
   'gears' =>
   array (
-    'Install'
+   'Install'
   ),
   'lang' =>
   array (
@@ -167,7 +167,7 @@ return array (
   ),
   'mail' =>
   array (
-    'from' => 'info@cogear.ru',
+    'from' => 'admin@cogear.ru',
     'from_name' => 'cogear',
     'signature' => '<p>-----------------------<br/>С уважением,<br/>почтально сайта http:/cogear.ru',
   ),
