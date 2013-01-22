@@ -1,16 +1,16 @@
-<?php 
+<?php
 return array (
-  'database' => 
+  'database' =>
   array (
     'driver' => 'Db_Driver_PDO_Mysql',
     'host' => 'localhost',
     'base' => 'cogear',
-    'user' => 'cogear',
-    'pass' => '1236787',
+    'user' => 'root',
+    'pass' => '',
     'port' => '3306',
     'prefix' => '',
   ),
-  'gears' => 
+  'gears' =>
   array (
     0 => 'Access',
     1 => 'Admin',
