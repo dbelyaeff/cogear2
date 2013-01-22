@@ -24,7 +24,7 @@ class Form_Element_Abstract extends Notify_Handler {
         'wrapper' => 'Form/templates/element',
         'render' => TRUE,
         'disabled' => FALSE,
-        'filters' => array(),
+        'filters' => array('striptags'),
         'validators' => array(),
         'class' => 'form-element',
     );

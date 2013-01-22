@@ -100,9 +100,9 @@ class Form_Object extends Object {
         }
         parent::__construct(Form::filterOptions($options));
         $this->defaults = new Config(cogear()->form->dir.DS.'defaults'.EXT);
+        $this->init();
         event('form.load', $this);
         event('form.load.' . $this->name, $this);
-        $this->init();
     }
     /**
      * Фильтрация опций
