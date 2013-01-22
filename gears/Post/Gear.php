@@ -28,10 +28,10 @@ class Post_Gear extends Gear {
         'hide' => 'access',
         'menu' => 'access',
         'ajax' => 'access',
-        'front' => TRUE,
     );
     protected $routes = array(
         'blog' => 'index_action',
+        'blog/(\d+)' => 'index_action',
         'post/(\d+)' => 'index_action',
         'post/create' => 'create_action',
         'post/edit/(\d+)' => 'edit_action',
