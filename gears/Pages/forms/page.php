@@ -30,10 +30,8 @@ return array(
                     'type' => 'group',
                     'class' => 'btn-group',
                     'elements' => array(
-                        'save_and_edit' => array(
-                            'type' => 'submit',
-                            'class' => 'btn',
-                            'label' => t('Сохранить и ред.'),
+                        'preview' => array(
+                           
                         ),
                         'save' => array(),
                     )

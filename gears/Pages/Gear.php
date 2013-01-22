@@ -33,6 +33,7 @@ class Pages_Gear extends Gear {
         'show' => TRUE,
         'index' => TRUE,
     );
+
     /**
      * Текущая страница
      * @var Page
@@ -106,33 +107,33 @@ class Pages_Gear extends Gear {
      */
     public function hookPagesAdminMenu() {
         new Menu_Tabs(array(
-                    'name' => 'pages.admin',
-                    'render' => 'info',
-                    'elements' => array(
-                        array(
-                            'label' => icon('list') . ' ' . t('Список'),
-                            'link' => l('/admin/pages'),
-                            'active' => check_route('admin/pages', Router::ENDS),
-                        ),
-                        array(
-                            'label' => icon('asterisk') . ' ' . t('Настройки'),
-                            'link' => l('/admin/pages/settings'),
-                            'active' => check_route('admin/pages/settings'),
-                        ),
-                        array(
-                            'label' => icon('pencil') . ' ' . t('Создать'),
-                            'link' => l('/admin/pages/create'),
-                            'access' => check_route('admin/pages(/create)?'),
-                            'class' => 'fl_r',
-                        ),
-                        array(
-                            'label' => icon('pencil') . ' ' . t('Редактирование'),
-                            'link' => l('/admin/pages/' . $this->router->getSegments(3)),
-                            'active' => check_route('admin/pages/(\d+)'),
-                            'access' => check_route('admin/pages/(\d+)'),
-                            'class' => 'fl_r',
-                        ),
-                    ),
+            'name' => 'pages.admin',
+            'render' => 'info',
+            'elements' => array(
+                array(
+                    'label' => icon('list') . ' ' . t('Список'),
+                    'link' => l('/admin/pages'),
+                    'active' => check_route('admin/pages', Router::ENDS),
+                ),
+                array(
+                    'label' => icon('asterisk') . ' ' . t('Настройки'),
+                    'link' => l('/admin/pages/settings'),
+                    'active' => check_route('admin/pages/settings'),
+                ),
+                array(
+                    'label' => icon('pencil') . ' ' . t('Создать'),
+                    'link' => l('/admin/pages/create'),
+                    'access' => check_route('admin/pages(/create)?'),
+                    'class' => 'fl_r',
+                ),
+                array(
+                    'label' => icon('pencil') . ' ' . t('Редактирование'),
+                    'link' => l('/admin/pages/' . $this->router->getSegments(3)),
+                    'active' => check_route('admin/pages/(\d+)'),
+                    'access' => check_route('admin/pages/(\d+)'),
+                    'class' => 'fl_r',
+                ),
+            ),
                 ));
     }
 
@@ -154,8 +155,8 @@ class Pages_Gear extends Gear {
     public function admin_action() {
         $this->hookPagesAdminMenu();
         $tree = new Db_Tree_DDList(array(
-                    'class' => 'Pages_Object',
-                    'saveUri' => l('/admin/pages/ajax/saveDBtree'),
+            'class' => 'Pages_Object',
+            'saveUri' => l('/admin/pages/ajax/saveDBtree'),
                 ));
     }
 
@@ -185,7 +186,7 @@ class Pages_Gear extends Gear {
                     $tpl = new Template('Pages/templates/list');
                     $tpl->pages = $page->getChilds();
                     $render = $tpl->render();
-                    cache('pagelist.'.$root,$render,array('pages'));
+                    cache('pagelist.' . $root, $render, array('pages'));
                 }
                 return $render;
             } else {
@@ -242,24 +243,23 @@ class Pages_Gear extends Gear {
                 // Обновляем id
                 $page->route = $route->id;
             }
-
             // Сохранение страницы
-            if ($page->save()) {
+            if ($result->save && $page->save()) {
                 if ($refresh) {
                     $route->callback = $route->encodeCallback(array($this, 'show_action'), array($page->id));
                     $route->update();
                 }
-                if($result->save){
-                flash_success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
-                redirect(l('/admin/pages'));
-                }
-                else {
-                    success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
-                }
+                    flash_success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
+                    redirect(l('/admin/pages'));
+            } else {
+                success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
             }
         }
 
         $form->show();
+        if ($result && $result->preview) {
+            $page->show();
+        }
     }
 
     /**
@@ -268,20 +268,20 @@ class Pages_Gear extends Gear {
     public function admin_settings_action() {
         $this->hookPagesAdminMenu();
         $form = new Form(array(
-                    'name' => 'admin.pages.settings',
+            'name' => 'admin.pages.settings',
+            'elements' => array(
+                'main_page' => array(
+                    'label' => t('Главная страница'),
+                    'type' => 'select',
+                    'values' => page()->getSelectValues(),
+                    'value' => config('Pages.main_id', 1),
+                ),
+                'actions' => array(
                     'elements' => array(
-                        'main_page' => array(
-                            'label' => t('Главная страница'),
-                            'type' => 'select',
-                            'values' => page()->getSelectValues(),
-                            'value' => config('Pages.main_id', 1),
-                        ),
-                        'actions' => array(
-                            'elements' => array(
-                                'save' => array(),
-                            )
-                        )
+                        'save' => array(),
                     )
+                )
+            )
                 ));
         if ($result = $form->result()) {
             if ($result->main_page) {

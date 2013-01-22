@@ -20,7 +20,6 @@ class Pages_Object extends Db_Tree {
      * @return type
      */
     public function show($region = NULL, $position = 0, $where = 0) {
-        title($this->name);
         return parent::show($region, $position, $where);
     }
 
