@@ -16,6 +16,9 @@ class Parser_Filter extends Form_Filter_Abstract {
      * @value
      */
     public function filter($value) {
+        if(access('Parser.off') && cogear()->input->post('parser_off')){
+            return $value;
+        }
         $jevix = new Parser_Jevix();
 
 //Конфигурация
