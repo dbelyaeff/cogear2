@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
 <?php
 $options = array();
 if ($title)
@@ -8,8 +8,9 @@ if ($class)
     $options['theme'] = $class;
 $options['position'] = config('notify.growl.position', 'top-right');
 ?>
-            $.jGrowl("<?php echo addslashes($body) ?>",<?php if ($options):?>
+        $.jGrowl("<?php echo addslashes($body) ?>",<?php if ($options): ?>
     <?php echo json_encode($options); ?>
-<?php endif;?>
+<?php endif; ?>
         );
+    });
 </script>
