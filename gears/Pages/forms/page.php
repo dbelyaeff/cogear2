@@ -26,7 +26,18 @@ return array(
         ),
         'actions' => array(
             'elements' => array(
-                'save' => array(),
+                'acitons_submit' => array(
+                    'type' => 'group',
+                    'class' => 'btn-group',
+                    'elements' => array(
+                        'save_and_edit' => array(
+                            'type' => 'submit',
+                            'class' => 'btn',
+                            'label' => t('Сохранить и ред.'),
+                        ),
+                        'save' => array(),
+                    )
+                ),
                 'delete' => array(),
             )
         ),

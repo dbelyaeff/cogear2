@@ -224,7 +224,7 @@ class Pages_Gear extends Gear {
             // Если у страницы уже установлен путь, и он находится в базе
             if ($page->route) {
                 // Если равны, то обновлять не надо
-                $refresh = ($route->route != $page->getLink());
+                $refresh = ($page->route != $page->getLink());
             }
 
             // Если путь не указан или не существует
@@ -249,8 +249,13 @@ class Pages_Gear extends Gear {
                     $route->callback = $route->encodeCallback(array($this, 'show_action'), array($page->id));
                     $route->update();
                 }
+                if($result->save){
                 flash_success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
                 redirect(l('/admin/pages'));
+                }
+                else {
+                    success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
+                }
             }
         }
 
