@@ -28,8 +28,10 @@ class Post_Gear extends Gear {
         'hide' => 'access',
         'menu' => 'access',
         'ajax' => 'access',
+        'front' => TRUE,
     );
     protected $routes = array(
+        'blog' => 'index_action',
         'post/(\d+)' => 'index_action',
         'post/create' => 'create_action',
         'post/edit/(\d+)' => 'edit_action',
@@ -179,7 +181,6 @@ class Post_Gear extends Gear {
         if (!$id) {
             $posts = new Post_List(array(
                         'name' => 'front.posts',
-                        'base' => l(),
                         'per_page' => config('User.posts.per_page', 5),
                         'where' => array('published' => 1),
                     ));
