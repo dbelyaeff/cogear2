@@ -11,11 +11,11 @@
 class Parser_Gear extends Gear {
 
     protected $hooks = array(
-//        'parse' => 'hookParse',
+        'form.load' => 'hookFormLoad',
     );
-    public static $codes = array(
+    protected $access = array(
+        'off' => array(1),
     );
-
     /**
      * Конструтктор
      *
@@ -26,35 +26,23 @@ class Parser_Gear extends Gear {
     }
 
     /**
-     * Хук парсера
+     * Хук инициализации формы
      *
-     * @param object $item
-     * @param string $field
+     * @param type $Form
      */
-    public function hookParse($item, $field = 'body') {
-        $item->$field = $this->parse($item->$field, $item);
-    }
-
-    /**
-     * Парсер текста
-     *
-     * @param string $text
-     */
-    public function parse($text, $item) {
-        if (self::$codes) {
-            foreach (self::$codes as $code => $callback) {
-                if (preg_match($code, $text, $matches)) {
-                    $callback = new Callback($callback);
-                    if ($callback->check()) {
-                        $callback->setArgs(array($matches, $item));
-                        if ($result = $callback->run()) {
-                            $text = $result;
-                        }
-                    }
-                }
+    public function hookFormLoad($Form) {
+        if (access('Parser.off')) {
+            if ($this->input->post('parser_off')) {
+                Cookie::set('parser_off', TRUE);
             }
-            return $text;
+            if ($Form->body) {
+                $Form->add('parser_off', array(
+                    'type' => 'checkbox',
+                    'label' => t('Отключить парсер'),
+                    'value' => Cookie::get('parser_off') ? TRUE : FALSE,
+                    'order' => $Form->body->options->order . '.1'
+                ));
+            }
         }
     }
-
 }
