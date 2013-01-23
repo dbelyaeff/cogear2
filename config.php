@@ -60,7 +60,7 @@ return array(
     ),
     'theme' =>
     array(
-        'current' => 'Cogear',
+        'current' => 'Default',
     ),
     'cron' =>
     array(
