@@ -9,7 +9,19 @@
  * @link		http://cogear.ru
  */
 class Bootstrap_Gear extends Gear {
-
+    protected $hooks = array(
+        'assets.js.global' => 'hookAssets',
+    );
+    /**
+     * Загружаем Bootstrap с CDN
+     */
+    public function hookAssets(){
+        echo HTML::style('//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css');
+        echo HTML::script('//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js');
+    }
+    public function loadAssets() {
+//        parent::loadAssets();
+    }
 }
 
 function badge($count,$class = 'default'){
