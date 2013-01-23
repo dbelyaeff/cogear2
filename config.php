@@ -55,7 +55,6 @@ return array(
         'available' =>
         array(
             0 => 'ru',
-            1 => 'en',
         ),
     ),
     'theme' =>
