@@ -1,5 +1,5 @@
 <?php
-event('parser', $item);
+event('parse', $item);
 if ($item->show_breadcrumb) {
     $elements = array();
     if ($parents = $item->getParents()) {
