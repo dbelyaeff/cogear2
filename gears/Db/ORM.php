@@ -223,24 +223,12 @@ class Db_ORM extends Object {
             return NULL;
         }
         cogear()->cache->removeTags($this->table);
-        // Если работает Мемкеш
-//        if (Cache_Driver_Memcache::check()) {
         $key = $this->table . '.' . $id;
         if ($object) {
             return cache($key, $object, $tags, $ttl);
         } else {
             return $object === FALSE ? cogear()->cache->remove($key) : cache($key);
         }
-//        } else {
-//            $path = $this->cache_path;
-//            self::$cached OR self::$cached = new Core_ArrayObject();
-//            if ($object) {
-//                self::$cached->$path OR self::$cached->$path = new Core_ArrayObject();
-//                self::$cached->$path->$id = $object;
-//            } else {
-//                return self::$cached->$path && self::$cached->$path->$id ? self::$cached->$path->$id : NULL;
-//            }
-//        }
     }
 
     /**
