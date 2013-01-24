@@ -9,6 +9,7 @@ return array(
         'validators' => array('Required'),
     ),
     'actions' => array(
+        '#class' => 'form-actions',
         'submit' => array(
             'label' => t('Сбросить пароль'),
             'class' => 'btn btn-primary',

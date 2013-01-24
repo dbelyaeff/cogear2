@@ -39,12 +39,14 @@ class User_Gear extends Gear {
         'admin_create' => array(1),
         'login' => array(0),
         'logout' => array(1, 100),
+        'lostpassword' => array(0),
         'index' => TRUE,
     );
     protected $routes = array(
         'login' => 'login_action',
         'logout' => 'logout_action',
         'lostpassword' => 'lostpassword_action',
+        'lostpassword/(\d+)' => 'lostpassword_action',
         'register' => 'register_action',
         'admin/users:maybe' => 'admin_action',
         'admin/user/create' => 'admin_create_action',
