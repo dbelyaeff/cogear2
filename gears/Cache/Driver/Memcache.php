@@ -23,12 +23,12 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      */
     public function __construct($options = array()) {
         parent::__construct($options);
-        if ($memcache = self::check($this->options->host,$this->options->port)) {
+        if ($memcache = self::check($this->options->host, $this->options->port)) {
             $this->object($memcache);
         } else {
             FALSE === $memcache && exit(t('Работа с кэшем через Memcache невозможна, ибо он отключен на сервере.'));
             if (NULL === $memcache) {
-                throw new Exception(t('Не удаётся соединиться с сервером Memcache по адресу '). $this->options->host.':'. $this->options->port);
+                throw new Exception(t('Не удаётся соединиться с сервером Memcache по адресу ') . $this->options->host . ':' . $this->options->port);
             }
         }
     }
@@ -40,16 +40,39 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @param   int     $port
      * @return  mixed   Memcache если работает, FALSE если не установлен, NULL если нет подключения
      */
-    public static function check($host = '127.0.0.1',$port = '11211') {
-        if(class_exists('Memcache')){
+    public static function check($host = '127.0.0.1', $port = '11211') {
+        if (class_exists('Memcache')) {
             $memcache = new Memcache();
-            $result =  $memcache->connect($host, $port) ? $memcache : NULL;
+            $result = $memcache->connect($host, $port) ? $memcache : NULL;
             return $result;
         }
         return FALSE;
     }
 
-
+    /**
+     * Read from cache
+     *
+     * @param string $name
+     * @return mixed|NULL
+     */
+    public function read($name) {
+        if (FALSE === $this->options->enabled) {
+            return FALSE;
+        }
+        $this->stats->read++;
+        $name = $this->prepareKey($name);
+        if (NULL !== ($data = $this->get($name))) {
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                foreach ($data['tags'] as $tag) {
+                    if (NULL === $this->read('tags/' . $tag)) {
+                        return NULL;
+                    }
+                }
+            }
+            return $data['value'];
+        }
+        return NULL;
+    }
 
     /**
      * Write to cache
@@ -100,7 +123,7 @@ class Cache_Driver_Memcache extends Cache_Driver_Abstract {
      * @return string
      */
     protected function prepareKey($name) {
-        $name = md5(SITE_URL.config('key')) . '_' . $this->options->prefix . '_' . $name;
+        $name = md5(SITE_URL . config('key')) . '_' . $this->options->prefix . '_' . $name;
         return $name;
     }
 
