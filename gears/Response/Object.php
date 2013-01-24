@@ -207,3 +207,7 @@ function back() {
         redirect(l('/' . $referer));
     }
 }
+
+function reload(){
+    redirect(l(cogear()->router->getUri()));
+}
