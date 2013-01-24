@@ -13,22 +13,13 @@ class File_Element extends Form_Element_Abstract {
     protected $template = 'File/templates/element';
 
     /**
-     * Конструктор
-     *
-     * @param array $options
-     */
-    public function __construct($options) {
-        parent::__construct($options);
-    }
-
-    /**
      * Process elements value from request
      *
      * @return
      */
     public function result() {
         $file = new File_Upload($this->options);
-        if ($value = $file->upload()) {
+        if ($result = $file->upload()) {
             $this->is_fetched = TRUE;
         } else {
             $this->errors = $file->getErrors();
