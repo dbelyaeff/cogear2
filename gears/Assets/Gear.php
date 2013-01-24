@@ -12,6 +12,8 @@ class Assets_Gear extends Gear {
 
     public $js;
     public $css;
+    protected static $is_init;
+
     /**
      * Вывод глобальный переменных в заголовке
      */
@@ -29,10 +31,14 @@ class Assets_Gear extends Gear {
      */
     public function __construct($config) {
         parent::__construct($config);
+        if(self::$is_init){
+            return;
+        }
         // Важно повесить хук именно таким образом, чтобы информация выводилась до остальных скриптов
         hook('head',array($this,'hookHead'));
         $this->js = Assets::factory('scripts', config('assets.js'));
         $this->css = Assets::factory('styles', config('assets.css'));
+        self::$is_init = TRUE;
     }
     /**
      * Инициализацтор
