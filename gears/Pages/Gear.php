@@ -251,7 +251,7 @@ class Pages_Gear extends Gear {
                 }
                     flash_success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
                     redirect(l('/admin/pages'));
-            } else {
+            } elseif(!$result->preview) {
                 success(t('Страница <b>«%s»</b> успешно сохранена', $page->name), '', 'growl');
             }
         }
