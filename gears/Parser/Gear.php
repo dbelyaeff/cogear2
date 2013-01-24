@@ -39,7 +39,7 @@ class Parser_Gear extends Gear {
         if(config('Parser.nl2br') && $item->body){
             $item->body = preg_replace('#\>([\n\r\t\s]+)\<#imsU','><',$item->body);
             $item->body = preg_replace('#\<br/?\>#imsU',"",$item->body);
-            $item->body = nl2br($item->body,FALSE);
+            $item->body = preg_replace("#([\n]+)#imsU","<br>",$item->body);
         }
     }
     /**
