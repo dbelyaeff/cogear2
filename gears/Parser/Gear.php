@@ -40,6 +40,11 @@ class Parser_Gear extends Gear {
             $item->body = preg_replace('#\>([\n\r\t\s]+)\<#imsU','><',$item->body);
             $item->body = preg_replace('#\<br/?\>#imsU',"",$item->body);
             $item->body = preg_replace("#([\n]+)#imsU","<br>",$item->body);
+            if(preg_match_all('#<pre[^>]*>(.+?)</pre>#',$item->body,$matches)){
+                for($i = 0; $i < sizeof($matches[0]);$i++){
+                    $item->body = str_replace($matches[0][$i],str_replace('<br>','',$matches[0][$i]),$item->body);
+                }
+            }
         }
     }
     /**
