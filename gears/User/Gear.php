@@ -46,7 +46,7 @@ class User_Gear extends Gear {
         'login' => 'login_action',
         'logout' => 'logout_action',
         'lostpassword' => 'lostpassword_action',
-        'lostpassword/(\d+)' => 'lostpassword_action',
+        'lostpassword/(\w+)' => 'lostpassword_action',
         'register' => 'register_action',
         'admin/users:maybe' => 'admin_action',
         'admin/user/create' => 'admin_create_action',
@@ -519,7 +519,7 @@ class User_Gear extends Gear {
                         return;
                     }
                 }
-                $recover = l('/user/lostpassword/' . $user->hash, TRUE);
+                $recover = l('/lostpassword/' . $user->hash, TRUE);
                 $mail = new Mail(array(
                             'name' => 'register.lostpassword',
                             'subject' => t('Восстановление пароля на сайте %s', SITE_URL),
