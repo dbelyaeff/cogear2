@@ -229,7 +229,7 @@ class Db_ORM extends Object {
         if ($object) {
             return cache($key, $object, $tags, $ttl);
         } else {
-            return cache($key);
+            return $object === FALSE ? cogear()->cache->remove($key) : cache($key);
         }
 //        } else {
 //            $path = $this->cache_path;
