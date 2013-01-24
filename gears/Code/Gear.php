@@ -44,7 +44,11 @@ class Code_Gear extends Gear {
                 }
             }
         }
+        if($item->body){
+            $item->body = preg_replace('#\<code\>([\n\r\s\t]+)#im','<code>',$item->body);
+        }
     }
+
 
     /**
      * Хук для вывода кнопки под редактором
