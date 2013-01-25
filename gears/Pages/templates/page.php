@@ -17,6 +17,7 @@ if ($item->show_breadcrumb) {
     $bc = new Breadcrumb(array(
         'name' => 'page',
         'render' => FALSE,
+        'multiple' => TRUE,
         'elements' => $elements,
             ));
     echo $bc->render();
