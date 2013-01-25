@@ -4,7 +4,10 @@ php_value error_reporting E_ALL
 php_value magic_quotes_gpc 0
 php_flag magic_quotes_gpc off
 DirectoryIndex index.php
-RewriteEngine On
+Options +FollowSymLinks
+RewriteEngine on
+
 RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php/$1
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule . index.php [L]
