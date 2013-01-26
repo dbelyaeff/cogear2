@@ -126,6 +126,9 @@ class Form_Element_Abstract extends Notify_Handler {
      * @return
      */
     public function result() {
+        if ($this->options->disabled) {
+            return NULL;
+        }
         $method = strtolower($this->form->method);
         $this->value = cogear()->input->$method($this->name);
         $this->filtrate();
@@ -175,9 +178,9 @@ class Form_Element_Abstract extends Notify_Handler {
         $tpl->assign($this->options);
         $this->code = $tpl->render();
         event('form.element.render', $this);
-        event('form.'.$this->form->getOptions()->name.'.element.render', $this);
+        event('form.' . $this->form->getOptions()->name . '.element.render', $this);
         event('form.element.' . $this->options->type . '.render', $this);
-        event('form.'.$this->form->getOptions()->name.'.element.' . $this->options->type . '.render', $this);
+        event('form.' . $this->form->getOptions()->name . '.element.' . $this->options->type . '.render', $this);
         $this->decorate();
         return $this->code;
     }

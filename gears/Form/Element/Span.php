@@ -20,7 +20,6 @@ class Form_Element_Span extends Form_Element_Abstract {
      * @return
      */
     public function result() {
-        $cogear = getInstance();
         return NULL;
     }
 
