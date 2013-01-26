@@ -304,7 +304,7 @@ class Theme_Gear extends Gear {
         $widgets = cache('widgets');
         if (!$widgets) {
             $widget = widget();
-            $widget->order('position','ASC');
+            $widget->order('position');
             if ($result = $widget->findAll()) {
                 $widgets = array();
                 foreach ($result as $widget) {
@@ -376,6 +376,7 @@ class Theme_Gear extends Gear {
             jqueryui();
             template('Theme/templates/widgets/search')->show();
             $widget = widget();
+            $widget->order('position');
             $widgets = $widget->findAll();
             // Фильтруем, если задан параметр
             if ($uri = $this->input->get('uri')) {
