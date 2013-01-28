@@ -1,32 +1,29 @@
 <?php
 
 /**
- * Gear
+ * Абстрактная шестерёнка
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 abstract class Gear extends Object {
 
     /**
-     * Gear name
+     * Имя шестерёнки
      * @var string
      */
     protected $name;
 
     /**
-     * Gear description
+     * Описание шестерёнки
      * @var string
      */
     protected $description;
 
     /**
-     * Gear version
+     * Версия шестерёнки
      *
      * By default it equals Cogear version
      *
@@ -35,124 +32,123 @@ abstract class Gear extends Object {
     protected $version;
 
     /**
-     * Core version
+     * Версия ядра системы
      *
      * @var type
      */
     protected $core;
 
     /**
-     * Package
+     * Пакет шестерёнки
      *
      * @var string
      */
     protected $package;
 
     /**
-     * Gear authors name
+     * Автор шестерёнки
      *
      * @var string
      */
     protected $author;
 
     /**
-     * Gear email
+     * Электропочта автора шестерёнки
      *
-     * Contact email to resolve everything
      * @var string
      */
     protected $email;
 
     /**
-     * Gear website
+     * Веб-сайт шестерёнки
      *
      * @var string
      */
     protected $site;
 
     /**
-     * Path to class file
+     * Путь к файлу класса
      *
      * @var string
      */
     protected $path;
 
     /**
-     * Directory where gear is located
+     * Директория, в которой расположен файл класса
+     *
      * @var string
      */
     protected $dir;
 
     /**
-     * Relative path to folder with class
+     * Относительный путь к папке для uri-адреса
      *
      * @var string
      */
     protected $folder;
 
     /**
-     * Order in gear stack
-     *
-     * Value can be positive or negative to load after or before other gears.
+     * Порядок загрузки в стеке шестерёнок
      *
      * @var int
      */
     protected $order = 0;
 
     /**
-     * Class reflection
+     * Класс-отражение
      *
-     * Metaclass that stores all the info about current class
+     * Мета-класс, содержаший информацию о данном классе.
      *
      * @var ReflectionClass
      */
     protected $reflection;
 
     /**
-     * Gear name
+     * Машинное имя шестерёнки
      *
-     * How does it stored in $cogear->gears->$name
+     * Таким оно хранится в системе $cogear->gears->$name
      *
      * @param   string
      */
     protected $gear;
 
     /**
-     * Info about gear file
+     * Информация о файле класса шестерёнки
      *
      * @var SplFileInfo
      */
     protected $file;
 
     /**
-     * If gear is requested by router
+     * Флаг, указывающий на то, является ли шестерёнка запрашиваемой через роутер
+     *
      * @var boolean
      */
     protected $is_requested;
 
     /**
-     * Hooks
+     * Хуки
      *
      * @var array
      */
     protected $hooks = array();
 
     /**
-     * Routes
+     * Пути
      *
      * @var routes
      */
     protected $routes = array();
 
     /**
-     * Зависимости
+     * Зависимости шестерёнки
      *
      * @var array
      */
     protected $required;
 
     /**
-     * От кого зависит
+     * От кого зависит шестерёнка
      *
      * @var array
      */
@@ -181,7 +177,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Initialize
+     * Инициализация
      */
     public function init() {
         $this->loadAssets();
@@ -191,7 +187,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Load assets
+     * Загруза активов
      */
     protected function loadAssets() {
         $this->assets->js->loadDir($this->dir . DS . 'js');
@@ -199,7 +195,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Set hooks
+     * Установка хуков
      */
     public function hooks() {
         foreach ($this->hooks as $event => $callback) {
@@ -211,8 +207,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Set routes
-     *
+     * Установка путей
      */
     public function routes() {
         foreach ($this->routes as $route => $callback) {
@@ -224,9 +219,9 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get or set gear state
+     * Установка статуса
      *
-     * @param type $value
+     * @param mixed $value
      * @return int
      */
     public function status($value = NULL) {
@@ -317,7 +312,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get Gear Path
+     * Получения пути к классу шестерёнки
      *
      * @return string
      */
@@ -326,7 +321,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get Gear directory
+     * Получение папки шестерёнки
      *
      * @return  string
      */
@@ -337,7 +332,7 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Get Gear relative folder
+     * Получения относительного пути к папки с шестерёнкой
      *
      * @return string
      */
@@ -349,10 +344,10 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Normalize relative path
+     * Нормализация пути
      *
-     * For example, under windows it look like \cogear\Theme\Default\, but wee need good uri to load css, js or anything else.
-     * It transorm that path to /cogear/Theme/Default/.
+     * Например, под Windows путь выглядит как \cogear\Theme\.
+     * Поэтому мы превращаем его в /cogear/Theme/.
      * @param   string  $path
      * @return  string
      */
@@ -362,17 +357,19 @@ abstract class Gear extends Object {
     }
 
     /**
-     * Prepare path
+     * Подготовка пути
      *
-     * Errors.index = Core/Errors/$dir/index
+     * Путь User/templates/index.php ведёт к /gears/User/templates/index.php
+     *
+     * Если первым поставить /, то будет вести от корня. Пример: /themes/Default/templates/index.php
      *
      * @param	string	$path
      * @return	string  Path
      */
     public static function preparePath($path) {
-        // Add extension
+        // Добавление расширения
         strpos($path, EXT) OR $path .= EXT;
-        // If it has relative path
+        // Проверка на относительность
         if (strpos($path, ROOT) === FALSE) {
             if ($path[0] == '/') {
                 $path = ROOT . DS . $path;
