@@ -140,7 +140,7 @@ class Request_Object {
      * @return array
      */
     public function getUserAgent() {
-        $user_agent = strtolower($this->server['HTTP_USER_AGENT']);
+        $user_agent = isset($this->server['HTTP_USER_AGENT']) ? strtolower($this->server['HTTP_USER_AGENT']) : 'no-user-agent';
         $browser = NULL;
         $version = NULL;
         $os = NULL;
