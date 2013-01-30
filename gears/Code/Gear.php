@@ -46,6 +46,7 @@ class Code_Gear extends Gear {
         }
         if($item->body){
             $item->body = preg_replace('#\<code\>([\n\r\s\t]+)#im','<code>',$item->body);
+            $item->body = preg_replace('#\<\/pre\>([\n\r\s\t]+)#im','</pre>',$item->body);
         }
     }
 
