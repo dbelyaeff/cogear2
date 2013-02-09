@@ -3,8 +3,7 @@ $(document).ready(function(){
         listNodeName: 'ul',
         expandBtnHTML: '',
         collapseBtnHTML: ''
-        }).attr('unselectable', 'on')
-    .on('selectstart', false);
+        }).attr('unselectable', 'on');
     $('#dd-save').on('click', function() {
         $dd = $('.dd').first();
         $this = $(this);
