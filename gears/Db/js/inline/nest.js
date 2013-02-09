@@ -4,7 +4,6 @@ $(document).ready(function(){
         expandBtnHTML: '',
         collapseBtnHTML: ''
         }).attr('unselectable', 'on')
-    .css('user-select', 'none')
     .on('selectstart', false);
     $('#dd-save').on('click', function() {
         $dd = $('.dd').first();
