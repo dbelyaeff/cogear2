@@ -78,12 +78,12 @@ class Menu_Object extends Observer {
         $last_active = NULL;
         foreach ($this as $key => $item) {
             // Если в его настройках указано, что он активный, запоминаем
-            if (NULL != $item->options->active) {
+            if ($item->options->active) {
                 $last_active = $key;
                 event('menu.active', $item, $this);
             }
             // Если же в настройках пусто, то проверяем через роутер совпадение uri
-            else if (cogear()->router->check(trim($item->link, ' /'))) {
+            else if (FALSE !== $item->options->active && cogear()->router->check(trim($item->link, ' /'))) {
                 $item->options->active = TRUE;
                 $last_active = $key;
                 event('menu.active', $item, $this);
