@@ -44,7 +44,7 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     * Load Cogear
+     * Загрузка Когира
      */
     public function load() {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
@@ -79,14 +79,14 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     * Clone
+     * Защита от клонирования
      */
     private function __clone() {
 
     }
 
     /**
-     * Get instance
+     * Возврат сущности
      *
      * @return Cogear
      */
@@ -95,7 +95,7 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     * Register hooks for event
+     * Привязка хука к событию
      *
      * @param   string  $event
      * @param   callback  $callback
@@ -115,7 +115,7 @@ final class Cogear implements Interface_Singleton {
     }
 
     /**
-     * Исполение события
+     * Исполнение события
      *
      * @param string $name
      * @param mixed $arg_1
