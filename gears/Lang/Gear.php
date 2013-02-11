@@ -79,6 +79,7 @@ class Lang_Gear extends Gear {
      */
     public function __construct($config) {
         $this->lang = config('lang.lang', 'ru');
+        hook('lang.transliterate', array($this, 'transliterate_' . $this->lang));
         $this->locale = config('lang.locale') . '.UTF-8';
         $options = config('lang');
         $this->object(Lang::factory('index', $options));
@@ -111,74 +112,74 @@ class Lang_Gear extends Gear {
             case 1:
             case 'primary':
                 new Menu_Tabs(array(
-                            'name' => 'admin.lang',
-                            'title' => TRUE,
-                            'elements' => array(
-                                array(
-                                    'label' => icon('wrench') . ' ' . t('Общие'),
-                                    'link' => l('/admin/lang')
-                                ),
-                                array(
-                                    'label' => icon('globe') . ' ' . t('Перевод'),
-                                    'link' => l('/admin/lang/translate'),
-                                    'active' => in_array($this->router->getSegments(3), array('scan', 'translate', 'reindex', 'save'))
-                                ),
-                                array(
-                                    'label' => icon('search') . ' ' . t('Сканирование'),
-                                    'link' => l('/admin/lang/scan')
-                                ),
-                                array(
-                                    'label' => icon('list') . ' ' . t('Индекс'),
-                                    'link' => l('/admin/lang/index'),
-                                    'class' => 'fl_r'
-                                ),
-                            ),
+                    'name' => 'admin.lang',
+                    'title' => TRUE,
+                    'elements' => array(
+                        array(
+                            'label' => icon('wrench') . ' ' . t('Общие'),
+                            'link' => l('/admin/lang')
+                        ),
+                        array(
+                            'label' => icon('globe') . ' ' . t('Перевод'),
+                            'link' => l('/admin/lang/translate'),
+                            'active' => in_array($this->router->getSegments(3), array('scan', 'translate', 'reindex', 'save'))
+                        ),
+                        array(
+                            'label' => icon('search') . ' ' . t('Сканирование'),
+                            'link' => l('/admin/lang/scan')
+                        ),
+                        array(
+                            'label' => icon('list') . ' ' . t('Индекс'),
+                            'link' => l('/admin/lang/index'),
+                            'class' => 'fl_r'
+                        ),
+                    ),
                         ));
                 break;
             case 2:
             case 'secondary':
                 new Menu_Pills(array(
-                            'name' => 'admin.lang.settings',
-                            'title' => TRUE,
-                            'elements' => array(
-                                array(
-                                    'label' => icon('list') . ' ' . t('Список'),
-                                    'link' => l('/admin/lang/')
-                                ),
-                                array(
-                                    'label' => icon('plus') . ' ' . t('Добавить язык'),
-                                    'link' => l('/admin/lang/add/'),
-                                    'class' => 'fl_r'
-                                ),
-                            ),
+                    'name' => 'admin.lang.settings',
+                    'title' => TRUE,
+                    'elements' => array(
+                        array(
+                            'label' => icon('list') . ' ' . t('Список'),
+                            'link' => l('/admin/lang/')
+                        ),
+                        array(
+                            'label' => icon('plus') . ' ' . t('Добавить язык'),
+                            'link' => l('/admin/lang/add/'),
+                            'class' => 'fl_r'
+                        ),
+                    ),
                         ));
                 break;
             case 3:
                 new Menu_Pills(array(
-                            'name' => 'admin.lang.index',
-                            'title' => TRUE,
-                            'elements' => array(
-                                array(
-                                    'label' => icon('upload') . ' ' . t('Импорт'),
-                                    'link' => l('/admin/lang/index')
-                                ),
-                                array(
-                                    'label' => icon('download-alt') . ' ' . t('Экспорт'),
-                                    'link' => l('/admin/lang/index/export'),
-                                ),
-                                array(
-                                    'label' => icon('refresh') . ' ' . t('Перестроить'),
-                                    'link' => l('/admin/lang/reindex/'),
-                                    'class' => 'fl_r'
-                                ),
-                            ),
+                    'name' => 'admin.lang.index',
+                    'title' => TRUE,
+                    'elements' => array(
+                        array(
+                            'label' => icon('upload') . ' ' . t('Импорт'),
+                            'link' => l('/admin/lang/index')
+                        ),
+                        array(
+                            'label' => icon('download-alt') . ' ' . t('Экспорт'),
+                            'link' => l('/admin/lang/index/export'),
+                        ),
+                        array(
+                            'label' => icon('refresh') . ' ' . t('Перестроить'),
+                            'link' => l('/admin/lang/reindex/'),
+                            'class' => 'fl_r'
+                        ),
+                    ),
                         ));
                 break;
         }
     }
 
     /**
-     * Menu
+     * Хук меню
      *
      * @param string $name
      * @param object $menu
@@ -196,7 +197,7 @@ class Lang_Gear extends Gear {
     }
 
     /**
-     * Transliteration
+     * Транслитерация
      *
      * @param   string  $text
      * @return   string
@@ -206,6 +207,20 @@ class Lang_Gear extends Gear {
         $data->text = $text;
         event('lang.transliterate', $data);
         return $data->text;
+    }
+    /**
+     * Транслитерация на русски
+     *
+     * @param object $data
+     */
+    public function transliterate_ru($data) {
+        $cyr = array(
+            'ж', 'ч', 'щ', 'ш', 'ю', 'а', 'б', 'в', 'г', 'д', 'e', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ъ', 'ь', 'я',
+            'Ж', 'Ч', 'Щ', 'Ш', 'Ю', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ъ', 'Ь', 'Я');
+        $lat = array(
+            'zh', 'ch', 'sht', 'sh', 'yu', 'a', 'b', 'v', 'g', 'd', 'e', 'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'y', 'x', 'q',
+            'Zh', 'Ch', 'Sht', 'Sh', 'Yu', 'A', 'B', 'V', 'G', 'D', 'E', 'Z', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'F', 'H', 'c', 'Y', 'X', 'Q');
+        $data->text = str_replace($cyr, $lat, $data->text);
     }
 
     /**
@@ -294,17 +309,17 @@ class Lang_Gear extends Gear {
         $this->hookAdminMenu();
         $this->hookAdminMenu(2);
         $form = new Form(array(
-                    'name' => 'lang.createdit',
-                    'elements' => array(
-                        'lang' => array(
-                            'type' => 'select',
-                            'label' => t('Выберите язык:'),
-                            'values' => array(),
-                        ),
-                        'submit' => array(
-                            'label' => t('Добавить'),
-                        )
-                    )
+            'name' => 'lang.createdit',
+            'elements' => array(
+                'lang' => array(
+                    'type' => 'select',
+                    'label' => t('Выберите язык:'),
+                    'values' => array(),
+                ),
+                'submit' => array(
+                    'label' => t('Добавить'),
+                )
+            )
                 ));
         $langs = $this->getLangs();
         $langs = array_diff_key($langs, array_fill_keys((array) config('lang.available'), ''));
@@ -404,14 +419,14 @@ class Lang_Gear extends Gear {
                 if ($result = $form->result()) {
                     if ($file = $result->file) {
                         $zip = new Zip(array(
-                                    'file' => $file->path,
-                                    'check' => array('type' => 'lang'),
+                            'file' => $file->path,
+                            'check' => array('type' => 'lang'),
                                 ));
 
                         if ($zip->extract(LANG)) {
                             $info = $zip->info();
                             $langs = $this->getLangs(array($info['lang']));
-                            success(t('<b>Архив успешно распакован!</b> Индекс для языка <b>«%s»</b> установлен.', implode($langs)),'','content');
+                            success(t('<b>Архив успешно распакован!</b> Индекс для языка <b>«%s»</b> установлен.', implode($langs)), '', 'content');
                         }
                         $zip->close();
                         unlink($file->path);
@@ -423,19 +438,19 @@ class Lang_Gear extends Gear {
                 template('Lang/templates/download')->show();
                 break;
             case 'download':
-                $file = ROOT.$this->prepareFilePath();
-                $archive = TEMP.DS.  pathinfo($file,PATHINFO_FILENAME).'.zip';
+                $file = ROOT . $this->prepareFilePath();
+                $archive = TEMP . DS . pathinfo($file, PATHINFO_FILENAME) . '.zip';
                 $zip = new Zip(array(
-                   'file' => $archive,
+                    'file' => $archive,
                     'create' => TRUE,
-                ));
+                        ));
                 $zip->add($file);
                 $zip->info(array(
                     'type' => 'lang',
                     'lang' => config('lang.lang'),
                 ));
                 $zip->close();
-                File::download($archive, basename($archive),TRUE);
+                File::download($archive, basename($archive), TRUE);
                 break;
         }
     }
