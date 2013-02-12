@@ -2,10 +2,10 @@ $(document).ready(function(){
     $('fieldset').each(function(){
         $this = $(this);
         if($this.hasClass('collapsed')){
-            $chevron = $('<i class="icon icon-chevron-right"/>')
+            var $chevron = $('<i class="icon icon-chevron-right"/>')
         }
         else {
-            $chevron = $('<i class="icon icon-chevron-down"/>')
+            var $chevron = $('<i class="icon icon-chevron-down"/>')
         }
         $legend = $this.find('> legend');
         if(!$legend.html()){
@@ -13,7 +13,7 @@ $(document).ready(function(){
             return;
         }
         $legend.append($chevron);
-        $wrapper = $("<div class='wrapper'/>");
+        var $wrapper = $("<div class='wrapper'/>");
         $legend.after($wrapper);
         $wrapper.nextAll().appendTo($wrapper);
         $legend.on('click',function(){
