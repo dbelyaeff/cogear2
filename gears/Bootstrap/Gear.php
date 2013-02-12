@@ -17,6 +17,7 @@ class Bootstrap_Gear extends Gear {
      */
     public function hookAssets(){
         echo HTML::style('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css');
+        echo HTML::style('http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css');
         echo HTML::script('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js');
     }
     public function loadAssets() {
