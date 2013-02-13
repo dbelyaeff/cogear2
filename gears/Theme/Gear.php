@@ -87,7 +87,7 @@ class Theme_Gear extends Gear {
         } else {
             $this->choose(config('theme.current', 'Default'));
         }
-        if ('' === $this->input->get('splash')) {
+        if ('' === $this->input->get('splash') OR flash('splash')) {
             $this->template('Theme/templates/splash');
         } elseif ($tpl = $this->input->get('layout')) {
             $this->template($tpl);
@@ -149,10 +149,10 @@ class Theme_Gear extends Gear {
     }
 
     /**
-     * Хук перед закрытие </body>
+     * Хук перед закрытием </body>
      */
     public function hookAfter() {
-        template('Theme/templates/copyright')->show('footer');
+        //template('Theme/templates/copyright')->show('footer');
     }
 
     /**
