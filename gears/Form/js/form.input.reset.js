@@ -1,6 +1,9 @@
 $.fn.resetButton = function(){
     $(this).each(function(){
         var $el = $(this);
+        if($el.prop('disabled')){
+            return;
+        }
         $el.wrap($('<div class="element-wrapper"/>'));
         var $wrapper = $el.parent();
         $wrapper.attr('id',$el.attr('id')+'-wrapper');

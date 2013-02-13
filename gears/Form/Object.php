@@ -99,31 +99,31 @@ class Form_Object extends Object {
             $options = Core_ArrayObject::transform($options);
         }
         parent::__construct(Form::filterOptions($options));
-        $this->defaults = new Config(cogear()->form->dir.DS.'defaults'.EXT);
+        $this->defaults = new Config(cogear()->form->dir . DS . 'defaults' . EXT);
         $this->init();
         event('form.load', $this);
         event('form.load.' . $this->name, $this);
     }
+
     /**
      * Фильтрация опций
      *
      * @param array $options
      */
-    public static function filterOptions($options){
+    public static function filterOptions($options) {
         !($options instanceof Core_ArrayObject) && $options = new Core_ArrayObject($options);
         $first_key = $options->getFirstKey();
-        if($first_key[0] !== '#'){
+        if ($first_key[0] !== '#') {
             return $options;
         }
         $results = new Core_ArrayObject();
-        foreach($options as $key=>$value){
-            if($key[0] == '#'){
-                $real_key = substr($key,1);
+        foreach ($options as $key => $value) {
+            if ($key[0] == '#') {
+                $real_key = substr($key, 1);
                 $results->$real_key = $value;
-            }
-            else {
+            } else {
                 $results->elements OR $results->elements = new Core_ArrayObject();
-                if(is_array($value) OR $value instanceof Core_ArrayObject){
+                if (is_array($value) OR $value instanceof Core_ArrayObject) {
                     $value = self::filterOptions($value);
                 }
                 $results->elements->$key = $value;
@@ -131,6 +131,7 @@ class Form_Object extends Object {
         }
         return $results;
     }
+
     /**
      * Добавление элемента
      *
@@ -167,15 +168,16 @@ class Form_Object extends Object {
         }
         if ($config->access !== FALSE) {
             if (isset(self::$types[$config->type]) && class_exists(self::$types[$config->type])) {
-                $config->tabindex OR $config->tabindex = $this->elements->count()+1;
+                $config->tabindex OR $config->tabindex = $this->elements->count() + 1;
                 $this->elements->$name = new self::$types[$config->type]($config);
             }
         }
     }
+
     /**
      * Удаление элемента
      */
-    public function remove($name){
+    public function remove($name) {
         $this->elements->offsetUnset($name);
     }
 
@@ -250,7 +252,7 @@ class Form_Object extends Object {
                 if ($value !== NULL) {
                     $result[$name] = $value;
                 }
-                if($value === FALSE){
+                if ($value === FALSE) {
                     $is_valid = FALSE;
                 }
             }
@@ -284,7 +286,7 @@ class Form_Object extends Object {
      * @return string
      */
     public function getId() {
-        return preg_replace('#[\._]#','-',$this->options->prefix . self::SEPARATOR . $this->options->name);
+        return preg_replace('#[\._]#', '-', $this->options->prefix . self::SEPARATOR . $this->options->name);
     }
 
     /**

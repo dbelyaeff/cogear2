@@ -162,8 +162,8 @@ class Form_Element_Abstract extends Notify_Handler {
             $this->value = $this->options->value;
         }
         if ($this->options->disabled) {
-            $this->value = NULL;
-            $this->options->value = NULL;
+//            $this->value = NULL;
+//            $this->options->value = NULL;
         }
         $this->options->element = $this;
         return $this->options;
