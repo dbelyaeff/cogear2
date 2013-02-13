@@ -21,15 +21,15 @@ class Image_Driver_GD extends Image_Driver_Abstract {
                 break;
             case IMAGETYPE_PNG:
                 $this->source = imagecreatefrompng($this->info->file);
-                imagecolortransparent($this->source, imagecolorallocate($this->source, 0, 0, 0));
-                imagealphablending($this->source, FALSE);
-                imagesavealpha($this->source, TRUE);
+//                imagecolortransparent($this->source, imagecolorallocate($this->source, 255, 255, 255));
+//                imagealphablending($this->source, FALSE);
+//                imagesavealpha($this->source, TRUE);
                 break;
             case IMAGETYPE_GIF:
                 $this->source = imagecreatefromgif($this->info->file);
-                imagecolortransparent($this->source, imagecolorallocate($this->source, 0, 0, 0));
-                imagealphablending($this->source, FALSE);
-                imagesavealpha($this->source, TRUE);
+//                imagecolortransparent($this->source, imagecolorallocate($this->source, 0, 0, 0));
+//                imagealphablending($this->source, FALSE);
+//                imagesavealpha($this->source, TRUE);
                 break;
             case IMAGETYPE_ICO:
                 $this->source = imagecreatefromwbmp($this->info->file);
@@ -53,11 +53,11 @@ class Image_Driver_GD extends Image_Driver_Abstract {
      */
     public function createTarget($width, $height) {
         $this->target = imagecreatetruecolor($width, $height);
-        if ($this->info->type == IMAGETYPE_PNG OR IMAGETYPE_GIF == $this->info->type) {
-            imagecolortransparent($this->target, imagecolorallocate($this->target, 0, 0, 0));
-            imagealphablending($this->target, FALSE);
-            imagesavealpha($this->target, TRUE);
-        }
+//        if ($this->info->type == IMAGETYPE_PNG OR IMAGETYPE_GIF == $this->info->type) {
+//            imagecolortransparent($this->target, imagecolorallocate($this->target, 255, 255, 255));
+//            imagealphablending($this->target, FALSE);
+//            imagesavealpha($this->target, TRUE);
+//        }
         return $this->target;
     }
 
@@ -90,8 +90,7 @@ class Image_Driver_GD extends Image_Driver_Abstract {
                 if ($this->info->width > $this->info->height) {
                     $width = round(($this->info->width * $source_height) / $this->info->height);
                     $height = $source_height;
-                }
-                else {
+                } else {
                     $width = $source_width;
                     $height = round(($this->info->height * $source_width) / $this->info->width);
                 }
@@ -124,8 +123,8 @@ class Image_Driver_GD extends Image_Driver_Abstract {
             $this->source = $this->target;
             $this->info->width = $width;
             $this->info->height = $height;
-            if('crop' == $fit){
-                return $this->crop('center','center' ,$source_width,$source_height);
+            if ('crop' == $fit) {
+                return $this->crop('center', 'center', $source_width, $source_height);
             }
         }
         return $this;
@@ -141,12 +140,12 @@ class Image_Driver_GD extends Image_Driver_Abstract {
      * @return  object  Изображение
      */
     public function crop($x, $y, $width, $height) {
-        $x = $this->smartSize($x, 'width') - $width/2;
-        $y = $this->smartSize($y, 'height') - $height/2;
+        $x = $this->smartSize($x, 'width') - $width / 2;
+        $y = $this->smartSize($y, 'height') - $height / 2;
         $width = $this->smartSize($width, 'width');
         $height = $this->smartSize($height, 'height');
         $this->target = $this->createTarget($width, $height);
-        if (imagecopyresampled($this->target, $this->source, 0, 0, $x, $y, $width, $height, $width, $height)) {
+        if (imagecopy($this->target, $this->source, 0, 0, $x, $y, $width, $height, $width, $height)) {
             $this->source = $this->target;
             $this->info->width = $width;
             $this->info->height = $height;
@@ -160,7 +159,12 @@ class Image_Driver_GD extends Image_Driver_Abstract {
     public function merge(Image $image, $x, $y, $percent = 100) {
         $x = $this->smartSize($x, 'width');
         $y = $this->smartSize($y, 'height');
-        if (imagecopymerge($this->source, $image->getSource(), $x, $y, 0, 0, $image->object()->info->width, $image->object()->info->height, $percent)) {
+//           imagealphablending($this->source, TRUE);
+//           imagesavealpha($this->source, TRUE);
+//           imagealphablending($image->getSource(), TRUE);
+//           imagesavealpha($image->getSource(), TRUE);
+        if (imagecopy($this->source, $image->getSource(), $x, $y, 0, 0, $image->object()->info->width, $image->object()->info->height)) {
+
         }
         return $this;
     }
@@ -184,14 +188,18 @@ class Image_Driver_GD extends Image_Driver_Abstract {
                 imagejpeg($this->target, $file, $options);
                 break;
             case 'gif':
-                imagecolortransparent($this->target, imagecolorallocatealpha($this->target, 0, 0, 0, 127));
-                imagealphablending($this->target, FALSE);
-                imagesavealpha($this->target, TRUE);
+//                imagecolortransparent($this->target, imagecolorallocatealpha($this->target, 0, 0, 0, 127));
+//                $white = imagecolorallocate($this->target, 255, 255, 255);
+//                imagecolortransparent($this->target, $white);
+//                imagealphablending($this->target, FALSE);
+//                imagesavealpha($this->target, TRUE);
                 imagegif($this->target, $file);
                 break;
             case 'png':
-                imagealphablending($this->target, FALSE);
-                imagesavealpha($this->target, TRUE);
+//                $white = imagecolorallocate($this->target, 255, 0, 0);
+//                imagecolortransparent($this->target, $white);
+//                imagealphablending($this->target, FALSE);
+//                imagesavealpha($this->target, TRUE);
                 if (is_numeric($options)) {
                     $quality = $options;
                     $filters = PNG_NO_FILTER;
