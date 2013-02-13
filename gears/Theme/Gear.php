@@ -87,11 +87,6 @@ class Theme_Gear extends Gear {
         } else {
             $this->choose(config('theme.current', 'Default'));
         }
-        if ('' === $this->input->get('splash') OR flash('splash')) {
-            $this->template('Theme/templates/splash');
-        } elseif ($tpl = $this->input->get('layout')) {
-            $this->template($tpl);
-        }
     }
 
     /**
@@ -179,35 +174,35 @@ class Theme_Gear extends Gear {
         switch ($type) {
             case 1:
                 new Menu_Tabs(array(
-                            'name' => 'admin.theme',
-                            'elements' => array(
-                                array(
-                                    'label' => t('Темы'),
-                                    'link' => l('/admin/theme')
-                                ),
-                                array(
-                                    'label' => t('Виджеты'),
-                                    'link' => l('/admin/theme/widgets')
-                                )
-                            )
+                    'name' => 'admin.theme',
+                    'elements' => array(
+                        array(
+                            'label' => t('Темы'),
+                            'link' => l('/admin/theme')
+                        ),
+                        array(
+                            'label' => t('Виджеты'),
+                            'link' => l('/admin/theme/widgets')
+                        )
+                    )
                         ));
                 break;
             case 2:
                 new Menu_Pills(array(
-                            'name' => 'admin.theme.add',
-                            'multiple' => TRUE,
-                            'elements' => array(
-                                array(
-                                    'label' => icon('upload') . ' ' . t('Загрузить'),
-                                    'link' => l('/admin/theme/add'),
-                                    'access' => !check_route('admin/theme$'),
-                                ),
-                                array(
-                                    'label' => icon('plus') . ' ' . t('Добавить'),
-                                    'link' => l('/admin/theme/add'),
-                                    'class' => 'fl_r'
-                                )
-                            ),
+                    'name' => 'admin.theme.add',
+                    'multiple' => TRUE,
+                    'elements' => array(
+                        array(
+                            'label' => icon('upload') . ' ' . t('Загрузить'),
+                            'link' => l('/admin/theme/add'),
+                            'access' => !check_route('admin/theme$'),
+                        ),
+                        array(
+                            'label' => icon('plus') . ' ' . t('Добавить'),
+                            'link' => l('/admin/theme/add'),
+                            'class' => 'fl_r'
+                        )
+                    ),
                         ));
                 break;
         }
@@ -254,8 +249,8 @@ class Theme_Gear extends Gear {
             $archive_name = (1 === sizeof($themes) ? end($themes) : 'themes') . '.zip';
             $path = TEMP . DS . $archive_name;
             $zip = new Zip(array(
-                        'file' => $path,
-                        'create' => TRUE
+                'file' => $path,
+                'create' => TRUE
                     ));
             foreach ($themes as $theme) {
                 $dir = THEMES . DS . $theme;
@@ -281,8 +276,8 @@ class Theme_Gear extends Gear {
         if ($result = $form->result()) {
             if ($file = $result->file ? $result->file : $result->url) {
                 $zip = new Zip(array(
-                            'file' => $file->path,
-                            'check' => array('type' => 'themes'),
+                    'file' => $file->path,
+                    'check' => array('type' => 'themes'),
                         ));
                 if ($zip->extract(THEMES)) {
                     $info = $zip->info();
@@ -332,32 +327,32 @@ class Theme_Gear extends Gear {
     public function widgets_action($action = 'list', $subaction = NULL) {
         $this->hookAdminMenu();
         new Menu_Tabs(array(
-                    'name' => 'admin.theme.widgets',
-                    'elements' => array(
-                        array(
-                            'label' => icon('list') . ' ' . t('Список'),
-                            'link' => l('/admin/theme/widgets'),
-                        ),
-                        array(
-                            'label' => icon('plus') . ' ' . t('Добавить'),
-                            'link' => l('/admin/theme/widgets/add') . e('uri', $this->input->get('uri')),
-                            'class' => 'fl_r',
-                        ),
-                        array(
-                            'label' => icon('pencil') . ' ' . t('Редактировать'),
-                            'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3)),
-                            'access' => check_route('widgets/(\d+)'),
-                            'active' => check_route('widgets/(\d+)$'),
-                            'class' => 'fl_r',
-                        ),
-                        array(
-                            'label' => icon('wrench') . ' ' . t('Настройки'),
-                            'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3) . '/options'),
-                            'access' => check_route('widgets/(\d+)'),
-                            'active' => check_route('widgets/(\d+)/options'),
-                            'class' => 'fl_r',
-                        ),
-                    )
+            'name' => 'admin.theme.widgets',
+            'elements' => array(
+                array(
+                    'label' => icon('list') . ' ' . t('Список'),
+                    'link' => l('/admin/theme/widgets'),
+                ),
+                array(
+                    'label' => icon('plus') . ' ' . t('Добавить'),
+                    'link' => l('/admin/theme/widgets/add') . e('uri', $this->input->get('uri')),
+                    'class' => 'fl_r',
+                ),
+                array(
+                    'label' => icon('pencil') . ' ' . t('Редактировать'),
+                    'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3)),
+                    'access' => check_route('widgets/(\d+)'),
+                    'active' => check_route('widgets/(\d+)$'),
+                    'class' => 'fl_r',
+                ),
+                array(
+                    'label' => icon('wrench') . ' ' . t('Настройки'),
+                    'link' => l('/admin/theme/widgets/' . $this->router->getSegments(3) . '/options'),
+                    'access' => check_route('widgets/(\d+)'),
+                    'active' => check_route('widgets/(\d+)/options'),
+                    'class' => 'fl_r',
+                ),
+            )
                 ));
         if ($action == 'ajax' && $widgets = $this->input->post('widgets')) {
             $ajax = new Ajax();
@@ -568,6 +563,11 @@ class Theme_Gear extends Gear {
      * Output
      */
     public function output() {
+        if ('' === $this->input->get('splash') OR flash('theme.splash')) {
+            $this->template('Theme/templates/splash');
+        } elseif ($tpl = $this->input->get('layout', flash('theme.layout'))) {
+            $this->template($tpl);
+        }
         $this->object()->render();
     }
 
