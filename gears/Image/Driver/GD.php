@@ -160,8 +160,7 @@ class Image_Driver_GD extends Image_Driver_Abstract {
     public function merge(Image $image, $x, $y, $percent = 100) {
         $x = $this->smartSize($x, 'width');
         $y = $this->smartSize($y, 'height');
-        if (imagecopymerge($this->source, $image->getSource(), $x, $y, 0, 0, $image->object()->image->width, $image->object()->image->height, $percent)) {
-
+        if (imagecopymerge($this->source, $image->getSource(), $x, $y, 0, 0, $image->object()->info->width, $image->object()->info->height, $percent)) {
         }
         return $this;
     }
