@@ -11,7 +11,7 @@
 class Roles_Gear extends Gear {
 
     protected $hooks = array(
-        'user.verified' => 'hookSetDefaultRole',
+        'user.register' => 'hookSetDefaultRole',
     );
     /**
      * Set default role after user if registered
