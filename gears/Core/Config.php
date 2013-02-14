@@ -138,7 +138,6 @@ class Config extends Core_ArrayObject {
         if (!$this->file)
             return FALSE;
         if ($this->write_flag OR $force) {
-            chmod($this->file, 0755);
             if (self::write($this->file, $this->toArray())) {
                 return TRUE;
             } else {
