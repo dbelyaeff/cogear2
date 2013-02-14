@@ -15,7 +15,7 @@ final class HTML {
 
     public static $default_attributes = array('class', 'id', 'rel','data-id','data-type','data-source','data-placeholder');
     public static $allowed_attributes = array(
-        'a' => array('href', 'target','rel'),
+        'a' => array('href', 'target','rel','title'),
         'img' => array('width', 'height', 'alt', 'title','src'),
         'form' => array('action', 'method', 'enctype'),
         'input' => array('required','type', 'value', 'disabled', 'checked', 'name','placeholder','tabindex'),

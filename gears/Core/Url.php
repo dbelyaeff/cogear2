@@ -139,3 +139,6 @@ function s($url = '', $absolute_flag = FALSE, $protocol = 'http') {
 function e($data = array(), $value = NULL) {
     return Url::extendQuery($data, $value);
 }
+function curl($options = array()){
+    return new cURL($options);
+}
