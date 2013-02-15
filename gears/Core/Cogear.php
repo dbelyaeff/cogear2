@@ -50,21 +50,24 @@ final class Cogear implements Interface_Singleton {
         $this->site = new Config(ROOT . DS . 'site' . EXT);
         $this->config = new Config(ROOT . DS . 'config' . EXT);
         $this->system_cache = Cache::factory('system', array(
-                    'driver' => config('cache.driver','Cache_Driver_File'),
+                    'driver' => config('cache.driver', 'Cache_Driver_File'),
                     'prefix' => 'system',
                     'path' => CACHE . DS . 'system'
                 ));
-        $script_filename = $_SERVER['SCRIPT_FILENAME'];
-        $document_root = rtrim($_SERVER['DOCUMENT_ROOT'],'/');
-        $script_dir = dirname($script_filename);
-        // Если корневая диреактория сайта не совпадает с папкой исполняемого файла
-        if($script_dir !== $document_root){
-            define('SITE_URL', $_SERVER['SERVER_NAME'].str_replace($document_root,'',  $script_dir));
+        if(config('site.url')){
+            define('SITE_URL',config('site.url'));
         }
         else {
-            define('SITE_URL',$_SERVER['SERVER_NAME']);
+            $script_filename = $_SERVER['SCRIPT_FILENAME'];
+            $document_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
+            $script_dir = dirname($script_filename);
+            // Если корневая диреактория сайта не совпадает с папкой исполняемого файла
+            if ($script_dir !== $document_root) {
+                define('SITE_URL', $_SERVER['SERVER_NAME'] . str_replace($document_root, '', $script_dir));
+            } else {
+                define('SITE_URL', $_SERVER['SERVER_NAME']);
+            }
         }
-        defined('SITE_URL') OR define('SITE_URL', SITE_URL);
         if (strpos(SITE_URL, '/') && !defined('FOLDER')) {
             $array = explode('/', SITE_URL, 2);
             $folder = array_pop($array);
@@ -125,7 +128,7 @@ final class Cogear implements Interface_Singleton {
      */
     public function event($name) {
         // Внешне может быть установлено прерывание события
-        if(FALSE === flash('event.'.$name)){
+        if (FALSE === flash('event.' . $name)) {
             return FALSE;
         }
         $args = func_get_args();
@@ -202,6 +205,7 @@ function config($name = NULL, $default_value = NULL) {
     $cogear = getInstance();
     return $cogear->get($name, $default_value);
 }
+
 /**
  * Хранение одноразовых переменных
  *
@@ -210,12 +214,11 @@ function config($name = NULL, $default_value = NULL) {
  * @param mixed $value
  * @return mixed
  */
-function flash($key,$value = NULL){
+function flash($key, $value = NULL) {
     static $storage = array();
-    if(NULL !== $value){
+    if (NULL !== $value) {
         $storage[$key] = $value;
-    }
-    elseif(array_key_exists($key, $storage)){
+    } elseif (array_key_exists($key, $storage)) {
         return $storage[$key];
     }
     return NULL;
@@ -233,9 +236,9 @@ function flash($key,$value = NULL){
  * @return  string
  */
 function t($text) {
-    if(!cogear()->lang){
+    if (!cogear()->lang) {
         return $text;
     }
     $args = func_get_args();
-    return call_user_func_array(array(cogear()->lang,'translate'), $args);
+    return call_user_func_array(array(cogear()->lang, 'translate'), $args);
 }
