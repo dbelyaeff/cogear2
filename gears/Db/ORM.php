@@ -81,13 +81,15 @@ class Db_ORM extends Object {
     const FILTER_OUT = 1;
 
     /**
-     * Constructir
+     * Конструктор
      *
      * @param string $table
-     * @param string {$this->primary}
+     * @param string $primary
+     * @param   object  $db
+     * @param array $options
      */
-    public function __construct($table = NULL, $primary = NULL, $db = NULL) {
-        parent::__construct();
+    public function __construct($table = NULL,$primary = NULL,$db = NULL,$options = array()) {
+        parent::__construct($options);
         if (self::$skipClear) {
             self::skipClear(FALSE);
         } else {
@@ -103,7 +105,8 @@ class Db_ORM extends Object {
         $this->class = $this->reflection->getName();
         $fields = array_keys((array) $this->fields);
         $first = reset($fields);
-        $this->primary OR $this->primary = $primary ? $primary : $first;
+        $primary && $this->primary = $primary;
+        $this->primary OR $this->primary = $first;
         $this->cache_path = $this->db->options->database . '.' . $this->table;
         $this->object(new Core_ArrayObject());
     }
