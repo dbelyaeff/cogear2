@@ -70,7 +70,7 @@ abstract class Image_Driver_Abstract extends Options {
      */
     public function smartSize($size, $type = 'width', $prec = 0) {
         $source = $type == 'width' ? $this->info->width : $this->info->height;
-        $size = preg_replace('#([a-z\s]+)#i','',$size);
+        $size = str_replace('px','',$size);
         if($size < 0){
             $size = $source + $size;
         }
