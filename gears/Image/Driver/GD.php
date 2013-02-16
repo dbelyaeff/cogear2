@@ -145,7 +145,7 @@ class Image_Driver_GD extends Image_Driver_Abstract {
         $width = $this->smartSize($width, 'width');
         $height = $this->smartSize($height, 'height');
         $this->target = $this->createTarget($width, $height);
-        if (imagecopy($this->target, $this->source, 0, 0, $x, $y, $width, $height, $width, $height)) {
+        if (imagecopy($this->target, $this->source, 0, 0, $x, $y, $width, $height)) {
             $this->source = $this->target;
             $this->info->width = $width;
             $this->info->height = $height;
