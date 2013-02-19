@@ -523,7 +523,7 @@ class Theme_Gear extends Gear {
         $config = new Config(THEMES . DS . $theme . DS . 'info' . EXT);
         if($config->regions){
             $this->initRegions($config->regions);
-            $this->regions = $config->regions;
+            $this->regions = (array)$config->regions;
         }
         $this->object(new $class($config));
         $this->object()->init();
