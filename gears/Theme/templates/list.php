@@ -8,7 +8,7 @@ $thumbnail = File::pathToUri($screenshot);
 
 
 <div class="page-header">
-    <h1><?php echo $theme->name ?> <small><?php echo t('Текущяя тема оформления') ?></small></h1>
+    <h1><?php echo $theme->name ?> <small><?php echo t('Текущая тема оформления') ?></small></h1>
 </div>
 <div class="row theme">
     <div class="span4">
