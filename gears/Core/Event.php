@@ -1,15 +1,12 @@
 <?php
 
 /**
- * Event
+ * Событие
  *
  * @author		Беляев Дмитрий <admin@cogear.ru>
  * @copyright		Copyright (c) 2011, Беляев Дмитрий
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
- * @package		Core
- * @subpackage
-
  */
 class Event extends Core_ArrayObject {
 
@@ -28,7 +25,7 @@ class Event extends Core_ArrayObject {
     }
 
     /**
-     * Run event
+     * Исполнение события
      *
      * @param   $args
      * @return  object
@@ -48,7 +45,7 @@ class Event extends Core_ArrayObject {
     }
 
     /**
-     * Get exec results
+     * Получения результатов исполнения
      *
      * @return Core_ArrayObject
      */
@@ -57,7 +54,7 @@ class Event extends Core_ArrayObject {
     }
 
     /**
-     * Set result
+     * Установка результата исполнения события
      *
      * @param mixed $data
      * @return mixed
@@ -70,7 +67,7 @@ class Event extends Core_ArrayObject {
     }
 
     /**
-     * Check if event has result
+     * Проверка результата
      *
      * @return boolean
      */
