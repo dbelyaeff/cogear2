@@ -41,6 +41,7 @@ class User_Gear extends Gear {
         'logout' => array(1, 100),
         'lostpassword' => array(0),
         'index' => TRUE,
+        'register' => array(0),
     );
     protected $routes = array(
         'login' => 'login_action',
@@ -73,7 +74,7 @@ class User_Gear extends Gear {
                     }
                 }
                 // Catch user_id from uri and compare it with current user
-                elseif ($this->user->id == $data[0]) {
+                elseif ($this->user->id == $this->router->getSegments(2)) {
                     return TRUE;
                 }
                 break;
@@ -249,12 +250,11 @@ class User_Gear extends Gear {
      */
     public function hookUserEditMenu($User) {
         $menu = new Menu_Tabs(array(
-                    'name' => 'admin.users',
+                    'name' => 'user.edit',
                     'elements' => array(
                         array(
                             'label' => icon('user') . ' ' . t('Общие'),
-                            'link' => l('/user/edit/' . $User->id),
-                            'active' => check_route('user/edit/(\d+)') OR check_route('admin/user/(\d+)'),
+                            'link' => $User->getLink('edit'),
                         ),
                     )
                 ));
@@ -428,9 +428,6 @@ class User_Gear extends Gear {
         }
 
         if ($result = $form->result()) {
-            if ($user->login != $result['login']) {
-                $redirect = Url::gear('user') . $result['login'];
-            }
             if ($result->delete && access('User.delete', $user)) {
                 if ($user->delete()) {
                     flash_success(t('Пользователь <b>%s</b> был удалён!', $user->login));
@@ -564,6 +561,7 @@ class User_Gear extends Gear {
                     $user->hashPassword();
                     $user->hash = $this->secure->genHash($user->password);
                     $user->reg_date = time();
+                    $user->last_visit = time();
                     if ($user->save()) {
                         event('user.register', $user);
                         if ($user->login()) {

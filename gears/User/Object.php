@@ -214,8 +214,8 @@ class User_Object extends Db_Item {
                 break;
             case 'edit':
                 $uri = new Stack(array('name' => 'user.link.edit'));
-                $uri->append('admin');
                 $uri->append('user');
+                $uri->append('edit');
                 $uri->append($this->id);
                 break;
             default:

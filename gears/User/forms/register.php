@@ -9,8 +9,9 @@ return array(
         'validators' => array('Email', 'Required', 'User_Validate_EmailReg'),
     ),
     'actions' => array(
+        '#class' => 'form-actions',
         'submit' => array(
-            '#label' => t('Зарегистрироваться'),
+            'label' => t('Зарегистрироваться'),
         ),
     )
 );

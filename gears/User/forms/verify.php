@@ -26,7 +26,7 @@ return array(
     'password' => array(
         'label' => t('Пароль'),
         'type' => 'text',
-        'validators' => array(array('Length', 3), 'AlphaNum', 'Required')
+        'validators' => array(array('Length', 6),'Required')
     ),
     'save' => array(
     )

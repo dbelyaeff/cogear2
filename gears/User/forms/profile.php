@@ -22,14 +22,15 @@ return array(
         'login' => array(
             'label' => t('Имя пользователя'),
             'type' => 'text',
-            'access' => 'User.edit.login',
+            'disabled' => access('User.edit.email') ? FALSE : TRUE,
             'validators' => array(array('Length', 3), 'AlphaNum', 'Required', array('User_Validate_Login', User_Validate_Login::EXCLUDE_SELF)),
         ),
         'email' => array(
             'label' => t('Электронная почта'),
             'type' => 'text',
             'validators' => array('Email', 'Required', array('User_Validate_Email', User_Validate_Email::EXCLUDE_SELF)),
-            'access' => 'User.edit.email',
+            'placeholder' => t('Укажите адрес электронной почты…'),
+            'disabled' => access('User.edit.email') ? FALSE : TRUE,
         ),
         'password' => array(
             'label' => t('Пароль'),
@@ -41,5 +42,6 @@ return array(
         'label' => t('Сохранить'),
     ),
     'delete' => array(
+        'access' => access('User.delete')
     )
 );
