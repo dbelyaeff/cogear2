@@ -15,7 +15,7 @@ class Form_Validate_Name extends Form_Validate_Regexp{
 	 * Конструктор
 	 */
 	public function __construct(){
-                $regexp = '([\w\d]+)';
+                $regexp = '([a-zA-Zа-яА-Я\d]+)';
 		parent::__construct($regexp,t('Значение поля может включать в себя только буквы и пробелы.'));
 	}
 }
