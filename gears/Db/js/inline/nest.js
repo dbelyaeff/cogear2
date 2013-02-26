@@ -2,7 +2,8 @@ $(document).ready(function() {
     $('.dd-list').nestedSortable({
         handle: '.dd-handle',
         items: 'li',
-        listType: 'ul'
+        listType: 'ul',
+        placeholder: 'dd-placeholder'
     }).attr('unselectable', 'on')
      .css('user-select', 'none')
      .on('selectstart', false);
