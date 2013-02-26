@@ -32,7 +32,7 @@ class Db_Tree_DDList extends Options {
      * Вывод
      */
     public function render() {
-
+        jqueryui();
         $items = array();
         if ($this->options->class) {
             if (!class_exists($this->options->class)) {
@@ -47,7 +47,7 @@ class Db_Tree_DDList extends Options {
             $template = new Template($this->template);
             $template->options = $this->options;
             $template->items = $items;
-            js(cogear()->db->folder . '/js/inline/jquery.nestable.js');
+            js(cogear()->db->folder . '/js/inline/jquery.mjs.nestedSortable.js');
             js(cogear()->db->folder . '/js/inline/nest.js');
             return $template->render();
         }

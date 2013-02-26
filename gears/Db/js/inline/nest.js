@@ -1,26 +1,26 @@
-$(document).ready(function(){
-    $('.dd').nestable({
-        listNodeName: 'ul',
-        expandBtnHTML: '',
-        collapseBtnHTML: ''
-        }).attr('unselectable', 'on')
-    .css('user-select', 'none')
-    .on('selectstart', false);
+$(document).ready(function() {
+    $('.dd-list').nestedSortable({
+        handle: '.dd-handle',
+        items: 'li',
+        listType: 'ul'
+    }).attr('unselectable', 'on')
+     .css('user-select', 'none')
+     .on('selectstart', false);
     $('#dd-save').on('click', function() {
         $dd = $('.dd').first();
         $this = $(this);
         data = {
-            items: $('.dd').nestable('serialize')
+            items: $('.dd-list').nestedSortable('toHierarchy')
         }
         $.ajax({
             url: $dd.attr('data-saveuri'),
             data: data,
             dataType: 'json',
             type: 'POST',
-            beforeSend: function(){
+            beforeSend: function() {
                 cogear.ajax.loader.type('blue-dots').after($this).show();
             },
-            complete: function(){
+            complete: function() {
                 cogear.ajax.loader.hide();
             }
         });
