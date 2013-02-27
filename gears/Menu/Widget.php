@@ -49,7 +49,8 @@ class Menu_Widget extends Theme_Widget_Abstract {
                         'type' => 'select',
                         'validate' => array('Required'),
                         'label' => t('Выберите меню'),
-                        'values' => $menus,
+                         'value' => $this->options->id,
+                         'values' => $menus,
                     ),
                     'actions' => array(
                         '#class' => 'form-actions',
