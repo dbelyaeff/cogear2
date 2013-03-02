@@ -102,7 +102,7 @@ class Form_Object extends Object {
         $this->defaults = new Config(cogear()->form->dir . DS . 'defaults' . EXT);
         $this->init();
         event('form.load', $this);
-        event('form.load.' . $this->name, $this);
+        event('form.load.' . $this->options->name, $this);
     }
 
     /**
