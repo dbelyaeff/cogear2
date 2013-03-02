@@ -26,6 +26,8 @@ if ($item->show_breadcrumb) {
         title($item->name);
     }
 }
+
+event('Page.before',$item);
 ?>
 <article class="page shd posrel">
 <?php if (access('Pages.admin')): ?>
@@ -36,3 +38,6 @@ if ($item->show_breadcrumb) {
     <?php echo $item->body ?>
     </div>
 </article>
+<?php
+    event('Page.after',$item);
+?>
