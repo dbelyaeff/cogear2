@@ -110,7 +110,7 @@ class Db_Tree extends Db_Item {
                         $count = 1000 - (FALSE === $count  ? $obj->count(TRUE) : $count);
                         break;
                 }
-                $this->{$this->thread_field} = $data . self::DELIM .$count;// str_pad($count, 3, 0, STR_PAD_LEFT);
+                $this->{$this->thread_field} = $data . self::DELIM .str_pad($count, 3, 0, STR_PAD_LEFT);
                 $this->{$this->level_field} = 1 + $parent->{$this->level_field};
             }
         } else {
@@ -121,8 +121,8 @@ class Db_Tree extends Db_Item {
                 $count = $obj->count(TRUE);
             }
             $this->{$this->level_field} = 0;
-            $this->{$this->thread_field} = $count; // str_pad($count, 3, 0, STR_PAD_LEFT);
-//            $this->{$this->thread_field} = str_pad($this->{$this->thread_field}, 25, ' ', STR_PAD_LEFT);
+            $this->{$this->thread_field} = str_pad($count, 3, 0, STR_PAD_LEFT);
+            $this->{$this->thread_field} = str_pad($this->{$this->thread_field}, 25, ' ', STR_PAD_LEFT);
         }
         if ($this->order == self::BACKWARD) {
             $this->{$this->thread_field} .= '/';
