@@ -12,9 +12,10 @@ class Bootstrap_Gear extends Gear {
 
     protected $hooks = array(
         'assets.js.global' => 'hookAssets',
+        'menu.admin.theme' => 'hookMenuAdminTheme',
     );
     protected $routes = array(
-        'admin/bootstrap' => 'admin_action',
+        'admin/theme/bootstrap' => 'admin_action',
     );
     protected $access = array(
         'admin' => array(1),
@@ -30,12 +31,28 @@ class Bootstrap_Gear extends Gear {
                 echo HTML::style('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css');
                 break;
             default:
-                echo HTML::style('http://netdna.bootstrapcdn.com/bootswatch/2.3.0/'.$theme.'/bootstrap.min.css');
+                echo HTML::style('http://netdna.bootstrapcdn.com/bootswatch/2.3.0/' . $theme . '/bootstrap.min.css');
         }
         echo HTML::style('http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css');
         echo HTML::script('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js');
     }
 
+    /**
+     * Хук меню
+     *
+     * @param object $menu
+     */
+    public function hookMenuAdminTheme($menu) {
+        $menu->add(array(
+            'label' => 'Bootstrap',
+            'link' => l('admin/theme/bootstrap'),
+            'order' => 100
+        ));
+    }
+
+    /**
+     * Автозагрузка
+     */
     public function loadAssets() {
 //        parent::loadAssets();
     }
@@ -44,8 +61,12 @@ class Bootstrap_Gear extends Gear {
      * Панель управления
      */
     public function admin_action() {
+        $this->theme->hookAdminMenu();
         $form = new Form(array(
             '#name' => 'admin.bootstrap',
+            'title' => array(
+                'label' => icon('wrench') . ' ' . t('Настройки')
+            ),
             'theme' => array(
                 'type' => 'select',
                 'label' => t('Выберите тему'),
