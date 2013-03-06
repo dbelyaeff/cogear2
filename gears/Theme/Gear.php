@@ -29,6 +29,7 @@ class Theme_Gear extends Gear {
         'admin/theme/activate/(\w+)' => 'activate_action',
         'admin/theme/download' => 'download_action',
         'admin/theme/add' => 'upload_action',
+        'admin/theme/settings' => 'admin_settings',
         'admin/theme/widgets' => 'widgets_action',
         'admin/theme/widgets/(\d+)' => 'widgets_action',
         'admin/theme/widgets/(\d+)/(options)' => 'widgets_action',
@@ -40,7 +41,8 @@ class Theme_Gear extends Gear {
         'activate' => array(1),
         'download' => array(1),
         'upload' => array(1),
-        'widgets' => array(1)
+        'widgets' => array(1),
+        'admin_settings' => array(1),
     );
 
     /**
@@ -183,7 +185,11 @@ class Theme_Gear extends Gear {
                         array(
                             'label' => t('Виджеты'),
                             'link' => l('/admin/theme/widgets')
-                        )
+                        ),
+                        array(
+                            'label' => t('Настройки'),
+                            'link' => l('/admin/theme/settings')
+                        ),
                     )
                         ));
                 break;
@@ -223,6 +229,50 @@ class Theme_Gear extends Gear {
             }
         }
         template('Theme/templates/list', array('themes' => $themes))->show();
+    }
+
+    /**
+     * Настройки внешнего вида
+     */
+    public function admin_settings() {
+        $form = new Form(array(
+            '#name' => 'admin.theme.settings',
+            'title' => array(
+                'label' => icon('cogs') . ' ' . t('Настройки'),
+            ),
+            'background' => array(
+                '#type' => 'fieldset',
+                '#label' => t('Задний фон'),
+                'background_image' => array(
+                    'type' => 'image',
+                    'allowed_types' => array('jpg', 'png'),
+                    'maxsize' => '500Kb',
+                    'rewrite' => TRUE,
+                    'rename' => 'background',
+                    'path' => UPLOADS . DS . 'theme',
+                    'label' => t('Изображение'),
+                    'value' => config('theme.background'),
+                ),
+            ),
+            'save' => array()
+                ));
+        if ($result = $form->result()) {
+            $file = THEMES.DS.config('theme.current').DS.'css'.DS.'background.css';
+            if ($this->input->post('background_image')) {
+                unlink(UPLOADS . DS . config('theme.background'));
+                unlink($file);
+                cogear()->set('theme.background', '');
+            } else {
+                cogear()->set('theme.background', File::pathToUri($result->background_image));
+                File::mkdir(dirname($file));
+                file_put_contents($file,"body{
+                    background: url('/uploads".config('theme.background')."') repeat top left;
+}");
+            }
+            flash_success(t('Настройки успешно сохранены!'));
+            reload();
+        }
+        $form->show();
     }
 
     /**
@@ -521,9 +571,9 @@ class Theme_Gear extends Gear {
             return $this->choose('Default');
         }
         $config = new Config(THEMES . DS . $theme . DS . 'info' . EXT);
-        if($config->regions){
+        if ($config->regions) {
             $this->initRegions($config->regions);
-            $this->regions = (array)$config->regions;
+            $this->regions = (array) $config->regions;
         }
         $this->object(new $class($config));
         $this->object()->init();
