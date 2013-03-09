@@ -310,6 +310,27 @@ abstract class Gear extends Object {
         event('gear.disable', $this, $result);
         return $result;
     }
+    /**
+     * Проверяет, необходимо ли шестерёнке обновиться
+     * 
+     * Данный метод должен быть переопределён в конечных шестерёнках
+     * 
+     * @return  boolean
+     */
+    public function checkUpdate(){
+        return FALSE;
+    }
+    
+    /**
+     * Обновление до нужной версии
+     * 
+     * Внутри шестерёнки должен быть сценарий, который её обновляет до нужной версии.
+     * 
+     * @return  boolean
+     */
+    public function vesionUpdate(){
+        return TRUE;
+    }
 
     /**
      * Получения пути к классу шестерёнки
