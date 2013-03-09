@@ -44,7 +44,7 @@ class Gears_Gear extends Gear {
      * @param object $Gear
      */
     public function hookGearInit($Gear) {
-        if ($Gear->checkUpdate() && role() == 1) {
+        if (role() === 1 && $Gear->checkUpdate()) {
             info(t('Шестерёнка <b>%s</b> требует обновления. <a href="%s" class="btn btn-primary btn-mini">Обновить</a>',$Gear->name,l('/admin/gears/update/'.$Gear->gear)));
         }
     }
