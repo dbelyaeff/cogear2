@@ -235,6 +235,7 @@ class Theme_Gear extends Gear {
      * Настройки внешнего вида
      */
     public function admin_settings() {
+        $this->hookAdminMenu();
         $form = new Form(array(
             '#name' => 'admin.theme.settings',
             'title' => array(
