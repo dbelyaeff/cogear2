@@ -8,9 +8,11 @@ if ($class)
     $options['theme'] = $class;
 $options['position'] = config('notify.growl.position', 'top-right');
 ?>
-        $.jGrowl("<?php echo addslashes($body) ?>",<?php if ($options): ?>
-    <?php echo json_encode($options); ?>
-<?php endif; ?>
+        $.jGrowl("<?php echo addslashes($body) ?>",<?php
+if ($options) {
+    echo json_encode($options);
+}
+?>
         );
     });
 </script>
