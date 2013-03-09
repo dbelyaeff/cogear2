@@ -167,13 +167,14 @@ abstract class Db_Driver_Abstract extends Object {
      *
      * @param type $file
      */
-    public function import($file) {
+    public function import($file,$prefix = NULL) {
         if (!file_exists($file)) {
             error(t("Файл <b>%s</b> не существует.", $file));
         }
         $data = file_get_contents($file);
+        $prefix OR $prefix = config('database.prefix');
         // Важный момент. Изменяем префиксы к таблицам.
-        $data = preg_replace('#`(.+?)`\s*([;\(])#',"`".config('database.prefix')."$1` $2",$data);
+        $data = preg_replace('#`(.+?)`\s*([;\(])#',"`".$prefix."$1` $2",$data);
         if ($result = $this->query($data)) {
             success(t("Дамп базы данных <b>%s</b> успешно импортирован!", basename($file)));
             return TRUE;
@@ -253,7 +254,7 @@ abstract class Db_Driver_Abstract extends Object {
      * @return object
      */
     public function from($table) {
-        $this->chain['FROM'] = $table;
+        $this->chain['FROM'] = config('database.prefix').$table;
         return $this;
     }
 
