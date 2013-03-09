@@ -8,7 +8,7 @@
                         <div class="region-widget <?php echo $widget->enabled ? 'enabled' : 'disabled'; ?>" data-id="<?php echo $widget->id ?>" data-region="<?php echo $widget->region ?>">
                             <a class="sh"><i class="icon icon-move"></i></a>
                             <span class="region-widget-name">
-                                <?php echo $widget->name ?>
+                                <a href="<?php echo l('/admin/theme/widgets/' . $widget->id) . '' ?>"><?php echo $widget->name ?></a>
                             </span>
                             <?php if (!$widget->enabled): ?>
                                 <i class="icon icon-eye-close" title="<?php echo t('Выключен') ?>"></i>

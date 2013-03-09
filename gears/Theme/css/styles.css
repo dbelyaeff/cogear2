@@ -35,3 +35,6 @@
 .region-widget.disabled{
     border: 1px dashed #CCC;
 }
+.region-widget a{
+    cursor: pointer;
+}
