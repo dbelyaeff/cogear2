@@ -80,6 +80,7 @@ CREATE TABLE `widgets` (
   `options` blob NOT NULL,
   `region` varchar(255) NOT NULL,
   `route` varchar(255) NOT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `position` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `region` (`region`),
