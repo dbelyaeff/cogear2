@@ -1,0 +1,1 @@
+ALTER TABLE  `widgets` ADD  `enabled` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT  '1' AFTER  `route`;

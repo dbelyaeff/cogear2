@@ -257,7 +257,7 @@ class Theme_Gear extends Gear {
             'save' => array()
                 ));
         if ($result = $form->result()) {
-            $file = THEMES.DS.config('theme.current').DS.'css'.DS.'background.css';
+            $file = THEMES . DS . config('theme.current') . DS . 'css' . DS . 'background.css';
             if ($this->input->post('background_image')) {
                 unlink(UPLOADS . DS . config('theme.background'));
                 unlink($file);
@@ -265,8 +265,8 @@ class Theme_Gear extends Gear {
             } else {
                 cogear()->set('theme.background', File::pathToUri($result->background_image));
                 File::mkdir(dirname($file));
-                file_put_contents($file,"body{
-                    background: url('/uploads".config('theme.background')."') repeat top left;
+                file_put_contents($file, "body{
+                    background: url('/uploads" . config('theme.background') . "') repeat top left;
 }");
             }
             flash_success(t('Настройки успешно сохранены!'));
@@ -314,6 +314,33 @@ class Theme_Gear extends Gear {
             $zip->close();
             File::download($path, $archive_name, TRUE);
         }
+    }
+
+    /**
+     * Обновление
+     * 
+     * @return boolean
+     */
+    public function checkUpdate() {
+        $fields = $this->db->getFields('widgets');
+        return !isset($fields['enabled']);
+    }
+
+    /**
+     * Обновление до нужной версии
+     * 
+     * @return boolean
+     */
+    public function versionUpdate() {
+        switch ($this->version) {
+            case '1.0':
+                $fields = $this->db->getFields('widgets');
+                $this->db->import($this->dir . DS . 'install' . DS . '2.1.sql');
+                $this->system_cache->clear();
+                return TRUE;
+                break;
+        }
+        return FALSE;
     }
 
     /**
