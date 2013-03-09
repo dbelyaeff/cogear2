@@ -29,13 +29,13 @@ function l(link){
 }
 /**
  * Icons
- */
-$(document).on('mouseenter','i.icon-eye-open',function(){
+
+$(document).on('mouseover','i.icon-eye-open',function(){
     $(this).removeClass('icon-eye-open').addClass('icon-eye-close');
 })
-$(document).on('mouseleave','i.icon-eye-close',function(){
+$(document).on('mouseout','i.icon-eye-close',function(){
     $(this).removeClass('icon-eye-close').addClass('icon-eye-open');
-})
+}) */
 $(document).on('click','a.disabled',function(event){
     event.preventDefault();
     event.stopImmediatePropagation();
