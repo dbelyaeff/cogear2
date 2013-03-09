@@ -27,6 +27,10 @@ return array(
         'values' => array(),
         'validate' => array('Required'),
     ),
+    'enabled' => array(
+        'type' => 'checkbox',
+        'label' => t('Включен'),
+    ),
     'actions' => array(
         '#class' => 'form-actions',
         'save' => array(),

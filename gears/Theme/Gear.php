@@ -376,6 +376,7 @@ class Theme_Gear extends Gear {
         $widgets = cache('widgets');
         if (!$widgets) {
             $widget = widget();
+            $widget->where('enabled',1);
             $widget->order('position');
             if ($result = $widget->findAll()) {
                 $widgets = array();
