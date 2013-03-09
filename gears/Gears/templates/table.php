@@ -1,5 +1,5 @@
 <form action="<?php echo l('/admin/gears/status/') ?>" method="POST">
-    <input type="search" class="input-xxlarge" placeholder="<?php echo t("Начните ввод для фильтрации…"); ?>" id="search-gears" tabindex="0"/>
+    <div class="input-append"><input type="search" class="input-xxlarge" placeholder="<?php echo t("Начните ввод для фильтрации…"); ?>" id="search-gears" tabindex="0"/><a href="#filter" class="btn" onclick="$('#search-gears').val('<?php echo t('Настройки')?>').trigger('change')"><i class="icon icon-cogs"></i></a></div>
     <?php echo template('Gears/templates/formaction',array('do' => 'do'))->render() ?>
     <table class="table table-bordered table-hover" id="gears-table">
         <thead>
@@ -73,7 +73,7 @@
                             <a href="<?php echo l('/admin/gears/status') . e(array('do' => 'disable', 'gears' => $gear->gear)) ?>"  class="btn btn-mini btn-danger"><?php echo t('Выключить') ?></a>
                         <?php endif; ?>
                         <?php if (method_exists($gear, 'admin_action') && $gear->status() != Gears::DISABLED): ?>
-                            <a href="<?php echo l('/admin/' . strtolower($gear->gear)) ?>"  class="btn btn-mini" title="<?php echo t('Настройки') ?>"><?php echo icon('wrench')?></a>
+                            <a href="<?php echo l('/admin/' . strtolower($gear->gear)) ?>"  class="btn btn-mini"><?php echo t('Настройки')?></a>
                         <?php endif; ?>
                         <?php if ($gear->status() !== Gears::CORE): ?>
                             <a href="<?php echo l('/admin/gears/download').'?gears='.$gear->gear?>" class="btn btn-mini" title="<?php echo t('Скачать')?>"><?php echo icon('download')?></a>                      <?php endif; ?>
