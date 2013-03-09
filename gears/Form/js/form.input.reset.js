@@ -18,7 +18,11 @@ $.fn.resetButton = function(){
             right: $wrapper.parent('[class$="pend"]').length ? '5px' : $wrapper.width() - $el.width() - 7  + 'px',
             top: '8px',
             cursor: 'pointer',
-            opacity: '0.3'
+            opacity: '0.3',
+            width: '16px',
+            height: '16px',
+            color: '#000',
+            fontSize: '16px'
         })
         $reset.hover(function(){
             $(this).css('opacity',1);
