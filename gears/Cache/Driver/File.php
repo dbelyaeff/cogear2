@@ -95,7 +95,7 @@ class Cache_Driver_File extends Cache_Driver_Abstract {
      * Clear cache folder
      */
     public function clear() {
-        if ($result = glob($this->options->path . DS . '*' . EXT)) {
+        if ($result = File::findByMask($this->options->path)) {
             foreach ($result as $path) {
                 unlink($path);
             }
