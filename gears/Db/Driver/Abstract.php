@@ -172,6 +172,8 @@ abstract class Db_Driver_Abstract extends Object {
             error(t("Файл <b>%s</b> не существует.", $file));
         }
         $data = file_get_contents($file);
+        // Важный момент. Изменяем префиксы к таблицам.
+        $data = preg_replace('#`(.+?)`\s*([;\(])#',"`".config('database.prefix')."$1` $2",$data);
         if ($result = $this->query($data)) {
             success(t("Дамп базы данных <b>%s</b> успешно импортирован!", basename($file)));
             return TRUE;
