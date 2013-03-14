@@ -30,6 +30,9 @@ class Cut_Gear extends Gear {
      * @param Post $Post
      */
     public function hookParse($item) {
+        if(FALSE == $item instanceof Post_Object){
+            return;
+        }
         if (preg_match('#(.+)((?:[\[|\<])cut(?:\s+text="?([^\]\"]+?)"?/?)?(?:[\]|\>]))#imsU', $item->body, $matches)) {
 
             if ($item->teaser) {
