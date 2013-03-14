@@ -319,7 +319,7 @@ class Theme_Gear extends Gear {
 
     /**
      * Обновление
-     * 
+     *
      * @return boolean
      */
     public function checkUpdate() {
@@ -329,14 +329,14 @@ class Theme_Gear extends Gear {
 
     /**
      * Обновление до нужной версии
-     * 
+     *
      * @return boolean
      */
     public function versionUpdate() {
         switch ($this->version) {
             case '1.0':
                 $fields = $this->db->getFields('widgets');
-                $this->db->import($this->dir . DS . 'install' . DS . '2.1.sql');
+                $this->db->import($this->dir . DS . 'install' . DS . '1.1.sql');
                 $this->system_cache->clear();
                 return TRUE;
                 break;
