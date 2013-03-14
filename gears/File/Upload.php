@@ -59,7 +59,7 @@ class File_Upload extends Notify_Handler {
      */
     public function upload() {
         if (!isset($_FILES[$this->name]) OR empty($_FILES[$this->name]['name'])) {
-            if (strpos($this->options->validators->toString(), 'Required') !== FALSE) {
+            if (strpos($this->options->validators->toString(), 'Required') !== FALSE && NULL == $this->options->value) {
                 $this->error(t('Выберите файл для загрузки.'));
             }
             return FALSE;
@@ -99,7 +99,7 @@ class File_Upload extends Notify_Handler {
                 $this->error(t('Файл больше максимально дозволенного размера, указанного в <b>php.ini</b> (%s).', ini_get('upload_max_filesize')));
                 break;
             case UPLOAD_ERR_NO_FILE:
-                if (strpos($this->options->validators->toString(), 'Required') !== FALSE) {
+                if (strpos($this->options->validators->toString(), 'Required') !== FALSE && NULL == $this->options->value) {
                     $this->error(t('Выберите файл для загрузки.'));
                 }
                 break;
