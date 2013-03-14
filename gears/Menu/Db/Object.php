@@ -82,6 +82,7 @@ class Menu_Db_Object extends Db_ORM_Options {
                 $menu->add(array(
                     'label' => $item->label,
                     'link' => $item->link,
+                    'order' => $item->thread,
                 ));
             }
         }
