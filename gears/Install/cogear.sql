@@ -80,13 +80,13 @@ CREATE TABLE `widgets` (
   `options` blob NOT NULL,
   `region` varchar(255) NOT NULL,
   `route` varchar(255) NOT NULL,
+  `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `position` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `region` (`region`),
   KEY `route` (`route`),
   KEY `order` (`position`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
 
 INSERT INTO `widgets` (`id`, `callback`, `name`, `options`, `region`, `route`, `position`) VALUES
 (1, 'Theme_Widget_HTML', 'Логотип', 0x4f3a31363a22436f72655f41727261794f626a656374223a323a7b733a373a22636f6e74656e74223b733a35363a223c6120687265663d222f223e3c696d67207372633d222f7468656d65732f44656661756c742f696d672f6c6f676f2e706e67223e3c2f613e223b733a353a227469746c65223b4e3b7d, 'header', '.*', 1);
