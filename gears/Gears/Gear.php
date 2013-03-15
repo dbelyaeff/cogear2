@@ -31,7 +31,7 @@ class Gears_Gear extends Gear {
     );
     /**
      * Конструктор
-     * 
+     *
      * @param type $config
      */
     public function __construct($config) {
@@ -40,11 +40,11 @@ class Gears_Gear extends Gear {
     }
     /**
      * Хук инициализации шестерёнки
-     * 
+     *
      * @param object $Gear
      */
     public function hookGearInit($Gear) {
-        if (role() === 1 && $Gear->checkUpdate()) {
+        if (cogear()->gears->Role && role() === 1 && $Gear->checkUpdate()) {
             info(t('Шестерёнка <b>%s</b> требует обновления. <a href="%s" class="btn btn-primary btn-mini">Обновить</a>',$Gear->name,l('/admin/gears/update/'.$Gear->gear)));
         }
     }
@@ -240,7 +240,7 @@ class Gears_Gear extends Gear {
 
     /**
      * Обновление шестерёнки
-     * 
+     *
      * @param string $gear
      */
     public function update_action($gear) {
