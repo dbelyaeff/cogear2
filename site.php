@@ -23,7 +23,6 @@ return array (
         8 => 'Db',
         9 => 'Dev',
         10 => 'Errors',
-        11 => 'Fancybox',
         12 => 'File',
         13 => 'Form',
         14 => 'Gears',
