@@ -354,7 +354,7 @@ class Theme_Gear extends Gear {
         if ($result = $form->result()) {
             if ($file = $result->file ? $result->file : $result->url) {
                 $zip = new Zip(array(
-                    'file' => $file->path,
+                    'file' => UPLOADS.$file,
                     'check' => array('type' => 'themes'),
                         ));
                 if ($zip->extract(THEMES)) {
@@ -363,7 +363,7 @@ class Theme_Gear extends Gear {
 
                     $zip->close();
                 }
-                unlink($file->path);
+                unlink(UPLOADS.$file);
             }
         }
         $form->show();
