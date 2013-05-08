@@ -175,7 +175,14 @@ abstract class Gear extends Object {
         $this->getFolder();
         $this->file = new SplFileInfo($this->path);
     }
-
+    /**
+     * Возвращает информацию о шестерёнке
+     *
+     * @param string $name
+     */
+    public function info($name){
+         return $this->$name;
+    }
     /**
      * Инициализация
      */
@@ -312,20 +319,20 @@ abstract class Gear extends Object {
     }
     /**
      * Проверяет, необходимо ли шестерёнке обновиться
-     * 
+     *
      * Данный метод должен быть переопределён в конечных шестерёнках
-     * 
+     *
      * @return  boolean
      */
     public function checkUpdate(){
         return FALSE;
     }
-    
+
     /**
      * Обновление до нужной версии
-     * 
+     *
      * Внутри шестерёнки должен быть сценарий, который её обновляет до нужной версии.
-     * 
+     *
      * @return  boolean
      */
     public function vesionUpdate(){

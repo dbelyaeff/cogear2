@@ -33,15 +33,15 @@ class Errors_Gear extends Gear {
         set_error_handler(array($this, 'showError'));
     }
 
-    /**
-     * Показать ошибку
-     *
-     * @param string $text
-     * @param string $title
-     */
-    public function show($text, $title = '') {
-        error($text, $title = '');
-    }
+//    /**
+//     * Показать ошибку
+//     *
+//     * @param string $text
+//     * @param string $title
+//     */
+//    public function show($text, $title = '') {
+//        error($text, $title = '');
+//    }
 
     /**
      * Отображение фатальной ошибки

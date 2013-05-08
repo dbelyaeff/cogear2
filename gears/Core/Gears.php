@@ -137,8 +137,9 @@ class Gears extends Options {
      * Фильтрация шестерёнок. Активные или неактивные, или шестерёнки ядра
      *
      * @param int $type
+     * @param mixed $param Параметр только для соответствия родительского метода
      */
-    public function filter($type = Gears::ENABLED) {
+    public function filter($type = Gears::ENABLED, $param = NULL) {
         $gears = new self();
         foreach ($this as $gear => $object) {
             if ($type == Gears::ENABLED && NULL !== cogear()->config->gears->findByValue($gear)) {
