@@ -26,8 +26,14 @@ abstract class Cache_Driver_Abstract extends Object {
     abstract public function remove($name);
 
     abstract public function clear();
-
-    abstract static function check();
+    /**
+     * По умолчанию кеш всегда доступен
+     *
+     * @return boolean
+     */
+    static function check(){
+        return TRUE;
+    }
 
     /**
      * Статистика запросов

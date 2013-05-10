@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  */
-class Factory extends Object implements Interface_Factory {
+class Core_Factory extends Object implements Interface_Factory {
 
     protected static $_instances = array();
 
@@ -30,8 +30,8 @@ class Factory extends Object implements Interface_Factory {
      *
      * @param array $options
      */
-    public function __construct($options = array()) {
-        parent::__construct($options);
+    public function __construct($options = array(), $place = NULL) {
+        parent::__construct($options, $place = NULL);
         try {
             $this->object(new $this->options->driver($options));
         } catch (Exception $e) {

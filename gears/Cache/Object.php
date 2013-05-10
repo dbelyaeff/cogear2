@@ -8,7 +8,7 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  */
-class Cache_Object extends Factory {
+class Cache_Object extends Core_Factory {
 
     public static $statistics;
     /**

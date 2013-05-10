@@ -28,7 +28,7 @@ abstract class Cogearable extends Errors {
      * @param   string  $name
      * @param   array   $array
      */
-    public function __call($name,$args = array()){
+    public function __call($name,$args){
         $callback = new Callback(array(cogear(),$name));
         if($callback->check()){
             return $callback->run($args);

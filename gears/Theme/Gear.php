@@ -319,7 +319,7 @@ class Theme_Gear extends Gear {
 
     /**
      * Обновление
-     * 
+     *
      * @return boolean
      */
     public function checkUpdate() {
@@ -329,14 +329,14 @@ class Theme_Gear extends Gear {
 
     /**
      * Обновление до нужной версии
-     * 
+     *
      * @return boolean
      */
     public function versionUpdate() {
         switch ($this->version) {
             case '1.0':
                 $fields = $this->db->getFields('widgets');
-                $this->db->import($this->dir . DS . 'install' . DS . '2.1.sql');
+                $this->db->import($this->dir . DS . 'install' . DS . '1.1.sql');
                 $this->system_cache->clear();
                 return TRUE;
                 break;
@@ -354,7 +354,7 @@ class Theme_Gear extends Gear {
         if ($result = $form->result()) {
             if ($file = $result->file ? $result->file : $result->url) {
                 $zip = new Zip(array(
-                    'file' => $file->path,
+                    'file' => UPLOADS.$file,
                     'check' => array('type' => 'themes'),
                         ));
                 if ($zip->extract(THEMES)) {
@@ -363,7 +363,7 @@ class Theme_Gear extends Gear {
 
                     $zip->close();
                 }
-                unlink($file->path);
+                unlink(UPLOADS.$file);
             }
         }
         $form->show();

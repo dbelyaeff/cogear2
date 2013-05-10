@@ -11,7 +11,11 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($gears as $gear): ?>
+            <?php
+            foreach ($gears as $key=>$gear): ?>
+            <?php if($key == 'Highslide'){
+
+            }?>
                 <?php
                 switch ($gear->status()) {
                     case Gears::CORE:
@@ -28,8 +32,9 @@
                 <tr  class="<?php echo $class ?>" id="<?php echo $gear->gear; ?>">
                     <td class="t_c"><input type="checkbox" name="gears[]" value="<?php echo $gear->gear; ?>" <?php if ($gear->status() == Gears::CORE): ?>disabled="disabled"<?php endif; ?>/>
                     </td>
-                    <td><?php echo $gear->name ?>
-                        <?php if (method_exists($gear, 'admin') && $gear->status() == Gears::ENABLED): ?>
+                    <td>
+                        <?php echo $gear->info('name') ?>
+                        <?php if (method_exists($gear, 'admin_action') && $gear->status() == Gears::ENABLED): ?>
                             <a href="<?php echo l('/admin/' . $gear->base); ?>" title="<?php echo t("Настройки"); ?>"><i class="icon-cog"></i></a>
                         <?php endif; ?>
                         <br/><span class="label label-info" title="<?php echo t('Версия: %s', $gear->version) ?>"><?php echo $gear->gear ?></span>
