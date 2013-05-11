@@ -8,6 +8,6 @@
  * @license		http://cogear.ru/license.html
  * @link		http://cogear.ru
  */
-class Lang_Object extends Factory {
+class Lang_Object extends Core_Factory {
 
 }
