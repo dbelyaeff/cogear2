@@ -13,6 +13,8 @@ class Menu_Gear extends Gear {
     protected $hooks = array(
         'menu.admin.theme' => 'hookMenuAdminTheme',
         'parser' => 'hookParser',
+        'form.init.page' => 'hookFormInitPage',
+        'form.result.page' => 'hookFormResultPage',
     );
     protected $routes = array(
         'admin/theme/menu' => 'admin_action',
@@ -27,6 +29,64 @@ class Menu_Gear extends Gear {
     protected $access = array(
         '*' => array(1),
     );
+
+    /**
+     * Хук обработки формы Страницы
+     *
+     * @param object $Form
+     * @param boolean $is_valid
+     * @param object $result
+     */
+    public function hookFormResultPage($Form, $is_valid, $result) {
+        // Если идёт редактирование страницы, тогда удаляем поле
+        if($Form->object() instanceof Page){
+            $Form->remove('menu_item_autoadd');
+        }
+        // Если результат получен правильный(без ошибок в форме)
+        elseif ($result) {
+            // Если было выбрано значение (не равно 0) и такое меню существует в базе
+            if ($result->menu_item_autoadd && $menu = menu($result->menu_item_autoadd)) {
+                $menu_item = new Menu_Db_Item();
+                $menu_item->menu_id = $menu->id;
+                $menu_item->label = $result->name; // по умолчанию совпадает с именем страницы, но после можно исправить после при редактировании меню
+                // Внимание! Создаём объект Page для получения ссылки, но не сохраняем его!
+                $menu_item->link = l($result->link);
+                $menu_item->save(); // Можно и insert(), но через save() система сама определяет вставлять новое значение или обновлять уже выбранное
+            }
+        }
+    }
+
+    /**
+     * Переопределение формы Страницы
+     *
+     * @param object $Form
+     */
+    public function hookFormInitPage($Form) {
+        // ORM-объект меню, которые хранятся в базе данных
+        $menu_db = new Menu_Db();
+        // Список значений элемента
+        $values = array(
+            0 => '',
+        );
+        //Добавляем значения из базы
+        foreach ($menu_db->findAll() as $menu) {
+            $values[$menu->id] = $menu->name;
+        }
+        $Form->add('menu_item_autoadd', array(
+            // Тип поля
+            'type' => 'select',
+            // Название поля
+            'label' => t('Создание пункта меню'),
+            // Описание поле
+            'description' => t('Если вы хотите, чтобы автоматически создавался пункт меню, выберите одно из существующих меню.'),
+            // Значения поля
+            'values' => $values,
+            // По умолчанию
+            'value' => 0,
+            // Порядок поля в форме. Определяется опытным путём. Можно использовать дробные значения
+            'order' => '7',
+        ));
+    }
 
     /**
      * Добавляем пункт меню на страниу админки «Внешний вид»
@@ -62,33 +122,33 @@ class Menu_Gear extends Gear {
      */
     public function hookAdminMenu() {
         new Menu_Tabs(array(
-                    'name' => 'admin.menu',
-                    'elements' => array(
-                        'list' => array(
-                            'label' => icon('list') . ' ' . t('Все меню'),
-                            'link' => l('/admin/theme/menu'),
-                            'active' => check_route('admin/theme/menu$'),
-                        ),
-                        'new' => array(
-                            'label' => icon('plus') . ' ' . t('Создать'),
-                            'link' => l('/admin/theme/menu/create'),
-                            'class' => 'fl_r'
-                        ),
-                        'edit' => array(
-                            'label' => icon('pencil') . ' ' . t('Редактировать'),
-                            'link' => l('/admin/theme/menu/' . $this->router->getSegments(3)),
-                            'class' => 'fl_r',
-                            'access' => check_route('admin/theme/menu/\d+'),
-                        ),
-                        'items' => array(
-                            'label' => icon('list') . ' ' . t('Пункты'),
-                            'link' => l('/admin/theme/menu/' . $this->router->getSegments(3) . '/items'),
-                            'class' => 'fl_r',
-                            'active' => check_route('admin/theme/menu/\d+/item'),
-                            'access' => check_route('admin/theme/menu/\d+'),
-                        ),
-                    )
-                ));
+            'name' => 'admin.menu',
+            'elements' => array(
+                'list' => array(
+                    'label' => icon('list') . ' ' . t('Все меню'),
+                    'link' => l('/admin/theme/menu'),
+                    'active' => check_route('admin/theme/menu$'),
+                ),
+                'new' => array(
+                    'label' => icon('plus') . ' ' . t('Создать'),
+                    'link' => l('/admin/theme/menu/create'),
+                    'class' => 'fl_r'
+                ),
+                'edit' => array(
+                    'label' => icon('pencil') . ' ' . t('Редактировать'),
+                    'link' => l('/admin/theme/menu/' . $this->router->getSegments(3)),
+                    'class' => 'fl_r',
+                    'access' => check_route('admin/theme/menu/\d+'),
+                ),
+                'items' => array(
+                    'label' => icon('list') . ' ' . t('Пункты'),
+                    'link' => l('/admin/theme/menu/' . $this->router->getSegments(3) . '/items'),
+                    'class' => 'fl_r',
+                    'active' => check_route('admin/theme/menu/\d+/item'),
+                    'access' => check_route('admin/theme/menu/\d+'),
+                ),
+            )
+        ));
     }
 
     /**
@@ -119,10 +179,10 @@ class Menu_Gear extends Gear {
             $menu = new Menu_Db();
             if ($action == 'create') {
                 $menu->object()->options = new Core_ArrayObject(array(
-                            'template' => 'Bootstrap/templates/navbar',
-                            'multiple' => 0,
-                            'title' => 0,
-                        ));
+                    'template' => 'Bootstrap/templates/navbar',
+                    'multiple' => 0,
+                    'title' => 0,
+                ));
                 $form->remove('delete');
             } else {
                 $menu->id = $action;
@@ -203,35 +263,35 @@ class Menu_Gear extends Gear {
             return event('empty');
         }
         $pills = new Menu_Pills(array(
-                    'name' => 'admin.menu.items',
-                    'render' => FALSE,
-                    'elements' => array(
-                        array(
-                            'label' => icon('list') . ' ' . t('Список пунктов'),
-                            'link' => l('/admin/theme/menu/' . $menu_id . '/items'),
-                        ),
-                        array(
-                            'label' => icon('plus') . ' ' . t('Добавить'),
-                            'link' => l('/admin/theme/menu/' . $menu_id . '/item/add'),
-                            'class' => 'fl_r'
-                        ),
-                        array(
-                            'label' => icon('pencil') . ' ' . t('Редактировать'),
-                            'link' => l('/admin/theme/menu/' . $menu_id . '/item/' . $this->router->getSegments(5)),
-                            'access' => check_route('admin/theme/menu/\d+/item/\d+'),
-                            'class' => 'fl_r'
-                        ),
-                    )
-                ));
+            'name' => 'admin.menu.items',
+            'render' => FALSE,
+            'elements' => array(
+                array(
+                    'label' => icon('list') . ' ' . t('Список пунктов'),
+                    'link' => l('/admin/theme/menu/' . $menu_id . '/items'),
+                ),
+                array(
+                    'label' => icon('plus') . ' ' . t('Добавить'),
+                    'link' => l('/admin/theme/menu/' . $menu_id . '/item/add'),
+                    'class' => 'fl_r'
+                ),
+                array(
+                    'label' => icon('pencil') . ' ' . t('Редактировать'),
+                    'link' => l('/admin/theme/menu/' . $menu_id . '/item/' . $this->router->getSegments(5)),
+                    'access' => check_route('admin/theme/menu/\d+/item/\d+'),
+                    'class' => 'fl_r'
+                ),
+            )
+        ));
         append('content', $pills->render());
         if (NULL === $id) {
             $handler = new Menu_Db_Item();
             $handler->menu_id = $menu->id;
             if ($items = $handler->findAll()) {
                 $tree = new Db_Tree_DDList(array(
-                            'items' => $items,
-                            'saveUri' => l('/admin/theme/menu/ajax/saveItemsTree/'),
-                        ));
+                    'items' => $items,
+                    'saveUri' => l('/admin/theme/menu/ajax/saveItemsTree/'),
+                ));
             } else {
                 return event('empty');
             }
