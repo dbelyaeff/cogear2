@@ -136,7 +136,7 @@ class User_Gear extends Gear {
             preg_match_all('#\[user\](.+?)\[/user\]#i', $item->body, $matches);
             for ($i = 0; $i < sizeof($matches[0]); $i++) {
                 if ($user = user($matches[1][$i], 'login')) {
-                    $link = $user->getLink('avatar','avatar.tiny') . ' ' . $user->getLink('profile');
+                    $link = $user->getLink('avatar', 'avatar.tiny') . ' ' . $user->getLink('profile');
                     $item->body = str_replace($matches[0][$i], $link, $item->body);
                 }
             }
@@ -230,18 +230,22 @@ class User_Gear extends Gear {
      */
     public function hookAdminMenu() {
         new Menu_Tabs(array(
-                    'name' => 'admin.users',
-                    'elements' => array(
-                        array(
-                            'label' => icon('user') . ' ' . t('Список'),
-                            'link' => l('/admin/users'),
-                        ),
-                        array(
-                            'label' => icon('plus') . ' ' . t('Создать'),
-                            'link' => l('/admin/user/create'),
-                            'class' => 'fl_r',
-                        )
-                    )
+            'name' => 'admin.users',
+            'elements' => array(
+                array(
+                    'label' => icon('user') . ' ' . t('Список'),
+                    'link' => l('/admin/users'),
+                ),
+                array(
+                    'label' => icon('cogs') . ' ' . t('Настройки'),
+                    'link' => l('/admin/users/settings'),
+                ),
+                array(
+                    'label' => icon('plus') . ' ' . t('Создать'),
+                    'link' => l('/admin/user/create'),
+                    'class' => 'fl_r',
+                )
+            )
                 ));
     }
 
@@ -250,13 +254,13 @@ class User_Gear extends Gear {
      */
     public function hookUserEditMenu($User) {
         $menu = new Menu_Tabs(array(
-                    'name' => 'user.edit',
-                    'elements' => array(
-                        array(
-                            'label' => icon('user') . ' ' . t('Общие'),
-                            'link' => $User->getLink('edit'),
-                        ),
-                    )
+            'name' => 'user.edit',
+            'elements' => array(
+                array(
+                    'label' => icon('user') . ' ' . t('Общие'),
+                    'link' => $User->getLink('edit'),
+                ),
+            )
                 ));
         $menu->object($User);
     }
@@ -268,9 +272,9 @@ class User_Gear extends Gear {
      */
     public function hookUserRegister($user) {
         $mail = new Mail(array(
-                    'name' => 'register',
-                    'subject' => t('Регистрация на сайте %s', SITE_URL),
-                    'body' => t('Вы успешно зарегистрировались на сайте http://%s.
+            'name' => 'register',
+            'subject' => t('Регистрация на сайте %s', SITE_URL),
+            'body' => t('Вы успешно зарегистрировались на сайте http://%s.
                         <p>Ваш логин: <b>%s</b>
                         <p>Пароль хранится в зашифрованном виде, но вы всегда сможете его сбросить, используя ссылку: <a href="%s">%s</a>
                             ', SITE_URL, $user->login, l('/lostpassword'), l('/lostpassword')),
@@ -331,61 +335,92 @@ class User_Gear extends Gear {
      */
     public function showMenu() {
         new Menu_Auto(array(
-                    'name' => 'user.login',
-                    'template' => 'Bootstrap/templates/tabs',
-                    'elements' => array(
-                        'login' => array(
-                            'label' => icon('lock') . ' ' . t('Войти'),
-                            'link' => l('/login'),
-                        ),
-                        'lostpassword' => array(
-                            'label' => icon('wrench') . ' ' . t('Забыли пароль?'),
-                            'link' => l('/lostpassword'),
-                            'access' => check_route('lostpassword'),
-                        ),
-                        'register' => array(
-                            'label' => icon('ok') . ' ' . t('Регистрация'),
-                            'link' => l('/register'),
-                            'access' => config('user.register.active', FALSE),
-                        ),
-                    ),
-                    'render' => 'info',
+            'name' => 'user.login',
+            'template' => 'Bootstrap/templates/tabs',
+            'elements' => array(
+                'login' => array(
+                    'label' => icon('lock') . ' ' . t('Войти'),
+                    'link' => l('/login'),
+                ),
+                'lostpassword' => array(
+                    'label' => icon('wrench') . ' ' . t('Забыли пароль?'),
+                    'link' => l('/lostpassword'),
+                    'access' => check_route('lostpassword'),
+                ),
+                'register' => array(
+                    'label' => icon('ok') . ' ' . t('Регистрация'),
+                    'link' => l('/register'),
+                    'access' => config('user.register.active', FALSE),
+                ),
+            ),
+            'render' => 'info',
                 ));
         ;
     }
+
     /**
      * Отображает профиль пользователя
      *
      * @param string $action
      */
     public function index_action($login = '') {
-        if ($login && $user = user($login,'login')) {
-                $profile = new Profile($user);
-                $profile->show();
+        if ($login && $user = user($login, 'login')) {
+            $profile = new Profile($user);
+            $profile->show();
         } else {
             event('404');
         }
     }
+
     /**
      * Show admin page
      */
-    public function admin_action() {
+    public function admin_action($action = 'list') {
         $this->hookAdminMenu();
-        $q = $this->input->get('q');
-        $tpl = new Template('Search/templates/form');
-        $tpl->action = l('/admin/users/');
-        $q && $tpl->value = $q;
-        $tpl->show('info');
-        Db_ORM::skipClear();
-        $list = new User_List(array(
+        switch ($action) {
+            case 'settings':
+                $form = new Form(array(
+                    '#name' => 'user.admin.settings',
+                    'title' => array(
+                        'label' => icon('user').' '.t('Настройки регистрации'),
+                    ),
+                    'registration' => array(
+                        'type' => 'checkbox',
+                        'value' => config('user.register.active'),
+                        'label' => t('Регистрация разрешена'),
+                    ),
+                    'verification' => array(
+                        'type' => 'checkbox',
+                        'value' => config('user.register.verification'),
+                        'label' => t('Подтверждение регистрации по электронной почте'),
+                        ),
+                    'save' => array()
+                ));
+                if($result = $form->result()){
+                    $this->set('user.register.active',$result->registration);
+                    $this->set('user.register.verification',$result->verification);
+                    flash_success('Настройки сохранены!');
+                    reload();
+                }
+                $form->show();
+                break;
+            default:
+                $q = $this->input->get('q');
+                $tpl = new Template('Search/templates/form');
+                $tpl->action = l('/admin/users/');
+                $q && $tpl->value = $q;
+                $tpl->show('info');
+                Db_ORM::skipClear();
+                $list = new User_List(array(
                     'name' => 'admin.users',
                     'base' => l('/admin/user/'),
                     'per_page' => config('Admin.user.per_page', 20),
                     'render' => FALSE,
-                ));
-        $fields = $list->getFields();
-        $list->setFields($fields);
-        $list->show();
+                        ));
+                $fields = $list->getFields();
+                $list->setFields($fields);
+                $list->show();
+        }
     }
 
     /**
@@ -518,9 +553,9 @@ class User_Gear extends Gear {
                 }
                 $recover = l('/lostpassword/' . $user->hash, TRUE);
                 $mail = new Mail(array(
-                            'name' => 'register.lostpassword',
-                            'subject' => t('Восстановление пароля на сайте %s', SITE_URL),
-                            'body' => t('Было запрошено восстановление вашего пароля на сайте http://%s с IP-адреса <b>%s</b>.
+                    'name' => 'register.lostpassword',
+                    'subject' => t('Восстановление пароля на сайте %s', SITE_URL),
+                    'body' => t('Было запрошено восстановление вашего пароля на сайте http://%s с IP-адреса <b>%s</b>.
                                     <p>Если не вы были инициатором этого действия, оставьте письм без внимания или обратитесь к администрации сайта.
                                     <p>Чтобы пройти процедуру восстановления пароля, перейдите по разовой ссылке:<p>
                             <a href="%s">%s</a>', SITE_URL, $this->session->get('ip'), $recover, $recover),
@@ -584,9 +619,9 @@ class User_Gear extends Gear {
                 if (config('user.register.verification', TRUE)) {
                     $verify_link = l('/user/register/' . $user->hash, TRUE);
                     $mail = new Mail(array(
-                                'name' => 'register.verify',
-                                'subject' => t('Регистрация на сайте %s', SITE_URL),
-                                'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
+                        'name' => 'register.verify',
+                        'subject' => t('Регистрация на сайте %s', SITE_URL),
+                        'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
                             Пожалуйста, перейдите по ссылке ниже, для того чтобы подтвердить данный почтовый ящик:<p>
                             <a href="%s">%s</a>', SITE_URL, $verify_link, $verify_link),
                             ));
