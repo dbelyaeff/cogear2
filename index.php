@@ -40,7 +40,7 @@ function bench($point = NULL) {
 
 bench('ignite');
 
-define('COGEAR', '2.1');
+define('COGEAR', '2.2');
 define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
 define('EXT', '.php');
