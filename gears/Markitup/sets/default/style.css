@@ -42,8 +42,11 @@
 .markItUp .markItUpUser a {
 	background:url(images/toolbar.png) no-repeat -176px 0;
 }
-.markItUp .markItUpCode a {
+.markItUp .markItUpCodeBlock a {
 	background:url(images/toolbar.png) no-repeat -208px 0;
+}
+.markItUp .markItUpCode a {
+	background:url(images/toolbar.png) no-repeat -288px 0;
 }
 .markItUp .markItUpVideo a {
 	background:url(images/toolbar.png) no-repeat -224px 0;

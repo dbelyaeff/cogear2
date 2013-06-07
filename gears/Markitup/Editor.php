@@ -120,10 +120,17 @@ class Markitup_Editor extends Wysiwyg_Abstract {
                             'className' => 'markItUpUser',
                         ),
                         array(
-                            'name' => t('Code'),
+                            'name' => t('Code Block'),
                             'key' => 'O',
                             'openWith' => '<pre class="prettyprint linenums"><code>',
                             'closeWith' => '</code></pre>',
+                            'className' => 'markItUpCodeBlock',
+                        ),
+                         array(
+                            'name' => t('Code'),
+                            'key' => 'E',
+                            'openWith' => '<code>',
+                            'closeWith' => '</code>',
                             'className' => 'markItUpCode',
                         ),
                     )
