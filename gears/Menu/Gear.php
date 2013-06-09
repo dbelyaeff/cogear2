@@ -39,7 +39,7 @@ class Menu_Gear extends Gear {
      */
     public function hookFormResultPage($Form, $is_valid, $result) {
         // Если идёт редактирование страницы, тогда удаляем поле
-        if($Form->object() instanceof Page){
+        if ($Form->object() instanceof Page) {
             $Form->remove('menu_item_autoadd');
         }
         // Если результат получен правильный(без ошибок в форме)
@@ -68,24 +68,34 @@ class Menu_Gear extends Gear {
         $values = array(
             0 => '',
         );
-        //Добавляем значения из базы
-        foreach ($menu_db->findAll() as $menu) {
-            $values[$menu->id] = $menu->name;
+        if ($menus = $menu_db->findAll()) {
+            //Добавляем значения из базы
+            foreach ($menus as $menu) {
+                $values[$menu->id] = $menu->name;
+            }
+            $Form->add('menu_item_autoadd', array(
+                // Тип поля
+                'type' => 'select',
+                // Название поля
+                'label' => t('Создание пункта меню'),
+                // Описание поле
+                'description' => t('Если вы хотите, чтобы автоматически создавался пункт меню, выберите одно из существующих меню.'),
+                // Значения поля
+                'values' => $values,
+                // По умолчанию
+                'value' => 0,
+                // Порядок поля в форме. Определяется опытным путём. Можно использовать дробные значения
+                'order' => '6.5',
+            ));
         }
-        $Form->add('menu_item_autoadd', array(
-            // Тип поля
-            'type' => 'select',
-            // Название поля
-            'label' => t('Создание пункта меню'),
-            // Описание поле
-            'description' => t('Если вы хотите, чтобы автоматически создавался пункт меню, выберите одно из существующих меню.'),
-            // Значения поля
-            'values' => $values,
-            // По умолчанию
-            'value' => 0,
-            // Порядок поля в форме. Определяется опытным путём. Можно использовать дробные значения
-            'order' => '7',
-        ));
+        else {
+            $Form->add('menu_item_autoadd',array(
+                'type' => 'div',
+                'class' => 'alert alert-info',
+                'label' => t('Для того чтобы иметь возможность автоматического создания ссылок в меню, <a href="%s" class="btn btn-primary">создайте</a> хотя бы одно меню.',l('/admin/theme/menu/create')),
+                'order' => '6.5',
+            ));
+        }
     }
 
     /**
@@ -148,7 +158,7 @@ class Menu_Gear extends Gear {
                     'access' => check_route('admin/theme/menu/\d+'),
                 ),
             )
-        ));
+                ));
     }
 
     /**
@@ -182,7 +192,7 @@ class Menu_Gear extends Gear {
                     'template' => 'Bootstrap/templates/navbar',
                     'multiple' => 0,
                     'title' => 0,
-                ));
+                        ));
                 $form->remove('delete');
             } else {
                 $menu->id = $action;
@@ -282,7 +292,7 @@ class Menu_Gear extends Gear {
                     'class' => 'fl_r'
                 ),
             )
-        ));
+                ));
         append('content', $pills->render());
         if (NULL === $id) {
             $handler = new Menu_Db_Item();
@@ -291,7 +301,7 @@ class Menu_Gear extends Gear {
                 $tree = new Db_Tree_DDList(array(
                     'items' => $items,
                     'saveUri' => l('/admin/theme/menu/ajax/saveItemsTree/'),
-                ));
+                        ));
             } else {
                 return event('empty');
             }
