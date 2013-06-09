@@ -39,7 +39,6 @@ class Pages_Gear extends Gear {
      * @var Page
      */
     public $current;
-
     /**
      * Обработка 404 ошибки
      *
