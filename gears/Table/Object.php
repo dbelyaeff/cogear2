@@ -10,56 +10,23 @@
  */
 class Table_Object extends Object {
 
-    /**
-     * Options
-     *
-     * @var array
-     */
     protected $options = array(
-        'name' => 'name',
+        'name' => '',
         'class' => 'table',
         'fields' => array(),
-        'template' => 'Table/templates/table'
+        'header' => TRUE,
+        'footer' => TRUE,
+        'render' => 'content',
     );
 
     /**
-     * Get Items
+     * Конструктор
      *
-     * @return array
+     * @param array $options
+     * @param mixed  $place
      */
-    public function getItems() {
-        $items = new Core_ArrayObject();
-        if ($this->object && $this->object()->count()) {
-            $i = 0;
-            $unset = array();
-            foreach ($this->object as $item) {
-                foreach ($this->fields as $key => $field) {
-                    if (FALSE === $field->access) {
-                        $unset[] = $key;
-                        continue;
-                    }
-                    $name = $field->source ? $field->source : $key;
-                    $items[$i][$key] = new Core_ArrayObject();
-                    $field->class && $items[$i][$key]->class = $field->class;
-                    if ($field->callback && $field->callback instanceof Callback) {
-                        $field->callback->setArgs(array($item, $key));
-                        $items[$i][$key]->value = $field->callback->run();
-                    } else {
-                        $items[$i][$key]->value = $item->$name;
-                    }
-                    if ($field->template) {
-                        $items[$i][$key]->value = sprintf($field->template, $items[$i][$key]->value);
-                    }
-                }
-                $i++;
-            }
-            if ($unset) {
-                foreach ($unset as $key) {
-                    $this->fields->offsetUnset($key);
-                }
-            }
-        }
-        return $items;
+    public function __construct($options = NULL, $place = NULL) {
+        parent::__construct(Options::decode($options, 'fields'), $place);
     }
 
     /**
@@ -67,12 +34,57 @@ class Table_Object extends Object {
      */
     public function render() {
         event('table.render', $this);
-        event('table.render.' . $this->name, $this);
-        $tpl = new Template($this->template);
-        $tpl->table = $this->name;
-        $tpl->class = $this->class;
-        $tpl->fields = $this->fields;
-        $tpl->items = $this->getItems();
+        if (!$this->object()) {
+            return event('empty');
+        }
+        $tpl = new Template('Table/templates/table');
+        $tpl->options = $this->options;
+        $tpl->fields = new Core_ArrayObject();
+        $tpl->thead = '';
+        $tpl->tbody = new Core_ArrayObject();
+        $tpl->tfoot = '';
+        foreach ($this->fields as $name => $config) {
+            $tpl->fields->$name = new Table_Field($name, $config);
+        }
+        if ($this->options->header) {
+            $tpl->thead = '<thead><tr>';
+            foreach ($tpl->fields as $name => $field) {
+                $tpl->thead .= '<th';
+                if ($field->align) {
+                    $tpl->thead .= ' align="' . $field->align . '" ';
+                }
+                if ($field->width) {
+                    $tpl->thead .= ' width="' . $field->width . '" ';
+                }
+                $tpl->thead .= '>' . $field->label . '</th>';
+            }
+            $tpl->thead .= '</tr></thead>' . "\n";
+        }
+        foreach ($this->object() as $data) {
+            $row = '<tr>';
+            foreach ($tpl->fields as $name => $field) {
+                $row .= '<td';
+                if ($field->align) {
+                    $row .= ' align="' . $field->align . '" ';
+                }
+                if ($field->width) {
+                    $row .= ' width="' . $field->width . '" ';
+                }
+                $row .= '>';
+                $field->object($data);
+                $row .= $field->render();
+                $row .= '</td>';
+            }
+            $row .= '</tr>';
+            $tpl->tbody->append($row);
+        }
+        if ($this->options->footer) {
+            $tpl->tfoot = '<tfoot><tr>';
+            foreach ($tpl->fields as $name => $field) {
+                $tpl->tfoot .= '<th>' . $field->label . '</th>';
+            }
+            $tpl->tfoot .= '</tr></tfoot>' . "\n";
+        }
         return $tpl->render();
     }
 
