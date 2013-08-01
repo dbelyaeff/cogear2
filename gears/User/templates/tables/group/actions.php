@@ -1,0 +1,2 @@
+<a href="<?php echo l('/admin/users/groups/'.$data->id)?>" class="btn btn-mini btn-primary"><?php echo icon('pencil').' '.t('Редактировать')?></a>
+<a href="<?php echo l('/admin/users/access/'.$data->id)?>" class="btn btn-mini"><?php echo icon('lock').' '.t('Права доступа')?></a>

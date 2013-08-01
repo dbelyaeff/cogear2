@@ -36,7 +36,10 @@ class User_Gear extends Gear {
         'edit.email' => 'access',
         'delete' => 'access',
         'admin' => array(1),
-        'admin_create' => array(1),
+        'admin_add' => array(1),
+        'admin_groups' => array(1),
+        'admin_settings' => array(1),
+        'admin_list' => array(1),
         'login' => array(0),
         'logout' => array(1, 100),
         'lostpassword' => array(0),
@@ -49,8 +52,12 @@ class User_Gear extends Gear {
         'lostpassword' => 'lostpassword_action',
         'lostpassword/(\w+)' => 'lostpassword_action',
         'register' => 'register_action',
-        'admin/users:maybe' => 'admin_action',
-        'admin/user/create' => 'admin_create_action',
+        'admin/users' => 'admin_list',
+        'admin/users/settings' => 'admin_settings',
+        'admin/users/groups' => 'admin_groups',
+        'admin/users/groups/(\d+)' => 'admin_groups',
+        'admin/users/groups/(add)' => 'admin_groups',
+        'admin/user/add' => 'admin_add_action',
         'admin/user/(\d+)' => 'edit_action',
         'user/edit/(\d+)' => 'edit_action',
         'user/([\w]+)' => 'index_action',
@@ -229,24 +236,32 @@ class User_Gear extends Gear {
      * Создание меню в админке
      */
     public function hookAdminMenu() {
-        new Menu_Tabs(array(
+        $menu = new Menu_Tabs(array(
             'name' => 'admin.users',
+            'render' => 'info',
+            'multiple' => TRUE,
             'elements' => array(
                 array(
-                    'label' => icon('user') . ' ' . t('Список'),
+                    'label' => icon('user') . ' ' . t('Пользователи'),
                     'link' => l('/admin/users'),
+                    'active' => check_route('admin/users$') OR check_route('admin/user/add'),
+                ),
+                array(
+                    'label' => icon('group') . ' ' . t('Группы'),
+                    'link' => l('/admin/users/groups'),
+                    'active' => check_route('admin/users/groups(.*)'),
                 ),
                 array(
                     'label' => icon('cogs') . ' ' . t('Настройки'),
                     'link' => l('/admin/users/settings'),
                 ),
                 array(
-                    'label' => icon('plus') . ' ' . t('Создать'),
-                    'link' => l('/admin/user/create'),
+                    'label' => icon('plus') . ' ' . t('Добавить'),
+                    'link' => check_route('admin/users/groups') ? l('/admin/users/groups/add') : l('/admin/user/add'),
                     'class' => 'fl_r',
                 )
             )
-                ));
+        ));
     }
 
     /**
@@ -261,7 +276,7 @@ class User_Gear extends Gear {
                     'link' => $User->getLink('edit'),
                 ),
             )
-                ));
+        ));
         $menu->object($User);
     }
 
@@ -271,6 +286,17 @@ class User_Gear extends Gear {
      * @param object $user
      */
     public function hookUserRegister($user) {
+        // Выставление роли по-умолчанию
+        $user->update(array('role' => config('roles.default', 100)));
+        $this->hookUserRegisterEmail($user);
+    }
+
+    /**
+     * Отправление письма о регистрации на почту
+     *
+     * @param object $user
+     */
+    public function hookUserRegisterEmail($user) {
         $mail = new Mail(array(
             'name' => 'register',
             'subject' => t('Регистрация на сайте %s', SITE_URL),
@@ -278,7 +304,7 @@ class User_Gear extends Gear {
                         <p>Ваш логин: <b>%s</b>
                         <p>Пароль хранится в зашифрованном виде, но вы всегда сможете его сбросить, используя ссылку: <a href="%s">%s</a>
                             ', SITE_URL, $user->login, l('/lostpassword'), l('/lostpassword')),
-                ));
+        ));
         $mail->to($user->email);
         $mail->send();
     }
@@ -354,7 +380,7 @@ class User_Gear extends Gear {
                 ),
             ),
             'render' => 'info',
-                ));
+        ));
         ;
     }
 
@@ -373,62 +399,195 @@ class User_Gear extends Gear {
     }
 
     /**
-     * Show admin page
+     * Настройки пользователей
      */
-    public function admin_action($action = 'list') {
+    public function admin_settings() {
         $this->hookAdminMenu();
+        $form = new Form(array(
+            '#name' => 'user.admin.settings',
+            'title' => array(
+                'label' => icon('user') . ' ' . t('Настройки регистрации'),
+            ),
+            'registration' => array(
+                'type' => 'checkbox',
+                'value' => config('user.register.active'),
+                'label' => t('Регистрация разрешена'),
+            ),
+            'verification' => array(
+                'type' => 'checkbox',
+                'value' => config('user.register.verification'),
+                'label' => t('Подтверждение регистрации по электронной почте'),
+            ),
+            'save' => array()
+        ));
+        if ($result = $form->result()) {
+            $this->set('user.register.active', $result->registration);
+            $this->set('user.register.verification', $result->verification);
+            flash_success('Настройки сохранены!');
+            reload();
+        }
+        $form->show();
+    }
+
+    /**
+     * Управление группами
+     *
+     * @param mixed $action
+     */
+    public function admin_groups($action = 'list') {
+        $this->hookAdminMenu();
+        $config = array(
+            '#name' => 'admin.user_group',
+            'title' => array(
+                'label' => icon('group') . ' ' . t('Добавление группы пользователей'),
+            ),
+            'id' => array(
+                'label' => 'ID',
+                'type' => 'text',
+                'validate' => array('Num', 'Required'),
+            ),
+            'name' => array(
+            ),
+            'save' => array(
+            )
+        );
         switch ($action) {
-            case 'settings':
-                $form = new Form(array(
-                    '#name' => 'user.admin.settings',
-                    'title' => array(
-                        'label' => icon('user').' '.t('Настройки регистрации'),
+            case 'list':
+                $table = new Table(array(
+                    '#name' => 'admin.user_groups',
+                    '#class' => 'table table-bordered table-hover',
+                    'id' => array(
+                        'label' => 'ID',
+                        'align' => 'center',
+                        'width' => '5%',
                     ),
-                    'registration' => array(
-                        'type' => 'checkbox',
-                        'value' => config('user.register.active'),
-                        'label' => t('Регистрация разрешена'),
+                    'name' => array(
+                        'label' => t('Название группы'),
+                        'align' => 'left',
+                        'template' => 'User/templates/tables/group/name',
                     ),
-                    'verification' => array(
-                        'type' => 'checkbox',
-                        'value' => config('user.register.verification'),
-                        'label' => t('Подтверждение регистрации по электронной почте'),
-                        ),
-                    'save' => array()
+                    'actions' => array(
+                        'label' => t('Действия'),
+                        'template' => 'User/templates/tables/group/actions',
+                    ),
                 ));
-                if($result = $form->result()){
-                    $this->set('user.register.active',$result->registration);
-                    $this->set('user.register.verification',$result->verification);
-                    flash_success('Настройки сохранены!');
-                    reload();
+                $role = new User_Role();
+                $role->order('id');
+                if ($data = $role->findAll()) {
+                    $table->object($data);
+                }
+                $table->show();
+                break;
+            case 'add':
+                $form = new Form($config);
+                if ($result = $form->result()) {
+                    $user_role = new User_Role();
+                    $user_role->object($result);
+                    if (FALSE !== $user_role->insert()) {
+                        flash_success(t('Группа добавлена!'));
+                        redirect(l('/admin/users/groups'));
+                    }
                 }
                 $form->show();
                 break;
             default:
-                $q = $this->input->get('q');
-                $tpl = new Template('Search/templates/form');
-                $tpl->action = l('/admin/users/');
-                $q && $tpl->value = $q;
-                $tpl->show('info');
-                Db_ORM::skipClear();
-                $list = new User_List(array(
-                    'name' => 'admin.users',
-                    'base' => l('/admin/user/'),
-                    'per_page' => config('Admin.user.per_page', 20),
-                    'render' => FALSE,
-                        ));
-                $fields = $list->getFields();
-                $list->setFields($fields);
-                $list->show();
+                $user_role = new User_Role();
+                $user_role->id = $action;
+                if (!$user_role->find()) {
+                    return event('404');
+                }
+                $config['title']['label'] = icon('group') . ' ' . t('Редактирование группы пользователей');
+                unset($config['id']);
+                if (!in_array($user_role->id, array(0, 1, 100))) {
+                    $config['delete'] = array();
+                }
+                $form = new Form($config);
+                $form->object($user_role);
+                if ($result = $form->result()) {
+                    if ($result->delete && $user_role->delete()) {
+                        flash_success(t('Группа удалена!'));
+                        redirect(l('/admin/users/groups'));
+                    }
+                    $user_role->object($result);
+                    if ($user_role->save()) {
+                        flash_success(t('Группа обновлена!'));
+                        redirect(l('/admin/users/groups'));
+                    }
+                }
+                $form->show();
+        }
+    }
+
+    /**
+     * Список пользователей в панели управления
+     */
+    public function admin_list() {
+        $this->hookAdminMenu();
+        $q = $this->input->get('q');
+        $tpl = new Template('Search/templates/form');
+        $tpl->action = l('/admin/users/');
+        $q && $tpl->value = $q;
+        $tpl->show('info');
+        Db_ORM::skipClear();
+        $table = new Table(array(
+            '#name' => 'admin.users',
+            '#class' => 'table table-bordered table-hover shd',
+            'login' => array(
+                'label' => t('Имя пользователя'),
+                'callback' => new Callback(array($this, 'prepareUserTableFields')),
+            ),
+            'posts' => array(
+                'label' => t('Публикации'),
+                'callback' => new Callback(array($this, 'prepareUserTableFields')),
+            ),
+            'reg_date' => array(
+                'label' => t('Дата регистрации'),
+                'callback' => new Callback(array($this, 'prepareUserTableFields')),
+            ),
+        ));
+        $users = new User();
+        $users->order('id');
+        if ($data = $users->findAll()) {
+            $table->object($data);
+            $table->show();
+            new Pager(array(
+                'count' => $users->countAll(),
+                'per_page' => 50,
+            ));
+        } else {
+            event('empty');
+        }
+    }
+
+    /**
+     * Обработчик полей таблицы
+     *
+     * @param type $user
+     * @return type
+     */
+    public function prepareUserTableFields($key, $user) {
+        switch ($key) {
+            case 'login':
+                return $user->render('list', 'avatar.small');
+                break;
+            case 'reg_date':
+                return df($user->reg_date, 'd M Y');
+                break;
+            case 'posts':
+                return '<a href="' . $user->getLink() . '/posts/" class="badge' . ($user->posts > 0 ? ' badge-info' : '') . '">' . $user->posts . '</a>';
+                break;
+            case 'comments':
+                return '<a href="' . $user->getLink() . '/comments/" class="badge' . ($user->comments > 0 ? ' badge-warning' : '') . '">' . $user->comments . '</a>';
+                break;
         }
     }
 
     /**
      * Создание нового пользователя
      */
-    public function admin_create_action() {
+    public function admin_add_action() {
         $this->hookAdminMenu();
-        $form = new Form('User/forms/create');
+        $form = new Form('User/forms/add');
         if ($result = $form->result()) {
             $user = new User();
             $user->object()->extend($result);
@@ -559,7 +718,7 @@ class User_Gear extends Gear {
                                     <p>Если не вы были инициатором этого действия, оставьте письм без внимания или обратитесь к администрации сайта.
                                     <p>Чтобы пройти процедуру восстановления пароля, перейдите по разовой ссылке:<p>
                             <a href="%s">%s</a>', SITE_URL, $this->session->get('ip'), $recover, $recover),
-                        ));
+                ));
                 $mail->to($user->email);
                 if ($mail->send()) {
                     $user->save();
@@ -624,7 +783,7 @@ class User_Gear extends Gear {
                         'body' => t('Вы успешно зарегистрировались на сайте http://%s. <br/>
                             Пожалуйста, перейдите по ссылке ниже, для того чтобы подтвердить данный почтовый ящик:<p>
                             <a href="%s">%s</a>', SITE_URL, $verify_link, $verify_link),
-                            ));
+                    ));
                     $mail->to($user->email);
                     if ($mail->send()) {
                         $user->save();

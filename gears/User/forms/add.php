@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    '#name' => 'user.create',
+    '#name' => 'user.add',
     'login' => array(
         'label' => t('Имя пользователя'),
         'type' => 'text',
