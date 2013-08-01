@@ -36,7 +36,7 @@ final class HTML {
     public static function attr(array $options) {
         $result = '';
         foreach ($options as $key => $value) {
-            $value && $result .= $key . '="' . $value . '" ';
+            NULL !== $value && FALSE !== $value  && $result .= $key . '="' . $value . '" ';
         }
         return $result ? ' ' . trim($result) : '';
     }
