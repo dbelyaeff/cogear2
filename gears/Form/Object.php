@@ -98,39 +98,14 @@ class Form_Object extends Object {
         } else {
             $options = Core_ArrayObject::transform($options);
         }
-        parent::__construct(Form::filterOptions($options));
+        parent::__construct(Options::decode($options));
         $this->defaults = new Config(cogear()->form->dir . DS . 'defaults' . EXT);
         $this->init();
         event('form.load', $this);
         event('form.load.' . $this->options->name, $this);
     }
 
-    /**
-     * Фильтрация опций
-     *
-     * @param array $options
-     */
-    public static function filterOptions($options) {
-        !($options instanceof Core_ArrayObject) && $options = new Core_ArrayObject($options);
-        $first_key = $options->getFirstKey();
-        if ($first_key[0] !== '#') {
-            return $options;
-        }
-        $results = new Core_ArrayObject();
-        foreach ($options as $key => $value) {
-            if ($key[0] == '#') {
-                $real_key = substr($key, 1);
-                $results->$real_key = $value;
-            } else {
-                $results->elements OR $results->elements = new Core_ArrayObject();
-                if (is_array($value) OR $value instanceof Core_ArrayObject) {
-                    $value = self::filterOptions($value);
-                }
-                $results->elements->$key = $value;
-            }
-        }
-        return $results;
-    }
+
 
     /**
      * Добавление элемента
